@@ -4,14 +4,17 @@
 Modification for GTA: Vice City that give players ability to play the game together
 ## What is the SDK that this project uses?
 Its Plugin-SDK https://github.com/DK22Pac/plugin-sdk/ , very important for the mod development.
-## How To Open The Project
-Download Them, you must have Visual Studio 2013 Atleast. VCCOOP_GAME its the DLL have functions that will be injected in the game. VCCOOP_CLIENT its the process that will recieve data and will call the DLL by them to be injected in the game
+## What are these projects
+Vice City CO-OP  : The Connector (Browser)
+Vice City DLL    : DLL to be injected in the game, have alot of functions
+Client           : UDP Client
+Server           : UDP Server
 ## Developing Progress
-Game Browser(Connector)
+Server Browser(Connector)
 ![alt text](http://www.yarntomato.com/percentbarmaker/button.php?barPosition=98&leftFill=33cc33"98%")</br >
-VCCOOPCLIENT
-![alt text](http://www.yarntomato.com/percentbarmaker/button.php?barPosition=7&leftFill=0ff0000"7%")</br >
-VCCOOP_GAME
-![alt text](http://www.yarntomato.com/percentbarmaker/button.php?barPosition=3&leftFill=0ff0000"7%")
+Client and Server
+![alt text](http://www.yarntomato.com/percentbarmaker/button.php?barPosition=7&leftFill=0ff0000"10%")</br >
+VC:DLL
+![alt text](http://www.yarntomato.com/percentbarmaker/button.php?barPosition=3&leftFill=0ff0000"5%")
 ## Want to talk to me?
 Join VC:CO-OP Discord Server: https://discord.gg/u2u6U6G
