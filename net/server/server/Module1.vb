@@ -9,6 +9,9 @@ Imports System.Text, System.IO, System.Net, System.Net.Sockets
 Module Module1
     Dim sock As UdpClient
     Dim port As Int32 = 25648
+    Dim reciever As UdpClient
+    Dim ipend As IPEndPoint = New IPEndPoint(0, port)
+
     Function gdt() As String
         Return Dns.GetHostName
 
@@ -29,7 +32,11 @@ Module Module1
             sock = New UdpClient()
             sock.Connect(ip, port)
             Console.WriteLine("Started.")
-            Threading.Thread.Sleep(100000)
+            'Threading.Thread.Sleep(100000)
+            Do
+                Dim bytes() As Byte = reciever.Receive(ipend)
+                Console.WriteLine(Encoding.Default.GetString(bytes))
+            Loop
         Catch ex As Exception
             Console.WriteLine("Error " & ex.Message)
             Threading.Thread.Sleep(90000)
