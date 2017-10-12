@@ -5,10 +5,10 @@ Modification for GTA: Vice City that give players ability to play the game toget
 ## What is the SDK that this project uses?
 Its Plugin-SDK https://github.com/DK22Pac/plugin-sdk/ , very important for the mod development.
 ## What are these projects
-Vice City CO-OP  : The Connector (Browser)
-Vice City DLL    : DLL to be injected in the game, have alot of functions
-Client           : UDP Client
-Server           : UDP Server
+Vice City CO-OP  : The Connector (Browser) </br>
+Vice City DLL    : DLL to be injected in the game, have alot of functions </br>
+Client           : UDP Client </br>
+Server           : UDP Server </br>
 ## Developing Progress
 Server Browser(Connector)
 ![alt text](http://www.yarntomato.com/percentbarmaker/button.php?barPosition=98&leftFill=33cc33"98%")</br >
