@@ -41,7 +41,7 @@ public:
 	{
 		CPopulation::PlaceCouple(PedType, Model, PedType2, Model2, Position);
 	}
-	int GivePedrWeapon(CPed Ped, eWeaponType WepType, unsigned int Ammo)
+	int GivePedWeapon(CPed Ped, eWeaponType WepType, unsigned int Ammo)
 	{
 	 // this needs some load model work
 		Ped.GiveWeapon(WepType, Ammo, false);
