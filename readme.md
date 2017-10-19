@@ -22,5 +22,8 @@ VC:DLL
 - [ ] Client </br>
 - [ ] SCM </br>
 - [x] Browser (Connector) </br>
+## Developers
+Zeyad_Ahmed  *Founder and Lead Developer (Server, Client, Launcher and VCDLL)* </br>
+Kewun        *Founder, (VCDLl)* </br>
 ## Want to talk to me?
 Join VC:CO-OP Discord Server: https://discord.gg/u2u6U6G
