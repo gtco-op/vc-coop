@@ -20,6 +20,7 @@ VC:DLL
 - [ ] Setting Vice City DLL </br>
 - [ ] Server </br> 
 - [ ] Client </br>
+- [ ] SCM </br>
 - [x] Browser (Connector) </br>
 ## Want to talk to me?
 Join VC:CO-OP Discord Server: https://discord.gg/u2u6U6G
