@@ -12,62 +12,60 @@
 #include <game_vc\ePedType.h>
 #include <game_vc\CWorld.h>
 using namespace plugin;
+// functions always need to be outside the myplugin class, otherwise game will close
+void ShowHelpMessage(wchar_t text, bool quickmessage, bool forever, bool showinbrief)
+{
+	CHud::SetHelpMessage((unsigned short*)text, quickmessage, forever, showinbrief);
+		
+}
+	void SpawnPed(unsigned int modelindex, CVector coords, ePedType pedtype)
+{
+	CPed *ped = CPopulation::AddPed(pedtype, modelindex, coords, 0);
+	CWorld::Add(ped);
+}
+void CreateCoupleOfPeds(ePedType PedType, unsigned int Model, ePedType PedType2, unsigned int Model2, CVector Position)
+{
+	CPopulation::PlaceCouple(PedType, Model, PedType2, Model2, Position);
+}
+void GivePedWeapon(CPed * Ped, eWeaponType WepType, unsigned int Ammo)
+{
+ // this needs some load model work
+	CPlayerPed*player{ (CPlayerPed*)Ped };
+	player.GiveWeapon(WepType,Ammo,false);
+	
+	player.SetCurrentWeapon(WepType);
+}
+void KillPed(CPed * Ped)
+{
+	CPlayerPed*player{ (CPlayerPed*)Ped };
+	player->m_fHealth = 0.0;
+}
+void TeleportPed(CPed * Ped, float PosX, float PosY, float PosZ)
+{
+	CPlayerPed*player{ (CPlayerPed*)Ped };
+	player.Teleport(CVector(PosX, PosY, PosZ));
+}
+void PedSetAimAtEntity(CPed * Ped, CEntity Entity)
+{
+	CPlayerPed*player{ (CPlayerPed*)Ped };
+	player.m_pPointGunAt = &Entity;
+	player.AimGun();
+}
+void SetPedHealth(CPed * Ped, float Amount)
+{
+	CPlayerPed*player{ (CPlayerPed*)Ped };
+	player.m_fHealth = Amount;
+}
+void SetPedArmour(CPed * Ped, float Amount)
+{
+	CPlayerPed*player{ (CPlayerPed*)Ped };
+	player.m_fArmour = Amount;
+}
+
 
 class MyPlugin {
 public:		
-	//======================== CHUD ==========================
-	int ShowHelpMessage(wchar_t text, bool quickmessage, bool forever, bool showinbrief)
-		{
-			CHud::SetHelpMessage((unsigned short*)text, quickmessage, forever, showinbrief);
-			return 1;
-			
-		}
-	//====================== CPED =============================
-	int SpawnPed(unsigned int modelindex, CVector coords, ePedType pedtype)
-	{
-		int id;
-		CPed *ped = CPopulation::AddPed(pedtype, modelindex, coords, 0);
-		CWorld::Add(ped);
-		return id;
-	}
-		int SpawnPed(unsigned int modelindex, CVector coords, ePedType pedtype)
-	{
-		int id;
-		CPed *ped = CPopulation::AddPed(pedtype, modelindex, coords, 0);
-		CWorld::Add(ped);
-		
-	}
-	int CreateCoupleOfPeds(ePedType PedType, unsigned int Model, ePedType PedType2, unsigned int Model2, CVector Position)
-	{
-		CPopulation::PlaceCouple(PedType, Model, PedType2, Model2, Position);
-	}
-	int GivePedWeapon(CPed Ped, eWeaponType WepType, unsigned int Ammo)
-	{
-	 // this needs some load model work
-		Ped.GiveWeapon(WepType, Ammo, false);
-		Ped.SetCurrentWeapon(WepType);
-	}
-	int KillPed(CPed Ped)
-	{
-		Ped.m_fHealth = 0.0;
-	}
-	int TeleportPed(CPed Ped, float PosX, float PosY, float PosZ)
-	{
-		Ped.Teleport(CVector(PosX, PosY, PosZ));
-	}
-	int PedSetAimAtEntity(CPed Ped, CEntity Entity)
-	{
-		Ped.m_pPointGunAt = &Entity;
-		Ped.AimGun();
-	}
-	int SetPedHealth(CPed Ped, float Amount)
-	{
-		Ped.m_fHealth = Amount;
-	}
-	int SetPedArmour(CPed Ped, float Amount)
-	{
-		Ped.m_fArmour = Amount;
-	}
+
     MyPlugin() {
 
 
