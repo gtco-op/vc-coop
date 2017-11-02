@@ -2,6 +2,7 @@
 	Vice City DLL (VCCOOPDLL)
 	DLL to manage Vice City game
 	File Author(s): Zeyad_Ahmed
+			Kewun
 	Copyrights (c) 2017 VC:CO-OP Team
 	Licence: GPL v3
 */
