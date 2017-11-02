@@ -1,12 +1,14 @@
-﻿Imports System.Net
+﻿'---------------------------------------------------
+'   File Author(s): Zeyad_Ahmed
+'   Copyrights (c) 2017 VC:CO-OP Team
+'               www.vicecityco-op.ml
+'---------------------------------------------------
+Imports System.Net
 Imports System.Net.Sockets
 Imports System.Text
 
 Public Class sender
     Dim sender As UdpClient = New UdpClient()
-    Public Sub Intialize(ByVal ip As String, ByVal port As Int32)
-        Dim IPEnd As IPEndPoint = New IPEndPoint(ip, port)
-    End Sub
     Sub connect(ByVal ip As String, ByVal port As Int32)
         Try
             sender.Connect(ip, port)
@@ -14,13 +16,8 @@ Public Class sender
             log("[ERROR]" & ex.Message)
         End Try
     End Sub
-
-
     Sub log(ByVal text As String)
         Console.WriteLine(text)
-    End Sub
-    Sub Intialize()
-
     End Sub
     Sub Send(ByVal text As String)
         Try
@@ -30,5 +27,4 @@ Public Class sender
             log("[ERROR]" & ex.Message)
         End Try
     End Sub
-
 End Class

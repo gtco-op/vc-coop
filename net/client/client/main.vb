@@ -22,7 +22,13 @@ Public Module main
         Dim port As Int32 = args(1)
         Dim nickname As String = args(2)
         log("Connecting to " & ip & ":" & port & " By nickname" & nickname)
-        sender.Send("Connecting to " & ip & ":" & port & " By nickname" & nickname)
+        Try
+            sender.connect(ip, port)
+            sender.Send("Connected to " & ip & ":" & port & " By nickname" & nickname)
+        Catch ex As Exception
+            log("[ERROR] " & ex.Message)
+        End Try
+
 
 
     End Sub

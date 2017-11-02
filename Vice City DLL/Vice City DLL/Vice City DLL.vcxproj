@@ -46,29 +46,29 @@
     <TargetExt>.asi</TargetExt>
     <OutDir>D:/GTAVC/scripts/</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
- <IncludePath>$(IncludePath)</IncludePath>
- <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetExt>.asi</TargetExt>
+    <TargetExt>.dll</TargetExt>
     <OutDir>D:/GTAVC/scripts/</OutDir>
     <TargetName>$(ProjectName)_d</TargetName>
     <IntDir>obj\$(Configuration)\</IntDir>
- <IncludePath>$(IncludePath)</IncludePath>
- <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:/Users/Extreme/Downloads/plugin-sdk-master/plugin-sdk-master/plugin_vc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Extreme\Downloads\plugin-sdk-2010\plugin_vc</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>_USING_V110_SDK71_;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:/Users/Extreme/Downloads/plugin-sdk-master/plugin-sdk-master/output\lib\; % (AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PLUGIN_SDK_DIR)/output\lib\; % (AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>plugin_vc_d.lib;paths_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>

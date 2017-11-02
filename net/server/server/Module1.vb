@@ -7,10 +7,8 @@ Imports System.Text, System.IO, System.Net, System.Net.Sockets
 
 
 Module Module1
-    Dim sock As UdpClient
-    Dim port As Int32 = 25648
-    Dim reciever As UdpClient
-    Dim ipend As IPEndPoint = New IPEndPoint(0, port)
+    Dim reciever As New reciever
+    Dim sender As New sender
 
     Function gdt() As String
         Return Dns.GetHostName
@@ -27,18 +25,14 @@ Module Module1
         Try
             Dim hostname As String = Dns.GetHostName()
             Dim ip As String = Dns.GetHostAddresses(hostname).GetValue(3).ToString
-            Console.WriteLine("Starting Server at " & ip & ":" & port)
+            reciever.Intialize(5012) 'Starting Reciever at the local Address
+            sender.connect(ip, 5012) 'starting sender at local address and connecting to it
+            sender.Send("[SERVER] Server Started") 'Just testing some sending bytes
+            reciever.Recieve() 'recieve the last byte
+            Threading.Thread.Sleep(10000)
 
-            sock = New UdpClient()
-            sock.Connect(ip, port)
-            Console.WriteLine("Started.")
-            'Threading.Thread.Sleep(100000)
-            Do
-                Dim bytes() As Byte = reciever.Receive(ipend)
-                Console.WriteLine(Encoding.Default.GetString(bytes))
-            Loop
         Catch ex As Exception
-            Console.WriteLine("Error " & ex.Message)
+            Console.WriteLine("[ERROR] " & ex.Message)
             Threading.Thread.Sleep(90000)
         End Try
     End Sub
