@@ -10,7 +10,9 @@
 #include <game_vc/CPed.h>
 #include <game_vc/CPopulation.h>
 #include <game_vc\ePedType.h>
+#include <game_vc/CStreaming.h>
 #include <game_vc\CWorld.h>
+#include <game_vc/CPlayerPed.h>
 using namespace plugin;
 // functions always need to be outside the myplugin class, otherwise game will close
 void ShowHelpMessage(wchar_t text, bool quickmessage, bool forever, bool showinbrief)
@@ -18,7 +20,7 @@ void ShowHelpMessage(wchar_t text, bool quickmessage, bool forever, bool showinb
 	CHud::SetHelpMessage((unsigned short*)text, quickmessage, forever, showinbrief);
 		
 }
-	void SpawnPed(unsigned int modelindex, CVector coords, ePedType pedtype)
+void SpawnPed(unsigned int modelindex, CVector coords, ePedType pedtype)
 {
 	CPed *ped = CPopulation::AddPed(pedtype, modelindex, coords, 0);
 	CWorld::Add(ped);
@@ -29,11 +31,46 @@ void CreateCoupleOfPeds(ePedType PedType, unsigned int Model, ePedType PedType2,
 }
 void GivePedWeapon(CPed * Ped, eWeaponType WepType, unsigned int Ammo)
 {
- // this needs some load model work
+	CStreaming::RequestModel(269, 1);
+	CStreaming::RequestModel(270, 1);
+	CStreaming::RequestModel(275, 1);
+	CStreaming::RequestModel(278, 1);
+	CStreaming::RequestModel(284, 1);
+	CStreaming::RequestModel(280, 1);
+	CStreaming::RequestModel(286, 1);
+	CStreaming::RequestModel(290, 1);
+	CStreaming::RequestModel(294, 1);
+        CStreaming::RequestModel(259, 1);
+        CStreaming::RequestModel(264, 1);
+	CStreaming::RequestModel(272, 1);
+	CStreaming::RequestModel(274, 1);
+	CStreaming::RequestModel(277, 1);
+	CStreaming::RequestModel(281, 1);
+	CStreaming::RequestModel(276, 1);
+	CStreaming::RequestModel(285, 1);
+	CStreaming::RequestModel(288, 1);
+	CStreaming::RequestModel(268, 1);
+        CStreaming::RequestModel(270, 1);
+        CStreaming::RequestModel(291, 1);
+        CStreaming::RequestModel(275, 1);
+	CStreaming::RequestModel(279, 1);
+	CStreaming::RequestModel(283, 1);
+	CStreaming::RequestModel(280, 1);
+	CStreaming::RequestModel(286, 1);
+	CStreaming::RequestModel(287, 1);
+	CStreaming::RequestModel(269, 1);
+        CStreaming::RequestModel(270, 1);
+        CStreaming::RequestModel(275, 1);
+        CStreaming::RequestModel(278, 1);
+        CStreaming::RequestModel(284, 1);
+        CStreaming::RequestModel(280, 1);
+        CStreaming::RequestModel(286, 1);
+        CStreaming::RequestModel(290, 1);
+        CStreaming::RequestModel(294, 1);
+	CStreaming::LoadAllRequestedModels(0, 0);
 	CPlayerPed*player{ (CPlayerPed*)Ped };
-	player.GiveWeapon(WepType,Ammo,false);
-	
-	player.SetCurrentWeapon(WepType);
+	player->GiveWeapon(WepType,Ammo,false);
+	player->SetCurrentWeapon(WepType);
 }
 void KillPed(CPed * Ped)
 {
@@ -43,23 +80,23 @@ void KillPed(CPed * Ped)
 void TeleportPed(CPed * Ped, float PosX, float PosY, float PosZ)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
-	player.Teleport(CVector(PosX, PosY, PosZ));
+	player->Teleport(CVector(PosX, PosY, PosZ));
 }
 void PedSetAimAtEntity(CPed * Ped, CEntity Entity)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
-	player.m_pPointGunAt = &Entity;
-	player.AimGun();
+	player->m_pPointGunAt = &Entity;
+	player->AimGun();
 }
 void SetPedHealth(CPed * Ped, float Amount)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
-	player.m_fHealth = Amount;
+	player->m_fHealth = Amount;
 }
 void SetPedArmour(CPed * Ped, float Amount)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
-	player.m_fArmour = Amount;
+	player->m_fArmour = Amount;
 }
 
 
