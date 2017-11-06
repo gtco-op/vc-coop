@@ -98,7 +98,14 @@ void SetPedArmour(CPed * Ped, float Amount)
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->m_fArmour = Amount;
 }
-
+void WelcomeMessage()
+{
+	CFont::SetCentreOn();
+	CFont::SetColor(CRGBA(255, 255, 0, 255)); 		
+	CFont::SetPropOn();
+	CFont::SetFontStyle(0);
+	CFont::PrintString(100, 100, L"Welcome to VC CO-OP");
+}
 
 class MyPlugin {
 public:		
