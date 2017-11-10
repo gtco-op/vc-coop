@@ -1,8 +1,0 @@
-C:\Users\Extreme\documents\visual studio 2010\Projects\vccoop\net\server\server\bin\Debug\server.exe
-C:\Users\Extreme\documents\visual studio 2010\Projects\vccoop\net\server\server\bin\Debug\server.pdb
-C:\Users\Extreme\documents\visual studio 2010\Projects\vccoop\net\server\server\bin\Debug\server.xml
-C:\Users\Extreme\documents\visual studio 2010\Projects\vccoop\net\server\server\obj\x86\Debug\server.Resources.resources
-C:\Users\Extreme\documents\visual studio 2010\Projects\vccoop\net\server\server\obj\x86\Debug\server.vbproj.GenerateResource.Cache
-C:\Users\Extreme\documents\visual studio 2010\Projects\vccoop\net\server\server\obj\x86\Debug\server.exe
-C:\Users\Extreme\documents\visual studio 2010\Projects\vccoop\net\server\server\obj\x86\Debug\server.xml
-C:\Users\Extreme\documents\visual studio 2010\Projects\vccoop\net\server\server\obj\x86\Debug\server.pdb

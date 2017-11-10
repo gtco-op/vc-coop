@@ -18,7 +18,7 @@ using namespace plugin;
 // functions always need to be outside the myplugin class, otherwise game will close
 
 // === CSTREAMING ===
-void CStreamingRequestAllWepModels()
+void __stdcall CStreamingRequestAllWepModels()
 {
 	CStreaming::RequestModel(269, 1);
 	CStreaming::RequestModel(270, 1);
@@ -59,49 +59,49 @@ void CStreamingRequestAllWepModels()
 	CStreaming::LoadAllRequestedModels(0, 0);
 }
 // === CHUD ===
-void ShowHelpMessage(wchar_t text, bool quickmessage, bool forever, bool showinbrief)
+void __stdcall ShowHelpMessage(wchar_t text, bool quickmessage, bool forever, bool showinbrief)
 {
 	CHud::SetHelpMessage((char*)L"Text", quickmessage, forever, showinbrief);
 		
 }
 // === CPED ===
-void SpawnPed(unsigned int modelindex, CVector coords, ePedType pedtype)
+void __stdcall SpawnPed(unsigned int modelindex, CVector coords, ePedType pedtype)
 {
 	CPed *ped = CPopulation::AddPed(pedtype, modelindex, coords, 0);
 	CWorld::Add(ped);
 }
-void CreateCoupleOfPeds(ePedType PedType, unsigned int Model, ePedType PedType2, unsigned int Model2, CVector Position)
+void __stdcall CreateCoupleOfPeds(ePedType PedType, unsigned int Model, ePedType PedType2, unsigned int Model2, CVector Position)
 {
 	CPopulation::PlaceCouple(PedType, Model, PedType2, Model2, Position);
 }
-void GivePedWeapon(CPed * Ped, eWeaponType WepType, unsigned int Ammo)
+void __stdcall GivePedWeapon(CPed * Ped, eWeaponType WepType, unsigned int Ammo)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->GiveWeapon(WepType,Ammo,false);
 	player->SetCurrentWeapon(WepType);
 }
-void KillPed(CPed * Ped)
+void __stdcall KillPed(CPed * Ped)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->m_fHealth = 0.0;
 }
-void TeleportPed(CPed * Ped, float PosX, float PosY, float PosZ)
+void __stdcall TeleportPed(CPed * Ped, float PosX, float PosY, float PosZ)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->Teleport(CVector(PosX, PosY, PosZ));
 }
-void PedSetAimAtEntity(CPed * Ped, CEntity* Entity)
+void __stdcall PedSetAimAtEntity(CPed * Ped, CEntity* Entity)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->m_pPointGunAt = Entity;
 	player->AimGun();
 }
-void SetPedHealth(CPed * Ped, float Amount)
+void __stdcall SetPedHealth(CPed * Ped, float Amount)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->m_fHealth = Amount;
 }
-void SetPedArmour(CPed * Ped, float Amount)
+void __stdcall SetPedArmour(CPed * Ped, float Amount)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->m_fArmour = Amount;
@@ -117,7 +117,7 @@ public:
     }
 } myPlugin;
 
-BOOL WINAPI DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
+BOOL __stdcall WINAPI DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
 {
 
 
