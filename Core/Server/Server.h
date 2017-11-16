@@ -22,7 +22,7 @@ namespace Server {
 			}
 			catch (Exception^ ex)
 			{
-				log("[ERROR]" + ex->Message);
+				log("[ERROR]1" + ex->Message);
 			}
 		}
 
@@ -35,12 +35,12 @@ namespace Server {
 		{
 			try
 			{
-				array<unsigned char>^ bytes = Encoding::Default->GetBytes(text);
+				array<Byte>^ bytes = Encoding::Default->GetBytes(text);
 				sender->Send(bytes, bytes->Length);
 			}
 			catch (Exception^ ex)
 			{
-				log("[ERROR]" + ex->Message);
+				log("[ERROR]2" + ex->Message);
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace Server {
 		void Recieve()
 		{
 			String^ re_text;
-			array<unsigned char>^ re_bytes;
+			array<Byte>^ re_bytes;
 			try
 			{
 				re_bytes = sock->Receive(lpendp);
@@ -76,7 +76,7 @@ namespace Server {
 			}
 			catch (Exception^ ex)
 			{
-				Log("[ERROR] " + ex->Message);
+				Log("[ERROR]3 " + ex->Message);
 			}
 		}
 

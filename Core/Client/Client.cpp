@@ -20,7 +20,7 @@ int main(array<String^>^ args)
 	try
 	{
 
-		Sender^ sender;
+		Sender^ sender = gcnew Sender();
 
 		log("Connecting to " + ip + ":" + port + " By nickname" + nickname);
 
