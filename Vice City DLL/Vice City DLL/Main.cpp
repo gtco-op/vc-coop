@@ -18,7 +18,7 @@ using namespace plugin;
 // functions always need to be outside the myplugin class, otherwise game will close
 
 // === CSTREAMING ===
-void __stdcall CStreamingRequestAllWepModels()
+__declspec(dllexport) void   CStreamingRequestAllWepModels()
 {
 	CStreaming::RequestModel(269, 1);
 	CStreaming::RequestModel(270, 1);
@@ -59,49 +59,49 @@ void __stdcall CStreamingRequestAllWepModels()
 	CStreaming::LoadAllRequestedModels(0, 0);
 }
 // === CHUD ===
-void __stdcall ShowHelpMessage(wchar_t text, bool quickmessage, bool forever, bool showinbrief)
+__declspec(dllexport) __declspec(dllexport) void  ShowHelpMessage(wchar_t text, bool quickmessage, bool forever, bool showinbrief)
 {
 	CHud::SetHelpMessage((char*)L"Text", quickmessage, forever, showinbrief);
 		
 }
 // === CPED ===
-void __stdcall SpawnPed(unsigned int modelindex, CVector coords, ePedType pedtype)
+__declspec(dllexport) void   SpawnPed(unsigned int modelindex, CVector coords, ePedType pedtype)
 {
 	CPed *ped = CPopulation::AddPed(pedtype, modelindex, coords, 0);
 	CWorld::Add(ped);
 }
-void __stdcall CreateCoupleOfPeds(ePedType PedType, unsigned int Model, ePedType PedType2, unsigned int Model2, CVector Position)
+__declspec(dllexport) void   CreateCoupleOfPeds(ePedType PedType, unsigned int Model, ePedType PedType2, unsigned int Model2, CVector Position)
 {
 	CPopulation::PlaceCouple(PedType, Model, PedType2, Model2, Position);
 }
-void __stdcall GivePedWeapon(CPed * Ped, eWeaponType WepType, unsigned int Ammo)
+__declspec(dllexport) void   GivePedWeapon(CPed * Ped, eWeaponType WepType, unsigned int Ammo)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->GiveWeapon(WepType,Ammo,false);
 	player->SetCurrentWeapon(WepType);
 }
-void __stdcall KillPed(CPed * Ped)
+__declspec(dllexport) void   KillPed(CPed * Ped)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->m_fHealth = 0.0;
 }
-void __stdcall TeleportPed(CPed * Ped, float PosX, float PosY, float PosZ)
+__declspec(dllexport) void   TeleportPed(CPed * Ped, float PosX, float PosY, float PosZ)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->Teleport(CVector(PosX, PosY, PosZ));
 }
-void __stdcall PedSetAimAtEntity(CPed * Ped, CEntity* Entity)
+__declspec(dllexport) void   PedSetAimAtEntity(CPed * Ped, CEntity* Entity)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->m_pPointGunAt = Entity;
 	player->AimGun();
 }
-void __stdcall SetPedHealth(CPed * Ped, float Amount)
+__declspec(dllexport) void   SetPedHealth(CPed * Ped, float Amount)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->m_fHealth = Amount;
 }
-void __stdcall SetPedArmour(CPed * Ped, float Amount)
+__declspec(dllexport) void   SetPedArmour(CPed * Ped, float Amount)
 {
 	CPlayerPed*player{ (CPlayerPed*)Ped };
 	player->m_fArmour = Amount;
@@ -117,7 +117,7 @@ public:
     }
 } myPlugin;
 
-BOOL __stdcall WINAPI DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
+BOOL   WINAPI DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
 {
 
 

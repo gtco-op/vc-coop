@@ -1,8 +1,0 @@
-c:\users\extreme\documents\visual studio 2010\Projects\vccoop\network\client\bin\Debug\client.exe
-c:\users\extreme\documents\visual studio 2010\Projects\vccoop\network\client\bin\Debug\client.pdb
-c:\users\extreme\documents\visual studio 2010\Projects\vccoop\network\client\bin\Debug\client.xml
-c:\users\extreme\documents\visual studio 2010\Projects\vccoop\network\client\obj\x86\Debug\client.Resources.resources
-c:\users\extreme\documents\visual studio 2010\Projects\vccoop\network\client\obj\x86\Debug\client.vbproj.GenerateResource.Cache
-c:\users\extreme\documents\visual studio 2010\Projects\vccoop\network\client\obj\x86\Debug\client.exe
-c:\users\extreme\documents\visual studio 2010\Projects\vccoop\network\client\obj\x86\Debug\client.xml
-c:\users\extreme\documents\visual studio 2010\Projects\vccoop\network\client\obj\x86\Debug\client.pdb

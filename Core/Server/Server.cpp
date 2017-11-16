@@ -1,4 +1,9 @@
-// This is the main DLL file.
+/*
+		Vice City CO-OP Server v0.1.0.a
+		Contributer(s): Zeyad_Ahmed
+						Crspy
+		Copyright (c) 2017 VC:CO-OP Team
+*/
 
 #include "stdafx.h"
 
@@ -27,11 +32,14 @@ void main()
 		String^ ip = Dns::GetHostAddresses(hostname)->GetValue(1)->ToString();
 		reciever->Initialize(5012);
 		sender->Connect(ip, 5012);
-		sender->Send("[SERVER] Server Started");
+		sender->Send("[SERVER] Server Started"); //It will be displayed if it got connected
 		do
 		{
 			reciever->Recieve();
-			sender->Send("[SERVER OWNER] " + Console::ReadLine());
+			String^ m; 
+			
+			sender->Send("[SERVER OWNER] " + Console::ReadLine()); // send chat message
+
 		} while (true);
 
 	}
