@@ -1,5 +1,0 @@
-﻿  Main.cpp
-c:\users\extreme\documents\visual studio 2010\projects\vccoop\vice city dll\vice city dll\main.cpp(62): warning C4141: 'dllexport': used more than once
-     Creating library D:/GTAVC/scripts/Vice City DLL_d.lib and object D:/GTAVC/scripts/Vice City DLL_d.exp
-  Vice City DLL.vcxproj -> D:/GTAVC/scripts/Vice City DLL_d.dll
-  Vice City DLL.vcxproj -> D:/GTAVC/scripts/Vice City DLL_d.pdb (Partial PDB)
