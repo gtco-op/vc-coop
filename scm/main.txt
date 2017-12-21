@@ -1,0 +1,266 @@
+DEFINE OBJECTS 204
+DEFINE OBJECT SANNY BUILDER 3.2.2     
+DEFINE OBJECT DTN_STADDOORA            // Object number -1
+DEFINE OBJECT DTN_STADDOORB            // Object number -2
+DEFINE OBJECT DTHOTRING_A              // Object number -3
+DEFINE OBJECT BRIBE                    // Object number -4
+DEFINE OBJECT CI_GATESCLOSED           // Object number -5
+DEFINE OBJECT CI_BACKGATECLOSE         // Object number -6
+DEFINE OBJECT INFO                     // Object number -7
+DEFINE OBJECT YT_MAIN_BODY             // Object number -8
+DEFINE OBJECT YT_MAIN_BODY2            // Object number -9
+DEFINE OBJECT YT_DOORS14               // Object number -10
+DEFINE OBJECT YT_TMP_BOAT              // Object number -11
+DEFINE OBJECT LODMAIN_BODY             // Object number -12
+DEFINE OBJECT YACHT_CHUNK_KB           // Object number -13
+DEFINE OBJECT YT_GANGPLNK_TMP          // Object number -14
+DEFINE OBJECT DTBLOODRING_A            // Object number -15
+DEFINE OBJECT DTDIRTRING_A             // Object number -16
+DEFINE OBJECT PICKUPSAVE               // Object number -17
+DEFINE OBJECT BODYARMOUR               // Object number -18
+DEFINE OBJECT STRIPCLBDROPEN           // Object number -19
+DEFINE OBJECT OD_CLBDR_OPEN            // Object number -20
+DEFINE OBJECT COP_DR_CLOSED            // Object number -21
+DEFINE OBJECT STRPBCKDRCLSD            // Object number -22
+DEFINE OBJECT STRIPCLBDRCLSD           // Object number -23
+DEFINE OBJECT COP_DR_OPEN              // Object number -24
+DEFINE OBJECT OD_CLBDR_CLOSE           // Object number -25
+DEFINE OBJECT LH_IMP_EXP01             // Object number -26
+DEFINE OBJECT LH_IMP_EXP02             // Object number -27
+DEFINE OBJECT LH_IMP_EXP03             // Object number -28
+DEFINE OBJECT LH_IMP_EXP04             // Object number -29
+DEFINE OBJECT LH_STRIKETHROUGH         // Object number -30
+DEFINE OBJECT COMGATE1OPEN             // Object number -31
+DEFINE OBJECT COMGATE2OPEN             // Object number -32
+DEFINE OBJECT ELECTRICGATE             // Object number -33
+DEFINE OBJECT MONEYBAG                 // Object number -34
+DEFINE OBJECT BOOMSHINE                // Object number -35
+DEFINE OBJECT MASK                     // Object number -36
+DEFINE OBJECT COKE_VOODOO              // Object number -37
+DEFINE OBJECT TROPHY1                  // Object number -38
+DEFINE OBJECT SUTIBAG                  // Object number -39
+DEFINE OBJECT PORNPOSTERS              // Object number -40
+DEFINE OBJECT FRAME1                   // Object number -41
+DEFINE OBJECT FRAME1DAMAGED            // Object number -42
+DEFINE OBJECT FLAME_TINS               // Object number -43
+DEFINE OBJECT TROPHIES                 // Object number -44
+DEFINE OBJECT HELI_BOX                 // Object number -45
+DEFINE OBJECT PIZZA_BOX1               // Object number -46
+DEFINE OBJECT PIZZA_MESS               // Object number -47
+DEFINE OBJECT PIZZA_MESS2              // Object number -48
+DEFINE OBJECT MAN_RUBBISH03            // Object number -49
+DEFINE OBJECT GASH_BAGS1               // Object number -50
+DEFINE OBJECT GASHBAGS2                // Object number -51
+DEFINE OBJECT POLOROIDS                // Object number -52
+DEFINE OBJECT GUN_DOCS                 // Object number -53
+DEFINE OBJECT SHOVEL                   // Object number -54
+DEFINE OBJECT KILLFRENZY               // Object number -55
+DEFINE OBJECT COMGATE1CLOSED           // Object number -56
+DEFINE OBJECT COMGATE2CLOSED           // Object number -57
+DEFINE OBJECT NT_ROADBLOCKCI           // Object number -58
+DEFINE OBJECT NT_ROADBLOCKGF           // Object number -59
+DEFINE OBJECT WSH_ROADBLOCK            // Object number -60
+DEFINE OBJECT MANSION_NEW_DOORS        // Object number -61
+DEFINE OBJECT MAN_DOORCLOSED           // Object number -62
+DEFINE OBJECT WSHPERDRCLSD             // Object number -63
+DEFINE OBJECT HAITAXIDR                // Object number -64
+DEFINE OBJECT B_HSE_DOORS              // Object number -65
+DEFINE OBJECT DK_CAMJONESDOOR          // Object number -66
+DEFINE OBJECT DTS_GS_LIFTDOORL         // Object number -67
+DEFINE OBJECT DTS_GS_LIFTDOORR         // Object number -68
+DEFINE OBJECT DTS_SPOT_A               // Object number -69
+DEFINE OBJECT DTS_SOAPYTITWANK_A       // Object number -70
+DEFINE OBJECT DT_GSPOT_STAIRS          // Object number -71
+DEFINE OBJECT OD_CELLDOOR02            // Object number -72
+DEFINE OBJECT CI_JETYGATESCLOSED       // Object number -73
+DEFINE OBJECT NHAITPLATDR              // Object number -74
+DEFINE OBJECT NHAITPLATDRR             // Object number -75
+DEFINE OBJECT SPAD_DR_CLOSED1          // Object number -76
+DEFINE OBJECT SPAD_DR_CLOSED2          // Object number -77
+DEFINE OBJECT SPAD_DR_CLOSED3          // Object number -78
+DEFINE OBJECT PH_BUILD_DR_CLOSED       // Object number -79
+DEFINE OBJECT ICEDOOR                  // Object number -80
+DEFINE OBJECT DTS_BBDOOR               // Object number -81
+DEFINE OBJECT GOLF_GATESCLOSED         // Object number -82
+DEFINE OBJECT PRINTDOOOR               // Object number -83
+DEFINE OBJECT UNROCKETED_WIN1          // Object number -84
+DEFINE OBJECT BNK_GRILL01              // Object number -85
+DEFINE OBJECT HEALTH                   // Object number -86
+DEFINE OBJECT ADRENALINE               // Object number -87
+DEFINE OBJECT MOB_MOBROOM2             // Object number -88
+DEFINE OBJECT MOB_DETAILSB             // Object number -89
+DEFINE OBJECT AP_RADAR1_01             // Object number -90
+DEFINE OBJECT VEG_PALM04               // Object number -91
+DEFINE OBJECT DOC_CRANEEGGS04          // Object number -92
+DEFINE OBJECT DOC_CRANE_CAB04          // Object number -93
+DEFINE OBJECT DOCKFUEL07               // Object number -94
+DEFINE OBJECT LODCARGOSHP03            // Object number -95
+DEFINE OBJECT LODCARGOSHP04            // Object number -96
+DEFINE OBJECT LODCARGOSHP05            // Object number -97
+DEFINE OBJECT LODCARGOSHP24            // Object number -98
+DEFINE OBJECT LODCARGOSHP25            // Object number -99
+DEFINE OBJECT LODCARGOSHP28            // Object number -100
+DEFINE OBJECT LODCARGOSHP32            // Object number -101
+DEFINE OBJECT LODCARGOSHP35            // Object number -102
+DEFINE OBJECT LODCARGOSHP41            // Object number -103
+DEFINE OBJECT LODCARGOSHP47            // Object number -104
+DEFINE OBJECT LODCARGOSHP50            // Object number -105
+DEFINE OBJECT LODCARGOSHP51            // Object number -106
+DEFINE OBJECT LODCARGOSHP64            // Object number -107
+DEFINE OBJECT LODCARGOSHP70            // Object number -108
+DEFINE OBJECT LODCARGOSHP71            // Object number -109
+DEFINE OBJECT LODCARGOSHP72            // Object number -110
+DEFINE OBJECT LODCARGOSHP73            // Object number -111
+DEFINE OBJECT LODARGOHULL2             // Object number -112
+DEFINE OBJECT BIG_POLY_TINGS_B         // Object number -113
+DEFINE OBJECT BARREL4                  // Object number -114
+DEFINE OBJECT BIG_POLY_TINGS           // Object number -115
+DEFINE OBJECT SPAD_DR_OPEN3            // Object number -116
+DEFINE OBJECT SPAD_DR_OPEN2            // Object number -117
+DEFINE OBJECT SPAD_DR_OPEN1            // Object number -118
+DEFINE OBJECT SEXYPOOLCOVER            // Object number -119
+DEFINE OBJECT BRIEFCASE                // Object number -120
+DEFINE OBJECT FAKETARGET               // Object number -121
+DEFINE OBJECT MAN_DOOROPEN             // Object number -122
+DEFINE OBJECT GOLF_GATESOPEN           // Object number -123
+DEFINE OBJECT DYNAMITE                 // Object number -124
+DEFINE OBJECT BARREL2                  // Object number -125
+DEFINE OBJECT BLDNGST2MESHDAM          // Object number -126
+DEFINE OBJECT BLDNGST2MESH             // Object number -127
+DEFINE OBJECT JW_COFFIN                // Object number -128
+DEFINE OBJECT KEYCARD                  // Object number -129
+DEFINE OBJECT TAR_GUN1                 // Object number -130
+DEFINE OBJECT TAR_GUN2                 // Object number -131
+DEFINE OBJECT TAR_FRAME                // Object number -132
+DEFINE OBJECT TAR_DOWNLEFT             // Object number -133
+DEFINE OBJECT TAR_DOWNRIGHT            // Object number -134
+DEFINE OBJECT TAR_TOP                  // Object number -135
+DEFINE OBJECT TAR_UPLEFT               // Object number -136
+DEFINE OBJECT TAR_UPRIGHT              // Object number -137
+DEFINE OBJECT BNK_LFT_DOOR1            // Object number -138
+DEFINE OBJECT BNK_LFT_DOOR2            // Object number -139
+DEFINE OBJECT GASGRENADE               // Object number -140
+DEFINE OBJECT ROCKETED_WIN1            // Object number -141
+DEFINE OBJECT OD_CLUBOUT_DY            // Object number -142
+DEFINE OBJECT OD_CLUBOUT_NT            // Object number -143
+DEFINE OBJECT OD_CLUBNEON              // Object number -144
+DEFINE OBJECT OD_CLUBDOORS             // Object number -145
+DEFINE OBJECT VEG_PALMKBB11            // Object number -146
+DEFINE OBJECT ODNROAD01_NT             // Object number -147
+DEFINE OBJECT ODNROAD01_DY             // Object number -148
+DEFINE OBJECT OD_CLUBBACK              // Object number -149
+DEFINE OBJECT MIAMIODNROADXA           // Object number -150
+DEFINE OBJECT LODD_BUILD2              // Object number -151
+DEFINE OBJECT SPAD_BUILDNEW            // Object number -152
+DEFINE OBJECT VEG_PALMBIG14            // Object number -153
+DEFINE OBJECT GUNBOX                   // Object number -154
+DEFINE OBJECT OD_WTSIGN                // Object number -155
+DEFINE OBJECT OD_CHARIOT               // Object number -156
+DEFINE OBJECT LODD_BUILDNEW            // Object number -157
+DEFINE OBJECT LODCHARIOT               // Object number -158
+DEFINE OBJECT PH_BUILD_DR_OPEN         // Object number -159
+DEFINE OBJECT DTS_SOAPYTITWANK_B       // Object number -160
+DEFINE OBJECT ML_TARBRUSH              // Object number -161
+DEFINE OBJECT ML_TARBRUSHDAMAGE        // Object number -162
+DEFINE OBJECT CI_GATESOPEN             // Object number -163
+DEFINE OBJECT CI_BACKGATEOPEN          // Object number -164
+DEFINE OBJECT CI_JETYGATESOPEN         // Object number -165
+DEFINE OBJECT DK_REEF                  // Object number -166
+DEFINE OBJECT DOONTOON50               // Object number -167
+DEFINE OBJECT ROAD_DOWNTOWN_NEW2       // Object number -168
+DEFINE OBJECT ROAD_DOWNTOWN02          // Object number -169
+DEFINE OBJECT AMMUNATION_DT            // Object number -170
+DEFINE OBJECT DOONTOON19               // Object number -171
+DEFINE OBJECT DT_COMPOUND_ROOF         // Object number -172
+DEFINE OBJECT DOONTOON51               // Object number -173
+DEFINE OBJECT LODNTOON28               // Object number -174
+DEFINE OBJECT AMMU_WINDOWS1            // Object number -175
+DEFINE OBJECT WATERJUMPX2              // Object number -176
+DEFINE OBJECT WATERJUMP1               // Object number -177
+DEFINE OBJECT BUILD1                   // Object number -178
+DEFINE OBJECT BUILDBLOWN               // Object number -179
+DEFINE OBJECT HDRUGFACTORYINT          // Object number -180
+DEFINE OBJECT HDRUGFACTORYPOL          // Object number -181
+DEFINE OBJECT LODLD1                   // Object number -182
+DEFINE OBJECT LODLDBLOWN               // Object number -183
+DEFINE OBJECT RCBOMB                   // Object number -184
+DEFINE OBJECT LF_MEDIASTAGE            // Object number -185
+DEFINE OBJECT PIZZABOX                 // Object number -186
+DEFINE OBJECT LH_RACE01                // Object number -187
+DEFINE OBJECT LH_RACE02                // Object number -188
+DEFINE OBJECT LH_RACE03                // Object number -189
+DEFINE OBJECT LH_RACE04                // Object number -190
+DEFINE OBJECT LH_RACE05                // Object number -191
+DEFINE OBJECT LH_RACE06                // Object number -192
+DEFINE OBJECT TRAFFICCONE              // Object number -193
+DEFINE OBJECT CRAIGPACKAGE             // Object number -194
+DEFINE OBJECT B_HSE_PIER               // Object number -195
+DEFINE OBJECT B_HSE_EXT                // Object number -196
+DEFINE OBJECT DOCKS28                  // Object number -197
+DEFINE OBJECT DOCKSPROPS12             // Object number -198
+DEFINE OBJECT DOCKS85                  // Object number -199
+DEFINE OBJECT DK_DOCKROADS04           // Object number -200
+DEFINE OBJECT B_HSE_PIERFENCE          // Object number -201
+DEFINE OBJECT B_HSE_INTERIOR           // Object number -202
+DEFINE OBJECT BOAT_KB2                 // Object number -203
+
+DEFINE MISSIONS 1
+DEFINE MISSION 0 AT @INITIAL           // Initial
+
+//-------------MAIN---------------
+thread 'MAIN' 
+fade 0 0 
+01F0: set_max_wanted_level_to 4 
+set_wb_check_to 0 
+00C0: set_current_time 17 50 
+04E4: unknown_refresh_game_renderer_at 399.5471 -468.8621 
+Camera.SetAtPos(399.5471, -468.8621, 11.7358)
+$PLAYER_CHAR = Player.Create(#NULL, 399.5471, -468.8621, 11.7358)
+$PLAYER_ACTOR = Actor.EmulateFromPlayer($PLAYER_CHAR)
+$MESSAGE = 0 // integer values 
+start_mission 0  // Initial
+0180: set_on_mission_flag_to $ONMISSION 
+wait 0 
+set_weather 0 
+if 
+   not Actor.Dead($PLAYER_ACTOR)
+else_jump @MAIN_149 
+0352: set_actor $PLAYER_ACTOR skin_to 'PLAYER' 
+038B: load_requested_models 
+0353: refresh_actor $PLAYER_ACTOR 
+
+:MAIN_149
+fade 1 1000 
+if 
+   Player.Defined($PLAYER_CHAR)
+else_jump @MAIN_185 
+select_interior 0 
+Player.CanMove($PLAYER_CHAR) = True
+01B7: release_weather 
+
+:MAIN_185
+wait 250 
+if 
+  $MESSAGE == 0 // integer values 
+else_jump @MAIN_228 
+wait 1000 
+00BA: text_styled 'WW_WELC' 15000 ms 2 
+
+:MAIN_228
+jump @MAIN_185 
+
+//-------------Mission 0---------------
+// Originally: Initial
+
+:INITIAL
+thread 'INITIAL' 
+$DEFAULT_WAIT_TIME = 250 // integer values 
+016C: restart_if_wasted at 493.5 703.1 11.1 90.0 
+016D: restart_if_busted at 508.9 506.8 10.3 174.0 
+016C: restart_if_wasted at -108.3 -974.4 9.4 283.9 
+016D: restart_if_busted at 398.8 -469.7 10.7 323.0 
+016C: restart_if_wasted at -822.7 1157.9 10.1 4.0 
+016D: restart_if_busted at -659.5 760.4 10.5 133.0 
+016C: restart_if_wasted at -885.2 -470.4 12.1 276.0 
+016D: restart_if_busted at -871.9 -682.3 10.2 328.1 
+end_thread 
