@@ -69,7 +69,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\Extreme\Downloads\plugin-sdk-master\output\lib\; % (AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>plugin_vc_d.lib;paths_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>plugin_vc_d.lib;paths_d.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -102,6 +102,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes.h" />
+    <ClInclude Include="librg\enet.h" />
+    <ClInclude Include="librg\librg.h" />
+    <ClInclude Include="librg\zpl.h" />
+    <ClInclude Include="librg\zpl_math.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

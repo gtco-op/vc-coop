@@ -6,13 +6,12 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="librg\enet.h" />
+    <ClInclude Include="librg\librg.h" />
+    <ClInclude Include="librg\zpl.h" />
+    <ClInclude Include="librg\zpl_math.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vccoop_main.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{409e396f-c5d6-46a0-9c01-462b56b80b88}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
 </Project>
