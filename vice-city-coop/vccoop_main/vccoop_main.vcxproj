@@ -51,11 +51,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.asi</TargetExt>
-    <OutDir>D:/GTAVC/</OutDir>
+    <OutDir>$(GTA_VC_DIR)</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <IncludePath>$(IncludePath);</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath);</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Include\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -68,8 +68,8 @@
       <PreprocessorDefinitions>_USING_V110_SDK71_;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Extreme\Downloads\plugin-sdk-master\output\lib\; % (AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>plugin_vc_d.lib;paths_d.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(PSDK_VC_LIB);$(DXSDK_DIR);$(RW_LIB);% (AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>plugin_vc_d.lib;paths_d.lib;ws2_32.lib;winmm.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -98,15 +98,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx9.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\stb_rect_pack.h" />
+    <ClInclude Include="imgui\stb_textedit.h" />
+    <ClInclude Include="imgui\stb_truetype.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="librg\enet.h" />
     <ClInclude Include="librg\librg.h" />
     <ClInclude Include="librg\zpl.h" />
     <ClInclude Include="librg\zpl_math.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="rw\rwd3d9.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vccoop_main.rc" />

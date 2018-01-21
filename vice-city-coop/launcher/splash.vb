@@ -2,19 +2,16 @@
 
 Public Class splash
     Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
-        MsgBox("Stop clicking cant you wait LEEEEL")
+        MsgBox("Stop clicking cant you wait LEEEEL", MsgBoxStyle.Information, "WAIT")
     End Sub
-    Sub CheckUpdate()
-        Dim version As String = New System.Net.WebClient().DownloadString("http://master.vicecityco-op.ml/updates/currentupdate")
-        If version <> My.Settings.Version Then
-            'download new version
-        End If
-    End Sub
+
     Private Sub splash_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If My.Settings.FirstStart = False Then
-            setting.ShowDialog()
-        Else
-            CheckUpdate()
-        End If
+        Timer1.Start()
+    End Sub
+
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        main.Show()
+        Timer1.Stop()
+        Me.Close()
     End Sub
 End Class

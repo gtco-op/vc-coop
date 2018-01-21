@@ -78,12 +78,6 @@
     <Compile Include="main.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="setting.Designer.vb">
-      <DependentUpon>setting.vb</DependentUpon>
-    </Compile>
-    <Compile Include="setting.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="splash.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -110,9 +104,6 @@
   <ItemGroup>
     <EmbeddedResource Include="main.resx">
       <DependentUpon>main.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="setting.resx">
-      <DependentUpon>setting.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="splash.resx">
       <DependentUpon>splash.vb</DependentUpon>
@@ -141,6 +132,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\discordvccoop.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cr_th.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
