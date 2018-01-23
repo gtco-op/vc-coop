@@ -1,29 +1,23 @@
-<p align="center"><img src="https://cdn.discordapp.com/attachments/344985303909662723/358239288456118282/vccoop.png"></p>
+<p align="center"><img src="https://media.discordapp.net/attachments/344984442936492034/404772881134911489/vcclogo2_copy.png"></p>
 
 # Vice City: CO-OP
 Modification for GTA: Vice City that give players ability to play the game together
 ## What is the SDK that this project uses?
 Its Plugin-SDK https://github.com/DK22Pac/plugin-sdk/ , very important for the mod development.
-## What are these projects
-**Vice City CO-OP  :** The Connector (Browser) </br>
-**Vice City DLL    :** DLL to be injected in the game, have alot of functions </br>
-**Client           :** UDP Client </br>
-**Server           :** UDP Server </br>
-## Developing Progress
-Server Browser(Connector)
-![alt text](http://www.yarntomato.com/percentbarmaker/button.php?barPosition=98&leftFill=33cc33"98%")</br >
-Client and Server
-![alt text](http://www.yarntomato.com/percentbarmaker/button.php?barPosition=7&leftFill=0ff0000"10%")</br >
-VC:DLL
-![alt text](http://www.yarntomato.com/percentbarmaker/button.php?barPosition=3&leftFill=0ff0000"5%")
-## TO-DO List
-- [ ] Setting Vice City DLL </br>
-- [ ] Server </br> 
-- [ ] Client </br>
-- [ ] SCM </br>
-- [x] Browser (Connector) </br>
-## Developers
-Zeyad_Ahmed  *Founder and Lead Developer (Server, Client, Launcher and VCDLL)* </br>
-Kewun        *Developer (VCDLl)* </br>
+## Important Notes to know before contributing
+you have to set these system environment values</br>
+**PSDK_VC_LIB** the place where VC Lib of Pluginsdk exists</br>
+**DXSDK_DIR** The DirectX SDK Directory</br>
+**RW_LIB** the place where RW Lib exists (hmm you can find it in rw folder in vccoopmain project)</br>
+**Also you have to put these dlls in your game directory** </br>
+[d3d8.dll](https://cdn.discordapp.com/attachments/368152497300307969/405034698629447681/d3d8.dll) </br>
+[rwd3d9.dll](https://cdn.discordapp.com/attachments/368152497300307969/405034659991519232/rwd3d9.dll)
+## Vice City CO-OP Team
+Zeyad Ahmed </br>
+Crspy </br>
+Gamelaster</br>
+NicusorN5</br>
+LemonHaze</br>
+Kewun</br>
 ## Want to talk to me?
 Join VC:CO-OP Discord Server: https://discord.gg/u2u6U6G
