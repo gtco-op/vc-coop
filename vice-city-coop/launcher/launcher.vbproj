@@ -72,12 +72,6 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="main.Designer.vb">
-      <DependentUpon>main.vb</DependentUpon>
-    </Compile>
-    <Compile Include="main.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="splash.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -102,9 +96,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="main.resx">
-      <DependentUpon>main.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="splash.resx">
       <DependentUpon>splash.vb</DependentUpon>
     </EmbeddedResource>

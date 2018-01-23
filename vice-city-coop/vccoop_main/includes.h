@@ -10,7 +10,10 @@
 #include "game_vc\CWorld.h"
 #include "game_vc\ePedType.h"
 #include "game_vc\CCivilianPed.h"
-// LIBRG
-#define LIBRG_DEBUG
-#define LIBRG_IMPLEMENTATION
-#include "librg/librg.h"
+#include "game_vc\CPad.h"
+#include "extensions\ScriptCommands.h"
+#include "game_vc\CStreaming.h"
+// Some Functions (i use to type faste xD)
+void HelpMessageForever(char *text) {
+	CHud::SetHelpMessage(text, 0, 1, 0);
+}
