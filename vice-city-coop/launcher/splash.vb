@@ -1,6 +1,11 @@
 ﻿Imports System.Net
+Imports System
 Imports System.IO
 Imports System.Diagnostics
+Imports Microsoft.VisualBasic
+Imports System.Windows.Forms
+
+
 Public Class splash
     Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
         MsgBox("Stop clicking cant you wait LEEEEL", MsgBoxStyle.Information, "WAIT")
@@ -31,18 +36,22 @@ Public Class splash
     End Sub
     Sub Initalize_Game()
         If File.Exists(My.Settings.GameDir & "\data\main.scm") Or File.Exists(My.Settings.GameDir & "\data\main.scm") Or File.Exists(My.Settings.GameDir & "\data\main.scm") Or File.Exists(My.Settings.GameDir & "\data\main.scm") Or File.Exists(My.Settings.GameDir & "\data\main.scm") Then
-        Else
-            File.Copy(Environment.CurrentDirectory & "\scm\main.scm", My.Settings.GameDir & "\data\main.scm", True)
-            File.Copy(Environment.CurrentDirectory & "\asi\vccoop_main.asi", My.Settings.GameDir & "\vccoop_main.asi", True)
-            File.Copy(Environment.CurrentDirectory & "\reso\loadsc0.txd", My.Settings.GameDir & "\txd\loadsc0.txd", True)
-            File.Copy(Environment.CurrentDirectory & "\dlls\d3d8.dll", My.Settings.GameDir & "\d3d8.dll", True)
-            File.Copy(Environment.CurrentDirectory & "\dlls\rwd3d9.dll", My.Settings.GameDir & "\rwd3d9.dll", True)
+            File.Copy(Environment.CurrentDirectory + "\scm\main.scm", My.Settings.GameDir + "\data\main.scm", True)
+            File.Copy(Environment.CurrentDirectory + "\asi\vccoop_main.asi", My.Settings.GameDir + "\vccoop_main.asi", True)
+            File.Copy(Environment.CurrentDirectory + "\reso\LOADSC0.txd", My.Settings.GameDir + "\txd\LOADSC.txd", True)
+            File.Copy(Environment.CurrentDirectory + "\dlls\d3d8.dll", My.Settings.GameDir + "\d3d8.dll", True)
+            File.Copy(Environment.CurrentDirectory + "\dlls\rwd3d9.dll", My.Settings.GameDir + "\rwd3d9.dll", True)
         End If
 
 
     End Sub
     Sub Start_Game()
-        Process.Start(My.Settings.GameDir & "\gta-vc.exe")
+        Dim VC As New Process
+        Dim ProcInfo As New ProcessStartInfo
+        ProcInfo.WorkingDirectory = My.Settings.GameDir
+        ProcInfo.FileName = ProcInfo.WorkingDirectory + "/gta-vc.exe"
+        VC.StartInfo = ProcInfo
+        VC.Start()
     End Sub
     Private Sub splash_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Timer1.Start()
@@ -51,22 +60,20 @@ Public Class splash
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Timer1.Stop()
-        Try
-            If My.Settings.GameDir = "null" Then
-                ChooseVCPath()
-            Else
+        If My.Settings.GameDir = "null" Then
+            ChooseVCPath()
+        Else
 
-                CheckPath()
-                ProgressBar1.Value = 2
-                Initalize_Game()
-                ProgressBar1.Value = 5
-                Start_Game()
-                Me.Close()
-            End If
-        Catch ex As Exception
-            MsgBox(ex.Message)
+            CheckPath()
+            ProgressBar1.Maximum = 100
+            ProgressBar1.Minimum = 0
+            ProgressBar1.Value = 50
+            Initalize_Game()
+            ProgressBar1.Value = 75
+            Start_Game()
+            ProgressBar1.Value = 100
             Me.Close()
+        End If
 
-        End Try
     End Sub
 End Class

@@ -24,7 +24,7 @@ Copyrights (c) 2017-2018 VC:CO-OP Team
 using namespace plugin;
 void on_connect_request(librg_event_t *event) {
 	printf("[CLIENT] Requesting to connect \n");
-	
+
 }
 void on_connect_accepted(librg_event_t *event) {
 	printf("[CLIENT] Connection Accepted");
@@ -52,7 +52,7 @@ public:
 
 	vccoop() {  //When asi attaches
 
-		
+
 		static HWND hwnd = GetForegroundWindow();
 		AllocConsole();
 		freopen("CONOUT$", "w", stdout);
@@ -80,7 +80,7 @@ public:
 
 					ImGui_ImplDX9_NewFrame();
 
-					ImGui::Text("Welcome to Vice City CO-OP \n That is freaking alpha version");
+					ImGui::Text("Welcome to Vice City CO-OP \n This is freaking alpha version");
 					char buf[256] = "192.168.1.2";
 					ImGui::InputText("IP", buf, 256);
 					int portval = 8080;
@@ -118,7 +118,7 @@ public:
 						librg_tick(&ctx);
 						zpl_sleep_ms(1);
 					}
-				
+
 				 //disconnection from the server
 				 //and resource disposal
 				librg_network_stop(&ctx);
