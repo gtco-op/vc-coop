@@ -1,4 +1,8 @@
-﻿Imports System.Net
+'           Vice City CO-OP Launcher 0.1.0
+'           Author(s) Zeyad Ahmed
+'                     Athantos AKA NicusorN5
+'           Copyrights (c) 2017-2018 VC:CO-OP Team
+Imports System.Net
 Imports System
 Imports System.IO
 Imports System.Diagnostics
