@@ -1,9 +1,14 @@
 /*
-Vice City CO-OP Main ASI
-Author(s) Zeyad Ahmed
-Gamelaster
-LemonHaze420
-Copyrights (c) 2017-2018 VC:CO-OP Team
+	Vice City CO-OP Main ASI
+	Author(s) Zeyad Ahmed
+		  Gamelaster
+		  LemonHaze420
+		  
+	Special Thanks for Vektor
+			   PLUGIN-SDK Community
+			   Librg Community
+
+	Copyrights (c) 2017-2018 VC:CO-OP Team
 */
 
 #include "VCCoopConfig.h"
