@@ -29,7 +29,7 @@ LRESULT __stdcall HookedWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 WNDPROC OldWndProc = nullptr;
 HWND tWindow = nullptr;
-bool DisableGameInput = false, bGUI = true, hasInitialized = false, onceInitHook = false;
+bool DisableGameInput = true, bGUI = true, hasInitialized = false, onceInitHook = false;
 
 void Initialize()
 {
@@ -51,7 +51,7 @@ LRESULT __stdcall HookedWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 {
 	ImGuiIO& io = ImGui::GetIO();
 
-	io.MouseDrawCursor = DisableGameInput;
+	io.MouseDrawCursor = true;
 	if (DisableGameInput)
 	{
 		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
@@ -69,7 +69,6 @@ void windowThread()
 }
 void on_connect_request(librg_event_t *event) {
 	Log("[VC CO-OP][CLIENT] Requesting to connect \n");
-
 }
 void on_connect_accepted(librg_event_t *event) {
 	Log("[VC CO-OP][CLIENT] Connection Accepted");
@@ -119,12 +118,12 @@ public:
 					{
 						if (!onceInitHook) {
 							Initialize(); onceInitHook = true;
+							Log("[VC CO-OP][ImGui] Constructing ImGUI\n");
 						}
 						else {
 							Set();
+							Log("[VC CO-OP][ImGui] Reconstructing ImGUI\n");
 						}
-						
-						Log("[VC CO-OP][ImGui] Constructing ImGUI\n");
 
 						LPDIRECT3DDEVICE9 d3d9Device = (LPDIRECT3DDEVICE9)RwD3D9GetCurrentD3DDevice();
 						ImGui_ImplDX9_Init(tWindow, d3d9Device);
@@ -135,7 +134,7 @@ public:
 					{
 						ImGui_ImplDX9_NewFrame();
 
-						ImGui::Text("Welcome to Vice City CO-OP \n This is freaking alpha version");
+						ImGui::Text("Welcome to Vice City CO-OP\n This is freaking alpha version");
 						char buf[256] = "192.168.1.2";
 						ImGui::InputText("IP", buf, 256);
 						int portval = 8080;
@@ -143,10 +142,10 @@ public:
 						ImGui::InputInt("Port", portvalptr);
 						
 						if (ImGui::Button("Connect")) {
-							Log("Connecting..\n");
+							Log("[VC CO-OP][ImGui] Connect button clicked..\n");
 						}
 						if (ImGui::Button("About VC:CO-OP")) {
-							Log("About button clicked..\n");
+							Log("[VC CO-OP][ImGui] About button clicked..\n");
 						}
 
 						ImGui::EndFrame();
@@ -184,7 +183,7 @@ public:
 				librg_network_stop(&ctx);
 				librg_free(&ctx);
 			}
-			if (KeyPressed(VK_F8) && CTimer::m_snTimeInMilliseconds - keyPressTimeDrawGUI > 500) {
+			if (KeyPressed(VK_F8) && CTimer::m_snTimeInMilliseconds - keyPressTimeDrawGUI > 1000) {
 				keyPressTimeDrawGUI = CTimer::m_snTimeInMilliseconds;
 				
 				DisableGameInput = !DisableGameInput;
@@ -214,4 +213,4 @@ public:
 	~vccoop()	{
 		Log("[VC CO-OP] Shutting down\n");
 	}
-} myPlugin;
+} vccoop;
