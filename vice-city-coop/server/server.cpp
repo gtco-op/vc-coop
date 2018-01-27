@@ -9,32 +9,43 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
 HANDLE server_handle = NULL;
 bool server_running = false, console_active = false;
+std::vector<librg_entity_t*> entities;
+librg_ctx_t ctx = { 0 };
 
 void on_connect_request(librg_event_t *event) {
 	cout << "[CLIENT REQUEST] Some one is requesting to connect\n";
-
 }
 void on_connect_accepted(librg_event_t *event) {
-	cout << "[CLIENT CONNECTION] Player Connected\n";
-
+	printf("[CLIENT CONNECTION] Player %d Connected\n", event->entity->id);
+	
+	librg_entity_t *entity = event->entity;
+	entities.push_back(entity);
+	librg_entity_control_set(event->ctx, entity->id, entity->client_peer);
 }
 void on_creating_entity(librg_event_t *event) {
+	printf("Entity creating\n");
+	
 
 }
+void on_entity_update(librg_event_t *event) {
+	printf("Entity updating\n");
 
+}
 void server_thread()
 {
-	librg_ctx_t ctx = { 0 };
+	ctx.world_size = zplm_vec3(5000.0f, 5000.0f, 5000.0f);
 	ctx.mode = LIBRG_MODE_SERVER;
-	ctx.tick_delay = 32;
+	ctx.tick_delay = 32; // 32ms delay, is around 30hz, quite fast
 	librg_init(&ctx);
 	librg_event_add(&ctx, LIBRG_CONNECTION_REQUEST, on_connect_request);
 	librg_event_add(&ctx, LIBRG_CONNECTION_ACCEPT, on_connect_accepted);
+	librg_event_add(&ctx, LIBRG_ENTITY_UPDATE, on_entity_update);
 	printf("Server thread initialized\n");
 
 	librg_address_t addr = { 23546 };
@@ -42,6 +53,10 @@ void server_thread()
 	printf("Server starting on port %d\n", addr.port);
 	
 	while (server_running) {
+		for (auto it : entities)
+		{
+			printf("Entity ID# %d : Pos X: %.f Pos Y: %.f Pos Z: %.f \n", it->id, it->position.x, it->position.y, it->position.z);
+		}
 		librg_tick(&ctx);
 	}
 
