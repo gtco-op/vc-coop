@@ -66,6 +66,9 @@ Public Class splash
         Timer1.Stop()
         If My.Settings.GameDir = "null" Then
             ChooseVCPath()
+            Start_Game()
+            ProgressBar1.Value = 100
+            Me.Close()
         Else
 
             CheckPath()

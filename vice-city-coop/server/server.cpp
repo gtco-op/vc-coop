@@ -1,3 +1,11 @@
+/*
+		Vice City CO-OP Server
+
+		Author(s) Lemonhaze
+			      Zeyad Ahmed
+
+	    Copyright (c) 2017-2018 VC:CO-OP Team
+*/
 #define LIBRG_DEBUG
 #define LIBRG_IMPLEMENTATION
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
@@ -36,6 +44,14 @@ void on_creating_entity(librg_event_t *event) {
 void on_entity_update(librg_event_t *event) {
 	printf("Entity updating\n");
 
+}
+void on_disconnect(librg_event_t* event)
+{
+	auto it = std::find(entities.begin(), entities.end(), event->entity);
+	if (it != entities.end()) {
+		entities.erase(it);
+		printf("Deleting item from entities vector..\n");
+	}
 }
 void server_thread()
 {

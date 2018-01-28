@@ -31,11 +31,23 @@ WNDPROC OldWndProc = nullptr;
 HWND tWindow = nullptr;
 bool DisableGameInput = true, bGUI = true, hasInitialized = false, onceInitHook = false, client_running = false, connected = false;
 
-librg_address_t address = { 23546, "127.0.0.1" };
+librg_address_t address = { 23546, "192.168.1.2" };
 
 librg_ctx_t ctx = { 0 };
 librg_entity_t *local_player;
 std::vector<CPed*> players;
+
+struct PlayerInfo {
+	float Health;
+	float Armour;
+	CVector position;
+	int iModelIndex;
+	float Rotation;
+	int iInteriorID;
+	int iCurrentAnimID;
+	eWeaponType WeaponType;
+	unsigned int Ammo;
+};
 
 void Initialize()
 {
@@ -77,9 +89,13 @@ void on_connect_request(librg_event_t *event) {
 	Log("[VC CO-OP][CLIENT] Requesting to connect\n");
 }
 void on_connect_accepted(librg_event_t *event) {
+	CStreaming::LoadAllRequestedModels(0);
+	CPed *playerped = FindPlayerPed();
+	playerped->m_fHealth = 200; // just values , because if the player was his health is so low in the lobby
+	playerped->m_fArmour = 100; //--^
 	Log("[VC CO-OP][CLIENT] Connection Accepted\n");
-
 	connected = true;
+
 	if (event->entity)
 	{
 		local_player = event->entity;
@@ -90,26 +106,35 @@ void on_connect_refused(librg_event_t *event) {
 	Log("[VC CO-OP][CLIENT] Connection Refused\n");
 }
 void on_entity_create(librg_event_t * event) {
-	
+
 	Log("Creating entity..\n");
 	zplm_vec3_t position = event->entity->position;
 	CStreaming::RequestModel(0, 0);
-	CPed *ped = new CCivilianPed(ePedType::PEDTYPE_CIVMALE, 0);
+	CPed *ped = new CPlayerPed();
 	CWorld::Add(ped);
+
 	CVector posn = CVector::CVector(position.x, position.y, position.z);
 	Log("[VC CO-OP][CLIENT] Spawned player %d\n", event->entity->id);
 	ped->Teleport(posn);
-	
+
 	players.push_back(ped);
 }
 void on_entity_update(librg_event_t *event) {
 	int entity_id = event->entity->id;
-	
+	PlayerInfo *plrinfo = (PlayerInfo *)event->entity->user_data;
 	for (auto iter : players)
 	{
 		iter->Teleport(CVector(event->entity->position.x, event->entity->position.y, event->entity->position.z));
+		iter->m_fHealth = plrinfo->Health;
+		iter->m_fArmour = plrinfo->Armour;
+		iter->m_fRotationCur = plrinfo->Rotation;
+		iter->m_dwAnimGroupId = plrinfo->iCurrentAnimID;
+		iter->GiveWeapon(plrinfo->WeaponType, plrinfo->Ammo, false);
+		iter->SetCurrentWeapon(plrinfo->WeaponType);
 	}
+
 }
+
 void ClientConnectThread()
 {
 	while (client_running) {
@@ -122,8 +147,8 @@ void ClientConnectThread()
 
 		librg_tick(&ctx);
 		zpl_sleep_ms(1);
-	}
 
+	}
 	librg_network_stop(&ctx);
 	librg_free(&ctx);
 }
@@ -189,7 +214,7 @@ public:
 						int portval = 23546;
 						int* portvalptr = &portval;
 						ImGui::InputInt("Port", portvalptr);
-						
+
 						if (ImGui::Button("Connect")) {
 							Log("[VC CO-OP][ImGui] Connect button clicked..\n");
 							AttemptConnect();
@@ -218,7 +243,7 @@ public:
 			}
 			if (KeyPressed(VK_F8) && CTimer::m_snTimeInMilliseconds - keyPressTimeDrawGUI > 1000) {
 				keyPressTimeDrawGUI = CTimer::m_snTimeInMilliseconds;
-				
+
 				DisableGameInput = !DisableGameInput;
 
 				if (DisableGameInput)
@@ -243,7 +268,7 @@ public:
 			}
 		};
 	}
-	~vccoop()	{
+	~vccoop() {
 		Log("[VC CO-OP] Shutting down\n");
 	}
 } vccoop;

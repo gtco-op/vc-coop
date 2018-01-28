@@ -21,6 +21,7 @@
     <ClInclude Include="imgui\stb_truetype.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
     <ClInclude Include="rw\rwd3d9.h" />
+    <ClInclude Include="Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vccoop_main.rc" />

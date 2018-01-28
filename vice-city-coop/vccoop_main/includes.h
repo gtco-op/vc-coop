@@ -14,8 +14,7 @@
 #include "extensions\ScriptCommands.h"
 #include "game_vc\CStreaming.h"
 #include "game_vc\CTimer.h"
-
-// Some Functions (i use to type faste xD)
-void HelpMessageForever(char *text) {
-	CHud::SetHelpMessage(text, 0, 1, 0);
-}
+#include "game_vc\common.h"
+#include "game_vc\eWeaponType.h"
+#include "game_vc\CVehicleModelInfo.h"
+#include "game_vc\CVehicle.h"
