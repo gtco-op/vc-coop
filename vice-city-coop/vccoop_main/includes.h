@@ -1,5 +1,24 @@
-// GTA VC Classes
+#ifndef _INCLUDES_H_DEFINED
+#define _INCLUDES_H_DEFINED
+#include "VCCoopConfig.h"
 
+//####################################################################################################################################################
+//																		DEPENDENCIES
+//####################################################################################################################################################
+#include "CLogger.h"
+#include "CGUI.h"
+
+#include "CNetworking.h"
+
+//##################################
+//             IMGUI
+//##################################
+#include "imgui\imgui.h"
+#include "imgui\imgui_impl_dx9.h"
+
+//##################################
+//           PLUGIN-SDK
+//##################################
 #include "plugin_vc.h"
 #include "game_vc\CFont.h"
 #include "game_vc\CPed.h"
@@ -14,7 +33,45 @@
 #include "extensions\ScriptCommands.h"
 #include "game_vc\CStreaming.h"
 #include "game_vc\CTimer.h"
+#include "game_vc\CWorld.h"
 #include "game_vc\common.h"
-#include "game_vc\eWeaponType.h"
-#include "game_vc\CVehicleModelInfo.h"
-#include "game_vc\CVehicle.h"
+
+//##################################
+//             STD
+//##################################
+#include <Windows.h>
+#include <vector>
+#include <cassert>
+#include <assert.h>
+#include <regex>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <ostream>
+#include <fstream>
+#include <vector>
+
+//##################################
+//             D3D
+//##################################
+#include <d3d9.h>
+#include "rw/rwd3d9.h"
+
+//####################################################################################################################################################
+//																		CLASSES
+//####################################################################################################################################################
+
+struct PlayerInfo {
+	float Health;
+	float Armour;
+	CVector position;
+	int iModelIndex;
+	float Rotation;
+	int iInteriorID;
+	int iCurrentAnimID;
+	eWeaponType WeaponType;
+	unsigned int Ammo;
+};
+
+#endif

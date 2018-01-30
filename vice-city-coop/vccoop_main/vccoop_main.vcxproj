@@ -98,12 +98,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CGUI.cpp" />
+    <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx9.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CGUI.h" />
+    <ClInclude Include="CLogger.h" />
+    <ClInclude Include="CNetworking.h" />
+    <ClInclude Include="Hooks.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
@@ -119,6 +125,8 @@
     <ClInclude Include="Logger.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="rw\rwd3d9.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="VCCoopConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vccoop_main.rc" />

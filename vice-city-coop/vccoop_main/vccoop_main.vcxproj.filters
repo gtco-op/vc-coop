@@ -5,6 +5,8 @@
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="CGUI.cpp" />
+    <ClCompile Include="CLogger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -22,6 +24,12 @@
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
     <ClInclude Include="rw\rwd3d9.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="Hooks.h" />
+    <ClInclude Include="CGUI.h" />
+    <ClInclude Include="CLogger.h" />
+    <ClInclude Include="CNetworking.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="VCCoopConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vccoop_main.rc" />

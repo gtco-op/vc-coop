@@ -1,10 +1,10 @@
 /*
-		Vice City CO-OP Server
+	Vice City CO-OP Server
 
-		Author(s) Lemonhaze
-			      Zeyad Ahmed
+	Author(s)	Lemonhaze
+				Zeyad Ahmed
 
-	    Copyright (c) 2017-2018 VC:CO-OP Team
+	Copyright (c) 2017-2018 VC:CO-OP Team
 */
 #define LIBRG_DEBUG
 #define LIBRG_IMPLEMENTATION
@@ -21,6 +21,18 @@
 
 using namespace std;
 
+struct PlayerInfo {
+	// PLAYER INFO
+	float Health;
+	float Armour;
+	int iModelIndex;
+	float Rotation;
+	int iInteriorID;
+	int iCurrentAnimID;
+	unsigned int WeaponType;
+	unsigned int Ammo;
+	// PLAYER VEHICLE INFO
+};
 HANDLE server_handle = NULL;
 bool server_running = false, console_active = false;
 std::vector<librg_entity_t*> entities;
@@ -31,7 +43,7 @@ void on_connect_request(librg_event_t *event) {
 }
 void on_connect_accepted(librg_event_t *event) {
 	printf("[CLIENT CONNECTION] Player %d Connected\n", event->entity->id);
-	
+	PlayerInfo *plrinfo = (PlayerInfo *)event->entity->user_data;
 	librg_entity_t *entity = event->entity;
 	entities.push_back(entity);
 	librg_entity_control_set(event->ctx, entity->id, entity->client_peer);
