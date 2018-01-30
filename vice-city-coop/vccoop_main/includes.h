@@ -5,10 +5,9 @@
 //####################################################################################################################################################
 //																		DEPENDENCIES
 //####################################################################################################################################################
+#include "CInputManager.h"
 #include "CLogger.h"
 #include "CGUI.h"
-
-#include "CNetworking.h"
 
 //##################################
 //             IMGUI
@@ -58,20 +57,15 @@
 #include <d3d9.h>
 #include "rw/rwd3d9.h"
 
+
+// Compiler Flags
+#pragma warning(disable:4005)
+
+#include "Hooks.h"
+#include "CMemoryEdits.h"
+
 //####################################################################################################################################################
 //																		CLASSES
 //####################################################################################################################################################
-
-struct PlayerInfo {
-	float Health;
-	float Armour;
-	CVector position;
-	int iModelIndex;
-	float Rotation;
-	int iInteriorID;
-	int iCurrentAnimID;
-	eWeaponType WeaponType;
-	unsigned int Ammo;
-};
 
 #endif
