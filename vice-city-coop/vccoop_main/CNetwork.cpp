@@ -7,7 +7,6 @@ librg_entity_t * CNetwork::local_player;
 std::vector<CPed*> CNetwork::players;
 
 bool CNetwork::client_running;
-bool CNetwork::client_connected;
 bool CNetwork::connected;
 
 CNetwork::CNetwork()
@@ -15,8 +14,7 @@ CNetwork::CNetwork()
 	ctx = { 0 };
 	local_player = nullptr;
 	
-	client_connected = false;
-	client_connected = false;
+	client_running = false;
 	connected = false;
 }
 CNetwork::~CNetwork()
@@ -62,6 +60,7 @@ void CNetwork::on_entity_update(librg_event_t *event) {
 void CNetwork::StopClientThread()
 {
 	client_running = false;
+	connected = false;
 }
 void CNetwork::ClientConnectThread()
 {

@@ -3,9 +3,7 @@
 extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
 bool   wndHookInited = false;
-
-static char IP[]	= VCCOOP_DEFAULT_SERVER_ADDRESS;
-static int Port		= VCCOOP_DEFAULT_SERVER_PORT;
+char   vccoop_string[600];
 
 CRender::CRender()
 {
@@ -26,8 +24,8 @@ CRender::CRender()
 
 		if (gRender->bInitializedImGui && gRender->bGUI && orig_wnd != nullptr)		{
 			ImGui_ImplDX9_NewFrame();
-			ImGui::Begin("Vice City CO-OP");
-			ImGui::Text("Welcome to Vice City CO-OP\nThis is freaking alpha version");
+			ImGui::Begin("Vice City CO-OP " VCCOOP_VER);
+			ImGui::Text("Welcome to Vice City CO-OP " VCCOOP_VER "\nThis is freaking alpha version");
 
 			ImGui::InputText("IP", IP, sizeof(IP));
 			ImGui::InputInt("Port", &Port);
@@ -144,6 +142,14 @@ void CRender::Draw()
 {
 	if (this->m_pD3DXFont)
 	{
+		if (!gNetwork->connected)		{
+			sprintf(vccoop_string, "%s %s", VCCOOP_NAME, VCCOOP_VER);
+		} else	{
+			sprintf(vccoop_string, "%s %s     Server: %s:%d   Press F7 to disconnect", VCCOOP_NAME, VCCOOP_VER, IP, Port);
+		}
+
+		this->RenderText(vccoop_string, { 10, 10, 10 }, (gNetwork->connected? 0xFF00FF00 : 0xFFFFFFFF));
+
 		for (int i = 0; i < CPools::ms_pPedPool->m_nSize; i++)
 		{
 			CPed *ped = CPools::ms_pPedPool->GetAt(i);

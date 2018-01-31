@@ -119,7 +119,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		{
 			int vkey = (int)wparam;
 
-			if (vkey == VK_F7 && gNetwork->client_connected)
+			if (vkey == VK_F7 && gNetwork->connected)
 			{
 				gNetwork->StopClientThread();
 				gLog->Log("[CGame] Disconnecting from server.\n");
