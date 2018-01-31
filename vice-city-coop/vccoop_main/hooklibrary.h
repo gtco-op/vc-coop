@@ -1,5 +1,4 @@
-#ifndef _HOOKS_H_DEFINED
-#define _HOOKS_H_DEFINED
+#pragma once
 // Code injecting utils
 // Author(s):       iFarbod <ifarbod@outlook.com>
 //                  LINK/2012 <dma2012@hotmail.com>
@@ -9,9 +8,11 @@
 // Distributed under the MIT license (See accompanying file LICENSE or copy at
 // https://opensource.org/licenses/MIT)
 
+#pragma once
+
 #define OFFSETOF(struc, member) \
     (reinterpret_cast<size_t>(&reinterpret_cast<const volatile char&>(((static_cast<struc*>(nullptr))->member))))
-#define VALIDATE_OFFSET(struc, member, offset) static_assert(OFFSETOF(struc, member) == offset, "The offset of " #struc "::" #member " is not " #offset)
+//#define VALIDATE_OFFSET(struc, member, offset) static_assert(OFFSETOF(struc, member) == offset, "The offset of " #struc "::" #member " is not " #offset)
 
 #ifndef CTN_NO_FIXEDWIDTH_TYPES
 
@@ -409,4 +410,3 @@ namespace Hook
 		}
 	};
 }
-#endif

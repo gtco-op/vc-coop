@@ -1,5 +1,4 @@
-#pragma message("Compiling Logger class")
-#include "CLogger.h"
+#include "main.h"
 
 CLogger::CLogger()
 {
@@ -7,7 +6,7 @@ CLogger::CLogger()
 	path = path_to_session_log_file();
 	out = std::ofstream(path);
 
-	this->Log(" %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);
+	this->Log("[CCore] %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);
 }
 CLogger::~CLogger()
 {
@@ -43,7 +42,7 @@ void CLogger::Log(char * format, ...)
 	// Message
 	buf.append(buffer);
 	Out(buf.c_str());
-	
+
 #ifdef VCCOOP_DEBUG
 	printf(buf.c_str());
 #endif
