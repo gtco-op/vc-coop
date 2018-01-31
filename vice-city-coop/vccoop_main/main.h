@@ -1,5 +1,8 @@
 #pragma once
 
+//librg
+#include "librg\librg.h"
+
 //common
 #include <Windows.h>
 #include <fstream>
@@ -19,10 +22,14 @@
 #include "common.h"
 #include "CSprite2d.h"
 #include "CCamera.h"
+#include "CWorld.h"
+#include "CStreaming.h"
+#include "CCivilianPed.h"
 
 //vccoop
 #include "config.h"
 
+#include "CNetwork.h"
 #include "CLogger.h"
 #include "CGame.h"
 #include "CRender.h"
@@ -33,6 +40,7 @@
 using namespace plugin;
 using namespace Hook;
 
+extern CNetwork *gNetwork;
 extern CGame *gGame;
 extern CRender *gRender;
 extern CLogger *gLog;

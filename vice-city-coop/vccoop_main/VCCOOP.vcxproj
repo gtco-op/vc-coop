@@ -202,7 +202,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ws2_32.lib;paths.lib;plugin_vc.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;ws2_32.lib;paths.lib;plugin_vc.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.VC.lib</ImportLibrary>
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
@@ -272,7 +272,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>paths_d.lib;plugin_vc_d.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;ws2_32.lib;paths_d.lib;plugin_vc_d.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.VC_d.lib</ImportLibrary>
     </Link>
@@ -304,6 +304,7 @@
   <ItemGroup>
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="CLogger.cpp" />
+    <ClCompile Include="CNetwork.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx9.cpp" />
@@ -313,6 +314,7 @@
   <ItemGroup>
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CLogger.h" />
+    <ClInclude Include="CNetwork.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="hooklibrary.h" />
     <ClInclude Include="imgui\imconfig.h" />

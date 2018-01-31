@@ -17,3 +17,6 @@
 
 // Default server address
 #define VCCOOP_DEFAULT_SERVER_ADDRESS	"127.0.0.1"
+
+// Default server port
+#define VCCOOP_DEFAULT_SERVER_PORT		23546

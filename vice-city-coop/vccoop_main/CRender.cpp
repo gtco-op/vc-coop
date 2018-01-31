@@ -34,7 +34,7 @@ CRender::CRender()
 				gLog->Log("[CRender] Connect button clicked..\n");
 				gRender->bGUI = false;
 				gRender->bInitializedImGui = false;
-				//DisableGameInput = false;
+				gNetwork->AttemptConnect();
 			}
 			if (ImGui::Button("About VC:CO-OP")) {
 				gLog->Log("[CRender] About button clicked..\n");
@@ -130,15 +130,6 @@ void CRender::DestroyFont()
 void CRender::ToggleGUI()
 {
 	bGUI = !bGUI;
-
-	/*if (!bGUI)
-	{
-		gGame->EnableMouseInput();
-	}
-	else
-	{
-		gGame->DisableMouseInput();
-	}*/
 }
 void CRender::ShutdownGUI()
 {

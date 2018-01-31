@@ -129,6 +129,11 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 				FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
 				gLog->Log("[CGame] Teleporting to %.f, %.f, %.f.\n", VCCOOP_DEFAULT_SPAWN_POSITION);
 			}
+			else if (vkey == VK_F10)
+			{
+				gNetwork->AttemptConnect();
+				gLog->Log("[CGame] Calling AttemptConnect()\n");
+			}
 			break;
 		}
 	}

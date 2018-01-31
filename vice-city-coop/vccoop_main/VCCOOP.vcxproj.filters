@@ -22,6 +22,9 @@
     <Filter Include="vendor\librg">
       <UniqueIdentifier>{318d37ef-26bd-4b7b-8f56-e3d2342fa823}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\network">
+      <UniqueIdentifier>{0aa3e63f-3bbb-49e0-93e1-214e08de0fc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -75,6 +78,9 @@
     <ClInclude Include="librg\zpl_math.h">
       <Filter>vendor\librg</Filter>
     </ClInclude>
+    <ClInclude Include="CNetwork.h">
+      <Filter>Source\network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -97,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_dx9.cpp">
       <Filter>vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="CNetwork.cpp">
+      <Filter>Source\network</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
