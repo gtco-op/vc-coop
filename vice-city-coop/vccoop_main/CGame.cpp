@@ -59,7 +59,7 @@ void CGame::InitPreGamePatches()
 	MakeCall(0x450245, Hook_CRunningScript__Process);
 
 	//Set fps limit
-	MemWrite(0x602D68, 500);
+	//MemWrite(0x602D68, 500); not ready
 
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
@@ -67,8 +67,6 @@ void CGame::EnableMouseInput()
 {
 	//Enable CPad:UpdateMouse
 	MemCpy((void*)0x4AD820, "\x53", 1);
-	//Enable camera movement update
-	MemCpy((void*)0x48351A, "\xD9\x05\xD8\xAD\x68\x00", 6);
 	//CControllerConfigManager::AffectPadFromKeyBoard restore
 	MemCpy((void*)0x4AB6E6, "\xE8\x45\xCE\x16\x00", 5);
 	//CControllerConfigManager::AffectPadFromMouse restore
@@ -78,8 +76,6 @@ void CGame::DisableMouseInput()
 {
 	//Disable CPad:UpdateMouse
 	MakeRet(0x4AD820);
-	//Disable camera movement update
-	MakeRet(0x48351A);
 	//CControllerConfigManager::AffectPadFromKeyBoard nop
 	MakeNop(0x4AB6E6, 5);
 	//CControllerConfigManager::AffectPadFromMouse nop
@@ -104,14 +100,16 @@ void Hook_CRunningScript__Process()
 
 		// First tick processed
 		scriptProcessed = true;
+
+		gRender->ToggleGUI();
 		
 		gLog->Log("[CGame] CRunningScript::Process() hook finished.\n");
 	}
 }
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	ImGuiIO & io = ImGui::GetIO();
-	
+	if (ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam))return 0;
+
 	switch (umsg)
 	{
 		case WM_SYSKEYDOWN:
@@ -126,7 +124,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			else if (vkey == VK_F8)
 			{
-				gRender->ToggleGUI();
+				gRender->ToggleGUI(); 
 				gLog->Log("[CGame] Toggling GUI.\n");
 			}
 			else if (vkey == VK_F9)
@@ -142,20 +140,6 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			break;
 		}
 	}
-
-	io.MouseDrawCursor = gRender->bGUI;
-	if(gRender->device != nullptr)
-		gRender->device->ShowCursor(gRender->bGUI);
-
-	if (gRender->bGUI)
-	{
-		gGame->DisableMouseInput();
-		ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam);
-		return DefWindowProc(wnd, umsg, wparam, lparam);
-	}
-	else
-	{
-		gGame->EnableMouseInput();
-		return CallWindowProc(orig_wndproc, wnd, umsg, wparam, lparam);
-	}
+	
+	return CallWindowProc(orig_wndproc, wnd, umsg, wparam, lparam);
 }

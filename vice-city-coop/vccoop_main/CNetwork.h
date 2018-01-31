@@ -3,11 +3,18 @@
 static char IP[]	= VCCOOP_DEFAULT_SERVER_ADDRESS;
 static int Port		= VCCOOP_DEFAULT_SERVER_PORT;
 
+struct SPlayerInfo{
+	CVector Position;
+	int iModelIndex;
+};
+
 class CNetwork
 {
 public:
 	CNetwork();
 	~CNetwork();
+
+	SPlayerInfo LocalPlayerInfo;
 
 	static librg_ctx_t ctx;
 	static librg_entity_t * local_player;

@@ -9,42 +9,10 @@ CRender::CRender()
 {
 	this->m_pD3DXFont		= NULL;
 	this->PedTags			= true;
-	this->bGUI				= true;
+	this->bGUI				= false;
 	this->bInitializedImGui = false;
 
 	Events::drawingEvent += [] {
-		if (!gRender->bInitializedImGui && gRender->bGUI && orig_wnd != nullptr)		{
-			gRender->device = (LPDIRECT3DDEVICE9)RwD3D9GetCurrentD3DDevice();
-			ImGui_ImplDX9_Init(orig_wnd, gRender->device);
-			ImGui::StyleColorsClassic();
-
-			gLog->Log("[CRender] ImGui initialized\n");
-			gRender->bInitializedImGui = true;
-		}
-
-		if (gRender->bInitializedImGui && gRender->bGUI && orig_wnd != nullptr)		{
-			ImGui_ImplDX9_NewFrame();
-			ImGui::Begin("Vice City CO-OP " VCCOOP_VER);
-			ImGui::Text("Welcome to Vice City CO-OP " VCCOOP_VER "\nThis is freaking alpha version");
-
-			ImGui::InputText("IP", IP, sizeof(IP));
-			ImGui::InputInt("Port", &Port);
-
-			if (ImGui::Button("Connect")) {
-				gLog->Log("[CRender] Connect button clicked..\n");
-				gRender->bGUI = false;
-				gRender->bInitializedImGui = false;
-
-				gNetwork->AttemptConnect(IP, Port);
-			}
-			if (ImGui::Button("About VC:CO-OP")) {
-				gLog->Log("[CRender] About button clicked..\n");
-			}
-			ImGui::End();
-			ImGui::EndFrame();
-			ImGui::Render();
-		}
-
 		gRender->Draw();
 	};
 	Events::initRwEvent += [] {
@@ -79,8 +47,17 @@ void CRender::Run()
 
 }
 void CRender::InitFont()
-{
+{//All dx and drawing related initialization comes here
 	this->device = reinterpret_cast<IDirect3DDevice9 *>(RwD3D9GetCurrentD3DDevice());
+
+	if (!gRender->bInitializedImGui)
+	{
+		ImGui_ImplDX9_Init(orig_wnd, gRender->device);
+		ImGui::StyleColorsClassic();
+
+		gLog->Log("[CRender] ImGui initialized\n");
+		gRender->bInitializedImGui = true;
+	}
 
 	if (screen::GetScreenWidth() < 1024)
 	{
@@ -104,13 +81,13 @@ void CRender::InitFont()
 	//Lets initialize the wnd hook when the game already loaded it, if font loads hwnd should be OK
 	if (!wndHookInited)
 	{
-		//pPresentParam = reinterpret_cast<D3DPRESENT_PARAMETERS *>(0xC9C040); this shit doesnt exists in vc xD
-		HWND*  wnd = (HWND*)(0xA0FD1C);
+		//pluginsdk wins
+		HWND  wnd = RsGlobal.ps->window;
 
-		if (orig_wndproc == NULL || *wnd != orig_wnd)
+		if (orig_wndproc == NULL || wnd != orig_wnd)
 		{
-			orig_wndproc = (WNDPROC)(UINT_PTR)SetWindowLong(*wnd, GWL_WNDPROC, (LONG)(UINT_PTR)wnd_proc);
-			orig_wnd = *wnd;
+			orig_wndproc = (WNDPROC)(UINT_PTR)SetWindowLong(wnd, GWL_WNDPROC, (LONG)(UINT_PTR)wnd_proc);
+			orig_wnd = wnd;
 		}
 
 		wndHookInited = true;
@@ -130,7 +107,11 @@ void CRender::DestroyFont()
 }
 void CRender::ToggleGUI()
 {
+	if (bGUI)gGame->DisableMouseInput();
+	else gGame->EnableMouseInput();
 	bGUI = !bGUI;
+	ImGui::GetIO().MouseDrawCursor = bGUI;
+	gRender->device->ShowCursor(bGUI);
 }
 void CRender::ShutdownGUI()
 {
@@ -142,9 +123,38 @@ void CRender::Draw()
 {
 	if (this->m_pD3DXFont)
 	{
-		if (!gNetwork->connected)		{
+		if (gRender->bInitializedImGui && gRender->bGUI)
+		{
+			ImGui_ImplDX9_NewFrame();
+			ImGui::Begin("Vice City CO-OP " VCCOOP_VER);
+			ImGui::Text("Welcome to Vice City CO-OP " VCCOOP_VER "\nThis is freaking alpha version");
+
+			ImGui::InputText("IP", IP, sizeof(IP));
+			ImGui::InputInt("Port", &Port);
+
+			if (ImGui::Button("Connect"))
+			{
+				gLog->Log("[CRender] Connect button clicked..\n");
+				gRender->bGUI = false;
+				gRender->bInitializedImGui = false;
+
+				gNetwork->AttemptConnect(IP, Port);
+			}
+			if (ImGui::Button("About VC:CO-OP"))
+			{
+				gLog->Log("[CRender] About button clicked..\n");
+			}
+			ImGui::End();
+			ImGui::EndFrame();
+			ImGui::Render();
+		}
+
+		if (!gNetwork->connected)		
+		{
 			sprintf(vccoop_string, "%s %s", VCCOOP_NAME, VCCOOP_VER);
-		} else	{
+		} 
+		else	
+		{
 			sprintf(vccoop_string, "%s %s     Server: %s:%d   Press F7 to disconnect", VCCOOP_NAME, VCCOOP_VER, IP, Port);
 		}
 

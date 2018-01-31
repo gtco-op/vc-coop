@@ -22,7 +22,6 @@ public:
 		gGame = new CGame();
 		
 		gRender = new CRender();
-		gRender->InitFont();
 
 		gLog->Log("[CCore] Main method finished.\n");
 

@@ -31,6 +31,9 @@ void CNetwork::on_connect_accepted(librg_event_t *event) {
 	if (event->entity)
 	{
 		local_player = event->entity;
+		
+		//gNetwork->LocalPlayerInfo.Position = FindPlayerPed()->GetPosition();
+		//gNetwork->LocalPlayerInfo.iModelIndex = FindPlayerPed()->m_nModelIndex;
 	}
 }
 void CNetwork::on_connect_refused(librg_event_t *event) {
