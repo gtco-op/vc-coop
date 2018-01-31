@@ -9,6 +9,10 @@ public:
 	HWND g_hWnd;
 
 	CPad* pad;
+	void EnableMouseInput();
+	void DisableMouseInput();
+
+	void Run();
 
 private:
 	void InitPreGamePatches(); 

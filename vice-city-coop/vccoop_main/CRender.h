@@ -5,12 +5,14 @@ public:
 	CRender();
 	~CRender();
 
+	void Run();
+
 	/*		ImGui		*/
 public:
 	bool bGUI;
 	bool bInitializedImGui;
 
-	void ToggleGUI() { bGUI = !bGUI; }
+	void ToggleGUI();
 	void ShutdownGUI();
 
 	/*		 D3D9		*/

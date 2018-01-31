@@ -16,7 +16,10 @@ CGame::~CGame()
 {
 	gLog->Log("[CGame] CGame shutting down.\n");
 }
+void CGame::Run()
+{
 
+}
 void CGame::InitPreGamePatches()
 {
 	//disable gamestate initialize
@@ -57,20 +60,31 @@ void CGame::InitPreGamePatches()
 
 	//Set fps limit
 	MemWrite(0x602D68, 500);
-	
-	//TODO: fix mouse bug
-	// Disable re-initialization of DirectInput mouse device by the game
-	//MemWrite<BYTE>(0x49908B, 0xEB);
-	//MemWrite<BYTE>(0x498F92, 0xEB);
-	//MemWrite<BYTE>(0x499014, 0xEB);
 
-	// Make sure DirectInput mouse device is set non-exclusive (may not be needed?)
-	//MemWrite<DWORD>(0x5FFA20, 0x909000B0);
-
-	//MemCpy((void *)0x5EFFE0, "\xC2\x18\x00\x90", 4);
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
-
+void CGame::EnableMouseInput()
+{
+	//Enable CPad:UpdateMouse
+	MemCpy((void*)0x4AD820, "\x53", 1);
+	//Enable camera movement update
+	MemCpy((void*)0x48351A, "\xD9\x05\xD8\xAD\x68\x00", 6);
+	//CControllerConfigManager::AffectPadFromKeyBoard restore
+	MemCpy((void*)0x4AB6E6, "\xE8\x45\xCE\x16\x00", 5);
+	//CControllerConfigManager::AffectPadFromMouse restore
+	MemCpy((void*)0x4AB6F0, "\xE8\x9B\xCD\x16\x00", 5);
+}
+void CGame::DisableMouseInput()
+{
+	//Disable CPad:UpdateMouse
+	MakeRet(0x4AD820);
+	//Disable camera movement update
+	MakeRet(0x48351A);
+	//CControllerConfigManager::AffectPadFromKeyBoard nop
+	MakeNop(0x4AB6E6, 5);
+	//CControllerConfigManager::AffectPadFromMouse nop
+	MakeNop(0x4AB6F0, 5);
+}
 void Hook_CRunningScript__Process()
 {
 	if (!scriptProcessed)
@@ -119,22 +133,19 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		}
 	}
 
+	io.MouseDrawCursor = gRender->bGUI;
+	if(gRender->device != nullptr)
+		gRender->device->ShowCursor(gRender->bGUI);
+
 	if (gRender->bGUI)
 	{
-		gRender->device->ShowCursor(TRUE);		
-		io.MouseDrawCursor = TRUE;
-		
-		MakeRet(0x5FF290);
-		
+		gGame->DisableMouseInput();
 		ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam);
 		return DefWindowProc(wnd, umsg, wparam, lparam);
 	}
 	else
 	{
-		MemCpy((void*)0x5FF290, "\xA1\xF4\x48\x9B\x00", 5);
-
+		gGame->EnableMouseInput();
 		return CallWindowProc(orig_wndproc, wnd, umsg, wparam, lparam);
 	}
-
-	return 0;
 }

@@ -73,7 +73,10 @@ CRender::~CRender()
 
 	gLog->Log("[CRender] CRender shutting down\n");
 }
+void CRender::Run()
+{
 
+}
 void CRender::InitFont()
 {
 	this->device = reinterpret_cast<IDirect3DDevice9 *>(RwD3D9GetCurrentD3DDevice());
@@ -123,6 +126,19 @@ void CRender::DestroyFont()
 		this->m_pD3DXFont = NULL;
 		gLog->Log("[CRender] Font destroyed\n");
 	}
+}
+void CRender::ToggleGUI()
+{
+	bGUI = !bGUI;
+
+	/*if (!bGUI)
+	{
+		gGame->EnableMouseInput();
+	}
+	else
+	{
+		gGame->DisableMouseInput();
+	}*/
 }
 void CRender::ShutdownGUI()
 {

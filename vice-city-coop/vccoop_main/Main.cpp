@@ -23,5 +23,10 @@ public:
 		gRender->InitFont();
 
 		gLog->Log("[CCore] Main method finished.\n");
+
+		Events::gameProcessEvent += [] {
+			gGame->Run();
+			gRender->Run();
+		};
 	}
 } vcCoop;
