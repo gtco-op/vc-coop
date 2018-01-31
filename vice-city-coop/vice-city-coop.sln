@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "launcher", "launcher\launcher.vbproj", "{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vccoop_main", "vccoop_main\vccoop_main.vcxproj", "{1D5F953A-13E3-481D-92A5-320FD3FE0FAC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vccoop_main", "vccoop_main\VCCOOP.vcxproj", "{1D5F953A-13E3-481D-92A5-320FD3FE0FAC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "server\server.vcxproj", "{332FD9D2-7B9A-48FB-846C-ADE7D07319D1}"
 EndProject

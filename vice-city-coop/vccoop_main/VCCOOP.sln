@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VCCOOP", "VCCOOP.vcxproj", "{3885DEAC-2427-0983-0DE2-1CD7F92290D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release GTA3|x86 = Release GTA3|x86
+		Release GTASA|x86 = Release GTASA|x86
+		Release GTAVC|x86 = Release GTAVC|x86
+		zDebug GTA3|x86 = zDebug GTA3|x86
+		zDebug GTASA|x86 = zDebug GTASA|x86
+		zDebug GTAVC|x86 = zDebug GTAVC|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.Release GTA3|x86.ActiveCfg = Release GTA3|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.Release GTA3|x86.Build.0 = Release GTA3|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.Release GTASA|x86.ActiveCfg = Release GTASA|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.Release GTASA|x86.Build.0 = Release GTASA|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.Release GTAVC|x86.ActiveCfg = Release GTAVC|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.Release GTAVC|x86.Build.0 = Release GTAVC|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.zDebug GTA3|x86.ActiveCfg = zDebug GTA3|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.zDebug GTA3|x86.Build.0 = zDebug GTA3|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.zDebug GTASA|x86.ActiveCfg = zDebug GTASA|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.zDebug GTASA|x86.Build.0 = zDebug GTASA|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.zDebug GTAVC|x86.ActiveCfg = zDebug GTAVC|Win32
+		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.zDebug GTAVC|x86.Build.0 = zDebug GTAVC|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3FFE9E06-4D93-4901-8E81-E3AA57C2F722}
+	EndGlobalSection
+EndGlobal
