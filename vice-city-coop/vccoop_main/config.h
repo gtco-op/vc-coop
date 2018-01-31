@@ -13,7 +13,7 @@
 #define VCCOOP_VERBOSE_LOG
 
 // Temporary spawn position
-#define VCCOOP_DEFAULT_SPAWN_POSITION	10.0f,5.0f,25.0f
+#define VCCOOP_DEFAULT_SPAWN_POSITION	10.0f, 5.0f, 25.0f
 
 // Default server address
 #define VCCOOP_DEFAULT_SERVER_ADDRESS	"127.0.0.1"

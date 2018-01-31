@@ -11,7 +11,7 @@ public:
 
 	static bool client_running;
 	static bool client_connected;
-	static bool connected;
+	static bool connected;	
 
 	static void on_connect_request(librg_event_t *event);
 	static void on_connect_accepted(librg_event_t *event);
@@ -20,6 +20,6 @@ public:
 	static void on_entity_update(librg_event_t *event);
 
 	static void ClientConnectThread();
-	static void AttemptConnect();
+	static void StopClientThread();
+	static void AttemptConnect(char* szAddress, int iPort);
 };
-

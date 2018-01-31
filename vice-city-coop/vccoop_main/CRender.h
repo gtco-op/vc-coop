@@ -14,7 +14,7 @@ public:
 
 	void ToggleGUI();
 	void ShutdownGUI();
-
+	
 	/*		 D3D9		*/
 public:
 	bool PedTags;

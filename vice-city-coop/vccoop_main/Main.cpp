@@ -1,5 +1,6 @@
 #include "main.h"
 
+CNetwork *gNetwork;
 CGame *gGame;
 CRender *gRender;
 CLogger *gLog;
@@ -17,6 +18,7 @@ public:
 		gLog = new CLogger();
 		gLog->Log("[CCore] Initializing classes.\n");
 
+		gNetwork = new CNetwork();
 		gGame = new CGame();
 		
 		gRender = new CRender();

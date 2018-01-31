@@ -96,7 +96,6 @@ void Hook_CRunningScript__Process()
 		Call(0x5383E0, 0);
 
 		// Set player position
-		//ThisCall(0x4F5690, FindPlayerPed(), );
 		FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
 
 		// CStreaming::LoadScene
@@ -119,20 +118,26 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		case WM_KEYDOWN:
 		{
 			int vkey = (int)wparam;
-			if (vkey == VK_F8)
+
+			if (vkey == VK_F7 && gNetwork->client_connected)
+			{
+				gNetwork->StopClientThread();
+				gLog->Log("[CGame] Disconnecting from server.\n");
+			}
+			else if (vkey == VK_F8)
 			{
 				gRender->ToggleGUI();
-				gLog->Log("[CGame] F8 pressed.\n");
+				gLog->Log("[CGame] Toggling GUI.\n");
 			}
 			else if (vkey == VK_F9)
 			{
 				FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
-				gLog->Log("[CGame] Teleporting to %.f, %.f, %.f.\n", VCCOOP_DEFAULT_SPAWN_POSITION);
+				gLog->Log("[CGame] Teleporting to X: %.f Y: %.f Z: %.f\n", VCCOOP_DEFAULT_SPAWN_POSITION);
 			}
 			else if (vkey == VK_F10)
 			{
-				gNetwork->AttemptConnect();
-				gLog->Log("[CGame] Calling AttemptConnect()\n");
+				gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
+				gLog->Log("[CGame] Attempting to connect to local server\n");
 			}
 			break;
 		}

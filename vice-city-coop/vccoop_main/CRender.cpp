@@ -4,6 +4,9 @@ extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
 bool   wndHookInited = false;
 
+static char IP[]	= VCCOOP_DEFAULT_SERVER_ADDRESS;
+static int Port		= VCCOOP_DEFAULT_SERVER_PORT;
+
 CRender::CRender()
 {
 	this->m_pD3DXFont		= NULL;
@@ -25,16 +28,16 @@ CRender::CRender()
 			ImGui_ImplDX9_NewFrame();
 			ImGui::Begin("Vice City CO-OP");
 			ImGui::Text("Welcome to Vice City CO-OP\nThis is freaking alpha version");
-			ImGui::InputText("IP", "127.0.0.1", 256);
-			int portval = 23546;
-			int* portvalptr = &portval;
-			ImGui::InputInt("Port", portvalptr);
+
+			ImGui::InputText("IP", IP, sizeof(IP));
+			ImGui::InputInt("Port", &Port);
 
 			if (ImGui::Button("Connect")) {
 				gLog->Log("[CRender] Connect button clicked..\n");
 				gRender->bGUI = false;
 				gRender->bInitializedImGui = false;
-				gNetwork->AttemptConnect();
+
+				gNetwork->AttemptConnect(IP, Port);
 			}
 			if (ImGui::Button("About VC:CO-OP")) {
 				gLog->Log("[CRender] About button clicked..\n");

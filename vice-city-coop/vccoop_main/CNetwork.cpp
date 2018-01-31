@@ -21,7 +21,7 @@ CNetwork::CNetwork()
 }
 CNetwork::~CNetwork()
 {
-
+	this->StopClientThread();
 }
 void CNetwork::on_connect_request(librg_event_t *event) {
 	gLog->Log("[VC CO-OP][CLIENT] Requesting to connect\n");
@@ -59,6 +59,10 @@ void CNetwork::on_entity_update(librg_event_t *event) {
 		iter->Teleport(CVector(event->entity->position.x, event->entity->position.y, event->entity->position.z));
 	}
 }
+void CNetwork::StopClientThread()
+{
+	client_running = false;
+}
 void CNetwork::ClientConnectThread()
 {
 	while (client_running) {
@@ -75,7 +79,7 @@ void CNetwork::ClientConnectThread()
 	librg_network_stop(&ctx);
 	librg_free(&ctx);
 }
-void CNetwork::AttemptConnect()
+void CNetwork::AttemptConnect(char* szAddress, int iPort)
 {
 	client_running = true;
 	ctx.mode = LIBRG_MODE_CLIENT;
@@ -87,8 +91,10 @@ void CNetwork::AttemptConnect()
 	librg_event_add(&ctx, LIBRG_ENTITY_UPDATE, on_entity_update);
 
 	librg_address_t addr;
-	addr.host = VCCOOP_DEFAULT_SERVER_ADDRESS;
-	addr.port = VCCOOP_DEFAULT_SERVER_PORT;
+	addr.host = szAddress;
+	addr.port = iPort;
+
+	gLog->Log("[CNetwork] Attempting to connect to %s:%d\n", addr.host, addr.port);
 	librg_network_start(&ctx, addr);
 
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&ClientConnectThread, NULL, 0, NULL);

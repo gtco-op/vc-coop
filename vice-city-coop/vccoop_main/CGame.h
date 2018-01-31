@@ -7,8 +7,8 @@ public:
 	~CGame();
 	
 	HWND g_hWnd;
-
 	CPad* pad;
+
 	void EnableMouseInput();
 	void DisableMouseInput();
 

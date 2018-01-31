@@ -40,9 +40,9 @@
 using namespace plugin;
 using namespace Hook;
 
-extern CNetwork *gNetwork;
-extern CGame *gGame;
-extern CRender *gRender;
-extern CLogger *gLog;
+extern CNetwork		*gNetwork;
+extern CGame		*gGame;
+extern CRender		*gRender;
+extern CLogger		*gLog;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
