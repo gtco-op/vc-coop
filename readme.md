@@ -18,5 +18,6 @@ Crspy </br>
 Gamelaster</br>
 NicusorN5</br>
 LemonHaze</br>
+Vektor</br>
 ## Want to talk to me?
 Join VC:CO-OP Discord Server: https://discord.gg/u2u6U6G

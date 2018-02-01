@@ -9,7 +9,7 @@
 #define LIBRG_DEBUG
 #define LIBRG_IMPLEMENTATION
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
-#define VCCOOP_SRVVER "0.1.0.a"
+#include "..\vccoop_main\config.h"
 
 #include "librg\librg.h"
 #include <Windows.h>
@@ -21,41 +21,31 @@
 
 using namespace std;
 
-struct PlayerInfo {
-	// PLAYER INFO
-	float Health;
-	float Armour;
-	int iModelIndex;
-	float Rotation;
-	int iInteriorID;
-	int iCurrentAnimID;
-	unsigned int WeaponType;
-	unsigned int Ammo;
-	// PLAYER VEHICLE INFO
-};
 HANDLE server_handle = NULL;
 bool server_running = false, console_active = false;
 std::vector<librg_entity_t*> entities;
 librg_ctx_t ctx = { 0 };
 
 void on_connect_request(librg_event_t *event) {
-	cout << "[CLIENT REQUEST] Some one is requesting to connect\n";
+	printf("[CLIENT REQUEST] Some one is requesting to connect\n");
+
+	u32 secret = librg_data_ru32(event->data);
+	if (secret != SERVER_SECRET) {
+		librg_event_reject(event);
+	}
 }
 void on_connect_accepted(librg_event_t *event) {
 	printf("[CLIENT CONNECTION] Player %d Connected\n", event->entity->id);
-	PlayerInfo *plrinfo = (PlayerInfo *)event->entity->user_data;
 	librg_entity_t *entity = event->entity;
 	entities.push_back(entity);
 	librg_entity_control_set(event->ctx, entity->id, entity->client_peer);
 }
 void on_creating_entity(librg_event_t *event) {
 	printf("Entity creating\n");
-	
 
 }
 void on_entity_update(librg_event_t *event) {
 	printf("Entity updating\n");
-
 }
 void on_disconnect(librg_event_t* event)
 {
@@ -107,8 +97,7 @@ int main(int argc, char const *argv[]) {
 	{
 		getline(cin, input);
 
-		if (strstr(input.c_str(), "exit") || strstr(input.c_str(), "quit"))
-		{
+		if (strstr(input.c_str(), "exit") || strstr(input.c_str(), "quit"))		{
 			console_active = false;
 		}
 		Sleep(10);

@@ -23,6 +23,7 @@ CNetwork::~CNetwork()
 }
 void CNetwork::on_connect_request(librg_event_t *event) {
 	gLog->Log("[VC CO-OP][CLIENT] Requesting to connect\n");
+	librg_data_wu32(event->data, SERVER_SECRET);
 }
 void CNetwork::on_connect_accepted(librg_event_t *event) {
 	gLog->Log("[VC CO-OP][CLIENT] Connection Accepted\n");

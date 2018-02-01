@@ -1,10 +1,12 @@
 #pragma once
 #define VCCOOP_NAME					"VC CO-OP"
 #define VCCOOP_VER					"0.01"
+#define VCCOOP_SRVVER				"0.1.0.a"
+
 #define DEFAULT_TIME_FORMAT			"%Y%m%d_%H%M%S"
 #define LOGGER_TIME_FORMAT			"%H:%M:%S"
 #define VC_TITLE					"GTA: Vice City"
-#define SERVER_SECRET				12345
+#define SERVER_SECRET				420420420
 
 // Define this to have a console window spawn on boot
 #define VCCOOP_DEBUG
@@ -20,3 +22,14 @@
 
 // Default server port
 #define VCCOOP_DEFAULT_SERVER_PORT		23546
+
+struct SPlayerData {
+	float Health;
+	float Armour;
+	int iModelIndex;
+	float Rotation;
+	int iInteriorID;
+	int iCurrentAnimID;
+	unsigned int WeaponType;
+	unsigned int Ammo;
+};
