@@ -1,10 +1,10 @@
 #include "main.h"
 
-CNetwork *gNetwork;
-CGame *gGame;
-CRender *gRender;
-CLogger *gLog;
-CChat *gChat;
+CNetwork	*gNetwork;
+CGame		*gGame;
+CRender		*gRender;
+CLogger		*gLog;
+CChat		*gChat;
 
 class VCCoop 
 {
@@ -20,12 +20,9 @@ public:
 		gLog = new CLogger();
 		gLog->Log("[CCore] Initializing classes.\n");
 		
-
 		gNetwork = new CNetwork();
 		gGame = new CGame();
-
 		gRender = new CRender();
-		
 		gRender->gGuiContainer.push_back(gChat);
 
 		gLog->Log("[CCore] Main method finished.\n");

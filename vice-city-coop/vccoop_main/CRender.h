@@ -10,10 +10,8 @@ public:
 	/*		ImGui		*/
 public:
 	bool bGUI;
-	bool bInitializedImGui;
-
+	bool Initialized;
 	void ToggleGUI();
-	void ShutdownGUI();
 	
 	/*		 D3D9		*/
 public:

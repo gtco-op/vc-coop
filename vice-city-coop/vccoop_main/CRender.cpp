@@ -9,11 +9,11 @@ CRender::CRender()
 	this->m_pD3DXFont		= NULL;
 	this->PedTags			= true;
 	this->bGUI				= false;
-	this->bInitializedImGui = false;
+
+	this->Initialized = false;
 
 	this->gGuiContainer.push_back(new CNameTags());
 	this->gGuiContainer.push_back(new CDebugScreen());
-	this->gGuiContainer.push_back(new CImGui());
 
 	Events::drawingEvent += [] {
 		gRender->Draw();
@@ -23,62 +23,44 @@ CRender::CRender()
 	}; 
 	Events::shutdownRwEvent += [] {
 		gRender->DestroyFont();
-		gRender->ShutdownGUI();
 	};
 	Events::d3dLostEvent += [] {
 		gRender->DestroyFont();
-		gRender->ShutdownGUI();
 	};
 	Events::d3dResetEvent += [] {
+		gRender->DestroyFont();
 		gRender->InitFont();
 	};
-
 	gLog->Log("[CRender] CRender initialized\n");
 }
 
 CRender::~CRender()
 {
 	this->DestroyFont();
-
-	if(this->bGUI || this->bInitializedImGui)
-		this->ShutdownGUI();
-
 	gLog->Log("[CRender] CRender shutting down\n");
 }
 void CRender::Run()
 {
-	if (!wndHookInited)
-	{
-		//pluginsdk wins
+	if (!wndHookInited)	{
 		HWND  wnd = RsGlobal.ps->window;
-		if (wnd)
-		{
-			if (orig_wndproc == NULL || wnd != orig_wnd)
-			{
+		if (wnd)		{
+			if (orig_wndproc == NULL || wnd != orig_wnd)			{
 				orig_wndproc = (WNDPROC)(UINT_PTR)SetWindowLong(wnd, GWL_WNDPROC, (LONG)(UINT_PTR)wnd_proc);
 				orig_wnd = wnd;
 			}
-
 			wndHookInited = true;
 			gLog->Log("[CRender] Original WndProc hooked\n");
 
-
-			if (!gRender->bInitializedImGui)
-			{
-				ImGui_ImplDX9_Init(orig_wnd, gRender->device);
-
-				ImGui::StyleColorsClassic();
-
-				ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
-
-				gLog->Log("[CRender] ImGui initialized\n");
-				gRender->bInitializedImGui = true;
-			}
+			ImGui_ImplDX9_Init(orig_wnd, this->device);
+			ImGui::StyleColorsClassic();
+			ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
+			gLog->Log("[CRender] ImGui initialized\n");
+			Initialized = true;
 		}
 	}
 }
 void CRender::InitFont()
-{//All dx and drawing related initialization comes here
+{
 	this->device = reinterpret_cast<IDirect3DDevice9 *>(RwD3D9GetCurrentD3DDevice());
 
 	if (screen::GetScreenWidth() < 1024)
@@ -99,20 +81,17 @@ void CRender::InitFont()
 	}
 
 	D3DXCreateFont(device, iFontSize, 0, FW_BOLD, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial", &m_pD3DXFont);
-
-	if (gRender->bInitializedImGui && orig_wnd)
-	{
-		ImGui_ImplDX9_Init(orig_wnd, gRender->device);
-
-		ImGui::StyleColorsClassic();
-
-		ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
-
-		gLog->Log("[CRender] ImGui initialized\n");
-		gRender->bInitializedImGui = true;
-	}
-	
 	gLog->Log("[CRender] InitFont() finished\n");
+
+	if (!Initialized)
+	{
+		ImGui_ImplDX9_Init(orig_wnd, this->device);
+		ImGui::StyleColorsClassic();
+		ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
+		gLog->Log("[CRender] ImGui initialized\n");
+		gGame->DisableMouseInput();
+		Initialized = true;
+	}
 }
 
 void CRender::DestroyFont()
@@ -123,20 +102,17 @@ void CRender::DestroyFont()
 		this->m_pD3DXFont = NULL;
 		gLog->Log("[CRender] Font destroyed\n");
 	}
+	if (Initialized)
+	{
+		ImGui_ImplDX9_Shutdown();
+	}
+	this->Initialized = false;
 }
 void CRender::ToggleGUI()
 {
-	if (!bGUI)gGame->DisableMouseInput();
-	else gGame->EnableMouseInput();
 	bGUI = !bGUI;
 	ImGui::GetIO().MouseDrawCursor = bGUI;
 	gRender->device->ShowCursor(bGUI);
-}
-void CRender::ShutdownGUI()
-{
-	bGUI = false; 
-	bInitializedImGui = false; 
-	ImGui_ImplDX9_Shutdown(); 
 }
 void CRender::Draw()
 {
@@ -147,6 +123,35 @@ void CRender::Draw()
 			if (this->gGuiContainer[i])this->gGuiContainer[i]->Draw();
 		}
 	}
+	if (Initialized && gRender->bGUI)
+	{
+		ImGui_ImplDX9_NewFrame();
+		ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bGUI);
+		ImGui::Text("Welcome to Vice City CO-OP " VCCOOP_VER "\nThis is freaking alpha version");
+
+		ImGui::InputText("IP", IP, sizeof(IP));
+		ImGui::InputInt("Port", &Port);
+
+		if (ImGui::Button("Connect"))
+		{
+			gLog->Log("[CRender] Connect button clicked..\n");
+			gRender->bGUI = false;
+
+			gNetwork->AttemptConnect(IP, Port);
+		}
+		if (ImGui::Button("About VC:CO-OP"))
+		{
+			gLog->Log("[CRender] About button clicked..\n");
+		}
+		ImGui::End();
+		ImGui::EndFrame();
+		ImGui::Render();
+
+		gGame->DisableMouseInput();
+	}
+
+	if (!gRender->bGUI)
+		gGame->EnableMouseInput();
 }
 void CRender::RenderText(const char *sz, RECT rect, DWORD dwColor)
 {
