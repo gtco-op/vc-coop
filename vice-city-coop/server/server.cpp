@@ -27,7 +27,7 @@ std::vector<librg_entity_t*> entities;
 librg_ctx_t ctx = { 0 };
 
 void on_connect_request(librg_event_t *event) {
-	printf("[CLIENT REQUEST] Some one is requesting to connect\n");
+	printf("[CLIENT REQUEST] Someone is requesting to connect\n");
 
 	u32 secret = librg_data_ru32(event->data);
 	if (secret != SERVER_SECRET) {
@@ -35,7 +35,7 @@ void on_connect_request(librg_event_t *event) {
 	}
 }
 void on_connect_accepted(librg_event_t *event) {
-	printf("[CLIENT CONNECTION] Player %d Connected\n", event->entity->id);
+	printf("[CLIENT CONNECTION] Player %d connected\n", event->entity->id);
 	librg_entity_t *entity = event->entity;
 	entities.push_back(entity);
 	librg_entity_control_set(event->ctx, entity->id, entity->client_peer);
@@ -50,10 +50,17 @@ void on_entity_update(librg_event_t *event) {
 void on_disconnect(librg_event_t* event)
 {
 	auto it = std::find(entities.begin(), entities.end(), event->entity);
+
 	if (it != entities.end()) {
 		entities.erase(it);
 		printf("Deleting item from entities vector..\n");
 	}
+}
+void on_stream_update(librg_event_t *event) {
+	SPlayerData tmp;
+	librg_data_rptr(event->data, &tmp, sizeof(SPlayerData));
+	
+	printf("tmp.iModelIndex = %d\n", tmp.iModelIndex);
 }
 void server_thread()
 {
@@ -64,6 +71,9 @@ void server_thread()
 	librg_event_add(&ctx, LIBRG_CONNECTION_REQUEST, on_connect_request);
 	librg_event_add(&ctx, LIBRG_CONNECTION_ACCEPT, on_connect_accepted);
 	librg_event_add(&ctx, LIBRG_ENTITY_UPDATE, on_entity_update);
+
+	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
+
 	printf("Server thread initialized\n");
 
 	librg_address_t addr = { 23546 };
@@ -73,7 +83,7 @@ void server_thread()
 	while (server_running) {
 		for (auto it : entities)
 		{
-			printf("Entity ID# %d : Pos X: %.f Pos Y: %.f Pos Z: %.f \n", it->id, it->position.x, it->position.y, it->position.z);
+			//printf("Entity ID# %d : Pos X: %.f Pos Y: %.f Pos Z: %.f \n", it->id, it->position.x, it->position.y, it->position.z);
 		}
 		librg_tick(&ctx);
 	}

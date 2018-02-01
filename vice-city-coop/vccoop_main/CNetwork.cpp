@@ -4,6 +4,7 @@
 
 librg_ctx_t CNetwork::ctx;
 librg_entity_t * CNetwork::local_player;
+SPlayerData LocalPlayerInfo;
 std::vector<CPed*> CNetwork::players;
 
 bool CNetwork::client_running;
@@ -71,6 +72,8 @@ void CNetwork::ClientConnectThread()
 			local_player->position.x = FindPlayerPed()->GetPosition().x;
 			local_player->position.y = FindPlayerPed()->GetPosition().y;
 			local_player->position.z = FindPlayerPed()->GetPosition().z;
+
+			LocalPlayerInfo.iModelIndex = FindPlayerPed()->m_nModelIndex;
 		}
 		librg_tick(&ctx);
 		zpl_sleep_ms(1);
@@ -78,6 +81,9 @@ void CNetwork::ClientConnectThread()
 
 	librg_network_stop(&ctx);
 	librg_free(&ctx);
+}
+void CNetwork::on_client_stream(librg_event_t *event) {
+	librg_data_wptr(event->data, &LocalPlayerInfo, sizeof(LocalPlayerInfo));
 }
 void CNetwork::AttemptConnect(char* szAddress, int iPort)
 {
@@ -89,6 +95,9 @@ void CNetwork::AttemptConnect(char* szAddress, int iPort)
 	librg_event_add(&ctx, LIBRG_CONNECTION_ACCEPT, on_connect_accepted);
 	librg_event_add(&ctx, LIBRG_ENTITY_CREATE, on_entity_create);
 	librg_event_add(&ctx, LIBRG_ENTITY_UPDATE, on_entity_update);
+
+	// Stream our data
+	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_client_stream);
 
 	librg_address_t addr;
 	addr.host = szAddress;

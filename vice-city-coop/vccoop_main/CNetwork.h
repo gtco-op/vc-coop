@@ -22,6 +22,7 @@ public:
 	static void on_connect_refused(librg_event_t *event);
 	static void on_entity_create(librg_event_t * event);
 	static void on_entity_update(librg_event_t *event);
+	static void on_client_stream(librg_event_t *event);
 
 	static void ClientConnectThread();
 	static void StopClientThread();
