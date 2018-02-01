@@ -109,7 +109,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GTAVC|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
-    <OutDir>$(ProjectDir)</OutDir>
+    <OutDir>$(ProjectDir)\</OutDir>
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Release\</IntDir>
     <TargetName>vccoop</TargetName>
     <TargetExt>.asi</TargetExt>
@@ -208,7 +208,7 @@
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY /Y /J /C $(OutDir)vccoop.asi $(GTA_VC_DIR)</Command>
+      <Command>XCOPY /Y /J /C $(OutDir)vccoopd.asi $(VC_DIR)</Command>
       <Message>Copying ASI to GTA VC directory..</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -302,9 +302,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CChat.cpp" />
+    <ClCompile Include="CDebugScreen.cpp" />
     <ClCompile Include="CGame.cpp" />
+    <ClCompile Include="CImGui.cpp" />
     <ClCompile Include="CLogger.cpp" />
+    <ClCompile Include="CNameTags.cpp" />
     <ClCompile Include="CNetwork.cpp" />
+    <ClCompile Include="CRenderTemplate.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx9.cpp" />
@@ -312,10 +317,15 @@
     <ClCompile Include="CRender.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CChat.h" />
+    <ClInclude Include="CDebugScreen.h" />
     <ClInclude Include="CGame.h" />
+    <ClInclude Include="CImGui.h" />
     <ClInclude Include="CLogger.h" />
+    <ClInclude Include="CNameTags.h" />
     <ClInclude Include="CNetwork.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="CRenderTemplate.h" />
     <ClInclude Include="hooklibrary.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

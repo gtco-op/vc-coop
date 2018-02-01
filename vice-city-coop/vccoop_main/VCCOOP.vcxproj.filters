@@ -81,6 +81,21 @@
     <ClInclude Include="CNetwork.h">
       <Filter>Source\network</Filter>
     </ClInclude>
+    <ClInclude Include="CRenderTemplate.h">
+      <Filter>Source\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="CNameTags.h">
+      <Filter>Source\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="CDebugScreen.h">
+      <Filter>Source\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="CImGui.h">
+      <Filter>Source\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="CChat.h">
+      <Filter>Source\rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -106,6 +121,21 @@
     </ClCompile>
     <ClCompile Include="CNetwork.cpp">
       <Filter>Source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="CRenderTemplate.cpp">
+      <Filter>Source\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="CNameTags.cpp">
+      <Filter>Source\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="CDebugScreen.cpp">
+      <Filter>Source\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="CImGui.cpp">
+      <Filter>Source\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="CChat.cpp">
+      <Filter>Source\rendering</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

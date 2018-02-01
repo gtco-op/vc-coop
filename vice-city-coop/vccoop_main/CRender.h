@@ -25,6 +25,8 @@ public:
 	void InitFont();
 
 	IDirect3DDevice9 *device;
+
+	std::vector<CRenderTemplate*> gGuiContainer;
 private:
 	ID3DXFont * m_pD3DXFont;
 	int iFontSize;

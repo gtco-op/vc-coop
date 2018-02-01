@@ -32,7 +32,12 @@
 #include "CNetwork.h"
 #include "CLogger.h"
 #include "CGame.h"
+#include "CRenderTemplate.h"
 #include "CRender.h"
+#include "CNameTags.h"
+#include "CDebugScreen.h"
+#include "CImGui.h"
+#include "CChat.h"
 
 #include "imgui\imgui.h"
 #include "imgui\imgui_impl_dx9.h"
@@ -44,5 +49,6 @@ extern CNetwork		*gNetwork;
 extern CGame		*gGame;
 extern CRender		*gRender;
 extern CLogger		*gLog;
+extern CChat		*gChat;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);

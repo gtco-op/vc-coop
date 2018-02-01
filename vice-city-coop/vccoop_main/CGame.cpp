@@ -61,6 +61,31 @@ void CGame::InitPreGamePatches()
 	//Set fps limit
 	//MemWrite(0x602D68, 500); not ready
 
+	// Disable re-initialization of DirectInput mouse device by the game
+	MakeNop(0x49908B, 5);
+	MakeNop(0x498F92, 5);
+	MakeNop(0x499014, 5);
+
+	MakeNop(0x49908B + 0x7, 5);
+	MakeNop(0x498F92 + 0x7, 5);
+	MakeNop(0x499014 + 0x7, 5);
+
+	//-----Disable menu
+	//Disable CMenuManage::Process
+	MakeRet(0x49A01C);
+
+	//Disable CMenuManager::DrawBackground
+	MakeRet(0x4A212D);
+
+	//Disable CMenuManager::DrawFrontEnd
+	MakeRet(0x4A37A4);
+
+	//Disable CMenuManager::LoadAllTextures
+	MakeRet(0x4A3A13);
+
+	//Disable menu after focus loss
+	MakeRet(0x4A4FD0);
+
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
 void CGame::EnableMouseInput()
@@ -102,7 +127,9 @@ void Hook_CRunningScript__Process()
 		scriptProcessed = true;
 
 		gRender->ToggleGUI();
-		
+
+		gChat->AddChatMessage("Ped Spawned");
+
 		gLog->Log("[CGame] CRunningScript::Process() hook finished.\n");
 	}
 }

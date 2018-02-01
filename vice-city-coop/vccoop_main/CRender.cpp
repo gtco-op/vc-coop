@@ -3,7 +3,6 @@
 extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
 bool   wndHookInited = false;
-char   vccoop_string[600];
 
 CRender::CRender()
 {
@@ -11,6 +10,10 @@ CRender::CRender()
 	this->PedTags			= true;
 	this->bGUI				= false;
 	this->bInitializedImGui = false;
+
+	this->gGuiContainer.push_back(new CNameTags());
+	this->gGuiContainer.push_back(new CDebugScreen());
+	this->gGuiContainer.push_back(new CImGui());
 
 	Events::drawingEvent += [] {
 		gRender->Draw();
@@ -44,20 +47,39 @@ CRender::~CRender()
 }
 void CRender::Run()
 {
+	if (!wndHookInited)
+	{
+		//pluginsdk wins
+		HWND  wnd = RsGlobal.ps->window;
+		if (wnd)
+		{
+			if (orig_wndproc == NULL || wnd != orig_wnd)
+			{
+				orig_wndproc = (WNDPROC)(UINT_PTR)SetWindowLong(wnd, GWL_WNDPROC, (LONG)(UINT_PTR)wnd_proc);
+				orig_wnd = wnd;
+			}
 
+			wndHookInited = true;
+			gLog->Log("[CRender] Original WndProc hooked\n");
+
+
+			if (!gRender->bInitializedImGui)
+			{
+				ImGui_ImplDX9_Init(orig_wnd, gRender->device);
+
+				ImGui::StyleColorsClassic();
+
+				ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
+
+				gLog->Log("[CRender] ImGui initialized\n");
+				gRender->bInitializedImGui = true;
+			}
+		}
+	}
 }
 void CRender::InitFont()
 {//All dx and drawing related initialization comes here
 	this->device = reinterpret_cast<IDirect3DDevice9 *>(RwD3D9GetCurrentD3DDevice());
-
-	if (!gRender->bInitializedImGui)
-	{
-		ImGui_ImplDX9_Init(orig_wnd, gRender->device);
-		ImGui::StyleColorsClassic();
-
-		gLog->Log("[CRender] ImGui initialized\n");
-		gRender->bInitializedImGui = true;
-	}
 
 	if (screen::GetScreenWidth() < 1024)
 	{
@@ -78,21 +100,18 @@ void CRender::InitFont()
 
 	D3DXCreateFont(device, iFontSize, 0, FW_BOLD, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial", &m_pD3DXFont);
 
-	//Lets initialize the wnd hook when the game already loaded it, if font loads hwnd should be OK
-	if (!wndHookInited)
+	if (gRender->bInitializedImGui && orig_wnd)
 	{
-		//pluginsdk wins
-		HWND  wnd = RsGlobal.ps->window;
+		ImGui_ImplDX9_Init(orig_wnd, gRender->device);
 
-		if (orig_wndproc == NULL || wnd != orig_wnd)
-		{
-			orig_wndproc = (WNDPROC)(UINT_PTR)SetWindowLong(wnd, GWL_WNDPROC, (LONG)(UINT_PTR)wnd_proc);
-			orig_wnd = wnd;
-		}
+		ImGui::StyleColorsClassic();
 
-		wndHookInited = true;
-		gLog->Log("[CRender] Original WndProc hooked\n");
+		ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
+
+		gLog->Log("[CRender] ImGui initialized\n");
+		gRender->bInitializedImGui = true;
 	}
+	
 	gLog->Log("[CRender] InitFont() finished\n");
 }
 
@@ -107,7 +126,7 @@ void CRender::DestroyFont()
 }
 void CRender::ToggleGUI()
 {
-	if (bGUI)gGame->DisableMouseInput();
+	if (!bGUI)gGame->DisableMouseInput();
 	else gGame->EnableMouseInput();
 	bGUI = !bGUI;
 	ImGui::GetIO().MouseDrawCursor = bGUI;
@@ -123,65 +142,9 @@ void CRender::Draw()
 {
 	if (this->m_pD3DXFont)
 	{
-		if (gRender->bInitializedImGui && gRender->bGUI)
+		for (int i = 0; i < this->gGuiContainer.size(); i++)
 		{
-			ImGui_ImplDX9_NewFrame();
-			ImGui::Begin("Vice City CO-OP " VCCOOP_VER);
-			ImGui::Text("Welcome to Vice City CO-OP " VCCOOP_VER "\nThis is freaking alpha version");
-
-			ImGui::InputText("IP", IP, sizeof(IP));
-			ImGui::InputInt("Port", &Port);
-
-			if (ImGui::Button("Connect"))
-			{
-				gLog->Log("[CRender] Connect button clicked..\n");
-				gRender->bGUI = false;
-				gRender->bInitializedImGui = false;
-
-				gNetwork->AttemptConnect(IP, Port);
-			}
-			if (ImGui::Button("About VC:CO-OP"))
-			{
-				gLog->Log("[CRender] About button clicked..\n");
-			}
-			ImGui::End();
-			ImGui::EndFrame();
-			ImGui::Render();
-		}
-
-		if (!gNetwork->connected)		
-		{
-			sprintf(vccoop_string, "%s %s", VCCOOP_NAME, VCCOOP_VER);
-		} 
-		else	
-		{
-			sprintf(vccoop_string, "%s %s     Server: %s:%d   Press F7 to disconnect", VCCOOP_NAME, VCCOOP_VER, IP, Port);
-		}
-
-		this->RenderText(vccoop_string, { 10, 10, 10 }, (gNetwork->connected? 0xFF00FF00 : 0xFFFFFFFF));
-
-		for (int i = 0; i < CPools::ms_pPedPool->m_nSize; i++)
-		{
-			CPed *ped = CPools::ms_pPedPool->GetAt(i);
-			if (ped)
-			{
-				CVector posn = ped->GetPosition();
-				RwV3d screenCoors; float w, h;
-				if (CSprite::CalcScreenCoors({ posn.x, posn.y, posn.z + 1.3f }, &screenCoors, &w, &h, true))
-				{
-					char text[600];
-
-					sprintf(text, "Ped: %d", i);
-
-					SIZE size = this->MeasureText(text);
-
-					this->RenderText(text, { (LONG)screenCoors.x - (LONG)ceil(size.cx / 2.0), (LONG)screenCoors.y }, 0xFFFFFFFF);
-
-					CSprite2d::DrawRect(CRect(screenCoors.x - 60, screenCoors.y - 5 + 30, screenCoors.x + 60, screenCoors.y + 5 + 30), CRGBA(0, 0, 0, 255));
-					CSprite2d::DrawRect(CRect(screenCoors.x - 60 + 3, screenCoors.y - 5 + 30 + 1, screenCoors.x + 60 - 3, screenCoors.y + 5 + 30 - 1), CRGBA(145, 0, 0, 255));
-					CSprite2d::DrawRect(CRect(screenCoors.x - 60 + 3, screenCoors.y - 5 + 30 + 1, (screenCoors.x - 60 + 3) + (((screenCoors.x + 60 - 3) - (screenCoors.x - 60 + 3)) / 100.0f)*ped->m_fHealth, screenCoors.y + 5 + 30 - 1), CRGBA(255, 0, 0, 255));
-				}
-			}
+			if (this->gGuiContainer[i])this->gGuiContainer[i]->Draw();
 		}
 	}
 }

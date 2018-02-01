@@ -26,8 +26,9 @@ void CLogger::Log(char * format, ...)
 	char buffer[256];
 
 	va_start(args, format);
-	vsnprintf(buffer, 255, format, args);
+	vsprintf(buffer, format, args);
 	va_end(args);
+
 
 	// Timestamp
 	std::string buf("[");
@@ -45,6 +46,7 @@ void CLogger::Log(char * format, ...)
 
 #ifdef VCCOOP_DEBUG
 	printf(buf.c_str());
+	gChat->AddChatMessage(buf.c_str());
 #endif
 }
 std::string GetExecutablePath()
