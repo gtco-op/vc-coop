@@ -69,11 +69,15 @@ void CNetwork::ClientConnectThread()
 	while (client_running) {
 		if (connected && local_player)
 		{
-			local_player->position.x = FindPlayerPed()->GetPosition().x;
-			local_player->position.y = FindPlayerPed()->GetPosition().y;
-			local_player->position.z = FindPlayerPed()->GetPosition().z;
-
 			LocalPlayerInfo.iModelIndex = FindPlayerPed()->m_nModelIndex;
+			LocalPlayerInfo.Health = FindPlayerPed()->m_fHealth;
+			LocalPlayerInfo.Armour = FindPlayerPed()->m_fArmour;
+			LocalPlayerInfo.iCurrentAnimID = FindPlayerPed()->m_dwAnimGroupId;
+			LocalPlayerInfo.Rotation = FindPlayerPed()->m_fRotationCur;
+			LocalPlayerInfo.CurrWep = FindPlayerPed()->m_aWeapons->m_nType;
+			LocalPlayerInfo.WepModelIndex = FindPlayerPed()->m_dwWepModelID;
+			LocalPlayerInfo.Ammo = FindPlayerPed()->m_aWeapons->m_nTotalAmmo;
+			
 		}
 		librg_tick(&ctx);
 		zpl_sleep_ms(1);
@@ -83,6 +87,12 @@ void CNetwork::ClientConnectThread()
 	librg_free(&ctx);
 }
 void CNetwork::on_client_stream(librg_event_t *event) {
+	// position is sent here
+	event->entity->position.x = FindPlayerPed()->GetPosition().x;
+	event->entity->position.y = FindPlayerPed()->GetPosition().y;
+	event->entity->position.z = FindPlayerPed()->GetPosition().z;
+
+	// here we send all of the data above to the server..
 	librg_data_wptr(event->data, &LocalPlayerInfo, sizeof(LocalPlayerInfo));
 }
 void CNetwork::AttemptConnect(char* szAddress, int iPort)

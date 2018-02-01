@@ -30,6 +30,7 @@ struct SPlayerData {
 	float Rotation;
 	int iInteriorID;
 	int iCurrentAnimID;
-	unsigned int WeaponType;
+	unsigned int CurrWep;
+	unsigned int WepModelIndex;
 	unsigned int Ammo;
 };

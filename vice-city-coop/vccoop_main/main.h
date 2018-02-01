@@ -25,6 +25,7 @@
 #include "CWorld.h"
 #include "CStreaming.h"
 #include "CCivilianPed.h"
+#include "eWeaponFire.h"
 
 //vccoop
 #include "config.h"
