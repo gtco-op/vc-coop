@@ -126,8 +126,10 @@ void Hook_CRunningScript__Process()
 		// First tick processed
 		scriptProcessed = true;
 
-		gRender->ToggleGUI();
-
+		//gRender->ToggleGUI();
+		
+		CWorld::Players[0].m_bNeverGetsTired = true;
+		gGame->EnableMouseInput();
 		gChat->AddChatMessage("Ped Spawned");
 
 		gLog->Log("[CGame] CRunningScript::Process() hook finished.\n");
@@ -143,7 +145,18 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		case WM_KEYDOWN:
 		{
 			int vkey = (int)wparam;
-
+			if (vkey == 0x54)//T
+			{
+				if (!gChat->chatToggled)gChat->ToggleChat(true);
+			}
+			if (vkey == VK_RETURN)
+			{
+				if(gChat->chatToggled)gChat->ProcessChatInput();
+			}
+			if (vkey == VK_ESCAPE)
+			{
+				if(gChat->chatToggled)gChat->ToggleChat(false);
+			}
 			if (vkey == VK_F7 && gNetwork->connected)
 			{
 				gNetwork->StopClientThread();

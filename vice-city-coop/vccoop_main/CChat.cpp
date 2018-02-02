@@ -3,7 +3,8 @@
 CChat::CChat() 
 {
 	this->pageSize = 10;
-
+	this->chatToggled = false; 
+	memset(this->chatInputBuffer, 0, sizeof(this->chatInputBuffer));
 	for (int i = 0; i < 10; i++)
 	{
 		this->chatBuffer[i][0] = '\0';
@@ -22,10 +23,27 @@ void CChat::Draw()
 	for (int i = 0; i < 10; i++)
 	{
 		gRender->RenderText(this->chatBuffer[10 - (i + 1)], rect, -1);
-		
-		SIZE textSize = gRender->MeasureText("Y");
 
-		rect.top += textSize.cy + 1;
+		rect.top += gRender->MeasureText("Y").cy + 1;
+	}
+	
+	if (this->chatToggled)
+	{
+		ImGuiStyle& style = ImGui::GetStyle();
+		ImGui_ImplDX9_NewFrame();
+		ImGui::SetNextWindowFocus();
+		ImGui::SetNextWindowPos(ImVec2(30, (float)gRender->MeasureText("Y").cy * 10 + 20));
+		ImGui::SetNextWindowBgAlpha(-1.0f);
+		style.WindowBorderSize = 0.0f;
+		ImGui::Begin("A", (bool*)1, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+		ImGui::PushItemWidth(350.0f);
+		ImGui::SetKeyboardFocusHere(); 
+		ImGui::InputText("", this->chatInputBuffer, IM_ARRAYSIZE(this->chatInputBuffer));
+		ImGui::PopItemWidth();
+		ImGui::End();
+		ImGui::EndFrame();
+		ImGui::Render();
+		style.WindowBorderSize = 1.0f;
 	}
 }
 
@@ -43,4 +61,24 @@ void CChat::AddChatMessage(const char * message, ...)
 	}
 
 	sprintf(chatBuffer[0], "%s", buffer);
+}
+
+void CChat::ToggleChat(bool toggle)
+{
+	if (!toggle)gGame->EnableMouseInput();
+	else gGame->DisableMouseInput();
+
+	ImGui::GetIO().MouseDrawCursor = toggle;
+	gRender->device->ShowCursor(toggle);
+	this->chatToggled = toggle;
+}
+
+void CChat::ProcessChatInput()
+{
+	this->ToggleChat(false);
+	if (strlen(this->chatInputBuffer) > 0 && this->chatInputBuffer[0] != '\0')
+	{
+		this->AddChatMessage(this->chatInputBuffer);
+		this->chatInputBuffer[0] = 0;
+	}
 }

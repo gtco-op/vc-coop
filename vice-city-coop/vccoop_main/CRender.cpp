@@ -52,7 +52,7 @@ void CRender::Run()
 			gLog->Log("[CRender] Original WndProc hooked\n");
 
 			ImGui_ImplDX9_Init(orig_wnd, this->device);
-			ImGui::StyleColorsClassic();
+			//ImGui::StyleColorsClassic();
 			ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
 			gLog->Log("[CRender] ImGui initialized\n");
 			Initialized = true;
@@ -86,7 +86,7 @@ void CRender::InitFont()
 	if (!Initialized)
 	{
 		ImGui_ImplDX9_Init(orig_wnd, this->device);
-		ImGui::StyleColorsClassic();
+		//ImGui::StyleColorsClassic();
 		ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
 		gLog->Log("[CRender] ImGui initialized\n");
 		gGame->DisableMouseInput();
@@ -113,6 +113,8 @@ void CRender::ToggleGUI()
 	bGUI = !bGUI;
 	ImGui::GetIO().MouseDrawCursor = bGUI;
 	gRender->device->ShowCursor(bGUI);
+	if(bGUI)gGame->EnableMouseInput();
+	else gGame->DisableMouseInput();
 }
 void CRender::Draw()
 {
@@ -146,12 +148,7 @@ void CRender::Draw()
 		ImGui::End();
 		ImGui::EndFrame();
 		ImGui::Render();
-
-		gGame->DisableMouseInput();
 	}
-
-	if (!gRender->bGUI)
-		gGame->EnableMouseInput();
 }
 void CRender::RenderText(const char *sz, RECT rect, DWORD dwColor)
 {
