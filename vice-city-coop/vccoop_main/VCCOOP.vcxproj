@@ -303,12 +303,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CChat.cpp" />
+    <ClCompile Include="CClientNetwork.cpp" />
     <ClCompile Include="CDebugScreen.cpp" />
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="CImGui.cpp" />
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="CNameTags.cpp" />
-    <ClCompile Include="CNetwork.cpp" />
     <ClCompile Include="CRenderTemplate.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -318,12 +318,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CChat.h" />
+    <ClInclude Include="CClientNetwork.h" />
     <ClInclude Include="CDebugScreen.h" />
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CImGui.h" />
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CNameTags.h" />
-    <ClInclude Include="CNetwork.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="CRenderTemplate.h" />
     <ClInclude Include="hooklibrary.h" />

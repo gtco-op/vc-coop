@@ -52,7 +52,6 @@ void CRender::Run()
 			gLog->Log("[CRender] Original WndProc hooked\n");
 
 			ImGui_ImplDX9_Init(orig_wnd, this->device);
-			//ImGui::StyleColorsClassic();
 			ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
 			gLog->Log("[CRender] ImGui initialized\n");
 			Initialized = true;
@@ -86,7 +85,6 @@ void CRender::InitFont()
 	if (!Initialized)
 	{
 		ImGui_ImplDX9_Init(orig_wnd, this->device);
-		//ImGui::StyleColorsClassic();
 		ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
 		gLog->Log("[CRender] ImGui initialized\n");
 		gGame->DisableMouseInput();
@@ -113,14 +111,14 @@ void CRender::ToggleGUI()
 	bGUI = !bGUI;
 	ImGui::GetIO().MouseDrawCursor = bGUI;
 	gRender->device->ShowCursor(bGUI);
-	if(bGUI)gGame->EnableMouseInput();
-	else gGame->DisableMouseInput();
+	if(bGUI) gGame->DisableMouseInput();
+	else gGame->EnableMouseInput();
 }
 void CRender::Draw()
 {
 	if (this->m_pD3DXFont)
 	{
-		for (int i = 0; i < this->gGuiContainer.size(); i++)
+		for (int i = 0; i < (int)this->gGuiContainer.size(); i++)
 		{
 			if (this->gGuiContainer[i])this->gGuiContainer[i]->Draw();
 		}
@@ -148,6 +146,20 @@ void CRender::Draw()
 		ImGui::End();
 		ImGui::EndFrame();
 		ImGui::Render();
+	}
+
+	// should we allow VC mouse input?
+	if (Initialized)
+	{
+		// if chat or GUI is active, then no..
+		if (gRender->bGUI || gChat->chatToggled)
+		{
+			gGame->DisableMouseInput();
+		}
+		else
+		{
+			gGame->EnableMouseInput();
+		}
 	}
 }
 void CRender::RenderText(const char *sz, RECT rect, DWORD dwColor)

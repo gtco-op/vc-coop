@@ -123,21 +123,19 @@ void Hook_CRunningScript__Process()
 		CVector scenePosition(VCCOOP_DEFAULT_SPAWN_POSITION);
 		Call(0x40AF60, &scenePosition);
 
-		// First tick processed
-		scriptProcessed = true;
-
-		//gRender->ToggleGUI();
-		
 		CWorld::Players[0].m_bNeverGetsTired = true;
-		gGame->EnableMouseInput();
-		gChat->AddChatMessage("Ped Spawned");
 
 		gLog->Log("[CGame] CRunningScript::Process() hook finished.\n");
+
+		gRender->ToggleGUI();
+
+		// First tick processed
+		scriptProcessed = true;
 	}
 }
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam))return 0;
+	if (ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam)) return 0;
 
 	switch (umsg)
 	{
@@ -147,15 +145,16 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			int vkey = (int)wparam;
 			if (vkey == 0x54)//T
 			{
-				if (!gChat->chatToggled)gChat->ToggleChat(true);
+				if (!gChat->chatToggled)
+					gChat->ToggleChat(true);
 			}
 			if (vkey == VK_RETURN)
 			{
-				if(gChat->chatToggled)gChat->ProcessChatInput();
+				if(gChat->chatToggled) gChat->ProcessChatInput();
 			}
 			if (vkey == VK_ESCAPE)
 			{
-				if(gChat->chatToggled)gChat->ToggleChat(false);
+				if(gChat->chatToggled) gChat->ToggleChat(false);
 			}
 			if (vkey == VK_F7 && gNetwork->connected)
 			{
@@ -172,7 +171,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 				FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
 				gLog->Log("[CGame] Teleporting to X: %.f Y: %.f Z: %.f\n", VCCOOP_DEFAULT_SPAWN_POSITION);
 			}
-			else if (vkey == VK_F10)
+			else if (vkey == VK_F10 && !gNetwork->connected) // crashfix
 			{
 				gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
 				gLog->Log("[CGame] Attempting to connect to local server\n");

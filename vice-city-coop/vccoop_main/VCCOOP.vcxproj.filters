@@ -78,9 +78,6 @@
     <ClInclude Include="librg\zpl_math.h">
       <Filter>vendor\librg</Filter>
     </ClInclude>
-    <ClInclude Include="CNetwork.h">
-      <Filter>Source\network</Filter>
-    </ClInclude>
     <ClInclude Include="CRenderTemplate.h">
       <Filter>Source\rendering</Filter>
     </ClInclude>
@@ -95,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="CChat.h">
       <Filter>Source\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="CClientNetwork.h">
+      <Filter>Source\network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -119,9 +119,6 @@
     <ClCompile Include="imgui\imgui_impl_dx9.cpp">
       <Filter>vendor\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="CNetwork.cpp">
-      <Filter>Source\network</Filter>
-    </ClCompile>
     <ClCompile Include="CRenderTemplate.cpp">
       <Filter>Source\rendering</Filter>
     </ClCompile>
@@ -136,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="CChat.cpp">
       <Filter>Source\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientNetwork.cpp">
+      <Filter>Source\network</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

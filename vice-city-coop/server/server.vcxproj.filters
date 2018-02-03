@@ -1,36 +1,58 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="Source">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{d35773d6-3228-462c-9d1f-b6427e73ae27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="vendor\librg">
+      <UniqueIdentifier>{c835a08c-97aa-4204-8c25-cee1a18ee531}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\utils">
+      <UniqueIdentifier>{751b5b6c-0a7d-4c32-887d-b5161dee6c65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\network">
+      <UniqueIdentifier>{3b8e1a6c-6aa5-4ece-921e-65ca8e463c1d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="librg\enet.h">
-      <Filter>Header Files</Filter>
+      <Filter>vendor\librg</Filter>
     </ClInclude>
     <ClInclude Include="librg\librg.h">
-      <Filter>Header Files</Filter>
+      <Filter>vendor\librg</Filter>
     </ClInclude>
     <ClInclude Include="librg\zpl.h">
-      <Filter>Header Files</Filter>
+      <Filter>vendor\librg</Filter>
     </ClInclude>
     <ClInclude Include="librg\zpl_math.h">
-      <Filter>Header Files</Filter>
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="CLogger.h">
+      <Filter>Source\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="CServerNetwork.h">
+      <Filter>Source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="server.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vccoop_main\config.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CLogger.cpp">
+      <Filter>Source\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="CServerNetwork.cpp">
+      <Filter>Source\network</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

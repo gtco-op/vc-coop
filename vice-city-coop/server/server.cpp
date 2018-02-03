@@ -1,108 +1,29 @@
 /*
 	Vice City CO-OP Server
 
-	Author(s)	Lemonhaze
+	Author(s)	LemonHaze
 				Zeyad Ahmed
 
 	Copyright (c) 2017-2018 VC:CO-OP Team
 */
+#ifdef VCCOOP_LIBRG_DEBUG
 #define LIBRG_DEBUG
+#endif
 #define LIBRG_IMPLEMENTATION
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
-#include "..\vccoop_main\config.h"
+#include "server.h"
 
-#include "librg\librg.h"
-#include <Windows.h>
-#include <iostream>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-
-using namespace std;
-
-HANDLE server_handle = NULL;
-bool server_running = false, console_active = false;
-std::vector<librg_entity_t*> entities;
-librg_ctx_t ctx = { 0 };
-
-void on_connect_request(librg_event_t *event) {
-	printf("[CLIENT REQUEST] Someone is requesting to connect\n");
-
-	u32 secret = librg_data_ru32(event->data);
-	if (secret != SERVER_SECRET) {
-		librg_event_reject(event);
-	}
-}
-void on_connect_accepted(librg_event_t *event) {
-	printf("[CLIENT CONNECTION] Player %d connected\n", event->entity->id);
-	librg_entity_t *entity = event->entity;
-	entities.push_back(entity);
-	librg_entity_control_set(event->ctx, entity->id, entity->client_peer);
-}
-void on_creating_entity(librg_event_t *event) {
-	printf("Entity creating\n");
-
-}
-void on_entity_update(librg_event_t *event) {
-	printf("Entity updating\n");
-}
-void on_disconnect(librg_event_t* event)
-{
-	auto it = std::find(entities.begin(), entities.end(), event->entity);
-
-	if (it != entities.end()) {
-		entities.erase(it);
-		printf("Deleting item from entities vector..\n");
-	}
-}
-void on_stream_update(librg_event_t *event) {
-	SPlayerData tmp;
-	librg_data_rptr(event->data, &tmp, sizeof(SPlayerData));
-	
-	printf("tmp.iModelIndex = %d\n", tmp.iModelIndex);
-}
-void server_thread()
-{
-	ctx.world_size = zplm_vec3(5000.0f, 5000.0f, 5000.0f);
-	ctx.mode = LIBRG_MODE_SERVER;
-	ctx.tick_delay = 32; // 32ms delay, is around 30hz, quite fast
-	librg_init(&ctx);
-	librg_event_add(&ctx, LIBRG_CONNECTION_REQUEST, on_connect_request);
-	librg_event_add(&ctx, LIBRG_CONNECTION_ACCEPT, on_connect_accepted);
-	librg_event_add(&ctx, LIBRG_ENTITY_UPDATE, on_entity_update);
-
-	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
-
-	printf("Server thread initialized\n");
-
-	librg_address_t addr = { 23546 };
-	librg_network_start(&ctx, addr);
-	printf("Server starting on port %d\n", addr.port);
-	
-	while (server_running) {
-		for (auto it : entities)
-		{
-			//printf("Entity ID# %d : Pos X: %.f Pos Y: %.f Pos Z: %.f \n", it->id, it->position.x, it->position.y, it->position.z);
-		}
-		librg_tick(&ctx);
-	}
-
-	librg_network_stop(&ctx);
-	librg_free(&ctx);
-
-	server_running = false;
-}
+CLogger			*gLog;
+CServerNetwork	*gServerNetwork;
 
 int main(int argc, char const *argv[]) {
-	SetConsoleTitle(TEXT("Vice City CO-OP " VCCOOP_SRVVER " Server"));
-	printf("Vice City CO-OP " VCCOOP_SRVVER " Server\nIf you want any help see our site www.vicecityco-op.ml\nCreating server thread..\n");
-
+	bool console_active = true;
 	std::string input;
-	console_active = true;
-	server_running = true;
-	server_handle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&server_thread, NULL, 0, NULL);
-
+	
+	SetConsoleTitle(TEXT("Vice City CO-OP " VCCOOP_VER " Server"));
+	gLog			= new CLogger;
+	gServerNetwork	= new CServerNetwork;
+	
 	while (console_active)
 	{
 		getline(cin, input);
@@ -112,6 +33,5 @@ int main(int argc, char const *argv[]) {
 		}
 		Sleep(10);
 	}
-
 	return 0;
 }

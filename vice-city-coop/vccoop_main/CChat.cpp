@@ -38,6 +38,7 @@ void CChat::Draw()
 		ImGui::Begin("A", (bool*)1, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		ImGui::PushItemWidth(350.0f);
 		ImGui::SetKeyboardFocusHere(); 
+
 		ImGui::InputText("", this->chatInputBuffer, IM_ARRAYSIZE(this->chatInputBuffer));
 		ImGui::PopItemWidth();
 		ImGui::End();
@@ -65,6 +66,7 @@ void CChat::AddChatMessage(const char * message, ...)
 
 void CChat::ToggleChat(bool toggle)
 {
+
 	if (!toggle)gGame->EnableMouseInput();
 	else gGame->DisableMouseInput();
 
