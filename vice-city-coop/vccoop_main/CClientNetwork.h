@@ -11,11 +11,14 @@ public:
 
 	static librg_ctx_t ctx;
 	static librg_entity_t * local_player;
-	static std::vector<CPed*> players;
+	static std::vector<std::pair<CPed*, int>> players;
 	
 	static bool client_running;
 	static bool client_connected;
 	static bool connected;	
+
+	static CEntity*		GetEntityFromNetworkID(int id);
+	static int			GetNetworkIDFromEntity(CEntity* ent);
 
 	static void on_connect_request(librg_event_t *event);
 	static void on_connect_accepted(librg_event_t *event);

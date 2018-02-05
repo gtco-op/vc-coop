@@ -39,7 +39,7 @@
 
 
 struct PedSyncData {
-	void* m_pFleeFrom;
+	//void* m_pFleeFrom;
 
 	float m_fActionX;
 	float m_fActionY;
@@ -61,7 +61,7 @@ struct PedSyncData {
 	CVector m_vecObjective;
 
 	float m_fObjectiveAngle;
-	CEntity* m_pObjectiveEntity;
+	//CEntity* m_pObjectiveEntity;
 
 	CVehicle* m_pObjectiveVehicle;
 
@@ -85,11 +85,11 @@ struct PedSyncData {
 	char m_nPathState;
 	CPathNode* m_pLastPathNode;
 	CPathNode* m_pNextPathNode;
-	CEntity* m_pPathRelEntity;
+	//CEntity* m_pPathRelEntity;
 
 	int m_dwMoveState;
 	float m_fSeekExAngle;
-	CEntity* m_pSeekTarget;
+	//CEntity* m_pSeekTarget;
 	CVector m_vecSeekPosEx;
 	CVector m_vecOffsetSeek;
 	unsigned int m_dwEventType;
@@ -97,7 +97,7 @@ struct PedSyncData {
 	float m_fAngleToEvent;
 	float m_fEventOrThreatX;
 	float m_fEventOrThreatY;
-	CEntity* m_pEventEntity;
+	//CEntity* m_pEventEntity;
 };
 
 struct SPlayerData {
