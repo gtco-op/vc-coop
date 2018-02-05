@@ -33,6 +33,13 @@
 #include "CCivilianPed.h"
 #include "CPlayerInfo.h"
 #include "CPopulation.h"
+#include "CModelInfo.h"
+#include "CHeli.h"
+#include "CPlane.h"
+#include "CBoat.h"
+#include "CWorld.h"
+#include "CTheScripts.h"
+#include "CTimer.h"
 
 //vccoop
 #include "config.h"

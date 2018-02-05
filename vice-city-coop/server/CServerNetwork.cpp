@@ -4,6 +4,7 @@ HANDLE							CServerNetwork::server_handle;
 bool							CServerNetwork::server_running, CServerNetwork::console_active;
 librg_ctx_t						CServerNetwork::ctx;
 std::vector<librg_entity_t*>	CServerNetwork::entities;
+librg_entity_t* tmpPed;
 
 CServerNetwork::CServerNetwork()
 {
@@ -15,11 +16,34 @@ CServerNetwork::~CServerNetwork()
 {
 
 }
+void CServerNetwork::PedCreateEvent(librg_message_t *msg)
+{
+	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_PED);
+	librg_entity_control_set(&ctx, entity->id, msg->peer);
+
+	// crate our custom data container for ped
+	entity->user_data = new SPlayerData();
+
+	// spawn a ped at player's position
+	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
+
+	gLog->Log("[CServerNetwork] Ped created. (%d)\n", entity->id);
+}
+void CServerNetwork::VehCreateEvent(librg_message_t *msg)
+{
+	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_VEHICLE);
+	librg_entity_control_set(&ctx, entity->id, msg->peer);
+	
+	// spawn a ped at player's position
+	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
+
+	gLog->Log("[CServerNetwork] Vehicle created. (%d)\n", entity->id);
+}
 void CServerNetwork::on_connect_request(librg_event_t *event) {
 	char name[25];
 	librg_data_rptr(event->data, (void*)&name, 25);
 
-	if (strlen(name)<0)	{
+	if (strlen(name) < 0) {
 		librg_event_reject(event);
 	}
 
@@ -30,18 +54,24 @@ void CServerNetwork::on_connect_accepted(librg_event_t *event) {
 	librg_entity_control_set(event->ctx, event->entity->id, event->entity->client_peer);
 
 	entities.push_back(event->entity);
-
 	gLog->Log("[CServerNetwork][CLIENT CONNECTION] Network entity %d connected\n", event->entity->id);
 }
 void CServerNetwork::on_creating_entity(librg_event_t *event) {
-	librg_data_wptr(event->data, event->entity->user_data, sizeof(SPlayerData));
+	if (event->entity->type == VCOOP_PED || event->entity->type == VCOOP_PLAYER) {
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(SPlayerData));
+	}
 }
 void CServerNetwork::on_entity_update(librg_event_t *event) {
-	librg_data_wptr(event->data, event->entity->user_data, sizeof(SPlayerData));
+	if (event->entity->type == VCOOP_PED || event->entity->type == VCOOP_PLAYER) {
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(SPlayerData));
+	}
 }
 void CServerNetwork::on_stream_update(librg_event_t *event) {
-	librg_data_rptr(event->data, event->entity->user_data, sizeof(SPlayerData));
+	if (event->entity->type == VCOOP_PED || event->entity->type == VCOOP_PLAYER) {
+		librg_data_rptr(event->data, event->entity->user_data, sizeof(SPlayerData));
+	}
 }
+
 void CServerNetwork::on_disconnect(librg_event_t* event){
 	auto tmp = std::find(entities.begin(), entities.end(), event->entity);
 	if (tmp != entities.end())	{
@@ -94,6 +124,9 @@ void CServerNetwork::server_thread()
 	librg_event_add(&ctx, LIBRG_ENTITY_UPDATE,			on_entity_update);
 	librg_event_add(&ctx, LIBRG_ENTITY_REMOVE,			on_disconnect);
 
+	librg_network_add(&ctx, VCOOP_CREATE_PED,			PedCreateEvent);
+	librg_network_add(&ctx, VCOOP_CREATE_VEHICLE,		VehCreateEvent);
+
 	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
 
 	gLog->Log("[CServerNetwork] Server thread initialized\n");
@@ -102,7 +135,7 @@ void CServerNetwork::server_thread()
 	librg_network_start(&ctx, addr);
 	gLog->Log("[CServerNetwork] Server starting on port %d\n", addr.port);
 
-#ifndef VCCOOP_VERBOSE_LOG
+#ifndef VCCOOP_VERBOSE_LOG	
 	zpl_timer_t *tick_timer = zpl_timer_add(ctx.timers);
 	tick_timer->user_data = (void *)&ctx; /* provide ctx as a argument to timer */
 	zpl_timer_set(tick_timer, 1000 * 1000, -1, measure);

@@ -9,6 +9,86 @@ HWND		orig_wnd;
 
 void Hook_CRunningScript__Process();
 
+/*
+	copyPed->ClearAll();
+
+	CVector pos = copyPed2->GetPosition();
+	pos.x += 1.0f;
+	copyPed->Teleport(pos);
+
+	copyPed->m_fHealth = copyPed2->m_fHealth;
+	copyPed->m_fRotationCur = copyPed2->m_fRotationCur;
+	copyPed->m_fRotationDest = copyPed2->m_fRotationDest;
+
+	copyPed->m_fLookDirection = copyPed2->m_fLookDirection;
+
+	copyPed->m_vecAnimMoveDelta = copyPed2->m_vecAnimMoveDelta;
+	copyPed->m_dwAnimGroupId = copyPed2->m_dwAnimGroupId;
+
+	copyPed->m_vecMoveSpeed = copyPed2->m_vecMoveSpeed;
+
+	//Action sync
+	copyPed->m_dwAction = copyPed2->m_dwAction;
+	copyPed->m_dwActionTimer = copyPed2->m_dwActionTimer;
+	copyPed->m_fActionX = copyPed2->m_fActionX;
+	copyPed->m_fActionY = copyPed2->m_fActionY;
+
+	//Objective sync
+	copyPed->m_dwObjective = copyPed2->m_dwObjective;
+	copyPed->m_dwObjectiveTimer = copyPed2->m_dwObjectiveTimer;
+	copyPed->m_vecObjective = copyPed2->m_vecObjective;
+	copyPed->m_fObjectiveAngle = copyPed2->m_fObjectiveAngle;
+	copyPed->m_pObjectiveEntity = copyPed2->m_pObjectiveEntity;
+	copyPed->m_pObjectiveVehicle = copyPed2->m_pObjectiveVehicle;
+
+	//Wander path sync?
+	if (copyPed->m_dwAction == 4 || copyPed->m_dwAction == 5)
+	{
+	copyPed->SetWanderPath(*(BYTE *)(copyPed2 + 820));
+	}
+
+	//Flee sync
+	copyPed->m_dwFleeTimer = copyPed2->m_dwFleeTimer;
+	copyPed->m_fFleeFromPosX = copyPed2->m_fFleeFromPosX;
+	copyPed->m_fFleeFromPosY = copyPed2->m_fFleeFromPosY;
+	copyPed->m_pFleeFrom = copyPed2->m_pFleeFrom;
+
+	//Path sync
+	copyPed->m_fPathNextNodeDir = copyPed2->m_fPathNextNodeDir;
+	copyPed->wRouteCurDir = copyPed2->wRouteCurDir;
+	copyPed->m_vecPathNextNode = copyPed2->m_vecPathNextNode;
+	copyPed->m_dwPathNodeTimer = copyPed2->m_dwPathNodeTimer;
+	copyPed->m_wCurPathNode = copyPed2->m_wCurPathNode;
+	copyPed->m_wPathNodes = copyPed2->m_wPathNodes;
+	for (int i = 0; i < 8; i++)
+	{
+	copyPed->m_aPathNodeStates[i] = copyPed2->m_aPathNodeStates[i];
+	copyPed->m_apPathNodesStates[i] = copyPed2->m_apPathNodesStates[i];
+	}
+	copyPed->m_dwPathNodeType = copyPed2->m_dwPathNodeType;
+	copyPed->m_nPathState = copyPed2->m_nPathState;
+	copyPed->m_pLastPathNode = copyPed2->m_pLastPathNode;
+	copyPed->m_pNextPathNode = copyPed2->m_pNextPathNode;
+	copyPed->m_pPathRelEntity = copyPed2->m_pPathRelEntity;
+
+
+	copyPed->SetMoveState((eMoveState)copyPed2->m_dwMoveState);
+
+	//Seek sync
+	copyPed->m_fSeekExAngle = copyPed2->m_fSeekExAngle;
+	copyPed->m_pSeekTarget = copyPed2->m_pSeekTarget;
+	copyPed->m_vecSeekPosEx = copyPed2->m_vecSeekPosEx;
+	copyPed->m_vecOffsetSeek = copyPed2->m_vecOffsetSeek;
+
+	//Event sync
+	copyPed->m_dwEventType = copyPed2->m_dwEventType;
+	copyPed->m_fAngleToEvent = copyPed2->m_fAngleToEvent;
+	copyPed->m_fEventOrThreatX = copyPed2->m_fEventOrThreatX;
+	copyPed->m_fEventOrThreatY = copyPed2->m_fEventOrThreatY;
+
+	copyPed->m_pEventEntity = copyPed2->m_pEventEntity;
+*/
+
 CGame::CGame()
 {
 	this->InitPreGamePatches();
@@ -198,9 +278,9 @@ void Hook_CRunningScript__Process()
 		CPools::ms_pVehiclePool->Clear();
 		
 		//Pedpool inc
-		/*MemWrite<s32>(0x4C02C8, 1000);
+		MemWrite<s32>(0x4C02C8, 1000);
 		//vehicle pool inc
-		MemWrite<s32>(0x4C02EA, 1000);*/
+		MemWrite<s32>(0x4C02EA, 1000);
 
 		CPools::ms_pPedPool->Init(1000, NULL, NULL);
 		CPools::ms_pVehiclePool->Init(1000, NULL, NULL);
@@ -223,6 +303,10 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		case WM_KEYDOWN:
 		{
 			int vkey = (int)wparam;
+			if (vkey == 'P')
+			{
+				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
+			}
 			if (vkey == 0x54) //T
 			{
 				if (!gChat->chatToggled)

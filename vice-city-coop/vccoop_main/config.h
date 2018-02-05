@@ -37,7 +37,72 @@
 #define VC_TITLE						"GTA: Vice City"
 #define SERVER_SECRET					420420420
 
-struct SPlayerData {	
+
+struct PedSyncData {
+	void* m_pFleeFrom;
+
+	float m_fActionX;
+	float m_fActionY;
+	
+	float m_fRotationDest;
+	float m_fLookDirection;
+	CVector2D m_vecAnimMoveDelta;
+	float m_dwAnimGroupId;
+	CVector m_vecMoveSpeed;
+
+	int m_dwAction;
+	int m_dwActionTimer;
+	float m_dwActionX;
+	float m_dwActionY;
+
+	int m_dwObjective;
+	int m_dwObjectiveTimer;
+
+	CVector m_vecObjective;
+
+	float m_fObjectiveAngle;
+	CEntity* m_pObjectiveEntity;
+
+	CVehicle* m_pObjectiveVehicle;
+
+	int m_dwFleeTimer;
+	float m_fFleeFromPosX;
+	float m_fFleeFromPosY;
+
+	float m_fPathNextNodeDir;
+	short wRouteCurDir;
+
+	CVector m_vecPathNextNode;
+	int m_dwPathNodeTimer;
+
+	short m_wCurPathNode;
+	unsigned short m_wPathNodes;
+	CPathNode m_aPathNodeStates[8];
+	CPathNode* m_apPathNodesStates[8];
+
+	unsigned int m_dwPathNodeType;
+
+	char m_nPathState;
+	CPathNode* m_pLastPathNode;
+	CPathNode* m_pNextPathNode;
+	CEntity* m_pPathRelEntity;
+
+	int m_dwMoveState;
+	float m_fSeekExAngle;
+	CEntity* m_pSeekTarget;
+	CVector m_vecSeekPosEx;
+	CVector m_vecOffsetSeek;
+	unsigned int m_dwEventType;
+
+	float m_fAngleToEvent;
+	float m_fEventOrThreatX;
+	float m_fEventOrThreatY;
+	CEntity* m_pEventEntity;
+};
+
+struct SPlayerData {
+	PedSyncData pedData;
+
 	float Health;
 	float Armour;
 	float Rotation;
@@ -49,4 +114,16 @@ struct SPlayerData {
 	unsigned int CurrWep;
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
+};
+
+enum {
+	VCOOP_CREATE_PED = LIBRG_EVENT_LAST,
+	VCOOP_CREATE_VEHICLE,
+	VCOOP_DO_SOMETHING_ELSE,
+};
+
+enum {
+	VCOOP_PLAYER,
+	VCOOP_PED,
+	VCOOP_VEHICLE,
 };

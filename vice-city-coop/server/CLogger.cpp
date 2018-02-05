@@ -1,4 +1,3 @@
-#include "..\vccoop_main\config.h"
 #include "server.h"
 
 CLogger::CLogger()
