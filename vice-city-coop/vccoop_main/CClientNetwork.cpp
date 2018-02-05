@@ -82,9 +82,6 @@ void CClientNetwork::ClientConnectThread()
 			LocalPlayerInfo.Health				= LocalPlayer()->m_fHealth;
 			LocalPlayerInfo.Rotation			= LocalPlayer()->m_fRotationCur;
 			LocalPlayerInfo.Armour				= LocalPlayer()->m_fArmour;
-
-			int id = GetNetworkIDFromEntity(LocalPlayer());
-			gLog->Log("ID: %d\n", id);
 		}
 		librg_tick(&ctx);
 		zpl_sleep_ms(1);
