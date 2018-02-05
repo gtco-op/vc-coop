@@ -129,19 +129,23 @@ void CRender::Draw()
 		ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bGUI);
 		ImGui::Text("Welcome to Vice City CO-OP " VCCOOP_VER "\nThis is freaking alpha version");
 
+		ImGui::InputText("Nickname", Nickname, 25, 0, NULL, Nickname);
 		ImGui::InputText("IP", IP, sizeof(IP));
 		ImGui::InputInt("Port", &Port);
 
 		if (ImGui::Button("Connect"))
 		{
-			gLog->Log("[CRender] Connect button clicked..\n");
+			gLog->Log("[CRender] Connect button clicked\n");
 			gRender->bGUI = false;
 
-			gNetwork->AttemptConnect(IP, Port);
+			gGame->Name = Nickname;
+
+			if(strlen(gGame->Name.c_str())>=3)
+				gNetwork->AttemptConnect(IP, Port);
 		}
 		if (ImGui::Button("About VC:CO-OP"))
 		{
-			gLog->Log("[CRender] About button clicked..\n");
+			gLog->Log("[CRender] About button clicked\n");
 		}
 		ImGui::End();
 		ImGui::EndFrame();

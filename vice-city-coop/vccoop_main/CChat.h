@@ -9,7 +9,7 @@ public:
 
 	int pageSize;
 	char chatBuffer[10][256];
-	char chatInputBuffer[256];
+	static char chatInputBuffer[256];
 	void AddChatMessage(const char * message, ...);
 
 	bool chatToggled;

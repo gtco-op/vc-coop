@@ -1,5 +1,6 @@
 #pragma once
 
+static char Nickname[25] = { 0 };
 static char IP[]	= VCCOOP_DEFAULT_SERVER_ADDRESS;
 static int Port		= VCCOOP_DEFAULT_SERVER_PORT;
 class CClientNetwork

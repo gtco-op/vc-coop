@@ -16,23 +16,22 @@ CServerNetwork::~CServerNetwork()
 
 }
 void CServerNetwork::on_connect_request(librg_event_t *event) {
-	gLog->Log("[CServerNetwork][CLIENT REQUEST] Someone is requesting to connect\n");
+	char name[25];
+	librg_data_rptr(event->data, (void*)&name, 25);
 
-	u32 secret = librg_data_ru32(event->data);
-	if (secret != SERVER_SECRET) {
-		char* IP = { 0 };
-		enet_address_get_host_ip(&event->entity->client_peer->address, IP, sizeof(IP));
-		
-		gLog->Log("[CServerNetwork][CLIENT REQUEST] %s failed with incorrect server secret.\n", IP);
+	if (strlen(name)<0)	{
 		librg_event_reject(event);
 	}
+
+	gLog->Log("[CServerNetwork][CLIENT REQUEST] Network entity with name '%s' is requesting to connect\n", name);
 }
 void CServerNetwork::on_connect_accepted(librg_event_t *event) {
 	event->entity->user_data = new SPlayerData();
 	librg_entity_control_set(event->ctx, event->entity->id, event->entity->client_peer);
 
 	entities.push_back(event->entity);
-	gLog->Log("[CServerNetwork][CLIENT CONNECTION] Player %d connected\n", event->entity->id);
+
+	gLog->Log("[CServerNetwork][CLIENT CONNECTION] Network entity %d connected\n", event->entity->id);
 }
 void CServerNetwork::on_creating_entity(librg_event_t *event) {
 	librg_data_wptr(event->data, event->entity->user_data, sizeof(SPlayerData));
@@ -48,11 +47,9 @@ void CServerNetwork::on_disconnect(librg_event_t* event){
 	if (tmp != entities.end())	{
 		entities.erase(tmp);
 		delete event->entity->user_data;
-	}
-	
+	}	
 	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
 }
-
 
 void measure(void *userptr) {
 #ifndef VCCOOP_VERBOSE_LOG

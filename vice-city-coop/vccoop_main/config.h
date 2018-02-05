@@ -9,6 +9,9 @@
 // Temporary spawn position
 #define VCCOOP_DEFAULT_SPAWN_POSITION	10.0f, 5.0f, 25.0f
 
+// Default nickname
+#define VCCOOP_DEFAULT_NICKNAME			"Nickname123"
+
 // Default server address
 #define VCCOOP_DEFAULT_SERVER_ADDRESS	"192.168.0.16"
 
@@ -34,13 +37,15 @@
 #define VC_TITLE						"GTA: Vice City"
 #define SERVER_SECRET					420420420
 
-struct SPlayerData {
+struct SPlayerData {	
 	float Health;
 	float Armour;
-	int iModelIndex;
 	float Rotation;
+
+	int iModelIndex;
 	int iInteriorID;
 	int iCurrentAnimID;
+
 	unsigned int CurrWep;
 	unsigned int WepModelIndex;
 	unsigned int Ammo;

@@ -1,10 +1,13 @@
 #include "main.h"
 
-void Hook_CRunningScript__Process();
-
+DWORD dwCurPlayerActor = 0;
+CPed * localPlayer = NULL;
 static bool scriptProcessed = false;
 WNDPROC		orig_wndproc;
 HWND		orig_wnd;
+
+
+void Hook_CRunningScript__Process();
 
 CGame::CGame()
 {
@@ -19,6 +22,56 @@ CGame::~CGame()
 void CGame::Run()
 {
 
+}
+
+void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
+{
+	_asm mov dwCurPlayerActor, ecx
+	_asm pushad
+
+	localPlayer = FindPlayerPed();
+	if (localPlayer && (CPed*)dwCurPlayerActor == localPlayer)
+	{
+		_asm popad
+		_asm mov edx, 0x537270
+		_asm call edx
+		_asm pushad
+	}
+	else
+	{
+		//Redirect to CPed::ProccessControl instead
+		ThisCall(0x505790, (CPed*)dwCurPlayerActor);
+	}
+	_asm popad
+	_asm ret
+}
+void InstallMethodHook(DWORD dwInstallAddress,
+	DWORD dwHookFunction)
+{
+	DWORD oldProt, oldProt2;
+	VirtualProtect((LPVOID)dwInstallAddress, 4, PAGE_EXECUTE_READWRITE, &oldProt);
+	*(PDWORD)dwInstallAddress = (DWORD)dwHookFunction;
+	VirtualProtect((LPVOID)dwInstallAddress, 4, oldProt, &oldProt2);
+}
+void CGame::PatchAddToPopulation()
+{
+	// AddToPopulation()
+	//MakeRet(0x53BA80);
+
+	MakeNop(0x53E5C6, 5);
+
+	MakeNop(0x53E99B, 5);
+}
+void CGame::UnpatchAddToPopulation()
+{
+	// AddToPopulation()
+	//MemCpy((void*)0x53BA80, "\x53", 1);
+
+	// First Call to ^
+	MemCpy((void*)0x53E5C6, "\xE8\xB5\xD4\xFF\xFF", 5);
+
+	// Second Call to ^
+	MemCpy((void*)0x53E99B, "\xE8\xE0\xD0\xFF\xFF", 5);
 }
 void CGame::InitPreGamePatches()
 {
@@ -59,7 +112,7 @@ void CGame::InitPreGamePatches()
 	MakeCall(0x450245, Hook_CRunningScript__Process);
 
 	//Set fps limit
-	//MemWrite(0x602D68, 500); not ready
+	MemWrite(0x602D68, 500); 
 
 	// Disable re-initialization of DirectInput mouse device by the game
 	MakeNop(0x49908B, 5);
@@ -85,6 +138,22 @@ void CGame::InitPreGamePatches()
 
 	//Disable menu after focus loss
 	MakeRet(0x4A4FD0);
+
+	// Disable CCarCtrl::GenerateRandomCars
+	MakeRet(0x4292A0);
+
+	// Disable CCarCtrl::GenerateOneRandomCar
+	MakeRet(0x426DB0);
+
+	// Disable CPopulation::AddToPopulation()
+	//MakeRet(0x53BA80);
+
+	// Disable CPopulation::AddPedsAtStartOfGame()
+	//MakeRet(0x53E3E0);
+
+	PatchAddToPopulation();
+
+	InstallMethodHook(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
 
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
@@ -125,6 +194,17 @@ void Hook_CRunningScript__Process()
 
 		CWorld::Players[0].m_bNeverGetsTired = true;
 
+		CPools::ms_pPedPool->Clear();
+		CPools::ms_pVehiclePool->Clear();
+		
+		//Pedpool inc
+		/*MemWrite<s32>(0x4C02C8, 1000);
+		//vehicle pool inc
+		MemWrite<s32>(0x4C02EA, 1000);*/
+
+		CPools::ms_pPedPool->Init(1000, NULL, NULL);
+		CPools::ms_pVehiclePool->Init(1000, NULL, NULL);
+
 		gLog->Log("[CGame] CRunningScript::Process() hook finished.\n");
 
 		gRender->ToggleGUI();
@@ -143,14 +223,10 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		case WM_KEYDOWN:
 		{
 			int vkey = (int)wparam;
-			if (vkey == 0x54)//T
+			if (vkey == 0x54) //T
 			{
 				if (!gChat->chatToggled)
 					gChat->ToggleChat(true);
-			}
-			if (vkey == VK_RETURN)
-			{
-				if(gChat->chatToggled) gChat->ProcessChatInput();
 			}
 			if (vkey == VK_ESCAPE)
 			{

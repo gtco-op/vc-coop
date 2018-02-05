@@ -1,5 +1,7 @@
 #include "main.h"
 
+char CChat::chatInputBuffer[256];
+
 CChat::CChat() 
 {
 	this->pageSize = 10;
@@ -11,7 +13,6 @@ CChat::CChat()
 	}
 }
 CChat::~CChat() {}
-
 void CChat::Draw()
 {
 	//todo: proper pagination implementation
@@ -35,11 +36,21 @@ void CChat::Draw()
 		ImGui::SetNextWindowPos(ImVec2(30, (float)gRender->MeasureText("Y").cy * 10 + 20));
 		ImGui::SetNextWindowBgAlpha(-1.0f);
 		style.WindowBorderSize = 0.0f;
-		ImGui::Begin("A", (bool*)1, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+		ImGui::Begin("A", &this->chatToggled, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		ImGui::PushItemWidth(350.0f);
 		ImGui::SetKeyboardFocusHere(); 
 
-		ImGui::InputText("", this->chatInputBuffer, IM_ARRAYSIZE(this->chatInputBuffer));
+		if (ImGui::InputText("", this->chatInputBuffer, 256, ImGuiInputTextFlags_EnterReturnsTrue, NULL, this->chatInputBuffer))
+		{
+			char* input_end = this->chatInputBuffer + strlen(this->chatInputBuffer);
+			while (input_end > this->chatInputBuffer && input_end[-1] == ' ') { input_end--; } *input_end = 0;
+			if (this->chatInputBuffer[0])
+			{
+				ProcessChatInput();
+				strcpy(this->chatInputBuffer, "");
+			}
+			this->chatToggled = false;
+		}
 		ImGui::PopItemWidth();
 		ImGui::End();
 		ImGui::EndFrame();
@@ -66,7 +77,6 @@ void CChat::AddChatMessage(const char * message, ...)
 
 void CChat::ToggleChat(bool toggle)
 {
-
 	if (!toggle)gGame->EnableMouseInput();
 	else gGame->DisableMouseInput();
 

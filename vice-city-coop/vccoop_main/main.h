@@ -32,6 +32,7 @@
 #include "CStreaming.h"
 #include "CCivilianPed.h"
 #include "CPlayerInfo.h"
+#include "CPopulation.h"
 
 //vccoop
 #include "config.h"
