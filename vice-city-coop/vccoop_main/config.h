@@ -63,7 +63,7 @@ struct PedSyncData {
 	float m_fObjectiveAngle;
 	int m_pObjectiveEntity;
 
-	CVehicle* m_pObjectiveVehicle;
+	//CVehicle* m_pObjectiveVehicle;
 
 	int m_dwFleeTimer;
 	float m_fFleeFromPosX;

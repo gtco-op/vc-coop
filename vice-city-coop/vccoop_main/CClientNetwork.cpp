@@ -26,7 +26,7 @@ CClientNetwork::~CClientNetwork()
 }
 CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 {
-	CEntity* ent;
+	CEntity* ent = NULL;
 	vector <pair<CPed*, int>> ::iterator it;
 	for (it = players.begin(); it != players.end(); it++) {
 		if (it->second == id) {
@@ -38,7 +38,7 @@ CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 }
 int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 {
-	int ID;
+	int ID = 0;
 	vector <pair<CPed*, int>> ::iterator it;
 	for (it = players.begin(); it != players.end(); it++) {
 		if (it->first == ent) {
@@ -111,13 +111,13 @@ void CClientNetwork::on_entity_create(librg_event_t *event) {
 		ped->SetModelIndex(7);
 		CWorld::Add(ped);
 		ped->Teleport(CVector(position.x, position.y, position.z));
-		ped->SetWanderPath((signed int)((long double)rand() * 0.000030517578 * 8.0));
+		if (event->entity->type == VCOOP_PED)ped->SetWanderPath((signed int)((long double)rand() * 0.000030517578 * 8.0));
 		event->entity->user_data = ped;
 
 		if (event->entity->type == VCOOP_PLAYER)
 			players.push_back(std::pair<CPed*, int>(ped, event->entity->id));
 	}
-	else if (event->entity->type == VCOOP_VEHICLE)
+	else if (event->entity->type == VCOOP_VEHICLE) 
 	{
 		//not done yet
 	}
@@ -169,8 +169,8 @@ void CClientNetwork::on_entity_update(librg_event_t *event) {
 			ped->m_dwObjectiveTimer = spd.pedData.m_dwObjectiveTimer;
 			ped->m_vecObjective = spd.pedData.m_vecObjective;
 			ped->m_fObjectiveAngle = spd.pedData.m_fObjectiveAngle;
-//			ped->m_pObjectiveEntity = spd.pedData.m_pObjectiveEntity;
-			ped->m_pObjectiveVehicle = spd.pedData.m_pObjectiveVehicle;
+			ped->m_pObjectiveEntity = GetEntityFromNetworkID(spd.pedData.m_pObjectiveEntity);
+			//ped->m_pObjectiveVehicle = spd.pedData.m_pObjectiveVehicle;
 
 			//Wander path sync?
 			/*if (ped->m_dwAction == 4 || ped->m_dwAction == 5)
@@ -194,7 +194,7 @@ void CClientNetwork::on_entity_update(librg_event_t *event) {
 			for (int i = 0; i < 8; i++)
 			{
 				ped->m_aPathNodeStates[i] = spd.pedData.m_aPathNodeStates[i];
-				ped->m_apPathNodesStates[i] = &spd.pedData.m_apPathNodesStates[i];
+				//ped->m_apPathNodesStates[i] = &spd.pedData.m_apPathNodesStates[i];
 			}
 			ped->m_dwPathNodeType = spd.pedData.m_dwPathNodeType;
 			ped->m_nPathState = spd.pedData.m_nPathState;
@@ -289,7 +289,7 @@ void CClientNetwork::on_client_stream(librg_event_t *event) {
 			for (int i = 0; i < 8; i++)
 			{
 				spd.pedData.m_aPathNodeStates[i]	= ped->m_aPathNodeStates[i];
-				spd.pedData.m_apPathNodesStates[i]	= *ped->m_apPathNodesStates[i];
+				//spd.pedData.m_apPathNodesStates[i]	= *ped->m_apPathNodesStates[i];
 			}
 			spd.pedData.m_dwPathNodeType		= ped->m_dwPathNodeType;
 			spd.pedData.m_nPathState			= ped->m_nPathState;
