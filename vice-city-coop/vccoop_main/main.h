@@ -40,6 +40,33 @@
 #include "CWorld.h"
 #include "CTheScripts.h"
 #include "CTimer.h"
+#include "CTheZones.h"
+#include "extensions\ScriptCommands.h"
+
+#define MAX_PLAYERS 500
+
+#pragma pack(1)
+typedef struct _CAMERA_AIM
+{
+	float f1x, f1y, f1z;
+	float pos1x, pos1y, pos1z;
+	float pos2x, pos2y, pos2z;
+	float f2x, f2y, f2z;
+
+} CAMERA_AIM;
+
+#pragma pack(1)
+typedef struct _GTA_CONTROLSET
+{
+	DWORD dwFrontPad;
+	WORD wKeys1[19];
+	DWORD dwFrontPad2;
+	WORD wKeys2[19];
+	WORD wTurnLeftRightAnalog[10];
+	BYTE bytePadding1[138];
+	BYTE byteCrouchAnalog[5];
+} GTA_CONTROLSET;
+
 
 //vccoop
 #include "config.h"

@@ -107,17 +107,27 @@ void CClientNetwork::on_entity_create(librg_event_t *event) {
 
 		CPed *ped;
 		if (event->entity->type == VCOOP_PLAYER) {
-			ped = new CPlayerPed();
+			int dwPlayerID = 0;
+			Command<0x0053>(event->entity->id, 10.0f, 5.0f, 25.0f);
+			Command<0x01F5>(event->entity->id, &dwPlayerID);
+			ped = gGame->GamePool_Ped_GetAt(dwPlayerID);
+			gGame->players[event->entity->id] = (DWORD)ped;
+			ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+			ped->SetModelIndex(7);
 		}
 		else if (event->entity->type == VCOOP_PED) {
 			ped = new CCivilianPed(PEDTYPE_CIVMALE, 7);
 		}
 		ped->SetModelIndex(7);
-		CWorld::Add(ped);
-		ped->Teleport(CVector(position.x, position.y, position.z));
 		
 		if (event->entity->type == VCOOP_PED)
+		{
 			ped->SetWanderPath((signed int)((long double)rand() * 0.000030517578 * 8.0));
+
+			CWorld::Add(ped);
+		}
+
+		ped->Teleport(CVector(position.x, position.y, position.z));
 
 		event->entity->user_data = ped;
 
@@ -147,6 +157,9 @@ void CClientNetwork::on_entity_update(librg_event_t *event) {
 			ped->m_fHealth					= spd.Health;
 			ped->m_fRotationCur				= spd.Rotation;
 			ped->m_fArmour					= spd.Armour;
+
+			gGame->remotePlayerKeys[event->entity->id] = spd.playerControls;
+			gGame->remotePlayerLookFrontX[event->entity->id] = spd.cameraAim;
 		}
 		else
 		{
@@ -238,6 +251,9 @@ void CClientNetwork::on_client_stream(librg_event_t *event) {
 			spd.Armour			= ped->m_fArmour;
 			spd.iModelIndex		= ped->m_nModelIndex;
 			spd.Rotation		= ped->m_fRotationCur;
+
+			spd.playerControls = *(GTA_CONTROLSET*)0x7DBCB0;
+			spd.cameraAim = *(CAMERA_AIM*)0x7E4978;
 
 			librg_data_wptr(event->data, &spd, sizeof(SPlayerData));
 		}
