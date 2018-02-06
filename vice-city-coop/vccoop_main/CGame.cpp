@@ -335,10 +335,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			int vkey = (int)wparam;
 			if (vkey == 'P')
 			{
-				//librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
-				//CPlayerPed::SetupPlayerPed(playerids);
-				
-
+				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
 			}
 			if (vkey == 'T')
 			{
