@@ -127,21 +127,24 @@ void CRender::Draw()
 	{
 		ImGui_ImplDX9_NewFrame();
 		ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bGUI);
-		ImGui::Text("Welcome to Vice City CO-OP " VCCOOP_VER "\nThis is freaking alpha version");
+		ImGui::Text("Welcome to Vice City CO-OP " VCCOOP_VER "\n - Alpha Version - ");
 
 		ImGui::InputText("Nickname", Nickname, 25, 0, NULL, Nickname);
-		ImGui::InputText("IP", IP, sizeof(IP));
+		ImGui::InputText("IP", IP, 16, 0, NULL, IP);
 		ImGui::InputInt("Port", &Port);
 
 		if (ImGui::Button("Connect"))
 		{
-			gLog->Log("[CRender] Connect button clicked\n");
-			gRender->bGUI = false;
+			gRender->bGUI			= false;
 
-			gGame->Name = Nickname;
+			gGame->Name				= Nickname;
 
-			if(strlen(gGame->Name.c_str())>=3)
-				gNetwork->AttemptConnect(IP, Port);
+			gNetwork->ServerAddress = IP;
+			gNetwork->ServerPort	= Port;
+
+			if (strlen(gGame->Name.c_str()) >= 3) {
+				gNetwork->AttemptConnect(gNetwork->ServerAddress, gNetwork->ServerPort);
+			}
 		}
 		if (ImGui::Button("About VC:CO-OP"))
 		{

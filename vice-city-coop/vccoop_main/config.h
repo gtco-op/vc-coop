@@ -13,10 +13,16 @@
 #define VCCOOP_DEFAULT_NICKNAME			"Nickname123"
 
 // Default server address
-#define VCCOOP_DEFAULT_SERVER_ADDRESS	"89.132.130.116"
+#define VCCOOP_DEFAULT_SERVER_ADDRESS	"192.168.0.16"
 
 // Default server port
 #define VCCOOP_DEFAULT_SERVER_PORT		23546
+
+// Default server secret
+#define VCCOOP_DEFAULT_SERVER_SECRET	420420420
+
+// Default server config filename
+#define VCCOOP_DEFAULT_SERVER_CONFIG	"server.ini"
 
 //------------------------------------------------------------------------------------------
 
@@ -35,12 +41,8 @@
 #define DEFAULT_TIME_FORMAT				"%Y%m%d_%H%M%S"
 #define LOGGER_TIME_FORMAT				"%H:%M:%S"
 #define VC_TITLE						"GTA: Vice City"
-#define SERVER_SECRET					420420420
-
 
 struct PedSyncData {
-	int m_pFleeFrom;
-
 	float m_fActionX;
 	float m_fActionY;
 	
@@ -78,18 +80,16 @@ struct PedSyncData {
 	short m_wCurPathNode;
 	unsigned short m_wPathNodes;
 	CPathNode m_aPathNodeStates[8];
-	CPathNode m_apPathNodesStates[8];
+	CPathNode* m_apPathNodesStates[8];
 
 	unsigned int m_dwPathNodeType;
 
 	char m_nPathState;
 	CPathNode* m_pLastPathNode;
 	CPathNode* m_pNextPathNode;
-	int m_pPathRelEntity;
 
 	int m_dwMoveState;
 	float m_fSeekExAngle;
-	int m_pSeekTarget;
 	CVector m_vecSeekPosEx;
 	CVector m_vecOffsetSeek;
 	unsigned int m_dwEventType;
@@ -97,12 +97,11 @@ struct PedSyncData {
 	float m_fAngleToEvent;
 	float m_fEventOrThreatX;
 	float m_fEventOrThreatY;
-	int m_pEventEntity;
 };
 
 struct SPlayerData {
-	PedSyncData pedData;
-
+	char szName[25];
+	
 	float Health;
 	float Armour;
 	float Rotation;
@@ -114,6 +113,8 @@ struct SPlayerData {
 	unsigned int CurrWep;
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
+
+	PedSyncData pedData;
 };
 
 enum {

@@ -1,6 +1,9 @@
 #pragma once
+// Dependencies
 #include "librg\librg.h"
+#include "inih\INIReader.h"
 
+// Standard includes
 #include <Windows.h>
 #include <iostream>
 #include <ostream>
@@ -11,6 +14,7 @@
 #include <vector>
 #include <ctime>
 
+// Plugin-SDK
 #include "plugin.h"
 #include "game_vc\common.h"
 #include "game_vc\eWeaponFire.h"
@@ -23,10 +27,15 @@
 #include "game_vc\CPlayerInfo.h"
 #include "game_vc\CPopulation.h"
 
+// VCCOOP
 #include "..\vccoop_main\config.h"
+#include "CConfiguration.h"
 #include "CLogger.h"
 #include "CServerNetwork.h"
 
+//------------------------------------------------------------------------------------------------
+
+extern CConfiguration   *gConfig;
 extern CLogger			*gLog;
 extern CServerNetwork	*gServerNetwork;
 

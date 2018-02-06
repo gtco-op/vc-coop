@@ -13,7 +13,7 @@ void CDebugScreen::Draw()
 	}
 	else
 	{
-		sprintf(vccoop_string, "%s %s     Server: %s:%d   Press F7 to disconnect", VCCOOP_NAME, VCCOOP_VER, IP, Port);
+		sprintf(vccoop_string, "%s %s     Server: %s:%d   Press F7 to disconnect", VCCOOP_NAME, VCCOOP_VER, gNetwork->addr.host, gNetwork->addr.port);
 	}
 
 	SIZE textSize = gRender->MeasureText(vccoop_string);

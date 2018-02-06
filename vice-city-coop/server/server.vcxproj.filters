@@ -17,6 +17,18 @@
     <Filter Include="Source\network">
       <UniqueIdentifier>{3b8e1a6c-6aa5-4ece-921e-65ca8e463c1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\inih">
+      <UniqueIdentifier>{6346b55b-771b-44d0-a7bc-beb163ca13c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\utils\CLogger">
+      <UniqueIdentifier>{44b758c5-a51a-4562-98cc-7b96ae40a654}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\utils\CConfiguration">
+      <UniqueIdentifier>{4631d6d2-53f7-45a3-be5a-2f18f3ee1012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\config">
+      <UniqueIdentifier>{4ba0e5c8-5d30-4bb9-a15a-c424c040ca61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="librg\enet.h">
@@ -31,28 +43,37 @@
     <ClInclude Include="librg\zpl_math.h">
       <Filter>vendor\librg</Filter>
     </ClInclude>
-    <ClInclude Include="CLogger.h">
-      <Filter>Source\utils</Filter>
-    </ClInclude>
     <ClInclude Include="CServerNetwork.h">
       <Filter>Source\network</Filter>
     </ClInclude>
     <ClInclude Include="server.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="inih\INIReader.h">
+      <Filter>vendor\inih</Filter>
+    </ClInclude>
+    <ClInclude Include="CLogger.h">
+      <Filter>Source\utils\CLogger</Filter>
+    </ClInclude>
+    <ClInclude Include="CConfiguration.h">
+      <Filter>Source\utils\CConfiguration</Filter>
+    </ClInclude>
     <ClInclude Include="..\vccoop_main\config.h">
-      <Filter>Source</Filter>
+      <Filter>Source\config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="CLogger.cpp">
-      <Filter>Source\utils</Filter>
-    </ClCompile>
     <ClCompile Include="CServerNetwork.cpp">
       <Filter>Source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="CLogger.cpp">
+      <Filter>Source\utils\CLogger</Filter>
+    </ClCompile>
+    <ClCompile Include="CConfiguration.cpp">
+      <Filter>Source\utils\CConfiguration</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

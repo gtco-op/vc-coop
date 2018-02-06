@@ -2,23 +2,25 @@
 #define LIBRG_DEBUG
 #include "main.h"
 
-librg_ctx_t CClientNetwork::ctx;
-librg_entity_t * CClientNetwork::local_player;
-std::vector<std::pair<CPed*, int>> CClientNetwork::players;
-SPlayerData LocalPlayerInfo;
+SPlayerData							LocalPlayerInfo;
 
-bool CClientNetwork::client_connected;
-bool CClientNetwork::client_running;
-bool CClientNetwork::connected;
+librg_address_t						CClientNetwork::addr;
+librg_ctx_t							CClientNetwork::ctx;
+librg_entity_t *					CClientNetwork::local_player;
+std::vector<std::pair<CPed*, int>>	CClientNetwork::players;
+
+bool								CClientNetwork::client_connected;
+bool								CClientNetwork::client_running;
+bool								CClientNetwork::connected;
 
 CClientNetwork::CClientNetwork()
 {
-	ctx = { 0 };
-	local_player = nullptr;
+	ctx					= { 0 };
+	local_player		= nullptr;
 
-	client_running = false;
-	client_connected = false;
-	connected = false;
+	client_running		= false;
+	client_connected	= false;
+	connected			= false;
 }
 CClientNetwork::~CClientNetwork()
 {
@@ -33,7 +35,6 @@ CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 			ent = it->first;
 		}
 	}
-	gLog->Log("[CClientNetwork] Entity 0x%X found for id %d", ent, id);
 	return ent;
 }
 int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
@@ -45,7 +46,6 @@ int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 			ID = it->second;
 		}
 	}
-	gLog->Log("[CClientNetwork] ID %d found for entity 0x%X", ID, ent);
 	return ID;
 }
 void CClientNetwork::on_connect_request(librg_event_t *event) {
@@ -55,12 +55,14 @@ void CClientNetwork::on_connect_request(librg_event_t *event) {
 	gLog->Log("[CClientNetwork] Connecting as %s\n", name);
 
 	librg_data_wptr(event->data, (void*)&name, sizeof(name));
+	librg_data_wu32(event->data, VCCOOP_DEFAULT_SERVER_SECRET);
 }
 void CClientNetwork::on_connect_accepted(librg_event_t *event) {
 	gLog->Log("[CClientNetwork] Connection Accepted\n");
-	connected = true;
-	local_player = event->entity;
-	event->entity->user_data = LocalPlayer();
+
+	connected					= true;
+	local_player				= event->entity;
+	event->entity->user_data	= LocalPlayer();
 
 	players.push_back(std::pair<CPed*, int>(LocalPlayer(), event->entity->id));
 }
@@ -69,12 +71,14 @@ void CClientNetwork::on_connect_refused(librg_event_t *event) {
 }
 void CClientNetwork::StopClientThread()
 {
-	client_running = false;
-	client_connected = false;
-	connected = false;
+	client_running		= false;
+	client_connected	= false;
+	connected			= false;
 }
 void CClientNetwork::ClientConnectThread()
 {
+	strcpy(LocalPlayerInfo.szName, gGame->Name.c_str());
+
 	while (client_running) {
 		if (connected && local_player)
 		{
@@ -111,13 +115,16 @@ void CClientNetwork::on_entity_create(librg_event_t *event) {
 		ped->SetModelIndex(7);
 		CWorld::Add(ped);
 		ped->Teleport(CVector(position.x, position.y, position.z));
-		if (event->entity->type == VCOOP_PED)ped->SetWanderPath((signed int)((long double)rand() * 0.000030517578 * 8.0));
+		
+		if (event->entity->type == VCOOP_PED)
+			ped->SetWanderPath((signed int)((long double)rand() * 0.000030517578 * 8.0));
+
 		event->entity->user_data = ped;
 
 		if (event->entity->type == VCOOP_PLAYER)
 			players.push_back(std::pair<CPed*, int>(ped, event->entity->id));
 	}
-	else if (event->entity->type == VCOOP_VEHICLE) 
+	else if (event->entity->type == VCOOP_VEHICLE)
 	{
 		//not done yet
 	}
@@ -135,87 +142,79 @@ void CClientNetwork::on_entity_update(librg_event_t *event) {
 
 			ped->Teleport(*(CVector *)&event->entity->position);
 
-			ped->m_nModelIndex = spd.iModelIndex;
-			ped->m_dwAnimGroupId = spd.iCurrentAnimID;
-			ped->m_fHealth = spd.Health;
-			ped->m_fRotationCur = spd.Rotation;
-			ped->m_fArmour = spd.Armour;
+			ped->m_nModelIndex				= spd.iModelIndex;
+			ped->m_dwAnimGroupId			= spd.iCurrentAnimID;
+			ped->m_fHealth					= spd.Health;
+			ped->m_fRotationCur				= spd.Rotation;
+			ped->m_fArmour					= spd.Armour;
 		}
 		else
 		{
 			auto ped = (CPed *)event->entity->user_data;
 
 			ped->Teleport(*(CVector *)&event->entity->position);
+			
+			ped->m_nModelIndex				= spd.iModelIndex;
+			ped->m_fHealth					= spd.Health;
+			ped->m_fRotationCur				= spd.Rotation;
+			ped->m_fArmour					= spd.Armour;
 
-			ped->m_nModelIndex = spd.iModelIndex;
-			ped->m_fHealth = spd.Health;
-			ped->m_fRotationCur = spd.Rotation;
-			ped->m_fArmour = spd.Armour;
-
-			ped->m_fRotationDest = spd.pedData.m_fRotationDest;
-			ped->m_fLookDirection = spd.pedData.m_fLookDirection;
-			ped->m_vecAnimMoveDelta = spd.pedData.m_vecAnimMoveDelta;
-			ped->m_dwAnimGroupId = spd.pedData.m_dwAnimGroupId;
-			ped->m_vecMoveSpeed = spd.pedData.m_vecMoveSpeed;
+			ped->m_fRotationDest			= spd.pedData.m_fRotationDest;
+			ped->m_fLookDirection			= spd.pedData.m_fLookDirection;
+			ped->m_vecAnimMoveDelta			= spd.pedData.m_vecAnimMoveDelta;
+			ped->m_dwAnimGroupId			= spd.pedData.m_dwAnimGroupId;
+			ped->m_vecMoveSpeed				= spd.pedData.m_vecMoveSpeed;
 
 			//Action sync
-			ped->m_dwAction = spd.pedData.m_dwAction;
-			ped->m_dwActionTimer = spd.pedData.m_dwActionTimer;
-			ped->m_fActionX = spd.pedData.m_fActionX;
-			ped->m_fActionY = spd.pedData.m_fActionY;
+			ped->m_dwAction					= spd.pedData.m_dwAction;
+			ped->m_dwActionTimer			= spd.pedData.m_dwActionTimer;
+			ped->m_fActionX					= spd.pedData.m_fActionX;
+			ped->m_fActionY					= spd.pedData.m_fActionY;
 
 			//Objective sync
-			ped->m_dwObjective = spd.pedData.m_dwObjective;
-			ped->m_dwObjectiveTimer = spd.pedData.m_dwObjectiveTimer;
-			ped->m_vecObjective = spd.pedData.m_vecObjective;
-			ped->m_fObjectiveAngle = spd.pedData.m_fObjectiveAngle;
-			ped->m_pObjectiveEntity = GetEntityFromNetworkID(spd.pedData.m_pObjectiveEntity);
-			//ped->m_pObjectiveVehicle = spd.pedData.m_pObjectiveVehicle;
-
-			//Wander path sync?
-			/*if (ped->m_dwAction == 4 || ped->m_dwAction == 5)
-			{
-				ped->SetWanderPath(*(BYTE *)(copyPed2 + 820));
-			}*/
-
+			ped->m_dwObjective				= spd.pedData.m_dwObjective;
+			ped->m_dwObjectiveTimer			= spd.pedData.m_dwObjectiveTimer;
+			ped->m_vecObjective				= spd.pedData.m_vecObjective;
+			ped->m_fObjectiveAngle			= spd.pedData.m_fObjectiveAngle;
+			ped->m_pObjectiveEntity			= GetEntityFromNetworkID(spd.pedData.m_pObjectiveEntity);
+			//ped->m_pObjectiveVehicle		= spd.pedData.m_pObjectiveVehicle;
+			
 			//Flee sync
-			ped->m_dwFleeTimer = spd.pedData.m_dwFleeTimer;
-			ped->m_fFleeFromPosX = spd.pedData.m_fFleeFromPosX;
-			ped->m_fFleeFromPosY = spd.pedData.m_fFleeFromPosY;
-			ped->m_pFleeFrom = GetEntityFromNetworkID(spd.pedData.m_pFleeFrom);
+			ped->m_dwFleeTimer				= spd.pedData.m_dwFleeTimer;
+			ped->m_fFleeFromPosX			= spd.pedData.m_fFleeFromPosX;
+			ped->m_fFleeFromPosY			= spd.pedData.m_fFleeFromPosY;
 
 			//Path sync
-			ped->m_fPathNextNodeDir = spd.pedData.m_fPathNextNodeDir;
-			ped->wRouteCurDir = spd.pedData.wRouteCurDir;
-			ped->m_vecPathNextNode = spd.pedData.m_vecPathNextNode;
-			ped->m_dwPathNodeTimer = spd.pedData.m_dwPathNodeTimer;
-			ped->m_wCurPathNode = spd.pedData.m_wCurPathNode;
-			ped->m_wPathNodes = spd.pedData.m_wPathNodes;
+			ped->m_fPathNextNodeDir			= spd.pedData.m_fPathNextNodeDir;
+			ped->wRouteCurDir				= spd.pedData.wRouteCurDir;
+			ped->m_vecPathNextNode			= spd.pedData.m_vecPathNextNode;
+			ped->m_dwPathNodeTimer			= spd.pedData.m_dwPathNodeTimer;
+			ped->m_wCurPathNode				= spd.pedData.m_wCurPathNode;
+			ped->m_wPathNodes				= spd.pedData.m_wPathNodes;
+
 			for (int i = 0; i < 8; i++)
 			{
-				ped->m_aPathNodeStates[i] = spd.pedData.m_aPathNodeStates[i];
-				//ped->m_apPathNodesStates[i] = &spd.pedData.m_apPathNodesStates[i];
+				ped->m_aPathNodeStates[i]	= spd.pedData.m_aPathNodeStates[i];
+				//ped->m_apPathNodesStates[i] = spd.pedData.m_apPathNodesStates[i];
 			}
-			ped->m_dwPathNodeType = spd.pedData.m_dwPathNodeType;
-			ped->m_nPathState = spd.pedData.m_nPathState;
-			ped->m_pLastPathNode = spd.pedData.m_pLastPathNode;
-			ped->m_pNextPathNode = spd.pedData.m_pNextPathNode;
-			ped->m_pPathRelEntity = GetEntityFromNetworkID(spd.pedData.m_pPathRelEntity);
+
+			ped->m_dwPathNodeType		= spd.pedData.m_dwPathNodeType;
+			ped->m_nPathState			= spd.pedData.m_nPathState;
+			ped->m_pLastPathNode		= spd.pedData.m_pLastPathNode;
+			ped->m_pNextPathNode		= spd.pedData.m_pNextPathNode;
 
 			ped->SetMoveState((eMoveState)spd.pedData.m_dwMoveState);
 
 			//Seek sync
-			ped->m_fSeekExAngle = spd.pedData.m_fSeekExAngle;
-			ped->m_pSeekTarget = GetEntityFromNetworkID(spd.pedData.m_pSeekTarget);
-			ped->m_vecSeekPosEx = spd.pedData.m_vecSeekPosEx;
-			ped->m_vecOffsetSeek = spd.pedData.m_vecOffsetSeek;
+			ped->m_fSeekExAngle			= spd.pedData.m_fSeekExAngle;
+			ped->m_vecSeekPosEx			= spd.pedData.m_vecSeekPosEx;
+			ped->m_vecOffsetSeek		= spd.pedData.m_vecOffsetSeek;
 
 			//Event sync
-			ped->m_dwEventType = spd.pedData.m_dwEventType;
-			ped->m_fAngleToEvent = spd.pedData.m_fAngleToEvent;
-			ped->m_fEventOrThreatX = spd.pedData.m_fEventOrThreatX;
-			ped->m_fEventOrThreatY = spd.pedData.m_fEventOrThreatY;
-			ped->m_pEventEntity = GetEntityFromNetworkID(spd.pedData.m_pEventEntity);
+			ped->m_dwEventType			= spd.pedData.m_dwEventType;
+			ped->m_fAngleToEvent		= spd.pedData.m_fAngleToEvent;
+			ped->m_fEventOrThreatX		= spd.pedData.m_fEventOrThreatX;
+			ped->m_fEventOrThreatY		= spd.pedData.m_fEventOrThreatY;
 		}
 	}
 	else if(event->entity->type == VCOOP_VEHICLE)
@@ -232,11 +231,11 @@ void CClientNetwork::on_client_stream(librg_event_t *event) {
 		SPlayerData spd;
 		if (event->entity->type == VCOOP_PLAYER)
 		{
-			spd.Health = ped->m_fHealth;
-			spd.iCurrentAnimID = ped->m_dwAnimGroupId;
-			spd.Armour = ped->m_fArmour;
-			spd.iModelIndex = ped->m_nModelIndex;
-			spd.Rotation = ped->m_fRotationCur;
+			spd.Health			= ped->m_fHealth;
+			spd.iCurrentAnimID	= ped->m_dwAnimGroupId;
+			spd.Armour			= ped->m_fArmour;
+			spd.iModelIndex		= ped->m_nModelIndex;
+			spd.Rotation		= ped->m_fRotationCur;
 
 			librg_data_wptr(event->data, &spd, sizeof(SPlayerData));
 		}
@@ -248,6 +247,7 @@ void CClientNetwork::on_client_stream(librg_event_t *event) {
 			spd.iModelIndex = ped->m_nModelIndex;
 			spd.Rotation = ped->m_fRotationCur;
 
+			//Move sync
 			spd.pedData.m_fRotationDest			= ped->m_fRotationDest;
 			spd.pedData.m_fLookDirection		= ped->m_fLookDirection;
 			spd.pedData.m_vecAnimMoveDelta		= ped->m_vecAnimMoveDelta;
@@ -265,20 +265,13 @@ void CClientNetwork::on_client_stream(librg_event_t *event) {
 			spd.pedData.m_dwObjectiveTimer		= ped->m_dwObjectiveTimer;
 			spd.pedData.m_vecObjective			= ped->m_vecObjective;
 			spd.pedData.m_fObjectiveAngle		= ped->m_fObjectiveAngle;
-			spd.pedData.m_pObjectiveEntity		= GetNetworkIDFromEntity(ped->m_pObjectiveEntity);
-			//spd.pedData.m_pObjectiveVehicle		= ped->m_pObjectiveVehicle; //same for cars ^
-
-			//Wander path sync?
-			/*if (spd.pedData.m_dwAction == 4 || spd.pedData.m_dwAction == 5)
-			{
-			spd.pedData.SetWanderPath(*(BYTE *)(copyPed2 + 820));
-			}*/
-
+			//spd.pedData.m_pObjectiveVehicle		= ped->m_pObjectiveVehicle;
+			
 			//Flee sync
 			spd.pedData.m_dwFleeTimer			= ped->m_dwFleeTimer;
 			spd.pedData.m_fFleeFromPosX			= ped->m_fFleeFromPosX;
 			spd.pedData.m_fFleeFromPosY			= ped->m_fFleeFromPosY;
-			spd.pedData.m_pFleeFrom				= GetNetworkIDFromEntity((CPed*)ped->m_pFleeFrom);
+
 			//Path sync
 			spd.pedData.m_fPathNextNodeDir		= ped->m_fPathNextNodeDir;
 			spd.pedData.wRouteCurDir			= ped->wRouteCurDir;
@@ -286,22 +279,24 @@ void CClientNetwork::on_client_stream(librg_event_t *event) {
 			spd.pedData.m_dwPathNodeTimer		= ped->m_dwPathNodeTimer;
 			spd.pedData.m_wCurPathNode			= ped->m_wCurPathNode;
 			spd.pedData.m_wPathNodes			= ped->m_wPathNodes;
+
+			//Path node sync
 			for (int i = 0; i < 8; i++)
 			{
-				spd.pedData.m_aPathNodeStates[i]	= ped->m_aPathNodeStates[i];
-				//spd.pedData.m_apPathNodesStates[i]	= *ped->m_apPathNodesStates[i];
+				spd.pedData.m_aPathNodeStates[i] = ped->m_aPathNodeStates[i];
+				//spd.pedData.m_apPathNodesStates[i] = ped->m_apPathNodesStates[i];
 			}
+
 			spd.pedData.m_dwPathNodeType		= ped->m_dwPathNodeType;
 			spd.pedData.m_nPathState			= ped->m_nPathState;
 			spd.pedData.m_pLastPathNode			= ped->m_pLastPathNode;
 			spd.pedData.m_pNextPathNode			= ped->m_pNextPathNode;
-			spd.pedData.m_pPathRelEntity		= GetNetworkIDFromEntity((CPed*)ped->m_pPathRelEntity);
 
+			//Move state sync
 			spd.pedData.m_dwMoveState			= ped->m_dwMoveState;
 		
 			//Seek sync
 			spd.pedData.m_fSeekExAngle			= ped->m_fSeekExAngle;
-			spd.pedData.m_pSeekTarget			= GetNetworkIDFromEntity(ped->m_pSeekTarget);
 			spd.pedData.m_vecSeekPosEx			= ped->m_vecSeekPosEx;
 			spd.pedData.m_vecOffsetSeek			= ped->m_vecOffsetSeek;
 
@@ -310,8 +305,6 @@ void CClientNetwork::on_client_stream(librg_event_t *event) {
 			spd.pedData.m_fAngleToEvent			= ped->m_fAngleToEvent;
 			spd.pedData.m_fEventOrThreatX		= ped->m_fEventOrThreatX;
 			spd.pedData.m_fEventOrThreatY		= ped->m_fEventOrThreatY;
-			spd.pedData.m_pEventEntity			= GetNetworkIDFromEntity(ped->m_pEventEntity);
-
 
 			librg_data_wptr(event->data, &spd, sizeof(SPlayerData));
 		}
@@ -332,7 +325,7 @@ void CClientNetwork::on_entity_remove(librg_event_t *event) {
 	for (it = players.begin(); it != players.end(); it++)	{
 		if (it->second == event->entity->id)		{
 			if(it->first)
-				CWorld::Remove(it->first);
+				CWorld::Remove(it->first);   // VCCOOP-001: Potential Crash
 
 			players.erase(it);
 			break;
@@ -360,7 +353,6 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 
 	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_client_stream);
 
-	librg_address_t addr;
 	addr.host = szAddress;
 	addr.port = iPort;
 

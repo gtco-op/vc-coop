@@ -118,14 +118,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CConfiguration.cpp" />
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="CServerNetwork.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\vccoop_main\config.h" />
+    <ClInclude Include="CConfiguration.h" />
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CServerNetwork.h" />
+    <ClInclude Include="inih\INIReader.h" />
     <ClInclude Include="librg\enet.h" />
     <ClInclude Include="librg\librg.h" />
     <ClInclude Include="librg\zpl.h" />

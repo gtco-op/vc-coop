@@ -13,6 +13,7 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "server.h"
 
+CConfiguration  *gConfig;
 CLogger			*gLog;
 CServerNetwork	*gServerNetwork;
 
@@ -23,7 +24,10 @@ int main(int argc, char const *argv[]) {
 	SetConsoleTitle(TEXT("Vice City CO-OP " VCCOOP_VER " Server"));
 	gLog			= new CLogger;
 	gServerNetwork	= new CServerNetwork;
-	
+	gConfig			= new CConfiguration;
+
+	gConfig->PopulateValues();
+
 	while (console_active)
 	{
 		getline(cin, input);

@@ -9,6 +9,11 @@ public:
 	CClientNetwork();
 	~CClientNetwork();
 
+	char	*ServerAddress;
+	int		ServerPort;
+
+	static librg_address_t addr;
+
 	static librg_ctx_t ctx;
 	static librg_entity_t * local_player;
 	static std::vector<std::pair<CPed*, int>> players;
