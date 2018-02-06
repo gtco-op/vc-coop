@@ -16,12 +16,15 @@ public:
 		AllocConsole();
 		freopen("CONOUT$", "w", stdout);
 #endif
-		gConfig			= new CConfiguration();
+		
+		gChat = new CChat();
 		gLog			= new CLogger();
 		gLog->Log("[CCore] Initializing classes\n");
 		
+
+		gConfig = new CConfiguration();
 		gNetwork		= new CClientNetwork();
-		gChat			= new CChat();
+		
 		gGame			= new CGame();
 		gRender			= new CRender();
 		gRender->gGuiContainer.push_back(gChat);

@@ -162,10 +162,12 @@ void CRender::Draw()
 		if (gRender->bGUI || gChat->chatToggled)
 		{
 			gGame->DisableMouseInput();
+			gRender->device->ShowCursor(TRUE);
 		}
 		else
 		{
 			gGame->EnableMouseInput();
+			gRender->device->ShowCursor(FALSE);
 		}
 	}
 }

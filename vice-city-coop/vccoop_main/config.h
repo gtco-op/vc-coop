@@ -24,6 +24,9 @@
 // Default server config filename
 #define VCCOOP_DEFAULT_SERVER_CONFIG	"server.ini"
 
+// Default client config filename
+#define VCCOOP_DEFAULT_CLIENT_CONFIG	"client.ini"
+
 //------------------------------------------------------------------------------------------
 
 #ifndef VCCOOP_SERVER

@@ -6,7 +6,7 @@ CConfiguration::CConfiguration()
 	this->configOpened	= false;
 
 	if (this->configFilename.empty())
-		this->configFilename = VCCOOP_DEFAULT_SERVER_CONFIG;
+		this->configFilename = VCCOOP_DEFAULT_CLIENT_CONFIG;
 	
 	this->_inih = new INIReader(this->configFilename);
 	if (this->GetReader()->ParseError() < 0) {
