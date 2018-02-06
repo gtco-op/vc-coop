@@ -1,7 +1,17 @@
 #pragma once
 
-//librg
-#include "librg\librg.h"
+// Dependencies
+
+// librg
+#include "vendor\librg\librg.h"
+
+// imgui
+#include "vendor\imgui\imgui.h"
+#include "vendor\imgui\imgui_impl_dx9.h"
+
+// inih
+#include "vendor\inih\INIReader.h"
+
 
 //common
 #include <Windows.h>
@@ -19,7 +29,7 @@
 #include "plugin.h"
 #include "RenderWare.h"
 #include "d3dx9.h"
-#include "rw\rwd3d9.h"
+#include "vendor\rw\rwd3d9.h"
 #include "hooklibrary.h"
 #include "common.h"
 
@@ -45,32 +55,10 @@
 
 #define MAX_PLAYERS 500
 
-#pragma pack(1)
-typedef struct _CAMERA_AIM
-{
-	float f1x, f1y, f1z;
-	float pos1x, pos1y, pos1z;
-	float pos2x, pos2y, pos2z;
-	float f2x, f2y, f2z;
-
-} CAMERA_AIM;
-
-#pragma pack(1)
-typedef struct _GTA_CONTROLSET
-{
-	DWORD dwFrontPad;
-	WORD wKeys1[19];
-	DWORD dwFrontPad2;
-	WORD wKeys2[19];
-	WORD wTurnLeftRightAnalog[10];
-	BYTE bytePadding1[138];
-	BYTE byteCrouchAnalog[5];
-} GTA_CONTROLSET;
-
-
 //vccoop
 #include "config.h"
 
+#include "CConfiguration.h"
 #include "CClientNetwork.h"
 #include "CLogger.h"
 #include "CGame.h"
@@ -81,15 +69,13 @@ typedef struct _GTA_CONTROLSET
 #include "CImGui.h"
 #include "CChat.h"
 
-#include "imgui\imgui.h"
-#include "imgui\imgui_impl_dx9.h"
-
 #define LocalPlayer FindPlayerPed
 
 using namespace std;
 using namespace plugin;
 using namespace Hook;
 
+extern CConfiguration   *gConfig;
 extern CClientNetwork	*gNetwork;
 extern CGame			*gGame;
 extern CRender			*gRender;

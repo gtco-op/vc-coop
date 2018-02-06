@@ -128,12 +128,12 @@
     <ClInclude Include="CConfiguration.h" />
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CServerNetwork.h" />
-    <ClInclude Include="inih\INIReader.h" />
-    <ClInclude Include="librg\enet.h" />
-    <ClInclude Include="librg\librg.h" />
-    <ClInclude Include="librg\zpl.h" />
-    <ClInclude Include="librg\zpl_math.h" />
     <ClInclude Include="server.h" />
+    <ClInclude Include="vendor\inih\INIReader.h" />
+    <ClInclude Include="vendor\librg\enet.h" />
+    <ClInclude Include="vendor\librg\librg.h" />
+    <ClInclude Include="vendor\librg\zpl.h" />
+    <ClInclude Include="vendor\librg\zpl_math.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

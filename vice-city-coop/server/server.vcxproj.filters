@@ -31,26 +31,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="librg\enet.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="librg\librg.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="librg\zpl.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="librg\zpl_math.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
     <ClInclude Include="CServerNetwork.h">
       <Filter>Source\network</Filter>
     </ClInclude>
     <ClInclude Include="server.h">
       <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="inih\INIReader.h">
-      <Filter>vendor\inih</Filter>
     </ClInclude>
     <ClInclude Include="CLogger.h">
       <Filter>Source\utils\CLogger</Filter>
@@ -60,6 +45,21 @@
     </ClInclude>
     <ClInclude Include="..\vccoop_main\config.h">
       <Filter>Source\config</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\librg\enet.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\librg\librg.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\librg\zpl.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\librg\zpl_math.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\inih\INIReader.h">
+      <Filter>vendor\inih</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

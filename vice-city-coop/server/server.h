@@ -1,7 +1,7 @@
 #pragma once
 // Dependencies
-#include "librg\librg.h"
-#include "inih\INIReader.h"
+#include "vendor\librg\librg.h"
+#include "vendor\inih\INIReader.h"
 
 // Standard includes
 #include <Windows.h>
