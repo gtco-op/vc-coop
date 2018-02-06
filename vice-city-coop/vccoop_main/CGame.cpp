@@ -101,7 +101,6 @@ void CGame::InitPreGamePatches()
 	MakeNop(0x62A322, 36);//Dont pause the game when checking for collisions
 	MakeNop(0x62A34E, 5);//Dont resume because its not paused
 
-
 	// Hook script process (so we can spawn a local player)
 	MakeCall(0x450245, Hook_CRunningScript__Process);
 
@@ -144,6 +143,12 @@ void CGame::InitPreGamePatches()
 
 	// Disable CPopulation::AddPedsAtStartOfGame()
 	//MakeRet(0x53E3E0);
+
+	//Pedpool inc
+	MemWrite<s32>(0x4C02C8, 1000);
+	//vehicle pool inc todo: fix crash
+	//MemWrite<s32>(0x4C02EA, 250);
+	MemCpy((void*)0x4C02E4, "\x6A\x00\x68\xC8\x00\x00\x00", 7);
 
 	PatchAddToPopulation();
 
@@ -190,11 +195,6 @@ void Hook_CRunningScript__Process()
 
 		CPools::ms_pPedPool->Clear();
 		CPools::ms_pVehiclePool->Clear();
-		
-		//Pedpool inc
-		MemWrite<s32>(0x4C02C8, 1000);
-		//vehicle pool inc
-		MemWrite<s32>(0x4C02EA, 1000);
 
 		CPools::ms_pPedPool->Init(1000, NULL, NULL);
 		CPools::ms_pVehiclePool->Init(1000, NULL, NULL);

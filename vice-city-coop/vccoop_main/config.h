@@ -42,7 +42,10 @@
 #define LOGGER_TIME_FORMAT				"%H:%M:%S"
 #define VC_TITLE						"GTA: Vice City"
 
-struct PedSyncData {
+struct PedSyncData 
+{
+	int gameTimer;
+
 	float m_fActionX;
 	float m_fActionY;
 	

@@ -152,6 +152,8 @@ void CClientNetwork::on_entity_update(librg_event_t *event) {
 		{
 			auto ped = (CPed *)event->entity->user_data;
 
+			CTimer::m_snTimeInMilliseconds	= spd.pedData.gameTimer;
+
 			ped->Teleport(*(CVector *)&event->entity->position);
 			
 			ped->m_nModelIndex				= spd.iModelIndex;
@@ -241,6 +243,8 @@ void CClientNetwork::on_client_stream(librg_event_t *event) {
 		}
 		else
 		{
+			spd.pedData.gameTimer = CTimer::m_snTimeInMilliseconds;
+
 			spd.Health = ped->m_fHealth;
 			spd.iCurrentAnimID = ped->m_dwAnimGroupId;
 			spd.Armour = ped->m_fArmour;
