@@ -51,22 +51,7 @@ void InstallMethodHook(DWORD dwInstallAddress,
 	*(PDWORD)dwInstallAddress = (DWORD)dwHookFunction;
 	VirtualProtect((LPVOID)dwInstallAddress, 4, oldProt, &oldProt2);
 }
-void CGame::PatchAddToPopulation()
-{
-	// Call 1/2 to AddToPopulation()
-	MakeNop(0x53E5C6, 5);
 
-	// Call 2/2 to AddToPopulation()
-	MakeNop(0x53E99B, 5);
-}
-void CGame::UnpatchAddToPopulation()
-{
-	// Call 1/2 to AddToPopulation()
-	MemCpy((void*)0x53E5C6, "\xE8\xB5\xD4\xFF\xFF", 5);
-
-	// Call 2/2 to AddToPopulation()
-	MemCpy((void*)0x53E99B, "\xE8\xE0\xD0\xFF\xFF", 5);
-}
 void CGame::InitPreGamePatches()
 {
 	//disable gamestate initialize
@@ -150,7 +135,27 @@ void CGame::InitPreGamePatches()
 	//MemWrite<s32>(0x4C02EA, 250);
 	MemCpy((void*)0x4C02E4, "\x6A\x00\x68\xC8\x00\x00\x00", 7);
 
-	PatchAddToPopulation();
+	//Nop ped spawns
+	//MakeNop(0x53E5C6, 5);
+	MakeNop(0x53E99B, 5);
+
+	// Disable CCarCtrl::GenerateRandomCars
+	MakeRet(0x4292A0);
+
+	// Disable CCarCtrl::GenerateOneRandomCar
+	MakeRet(0x426DB0);
+
+	//disable cworld:remove in CPopulation::ManagePopulation
+	MakeRet(0x53D690);
+
+	MakeNop(0x53D896, 23);
+	MakeNop(0x53D82F, 23);
+	MakeNop(0x53D9E5, 19);
+	MakeNop(0x53DBEC, 32);
+	MakeNop(0x53E2E6, 12);
+
+	//Disable CPopulation::Removeped
+	MakeRet(0x53B160);
 
 	InstallMethodHook(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
 
