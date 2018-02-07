@@ -60,6 +60,10 @@ void CClientNetwork::on_connect_request(librg_event_t *event) {
 void CClientNetwork::on_connect_accepted(librg_event_t *event) {
 	gLog->Log("[CClientNetwork] Connection Accepted\n");
 
+	gRender->bConnecting = false;
+	gRender->bGUI = false;
+	gRender->bAboutWindow = false;
+	
 	connected = true;
 	local_player = event->entity;
 	event->entity->user_data = LocalPlayer();
