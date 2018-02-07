@@ -340,7 +340,7 @@ int CGame::GamePool_Ped_GetIndex(CPed *pPed)
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	if (ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam)) return 0;
-
+	
 	switch (umsg)
 	{
 		case WM_SYSKEYDOWN:

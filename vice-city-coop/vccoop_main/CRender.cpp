@@ -50,6 +50,8 @@ void CRender::Run()
 			if (orig_wndproc == NULL || wnd != orig_wnd)			{
 				orig_wndproc = (WNDPROC)(UINT_PTR)SetWindowLong(wnd, GWL_WNDPROC, (LONG)(UINT_PTR)wnd_proc);
 				orig_wnd = wnd;
+
+				SetWindowText(wnd, VCCOOP_WINDOW_TITLE);
 			}
 			wndHookInited = true;
 			gLog->Log("[CRender] Original WndProc hooked\n");
