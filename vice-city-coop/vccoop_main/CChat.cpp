@@ -40,10 +40,7 @@ void CChat::Draw()
 		style.WindowBorderSize = 0.0f;
 		ImGui::Begin("A", &this->chatToggled, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		ImGui::PushItemWidth(350.0f);
-		ImGui::SetKeyboardFocusHere(); 
-
-		// TODO: Fix input stealing InputText()
-		//		 Input is captured when pressing chat activate button, after toggled once.
+		
 		if (ImGui::InputText("", this->chatInputBuffer, 256, ImGuiInputTextFlags_EnterReturnsTrue, NULL, this->chatInputBuffer))
 		{
 			char* input_end = this->chatInputBuffer + strlen(this->chatInputBuffer);
@@ -51,10 +48,12 @@ void CChat::Draw()
 			if (this->chatInputBuffer[0])
 			{
 				ProcessChatInput();
-				strcpy(this->chatInputBuffer, "");
 			}
+			strcpy(this->chatInputBuffer, "");
 			this->chatToggled = false;
 		}
+
+		ImGui::SetKeyboardFocusHere();
 
 		ImGui::PopItemWidth();
 		ImGui::End();
@@ -97,6 +96,5 @@ void CChat::ProcessChatInput()
 		{
 			this->AddChatMessage(this->chatInputBuffer);
 		}
-		this->chatInputBuffer[0] = 0;
 	}
 }

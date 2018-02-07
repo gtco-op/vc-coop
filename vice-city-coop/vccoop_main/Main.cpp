@@ -29,6 +29,11 @@ public:
 		gLog->Log("[CCore] Main method finished.\n");
 
 		Events::gameProcessEvent += [] {
+			if (KeyPressed('T'))
+			{
+				if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow)
+					gChat->ToggleChat(true); ImGui::GetIO().ClearInputCharacters();
+			}
 			gGame->Run();
 			gRender->Run();
 		};

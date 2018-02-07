@@ -338,8 +338,7 @@ int CGame::GamePool_Ped_GetIndex(CPed *pPed)
 }
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam)) return 0;
-	
+
 	switch (umsg)
 	{
 		case WM_SYSKEYDOWN:
@@ -349,12 +348,6 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			if (vkey == 'P')
 			{
 				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
-			}
-			if (vkey == 'T')
-			{
-				if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow)
-					gChat->ToggleChat(true); 
-				
 			}
 			if (vkey == VK_ESCAPE)
 			{
@@ -383,5 +376,8 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			break;
 		}
 	}
+
+	if (ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam)) return 0;
+
 	return CallWindowProc(orig_wndproc, wnd, umsg, wparam, lparam);
 }
