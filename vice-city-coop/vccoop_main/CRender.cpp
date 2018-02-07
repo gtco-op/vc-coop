@@ -88,6 +88,10 @@ void CRender::InitFont()
 		ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
 		gLog->Log("[CRender] ImGui initialized\n");
 		gGame->DisableMouseInput();
+		
+		// Populate GUI variables with retrieved config values
+		gConfig->PopulateValues(IP, Port, Nickname);
+
 		Initialized = true;
 	}
 }
@@ -109,10 +113,6 @@ void CRender::DestroyFont()
 void CRender::ToggleGUI()
 {
 	bGUI = !bGUI;
-	ImGui::GetIO().MouseDrawCursor = bGUI;
-	gRender->device->ShowCursor(bGUI);
-	if(bGUI) gGame->DisableMouseInput();
-	else gGame->EnableMouseInput();
 }
 void CRender::Draw()
 {
@@ -127,7 +127,7 @@ void CRender::Draw()
 	{
 		ImGui_ImplDX9_NewFrame();
 		ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bGUI);
-		ImGui::Text("Welcome to Vice City CO-OP " VCCOOP_VER "\n - Alpha Version - ");
+		ImGui::Text("\tWelcome to Vice City CO-OP " VCCOOP_VER "\n\t\t  - Alpha Version - ");
 
 		ImGui::InputText("Nickname", Nickname, 25, 0, NULL, Nickname);
 		ImGui::InputText("IP", IP, 16, 0, NULL, IP);
@@ -135,15 +135,13 @@ void CRender::Draw()
 
 		if (ImGui::Button("Connect"))
 		{
-			gRender->bGUI			= false;
-
 			gGame->Name				= Nickname;
-
 			gNetwork->ServerAddress = IP;
 			gNetwork->ServerPort	= Port;
 
 			if (strlen(gGame->Name.c_str()) >= 3) {
 				gNetwork->AttemptConnect(gNetwork->ServerAddress, gNetwork->ServerPort);
+				gRender->bGUI = false;
 			}
 		}
 		if (ImGui::Button("About VC:CO-OP"))
@@ -162,12 +160,10 @@ void CRender::Draw()
 		if (gRender->bGUI || gChat->chatToggled)
 		{
 			gGame->DisableMouseInput();
-			gRender->device->ShowCursor(TRUE);
 		}
 		else
 		{
 			gGame->EnableMouseInput();
-			gRender->device->ShowCursor(FALSE);
 		}
 	}
 }

@@ -21,11 +21,22 @@ CConfiguration::~CConfiguration()
 {
 
 }
-void CConfiguration::PopulateValues()
+void CConfiguration::PopulateValues(char srvIP[15], int& srvPort, char cliName[25])
 {
 	/* Populate configuration values from INI */
 	/* Default values specified in config.h */
-	//gServerNetwork->ServerPort = gConfig->GetReader()->GetInteger("Server", "Port", VCCOOP_DEFAULT_SERVER_PORT);
+	std::string tmp = this->GetReader()->Get("Server", "ServerAddress", VCCOOP_DEFAULT_SERVER_ADDRESS);
+	strcpy(this->ServerAddress, tmp.c_str());
+
+	this->ServerPort = this->GetReader()->GetInteger("Server", "ServerPort", VCCOOP_DEFAULT_SERVER_PORT);
+
+	std::string name = this->GetReader()->Get("Client", "Nickname", VCCOOP_DEFAULT_NICKNAME);
+	strcpy(this->Nickname, name.c_str());
+
+	strcpy(srvIP, this->ServerAddress);
+	srvPort = this->ServerPort;
+	strcpy(cliName, this->Nickname);
+	
 	gLog->Log("[CConfiguration] Settings loaded from configuration file.\n");
 }
 std::string CConfiguration::sections(INIReader &reader)

@@ -1,7 +1,7 @@
 #include "main.h"
 
-CConfiguration  *gConfig;
 CClientNetwork	*gNetwork;
+CConfiguration  *gConfig;
 CGame			*gGame;
 CRender			*gRender;
 CLogger			*gLog;
@@ -16,20 +16,17 @@ public:
 		AllocConsole();
 		freopen("CONOUT$", "w", stdout);
 #endif
-		
 		gChat = new CChat();
-		gLog			= new CLogger();
-		gLog->Log("[CCore] Initializing classes\n");
-		
+		gLog = new CLogger();
 
+		gLog->Log("[CCore] Initializing classes.\n");
 		gConfig = new CConfiguration();
-		gNetwork		= new CClientNetwork();
-		
-		gGame			= new CGame();
-		gRender			= new CRender();
+		gNetwork = new CClientNetwork();
+		gGame = new CGame();
+		gRender = new CRender();
 		gRender->gGuiContainer.push_back(gChat);
-
-		gLog->Log("[CCore] Main method finished\n");
+		
+		gLog->Log("[CCore] Main method finished.\n");
 
 		Events::gameProcessEvent += [] {
 			gGame->Run();

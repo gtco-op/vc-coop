@@ -114,7 +114,7 @@
     <TargetName>vccoop</TargetName>
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\rw</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA3|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -304,6 +304,7 @@
   <ItemGroup>
     <ClCompile Include="CChat.cpp" />
     <ClCompile Include="CClientNetwork.cpp" />
+    <ClCompile Include="CClientPlayer.cpp" />
     <ClCompile Include="CConfiguration.cpp" />
     <ClCompile Include="CDebugScreen.cpp" />
     <ClCompile Include="CGame.cpp" />
@@ -320,6 +321,7 @@
   <ItemGroup>
     <ClInclude Include="CChat.h" />
     <ClInclude Include="CClientNetwork.h" />
+    <ClInclude Include="CClientPlayer.h" />
     <ClInclude Include="CConfiguration.h" />
     <ClInclude Include="CDebugScreen.h" />
     <ClInclude Include="CGame.h" />
@@ -329,6 +331,10 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="CRenderTemplate.h" />
     <ClInclude Include="hooklibrary.h" />
+    <ClInclude Include="librg\enet.h" />
+    <ClInclude Include="librg\librg.h" />
+    <ClInclude Include="librg\zpl.h" />
+    <ClInclude Include="librg\zpl_math.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="CRender.h" />
     <ClInclude Include="vendor\imgui\imconfig.h" />
@@ -338,12 +344,6 @@
     <ClInclude Include="vendor\imgui\stb_rect_pack.h" />
     <ClInclude Include="vendor\imgui\stb_textedit.h" />
     <ClInclude Include="vendor\imgui\stb_truetype.h" />
-    <ClInclude Include="vendor\inih\INIReader.h" />
-    <ClInclude Include="vendor\librg\enet.h" />
-    <ClInclude Include="vendor\librg\librg.h" />
-    <ClInclude Include="vendor\librg\zpl.h" />
-    <ClInclude Include="vendor\librg\zpl_math.h" />
-    <ClInclude Include="vendor\rw\rwd3d9.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

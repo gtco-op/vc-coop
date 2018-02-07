@@ -1,17 +1,17 @@
 #pragma once
 
-// Dependencies
-
-// librg
+//librg
 #include "vendor\librg\librg.h"
 
-// imgui
+//imgui
 #include "vendor\imgui\imgui.h"
 #include "vendor\imgui\imgui_impl_dx9.h"
 
-// inih
+//inih
 #include "vendor\inih\INIReader.h"
 
+//hooks
+#include "hooklibrary.h"
 
 //common
 #include <Windows.h>
@@ -30,7 +30,6 @@
 #include "RenderWare.h"
 #include "d3dx9.h"
 #include "vendor\rw\rwd3d9.h"
-#include "hooklibrary.h"
 #include "common.h"
 
 #include "eWeaponFire.h"
@@ -53,8 +52,6 @@
 #include "CTheZones.h"
 #include "extensions\ScriptCommands.h"
 
-#define MAX_PLAYERS 500
-
 //vccoop
 #include "config.h"
 
@@ -68,6 +65,7 @@
 #include "CDebugScreen.h"
 #include "CImGui.h"
 #include "CChat.h"
+#include "CClientPlayer.h"
 
 #define LocalPlayer FindPlayerPed
 
@@ -75,8 +73,8 @@ using namespace std;
 using namespace plugin;
 using namespace Hook;
 
-extern CConfiguration   *gConfig;
 extern CClientNetwork	*gNetwork;
+extern CConfiguration	*gConfig;
 extern CGame			*gGame;
 extern CRender			*gRender;
 extern CLogger			*gLog;

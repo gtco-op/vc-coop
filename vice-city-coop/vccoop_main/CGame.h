@@ -25,6 +25,8 @@ public:
 
 	void Run();
 
+	int GetFreePlayerID();
+
 private:
 	void InitPreGamePatches(); 
 };

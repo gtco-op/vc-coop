@@ -34,9 +34,8 @@ void CNameTags::Draw()
 				}
 				else
 				{
-					char text[600];
 
-					sprintf(text, "Civil(%d)\nHP: %d", id, ped->m_fHealth);
+					sprintf(text, "Civil(%d)\nHP: %d", id, (int)ped->m_fHealth);
 
 					SIZE size = gRender->MeasureText(text);
 

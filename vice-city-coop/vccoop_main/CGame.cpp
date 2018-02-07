@@ -2,12 +2,24 @@
 
 DWORD dwCurPlayerActor = 0;
 CPed * localPlayer = NULL;
+bool usedPlayerID[MAX_PLAYERS];
+int playerids = 1;
+int currentPlayerID = 0;
+
+GTA_CONTROLSET localPlayerKeys;
+CAMERA_AIM localPlayerLookFrontX;
+BYTE localPlayerCameraMode;
+
+GTA_CONTROLSET remotePlayerKeys[MAX_PLAYERS];
+CAMERA_AIM remotePlayerLookFrontX[MAX_PLAYERS];
+int remotePlayerCameraMode[MAX_PLAYERS];
+
 static bool scriptProcessed = false;
+
 WNDPROC		orig_wndproc;
 HWND		orig_wnd;
-
-
 void Hook_CRunningScript__Process();
+
 CGame::CGame()
 {
 	this->InitPreGamePatches();
@@ -22,21 +34,18 @@ void CGame::Run()
 {
 
 }
-
-int currentPlayerID = 0;
-
-
-GTA_CONTROLSET localPlayerKeys;
-CAMERA_AIM localPlayerLookFrontX;
-BYTE localPlayerCameraMode;
-
-GTA_CONTROLSET remotePlayerKeys[MAX_PLAYERS];
-CAMERA_AIM remotePlayerLookFrontX[MAX_PLAYERS];
-int remotePlayerCameraMode[MAX_PLAYERS];
-
-DWORD players[MAX_PLAYERS];
-int playerids = 1;
-
+int CGame::GetFreePlayerID()
+{
+	for (int i = 1; i < MAX_PLAYERS; i++)
+	{
+		if (usedPlayerID[i] == false)
+		{
+			usedPlayerID[i] = true;
+			return i;
+		}
+	}
+	return -1;
+}
 void InitGameVariables()
 {
 	memset(&localPlayerKeys, 0, sizeof(GTA_CONTROLSET));
@@ -47,25 +56,26 @@ void InitGameVariables()
 	memset(&remotePlayerLookFrontX[0], 0, sizeof(CAMERA_AIM) * MAX_PLAYERS);
 	memset(&remotePlayerCameraMode[0], 0, sizeof(int) * MAX_PLAYERS);
 
-	memset(&players[0], 0, sizeof(DWORD) * MAX_PLAYERS);
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		gGame->players[i] = (DWORD)0;
+		usedPlayerID[i] = false;
+	}
 }
-
 int GetIDFromPed(DWORD ped)
 {
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
-		if (players[i] == ped)return i;
+		if (gGame->players[i] == ped) return i;
 	}
 	return 0;
 }
-
 void  _declspec(naked) CPlayerPed_ProcessControl_Hook()
 {
 	_asm mov dwCurPlayerActor, ecx
 	_asm pushad
 
 	currentPlayerID = GetIDFromPed(dwCurPlayerActor);
-	gChat->AddChatMessage("id %d for ped", currentPlayerID);
 
 	localPlayer = FindPlayerPed();
 	if (dwCurPlayerActor && localPlayer && currentPlayerID != 0)
@@ -75,13 +85,11 @@ void  _declspec(naked) CPlayerPed_ProcessControl_Hook()
 		// set remote player's keys
 		*(GTA_CONTROLSET*)0x7DBCB0 = remotePlayerKeys[currentPlayerID];
 
-		
 		// save the internal cammode.
 		localPlayerCameraMode = MemRead<u8>(0x7E481C);
 
 		// onfoot mouse looking mode.
 		MemWrite<u8>(0x7E481C, 4); 
-
 
 		// aim switching
 		localPlayerLookFrontX = *(CAMERA_AIM*)0x7E4978;
@@ -247,6 +255,9 @@ void CGame::EnableMouseInput()
 	MemCpy((void*)0x4AB6E6, "\xE8\x45\xCE\x16\x00", 5);
 	//CControllerConfigManager::AffectPadFromMouse restore
 	MemCpy((void*)0x4AB6F0, "\xE8\x9B\xCD\x16\x00", 5);
+
+	gRender->device->ShowCursor(false);
+	ImGui::GetIO().MouseDrawCursor = false;
 }
 void CGame::DisableMouseInput()
 {
@@ -256,6 +267,9 @@ void CGame::DisableMouseInput()
 	MakeNop(0x4AB6E6, 5);
 	//CControllerConfigManager::AffectPadFromMouse nop
 	MakeNop(0x4AB6F0, 5);
+
+	gRender->device->ShowCursor(true);
+	ImGui::GetIO().MouseDrawCursor = true;
 }
 void Hook_CRunningScript__Process()
 {

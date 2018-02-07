@@ -40,6 +40,8 @@ void CChat::Draw()
 		ImGui::PushItemWidth(350.0f);
 		ImGui::SetKeyboardFocusHere(); 
 
+		// TODO: Fix input stealing InputText()
+		//		 Input is captured when pressing chat activate button, after toggled once.
 		if (ImGui::InputText("", this->chatInputBuffer, 256, ImGuiInputTextFlags_EnterReturnsTrue, NULL, this->chatInputBuffer))
 		{
 			char* input_end = this->chatInputBuffer + strlen(this->chatInputBuffer);
@@ -51,6 +53,7 @@ void CChat::Draw()
 			}
 			this->chatToggled = false;
 		}
+
 		ImGui::PopItemWidth();
 		ImGui::End();
 		ImGui::EndFrame();
@@ -77,11 +80,6 @@ void CChat::AddChatMessage(const char * message, ...)
 
 void CChat::ToggleChat(bool toggle)
 {
-	if (!toggle)gGame->EnableMouseInput();
-	else gGame->DisableMouseInput();
-
-	ImGui::GetIO().MouseDrawCursor = toggle;
-	gRender->device->ShowCursor(toggle);
 	this->chatToggled = toggle;
 }
 
@@ -90,7 +88,15 @@ void CChat::ProcessChatInput()
 	this->ToggleChat(false);
 	if (strlen(this->chatInputBuffer) > 0 && this->chatInputBuffer[0] != '\0')
 	{
-		this->AddChatMessage(this->chatInputBuffer);
+		if (strstr(this->chatInputBuffer, "/quit") || strstr(this->chatInputBuffer, "/exit") || strstr(this->chatInputBuffer, "!quit") || strstr(this->chatInputBuffer, "!exit"))
+		{
+			gLog->Log("[CChat] Shutting down\n");
+			ExitProcess(-1);
+		}
+		else
+		{
+			this->AddChatMessage(this->chatInputBuffer);
+		}
 		this->chatInputBuffer[0] = 0;
 	}
 }

@@ -32,6 +32,7 @@
 #ifndef VCCOOP_SERVER
 #define VCCOOP_NAME						"VC CO-OP"
 #else
+
 #define VCCOOP_NAME						"VC CO-OP Server"
 #endif
 
@@ -44,6 +45,8 @@
 #define DEFAULT_TIME_FORMAT				"%Y%m%d_%H%M%S"
 #define LOGGER_TIME_FORMAT				"%H:%M:%S"
 #define VC_TITLE						"GTA: Vice City"
+
+#define MAX_PLAYERS						500
 
 #pragma pack(1)
 typedef struct _CAMERA_AIM
@@ -66,6 +69,7 @@ typedef struct _GTA_CONTROLSET
 	BYTE bytePadding1[138];
 	BYTE byteCrouchAnalog[5];
 } GTA_CONTROLSET;
+
 
 struct PedSyncData 
 {
@@ -92,7 +96,7 @@ struct PedSyncData
 
 	float m_fObjectiveAngle;
 	int m_pObjectiveEntity;
-
+	
 	int m_dwFleeTimer;
 	float m_fFleeFromPosX;
 	float m_fFleeFromPosY;

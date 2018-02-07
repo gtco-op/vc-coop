@@ -29,7 +29,6 @@ void CLogger::Log(char * format, ...)
 	vsprintf(buffer, format, args);
 	va_end(args);
 
-
 	// Timestamp
 	std::string buf("[");
 	buf.append(time_stamp(LOGGER_TIME_FORMAT));

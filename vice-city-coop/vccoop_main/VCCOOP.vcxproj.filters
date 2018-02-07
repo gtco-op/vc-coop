@@ -16,29 +16,23 @@
     <Filter Include="vendor">
       <UniqueIdentifier>{892d7aa6-8b1a-4e91-8b22-85b25b8e9d5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\imgui">
+      <UniqueIdentifier>{a129ce68-c1a9-492e-8b10-37ea973cf2e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\librg">
+      <UniqueIdentifier>{318d37ef-26bd-4b7b-8f56-e3d2342fa823}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\network">
       <UniqueIdentifier>{0aa3e63f-3bbb-49e0-93e1-214e08de0fc9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="vendor\inih">
-      <UniqueIdentifier>{cc08d6be-14c2-4fa1-8510-38d6e29e795a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="vendor\librg">
-      <UniqueIdentifier>{87e839e0-a6e0-45dd-89ca-762de4fc7301}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="vendor\imgui">
-      <UniqueIdentifier>{8818c80e-3ffb-4051-8f6a-f0f9ef730af3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="vendor\rw">
-      <UniqueIdentifier>{f22d9ca8-301d-4f4a-ab73-85e2ccad24fc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\tools\CLogger">
-      <UniqueIdentifier>{6c1d24db-cbb1-4f72-9399-e272279b2b8f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\tools\HookLibrary">
-      <UniqueIdentifier>{c02584c5-6364-4872-bcaa-093b12f9081a}</UniqueIdentifier>
+      <UniqueIdentifier>{6a636150-7b15-4778-9f00-a6e132be398c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\tools\CConfiguration">
-      <UniqueIdentifier>{1951849c-ee43-4c8c-8a50-e0f9724d7b19}</UniqueIdentifier>
+      <UniqueIdentifier>{26feaac1-9f9e-4e9f-b943-859c0b90ef82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\tools\Hook Library">
+      <UniqueIdentifier>{7fb7d40f-569f-49dc-92e6-5b5719c0b155}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +47,18 @@
     </ClInclude>
     <ClInclude Include="config.h">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="librg\enet.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="librg\librg.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="librg\zpl.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="librg\zpl_math.h">
+      <Filter>vendor\librg</Filter>
     </ClInclude>
     <ClInclude Include="CRenderTemplate.h">
       <Filter>Source\rendering</Filter>
@@ -70,6 +76,9 @@
       <Filter>Source\rendering</Filter>
     </ClInclude>
     <ClInclude Include="CClientNetwork.h">
+      <Filter>Source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="CClientPlayer.h">
       <Filter>Source\network</Filter>
     </ClInclude>
     <ClInclude Include="vendor\imgui\imconfig.h">
@@ -93,29 +102,11 @@
     <ClInclude Include="vendor\imgui\stb_truetype.h">
       <Filter>vendor\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="vendor\librg\enet.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\librg\librg.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\librg\zpl.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\librg\zpl_math.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\inih\INIReader.h">
-      <Filter>vendor\inih</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\rw\rwd3d9.h">
-      <Filter>vendor\rw</Filter>
-    </ClInclude>
     <ClInclude Include="CLogger.h">
       <Filter>Source\tools\CLogger</Filter>
     </ClInclude>
     <ClInclude Include="hooklibrary.h">
-      <Filter>Source\tools\HookLibrary</Filter>
+      <Filter>Source\tools\Hook Library</Filter>
     </ClInclude>
     <ClInclude Include="CConfiguration.h">
       <Filter>Source\tools\CConfiguration</Filter>
@@ -147,6 +138,9 @@
       <Filter>Source\rendering</Filter>
     </ClCompile>
     <ClCompile Include="CClientNetwork.cpp">
+      <Filter>Source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientPlayer.cpp">
       <Filter>Source\network</Filter>
     </ClCompile>
     <ClCompile Include="vendor\imgui\imgui.cpp">
