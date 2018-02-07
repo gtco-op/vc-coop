@@ -144,7 +144,7 @@ struct SPlayerData {
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
 
-	GTA_CONTROLSET playerControls;
+	WORD playerControls;
 	CAMERA_AIM cameraAim;
 
 	PedSyncData pedData;

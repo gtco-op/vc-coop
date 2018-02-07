@@ -150,13 +150,13 @@ void CClientNetwork::on_entity_update(librg_event_t *event) {
 
 			ped->Teleport(*(CVector *)&event->entity->position);
 
-			ped->m_nModelIndex				= spd.iModelIndex;
-			ped->m_dwAnimGroupId			= spd.iCurrentAnimID;
-			ped->m_fHealth					= spd.Health;
-			ped->m_fRotationCur				= spd.Rotation;
-			ped->m_fArmour					= spd.Armour;
+			ped->m_nModelIndex = spd.iModelIndex;
+			ped->m_dwAnimGroupId = spd.iCurrentAnimID;
+			ped->m_fHealth = spd.Health;
+			ped->m_fRotationCur = spd.Rotation;
+			ped->m_fArmour = spd.Armour;
 
-			gGame->remotePlayerKeys[player->gameID] = spd.playerControls;
+			gGame->remotePlayerKeys[player->gameID] = player->SetKeys(spd.playerControls);
 			gGame->remotePlayerLookFrontX[player->gameID] = spd.cameraAim;
 		}
 		else
@@ -253,7 +253,7 @@ void CClientNetwork::on_client_stream(librg_event_t *event) {
 			spd.iModelIndex		= ped->m_nModelIndex;
 			spd.Rotation		= ped->m_fRotationCur;
 
-			spd.playerControls = *(GTA_CONTROLSET*)0x7DBCB0;
+			spd.playerControls = player->GetKeys();
 			spd.cameraAim = *(CAMERA_AIM*)0x7E4978;
 
 			librg_data_wptr(event->data, &spd, sizeof(SPlayerData));

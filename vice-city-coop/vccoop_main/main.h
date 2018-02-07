@@ -55,6 +55,38 @@
 //vccoop
 #include "config.h"
 
+//keys
+#define	KEY_INCAR_TURRETLR			0
+#define	KEY_INCAR_TURRETUD			1
+#define	KEY_INCAR_RADIO				2
+#define	KEY_INCAR_LOOKL				3
+#define	KEY_INCAR_HANDBRAKE			4
+#define	KEY_INCAR_LOOKR				5
+#define	KEY_INCAR_TURNL				8
+#define	KEY_INCAR_TURNR				9
+#define	KEY_INCAR_CAMERA			11
+#define	KEY_INCAR_BACKWARD			12
+#define	KEY_INCAR_EXITVEHICLE		13
+#define	KEY_INCAR_FORWARD			14
+#define	KEY_INCAR_FIRE				15
+#define	KEY_INCAR_HORN				16
+#define	KEY_ONFOOT_TURNLR			0
+#define	KEY_ONFOOT_ACTION			2
+#define	KEY_ONFOOT_NEXTWEAPON		3
+#define	KEY_ONFOOT_TARGET			4
+#define	KEY_ONFOOT_PREVWEAPON		5
+#define	KEY_ONFOOT_FORWARD			6
+#define	KEY_ONFOOT_BACKWARD			7
+#define	KEY_ONFOOT_LEFT				8
+#define	KEY_ONFOOT_RIGHT			9
+#define	KEY_ONFOOT_JUMP				12
+#define	KEY_ONFOOT_ENTERVEHICLE		13
+#define	KEY_ONFOOT_SPRINT			14
+#define	KEY_ONFOOT_FIRE				15
+#define	KEY_ONFOOT_CROUCH			16
+#define	KEY_ONFOOT_LOOKBEHIND		17
+
+
 #include "CConfiguration.h"
 #include "CClientNetwork.h"
 #include "CLogger.h"

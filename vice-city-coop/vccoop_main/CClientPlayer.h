@@ -10,4 +10,7 @@ public:
 	CClientPlayer(int nID);
 	CClientPlayer(int nID, int gID);
 	~CClientPlayer();
+
+	WORD GetKeys();
+	GTA_CONTROLSET SetKeys(WORD wKeys);
 };

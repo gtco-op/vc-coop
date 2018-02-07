@@ -93,7 +93,7 @@ void  _declspec(naked) CPlayerPed_ProcessControl_Hook()
 
 		// aim switching
 		localPlayerLookFrontX = *(CAMERA_AIM*)0x7E4978;
-		*(CAMERA_AIM*)0x7E4978 = remotePlayerLookFrontX[currentPlayerID];
+		//*(CAMERA_AIM*)0x7E4978 = remotePlayerLookFrontX[currentPlayerID];
 
 		MemWrite<BYTE>(0xA10AFB, currentPlayerID);
 
