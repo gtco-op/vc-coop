@@ -353,7 +353,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			if (vkey == 'T')
 			{
-				if (!gChat->chatToggled && !gRender->bGUI)
+				if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow)
 					gChat->ToggleChat(true);
 			}
 			if (vkey == VK_ESCAPE)

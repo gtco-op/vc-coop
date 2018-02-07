@@ -58,13 +58,17 @@ void CClientNetwork::on_connect_request(librg_event_t *event) {
 	librg_data_wu32(event->data, VCCOOP_DEFAULT_SERVER_SECRET);
 }
 void CClientNetwork::on_connect_accepted(librg_event_t *event) {
-	gLog->Log("[CClientNetwork] Connection Accepted\n");
+	gRender->bConnecting  = false;
+	gRender->bGUI		  = false;
+	gRender->bAboutWindow = false;
 
 	connected					= true;
 	local_player				= event->entity; 
-	event->entity->user_data = new CClientPlayer(event->entity->id);
+	event->entity->user_data	= new CClientPlayer(event->entity->id);
 
 	players.push_back(std::pair<CPed*, int>(((CClientPlayer*)&event->entity->user_data)->ped, event->entity->id));
+	
+	gLog->Log("[CClientNetwork] Connection Accepted\n");
 }
 void CClientNetwork::on_connect_refused(librg_event_t *event) {
 	gLog->Log("[CClientNetwork] Connection Refused\n");

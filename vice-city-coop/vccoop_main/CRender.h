@@ -10,6 +10,9 @@ public:
 	/*		ImGui		*/
 public:
 	bool bGUI;
+	bool bConnecting;
+	bool bAboutWindow;
+
 	bool Initialized;
 	void ToggleGUI();
 	
