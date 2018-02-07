@@ -109,12 +109,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GTAVC|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
-    <OutDir>$(ProjectDir)\</OutDir>
+    <OutDir>$(ProjectDir)</OutDir>
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Release\</IntDir>
     <TargetName>vccoop</TargetName>
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\rw</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA3|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -208,7 +208,7 @@
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY /Y /J /C $(OutDir)vccoopd.asi $(VC_DIR)</Command>
+      <Command>XCOPY /Y /J /C $(OutDir)vccoop.asi $(GTA_VC_DIR)</Command>
       <Message>Copying ASI to GTA VC directory..</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
