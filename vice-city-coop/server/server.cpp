@@ -23,10 +23,13 @@ int main(int argc, char const *argv[]) {
 	
 	SetConsoleTitle(TEXT("Vice City CO-OP " VCCOOP_VER " Server"));
 	gLog			= new CLogger;
-	gServerNetwork	= new CServerNetwork;
 	gConfig			= new CConfiguration;
+	gServerNetwork	= new CServerNetwork;
 
 	gConfig->PopulateValues();
+
+	gLog->Log("[CCore] Port: %d\n", gServerNetwork->ServerPort);
+	gLog->Log("[CCore] Secret: %d\n", gServerNetwork->ServerSecret);
 
 	while (console_active)
 	{

@@ -5,12 +5,13 @@ public:
 	CConfiguration();
 	~CConfiguration();
 
-	/* General Server Settings */
-	int ServerPort;
-	
+	/* Populates values from config file */
 	void PopulateValues();
 
+	/* Retrieves INI reader instance */
 	INIReader* GetReader() { return _inih; }
+
+	/* Returns TRUE if config file loaded successfully */
 	bool IsConfigLoaded() { return configOpened; }
 
 private:

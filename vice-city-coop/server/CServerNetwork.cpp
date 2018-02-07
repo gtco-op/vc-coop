@@ -52,7 +52,7 @@ void CServerNetwork::on_connect_request(librg_event_t *event) {
 	u32 secret = librg_data_ru32(event->data);
 	gLog->Log("[CServerNetwork][CLIENT REQUEST] Network entity with name '%s' is requesting to connect\n", name);
 
-	if (strlen(name) < 0 || secret != VCCOOP_DEFAULT_SERVER_SECRET) {
+	if (strlen(name) < 0 || secret != gServerNetwork->ServerSecret) {
 		gLog->Log("[CServerNetwork] Rejected event from network entity\n");
 		librg_event_reject(event);
 	}

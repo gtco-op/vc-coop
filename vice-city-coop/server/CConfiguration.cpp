@@ -26,6 +26,7 @@ void CConfiguration::PopulateValues()
 	/* Populate configuration values from INI */
 	/* Default values specified in config.h */
 	gServerNetwork->ServerPort = gConfig->GetReader()->GetInteger("Server", "Port", VCCOOP_DEFAULT_SERVER_PORT);
+	gServerNetwork->ServerSecret = gConfig->GetReader()->GetInteger("Server", "Secret", VCCOOP_DEFAULT_SERVER_SECRET);
 	
 	gLog->Log("[CConfiguration] Settings loaded from configuration file.\n");
 }
