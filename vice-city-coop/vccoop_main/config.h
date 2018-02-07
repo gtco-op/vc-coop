@@ -1,8 +1,5 @@
 #pragma once
 
-// Define this to have a console window spawn on boot
-#define VCCOOP_DEBUG
-
 // Define this for verbose log output
 //#define VCCOOP_VERBOSE_LOG
 

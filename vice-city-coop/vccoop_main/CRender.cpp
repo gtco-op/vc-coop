@@ -13,7 +13,10 @@ CRender::CRender()
 	this->Initialized = false;
 
 	this->gGuiContainer.push_back(new CNameTags());
+
+#ifdef VCCOOP_DEBUG
 	this->gGuiContainer.push_back(new CDebugScreen());
+#endif
 
 	Events::drawingEvent += [] {
 		gRender->Draw();

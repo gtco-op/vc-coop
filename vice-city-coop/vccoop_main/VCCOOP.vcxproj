@@ -262,7 +262,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_USING_V110_SDK71_;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;GTAVC;GTAGAME_NAME="Vice City";GTAGAME_ABBR="VC";GTAGAME_ABBRLOW="vc";GTAGAME_PROTAGONISTNAME="Tommy";GTAGAME_CITYNAME="Vice City";_DX9_SDK_INSTALLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VCCOOP_DEBUG;_USING_V110_SDK71_;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;GTAVC;GTAGAME_NAME="Vice City";GTAGAME_ABBR="VC";GTAGAME_ABBRLOW="vc";GTAGAME_PROTAGONISTNAME="Tommy";GTAGAME_CITYNAME="Vice City";_DX9_SDK_INSTALLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(PLUGIN_SDK_DIR)\plugin_vc;$(PLUGIN_SDK_DIR)\plugin_vc\game_vc;$(RWD3D9_DIR)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
