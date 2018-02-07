@@ -125,57 +125,60 @@ void CRender::Draw()
 {
 	if (this->m_pD3DXFont)
 	{
-		for (int i = 0; i < (int)this->gGuiContainer.size(); i++)
+		if (Initialized)
 		{
-			if (this->gGuiContainer[i])this->gGuiContainer[i]->Draw();
-		}
-	}
-	if (Initialized)
-	{
-		ImGui_ImplDX9_NewFrame();
+			ImGui_ImplDX9_NewFrame();
 
-		if (gRender->bConnecting && !gRender->bGUI)
-		{
-			ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bConnecting);
-			ImGui::Text("Connecting...");
-			ImGui::End();
-		}
-		if (gRender->bGUI && !gRender->bConnecting)
-		{
-			ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bGUI);
-			ImGui::Text("\tWelcome to Vice City CO-OP " VCCOOP_VER "\n\t\t  - Alpha Version - ");
-
-			ImGui::InputText("Nickname", Nickname, 25, 0, NULL, Nickname);
-			ImGui::InputText("IP", IP, 16, 0, NULL, IP);
-			ImGui::InputInt("Port", &Port);
-
-			if (ImGui::Button("Connect"))
+			if (gRender->bConnecting && !gRender->bGUI)
 			{
-				gGame->Name = Nickname;
-				gNetwork->ServerAddress = IP;
-				gNetwork->ServerPort = Port;
+				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bConnecting);
+				ImGui::Text("Connecting...");
+				ImGui::End();
+			}
+			if (gRender->bGUI && !gRender->bConnecting)
+			{
+				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bGUI);
+				ImGui::Text("\tWelcome to Vice City CO-OP " VCCOOP_VER "\n\t\t  - Alpha Version - ");
 
-				if (strlen(gGame->Name.c_str()) >= 3) {
-					gNetwork->AttemptConnect(gNetwork->ServerAddress, gNetwork->ServerPort);
-					gRender->bConnecting  = true;
-					gRender->bGUI		  = false;
-					gRender->bAboutWindow = false;
+				ImGui::InputText("Nickname", Nickname, 25, 0, NULL, Nickname);
+				ImGui::InputText("IP", IP, 16, 0, NULL, IP);
+				ImGui::InputInt("Port", &Port);
+
+				if (ImGui::Button("Connect"))
+				{
+					gGame->Name = Nickname;
+					gNetwork->ServerAddress = IP;
+					gNetwork->ServerPort = Port;
+
+					if (strlen(gGame->Name.c_str()) >= 3) {
+						gNetwork->AttemptConnect(gNetwork->ServerAddress, gNetwork->ServerPort);
+						gRender->bConnecting = true;
+						gRender->bGUI = false;
+						gRender->bAboutWindow = false;
+					}
 				}
+				if (ImGui::Button("About VC:CO-OP"))
+				{
+					gRender->bAboutWindow = !gRender->bAboutWindow;
+				}
+				ImGui::End();
 			}
-			if (ImGui::Button("About VC:CO-OP"))
+			if (!gRender->bConnecting && gRender->bGUI && gRender->bAboutWindow)
 			{
-				gRender->bAboutWindow = !gRender->bAboutWindow;
+				ImGui::Begin("About Vice City CO-OP " VCCOOP_VER, &gRender->bAboutWindow);
+				ImGui::Text("WIP");
+				ImGui::End();
 			}
-			ImGui::End();
+
+			for (int i = 0; i < (int)this->gGuiContainer.size(); i++)
+			{
+				if (this->gGuiContainer[i])
+					this->gGuiContainer[i]->Draw();
+			}
+
+			ImGui::EndFrame();
+			ImGui::Render();
 		}
-		if (!gRender->bConnecting && gRender->bGUI && gRender->bAboutWindow)
-		{
-			ImGui::Begin("About Vice City CO-OP " VCCOOP_VER, &gRender->bAboutWindow);
-			ImGui::Text("WIP");
-			ImGui::End();
-		}
-		ImGui::EndFrame();
-		ImGui::Render();
 	}
 
 	// should we allow VC mouse input?

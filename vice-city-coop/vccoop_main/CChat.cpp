@@ -12,7 +12,10 @@ CChat::CChat()
 		this->chatBuffer[i][0] = '\0';
 	}
 }
-CChat::~CChat() {}
+CChat::~CChat() 
+{
+
+}
 void CChat::Draw()
 {
 	//todo: proper pagination implementation
@@ -31,7 +34,6 @@ void CChat::Draw()
 	if (this->chatToggled)
 	{
 		ImGuiStyle& style = ImGui::GetStyle();
-		ImGui_ImplDX9_NewFrame();
 		ImGui::SetNextWindowFocus();
 		ImGui::SetNextWindowPos(ImVec2(30, (float)gRender->MeasureText("Y").cy * 10 + 20));
 		ImGui::SetNextWindowBgAlpha(-1.0f);
@@ -56,8 +58,6 @@ void CChat::Draw()
 
 		ImGui::PopItemWidth();
 		ImGui::End();
-		ImGui::EndFrame();
-		ImGui::Render();
 		style.WindowBorderSize = 1.0f;
 	}
 }
