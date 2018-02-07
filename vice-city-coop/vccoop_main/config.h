@@ -144,9 +144,6 @@ struct SPlayerData {
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
 
-	WORD playerControls;
-	CAMERA_AIM cameraAim;
-
 	PedSyncData pedData;
 };
 

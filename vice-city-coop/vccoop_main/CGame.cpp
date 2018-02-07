@@ -2,22 +2,9 @@
 
 DWORD dwCurPlayerActor = 0;
 CPed * localPlayer = NULL;
-bool usedPlayerID[MAX_PLAYERS];
-int playerids = 1;
-int currentPlayerID = 0;
-
-GTA_CONTROLSET localPlayerKeys;
-CAMERA_AIM localPlayerLookFrontX;
-BYTE localPlayerCameraMode;
-
-GTA_CONTROLSET remotePlayerKeys[MAX_PLAYERS];
-CAMERA_AIM remotePlayerLookFrontX[MAX_PLAYERS];
-int remotePlayerCameraMode[MAX_PLAYERS];
-
 static bool scriptProcessed = false;
-
 WNDPROC		orig_wndproc;
-HWND		orig_wnd;
+HWND orig_wnd;
 void Hook_CRunningScript__Process();
 
 CGame::CGame()
@@ -34,96 +21,27 @@ void CGame::Run()
 {
 
 }
-int CGame::GetFreePlayerID()
-{
-	for (int i = 1; i < MAX_PLAYERS; i++)
-	{
-		if (usedPlayerID[i] == false)
-		{
-			usedPlayerID[i] = true;
-			return i;
-		}
-	}
-	return -1;
-}
-void InitGameVariables()
-{
-	memset(&localPlayerKeys, 0, sizeof(GTA_CONTROLSET));
-	memset(&localPlayerLookFrontX, 0, sizeof(CAMERA_AIM));
-	localPlayerCameraMode = 0;
-
-	memset(&remotePlayerKeys[0], 0, sizeof(GTA_CONTROLSET) * MAX_PLAYERS);
-	memset(&remotePlayerLookFrontX[0], 0, sizeof(CAMERA_AIM) * MAX_PLAYERS);
-	memset(&remotePlayerCameraMode[0], 0, sizeof(int) * MAX_PLAYERS);
-
-	for (int i = 0; i < MAX_PLAYERS; i++)
-	{
-		gGame->players[i] = (DWORD)0;
-		usedPlayerID[i] = false;
-	}
-}
-int GetIDFromPed(DWORD ped)
-{
-	for (int i = 0; i < MAX_PLAYERS; i++)
-	{
-		if (gGame->players[i] == ped) return i;
-	}
-	return 0;
-}
-void  _declspec(naked) CPlayerPed_ProcessControl_Hook()
+void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 {
 	_asm mov dwCurPlayerActor, ecx
 	_asm pushad
 
-	currentPlayerID = GetIDFromPed(dwCurPlayerActor);
-
 	localPlayer = FindPlayerPed();
-	if (dwCurPlayerActor && localPlayer && currentPlayerID != 0)
-	{
-		// key switching
-		localPlayerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
-		// set remote player's keys
-		*(GTA_CONTROLSET*)0x7DBCB0 = remotePlayerKeys[currentPlayerID];
-
-		// save the internal cammode.
-		localPlayerCameraMode = MemRead<u8>(0x7E481C);
-
-		// onfoot mouse looking mode.
-		MemWrite<u8>(0x7E481C, 4); 
-
-		// aim switching
-		localPlayerLookFrontX = *(CAMERA_AIM*)0x7E4978;
-		//*(CAMERA_AIM*)0x7E4978 = remotePlayerLookFrontX[currentPlayerID];
-
-		MemWrite<BYTE>(0xA10AFB, currentPlayerID);
-
-		// call the internal CPlayerPed[]::Process
-		_asm popad
-		_asm mov edx, 0x537270
-		_asm call edx
-		_asm pushad
-
-		// restore the camera mode.
-		MemWrite<u8>(0x7E481C, localPlayerCameraMode);
-
-		// restore the local player's keys and the internal ID.
-		MemWrite<BYTE>(0xA10AFB, 0);
-
-		*(GTA_CONTROLSET*)0x7DBCB0 = localPlayerKeys;
-		*(CAMERA_AIM*)0x7E4978 = localPlayerLookFrontX;
-	}
-	else // it's the local player
+	if (localPlayer && (CPed*)dwCurPlayerActor == localPlayer)
 	{
 		_asm popad
 		_asm mov edx, 0x537270
 		_asm call edx
 		_asm pushad
 	}
-
+	else
+	{
+		//Redirect to CPed::ProccessControl instead
+		ThisCall(0x505790, (CPed*)dwCurPlayerActor);
+	}
 	_asm popad
 	_asm ret
 }
-
 void InstallMethodHook(DWORD dwInstallAddress,
 	DWORD dwHookFunction)
 {
@@ -242,7 +160,7 @@ void CGame::InitPreGamePatches()
 	//A Cworld crash fix
 	MakeNop(0x531D40, 8);
 
-	InstallMethodHook(0x694D90, (DWORD)CPlayerPed_ProcessControl_Hook);
+	InstallMethodHook(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
 
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
@@ -295,9 +213,7 @@ void Hook_CRunningScript__Process()
 
 		CPools::ms_pPedPool->Init(1000, NULL, NULL);
 		CPools::ms_pVehiclePool->Init(200, NULL, NULL);
-
-		InitGameVariables();
-
+		
 		gLog->Log("[CGame] CRunningScript::Process() hook finished.\n");
 
 		gRender->ToggleGUI();
@@ -305,36 +221,6 @@ void Hook_CRunningScript__Process()
 		// First tick processed
 		scriptProcessed = true;
 	}
-}
-
-CPlayerPed * CGame::GamePool_Ped_GetAt(int iID)
-{
-	CPlayerPed *pActorRet;
-
-	_asm mov ebx, 0x97F2AC
-	_asm mov ecx, [ebx]
-		_asm push iID
-	_asm mov ebx, 0x451CB0
-	_asm call ebx
-	_asm mov pActorRet, eax
-
-	return pActorRet;
-}
-
-//-----------------------------------------------------------
-
-int CGame::GamePool_Ped_GetIndex(CPed *pPed)
-{
-	int iRetVal;
-
-	_asm mov ebx, 0x97F2AC
-	_asm mov ecx, [ebx]
-		_asm push pPed
-	_asm mov ebx, 0x451CF0
-	_asm call ebx
-	_asm mov iRetVal, eax
-
-	return iRetVal;
 }
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
@@ -361,7 +247,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			else if (vkey == VK_F8)
 			{
 				gRender->ToggleGUI(); 
-				gLog->Log("[CGame] Toggling GUI.\n");
+				gLog->Log("[CGame] Toggling GUI\n");
 			}
 			else if (vkey == VK_F9)
 			{
