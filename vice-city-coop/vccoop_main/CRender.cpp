@@ -170,6 +170,12 @@ void CRender::Draw()
 				ImGui::End();
 			}
 
+			// Force connecting window to be displayed until we have connected..
+			if (!gNetwork->connected && !gRender->bConnecting && !gRender->bGUI)
+			{
+				gRender->bConnecting = true;
+				gGame->DisableMouseInput();
+			}
 			for (int i = 0; i < (int)this->gGuiContainer.size(); i++)
 			{
 				if (this->gGuiContainer[i])

@@ -54,7 +54,6 @@ void CChat::Draw()
 		}
 
 		ImGui::SetKeyboardFocusHere();
-
 		ImGui::PopItemWidth();
 		ImGui::End();
 		style.WindowBorderSize = 1.0f;
