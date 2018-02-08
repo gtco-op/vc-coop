@@ -224,14 +224,17 @@ void Hook_CRunningScript__Process()
 }
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-
 	switch (umsg)
 	{
 		case WM_SYSKEYDOWN:
 		case WM_KEYDOWN:
 		{
 			int vkey = (int)wparam;
-			if (vkey == 'P')
+			if (vkey == 'P' && gNetwork->connected 
+#ifdef VCCOOP_DEBUG
+				&& !gRender->gDebugScreen->consoleToggled
+#endif
+				)
 			{
 				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
 			}
@@ -242,11 +245,16 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			if (vkey == VK_F7 && gNetwork->connected)
 			{
 				gNetwork->StopClientThread(); 
+				gRender->bConnecting	= false;
+				gRender->bGUI			= true;
+
 				gLog->Log("[CGame] Disconnecting from server.\n");
 			}
 			else if (vkey == VK_F8)
 			{
-				gRender->ToggleGUI(); 
+				//gRender->ToggleGUI(); 
+				gRender->bGUI = !gRender->bGUI;
+				gRender->bConnecting = false;
 				gLog->Log("[CGame] Toggling GUI\n");
 			}
 			else if (vkey == VK_F9)

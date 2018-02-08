@@ -11,13 +11,14 @@ CRender::CRender()
 	this->bGUI				= false;
 	this->bConnecting		= false;
 	this->bAboutWindow		= false;
-
-	this->Initialized = false;
+	this->Initialized		= false;
 
 	this->gGuiContainer.push_back(new CNameTags());
 
 #ifdef VCCOOP_DEBUG
-	this->gGuiContainer.push_back(new CDebugScreen());
+	this->bConsole = false;
+
+	this->gDebugScreen = new CDebugScreen();
 #endif
 
 	Events::drawingEvent += [] {
@@ -61,6 +62,7 @@ void CRender::Run()
 			ImGui_ImplDX9_Init(orig_wnd, this->device);
 			ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
 			gLog->Log("[CRender] ImGui initialized\n");
+
 			Initialized = true;
 		}
 	}
@@ -95,7 +97,7 @@ void CRender::InitFont()
 		ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
 		gLog->Log("[CRender] ImGui initialized\n");
 		gGame->DisableMouseInput();
-		
+
 		// Populate GUI variables with retrieved config values
 		gConfig->PopulateValues(IP, Port, Nickname);
 
@@ -120,6 +122,11 @@ void CRender::DestroyFont()
 void CRender::ToggleGUI()
 {
 	bGUI = !bGUI;
+
+	if (!gNetwork->connected && !gNetwork->client_running)
+	{
+		bConnecting = false;
+	}
 }
 void CRender::Draw()
 {
@@ -129,7 +136,11 @@ void CRender::Draw()
 		{
 			ImGui_ImplDX9_NewFrame();
 
-			if (gRender->bConnecting && !gRender->bGUI)
+#ifdef VCCOOP_DEBUG
+			gRender->gDebugScreen->Draw();
+#endif
+
+			if (gRender->bConnecting)
 			{
 				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bConnecting);
 				ImGui::Text("Connecting...");
@@ -150,11 +161,36 @@ void CRender::Draw()
 					gNetwork->ServerAddress = IP;
 					gNetwork->ServerPort = Port;
 
-					if (strlen(gGame->Name.c_str()) >= 3) {
+					if (strlen(gGame->Name.c_str()) >= 3 && gNetwork->ServerPort != 0 && gNetwork->ServerAddress != "") {
 						gNetwork->AttemptConnect(gNetwork->ServerAddress, gNetwork->ServerPort);
+
 						gRender->bConnecting = true;
 						gRender->bGUI = false;
 						gRender->bAboutWindow = false;
+					}
+					else
+					{
+						gChat->AddChatMessage("[ERROR] Please ensure all connection settings are valid!");
+#ifdef VCCOOP_DEBUG
+						gRender->gDebugScreen->gDevConsole->AddLog("[ERROR] Please ensure all connection settings are valid!");
+#endif
+					}
+				}
+				if (ImGui::Button("Local Server"))
+				{
+					gGame->Name = Nickname;
+
+					if (strlen(gGame->Name.c_str()) >= 3)
+					{
+						gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
+
+						gRender->bConnecting = true;
+						gRender->bGUI = false;
+						gRender->bAboutWindow = false;
+					}
+					else
+					{
+						gChat->AddChatMessage("[ERROR] Please ensure all connection settings are valid!");
 					}
 				}
 				if (ImGui::Button("About VC:CO-OP"))
@@ -171,11 +207,12 @@ void CRender::Draw()
 			}
 
 			// Force connecting window to be displayed until we have connected..
-			if (!gNetwork->connected && !gRender->bConnecting && !gRender->bGUI)
+			if (!gNetwork->connected && !gRender->bConnecting && !gRender->bGUI && gNetwork->client_running)
 			{
 				gRender->bConnecting = true;
-				gGame->DisableMouseInput();
 			}
+
+			// Draw all rendering elements in our GUI container
 			for (int i = 0; i < (int)this->gGuiContainer.size(); i++)
 			{
 				if (this->gGuiContainer[i])
@@ -192,7 +229,11 @@ void CRender::Draw()
 	{
 		// if chat or GUI is active, then no..
 		if (gRender->bGUI || gChat->chatToggled || 
-			gRender->bConnecting || gRender->bAboutWindow)
+			gRender->bConnecting || gRender->bAboutWindow 
+#ifdef VCCOOP_DEBUG
+			|| gRender->bConsole
+#endif
+			)
 		{
 			gGame->DisableMouseInput();
 		}

@@ -92,11 +92,11 @@
 #include "CLogger.h"
 #include "CGame.h"
 #include "CRenderTemplate.h"
-#include "CRender.h"
 #include "CNameTags.h"
 #include "CDebugScreen.h"
 #include "CImGui.h"
 #include "CChat.h"
+#include "CRender.h"
 #include "CClientPlayer.h"
 
 #define LocalPlayer FindPlayerPed

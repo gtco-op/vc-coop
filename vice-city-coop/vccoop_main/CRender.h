@@ -13,6 +13,12 @@ public:
 	bool bConnecting;
 	bool bAboutWindow;
 
+#ifdef VCCOOP_DEBUG
+	bool bConsole;
+
+	CDebugScreen *gDebugScreen;
+#endif
+
 	bool Initialized;
 	void ToggleGUI();
 	

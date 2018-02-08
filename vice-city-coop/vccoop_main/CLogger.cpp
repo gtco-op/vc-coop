@@ -43,9 +43,13 @@ void CLogger::Log(char * format, ...)
 	buf.append(buffer);
 	Out(buf.c_str());
 
+	gChat->AddChatMessage(buf.c_str());
+
 #ifdef VCCOOP_DEBUG
 	printf(buf.c_str());
-	gChat->AddChatMessage(buf.c_str());
+	
+	if(gRender->gDebugScreen->gDevConsole != nullptr)
+		gRender->gDebugScreen->gDevConsole->AddLog(buf.c_str());
 #endif
 }
 std::string GetExecutablePath()

@@ -24,14 +24,19 @@ void CChat::Draw()
 	rect.top = 10;
 	rect.left = 30;
 
-	for (int i = 0; i < 10; i++)
+	if (this->chatDisplay 
+#ifdef VCCOOP_DEBUG
+		|| !gRender->gDebugScreen->gDevConsole->Collapsed
+#endif
+		)
 	{
-		gRender->RenderText(this->chatBuffer[10 - (i + 1)], rect, -1);
-
-		rect.top += gRender->MeasureText("Y").cy + 1;
+		for (int i = 0; i < 10; i++)
+		{
+			gRender->RenderText(this->chatBuffer[10 - (i + 1)], rect, -1);
+			rect.top += gRender->MeasureText("Y").cy + 1;
+		}
 	}
-	
-	if (this->chatToggled)
+	if (this->chatToggled && this->chatDisplay)
 	{
 		ImGuiStyle& style = ImGui::GetStyle();
 		ImGui::SetNextWindowFocus();
@@ -91,9 +96,15 @@ void CChat::ProcessChatInput()
 			gLog->Log("[CChat] Shutting down\n");
 			ExitProcess(-1);
 		}
+#ifdef VCCOOP_DEBUG
+		else if (strstr(this->chatInputBuffer, "/collapse"))
+		{
+			gRender->gDebugScreen->gDevConsole->Collapsed = !gRender->gDebugScreen->gDevConsole->Collapsed;
+		}
+#endif
 		else
 		{
-			this->AddChatMessage(this->chatInputBuffer);
+			this->AddChatMessage("[%s]%s: %s", time_stamp(LOGGER_TIME_FORMAT).c_str(), gGame->Name.c_str(), this->chatInputBuffer);
 		}
 	}
 }

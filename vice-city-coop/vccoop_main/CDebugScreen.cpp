@@ -2,11 +2,37 @@
 
 char   vccoop_string[600];
 
-CDebugScreen::CDebugScreen() {}
-CDebugScreen::~CDebugScreen() {}
+#ifdef VCCOOP_DEBUG
+DeveloperConsole* CDebugScreen::gDevConsole;
+#endif
 
+CDebugScreen::CDebugScreen() 
+{
+
+}
+CDebugScreen::~CDebugScreen() 
+{
+
+}
 void CDebugScreen::Draw()
 {
+#ifdef VCCOOP_DEBUG	
+	if (gRender->bConsole && gDevConsole)		{
+		gDevConsole->Draw(&gRender->bConsole);
+
+		gChat->chatDisplay = false;
+		gChat->chatToggled = false;
+	}
+	else if (gRender->bConsole && !gDevConsole)
+	{
+		gDevConsole = new DeveloperConsole();
+	}
+	else
+	{
+		gChat->chatDisplay = true;
+	}
+#endif
+
 	if (!gNetwork->connected)
 	{
 		sprintf(vccoop_string, "%s %s", VCCOOP_NAME, VCCOOP_VER);
