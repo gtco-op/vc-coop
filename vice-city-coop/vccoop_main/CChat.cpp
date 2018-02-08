@@ -6,6 +6,8 @@ CChat::CChat()
 {
 	this->pageSize = 10;
 	this->chatToggled = false; 
+	this->chatDisplay = true;
+
 	memset(this->chatInputBuffer, 0, sizeof(this->chatInputBuffer));
 	for (int i = 0; i < 10; i++)
 	{

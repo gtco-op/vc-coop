@@ -6,6 +6,7 @@ bool   wndHookInited = false;
 
 CRender::CRender()
 {
+	this->pLogoTex			= NULL;
 	this->m_pD3DXFont		= NULL;
 	this->PedTags			= true;
 	this->bGUI				= false;
@@ -98,6 +99,17 @@ void CRender::InitFont()
 		gLog->Log("[CRender] ImGui initialized\n");
 		gGame->DisableMouseInput();
 
+		if (pLogoTex == nullptr)
+		{
+			std::string exec = GetExecutablePath();
+			exec.append("\\logo.png");
+
+			HRESULT res = D3DXCreateTextureFromFileA(device, exec.c_str(), &pLogoTex);
+			if (res != D3D_OK) {
+				gLog->Log("[CRender] Logo texture could not be created! (File: %s Error: %d)\n", exec.c_str(), res);
+			}
+		}
+
 		// Populate GUI variables with retrieved config values
 		gConfig->PopulateValues(IP, Port, Nickname);
 
@@ -142,15 +154,22 @@ void CRender::Draw()
 
 			if (gRender->bConnecting)
 			{
+				ImGui::SetNextWindowPosCenter();
 				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bConnecting);
 				ImGui::Text("Connecting...");
 				ImGui::End();
 			}
 			if (gRender->bGUI && !gRender->bConnecting)
 			{
+				ImGui::SetNextWindowPosCenter();
 				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bGUI);
 				ImGui::Text("\tWelcome to Vice City CO-OP " VCCOOP_VER "\n\t\t  - Alpha Version - ");
-
+				ImGui::Separator();
+				if (pLogoTex != nullptr)
+				{
+					ImGui::Image((void*)pLogoTex, ImVec2(300,200));
+				}
+				ImGui::Separator();
 				ImGui::InputText("Nickname", Nickname, 25, 0, NULL, Nickname);
 				ImGui::InputText("IP", IP, 16, 0, NULL, IP);
 				ImGui::InputInt("Port", &Port);
@@ -201,6 +220,7 @@ void CRender::Draw()
 			}
 			if (!gRender->bConnecting && gRender->bGUI && gRender->bAboutWindow)
 			{
+				ImGui::SetNextWindowPosCenter();
 				ImGui::Begin("About Vice City CO-OP " VCCOOP_VER, &gRender->bAboutWindow);
 				ImGui::Text("WIP");
 				ImGui::End();

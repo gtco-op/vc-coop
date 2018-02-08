@@ -35,6 +35,8 @@ public:
 
 	std::vector<CRenderTemplate*> gGuiContainer;
 private:
+	LPDIRECT3DTEXTURE9 pLogoTex;
+
 	ID3DXFont * m_pD3DXFont;
 	int iFontSize;
 
