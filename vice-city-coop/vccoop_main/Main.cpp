@@ -32,6 +32,11 @@ public:
 		gLog->Log("[CCore] Main method finished.\n");
 
 		Events::gameProcessEvent += [] {
+			if (GetAsyncKeyState(0x2C) & 1 && CTimer::m_snTimeInMilliseconds - keyPressTime > 500)
+			{
+				keyPressTime = CTimer::m_snTimeInMilliseconds;
+				gRender->TakeScreenshot();
+			}
 #ifdef VCCOOP_DEBUG
 			if (KeyPressed(223) && CTimer::m_snTimeInMilliseconds - keyPressTime > 500)
 			{

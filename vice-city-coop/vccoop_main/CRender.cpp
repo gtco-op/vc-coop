@@ -302,3 +302,14 @@ SIZE CRender::MeasureText(const char * szString)
 
 	return ret;
 }
+void CRender::TakeScreenshot()
+{
+	std::string fName("screenshot_");
+	fName.append(time_stamp(LOGGER_TIME_FORMAT));
+	fName.append(".bmp");
+
+	LPDIRECT3DSURFACE9 pBackBuffer;
+	gRender->device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+	D3DXSaveSurfaceToFileA(fName.c_str(), D3DXIFF_BMP, pBackBuffer, NULL, NULL);
+	SAFE_RELEASE(pBackBuffer);
+}

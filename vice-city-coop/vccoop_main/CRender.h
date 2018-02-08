@@ -21,6 +21,7 @@ public:
 
 	bool Initialized;
 	void ToggleGUI();
+	void TakeScreenshot();
 	
 	/*		 D3D9		*/
 public:

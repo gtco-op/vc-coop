@@ -100,12 +100,12 @@
 #include "CRender.h"
 #include "CClientPlayer.h"
 
-#define LocalPlayer FindPlayerPed
+#define SAFE_RELEASE(p)          { if (p) { (p)->Release(); (p)=NULL; } }
+#define LocalPlayer				 FindPlayerPed
 
 using namespace std;
 using namespace plugin;
 using namespace Hook;
-
 
 extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
