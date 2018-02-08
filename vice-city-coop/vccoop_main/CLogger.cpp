@@ -5,12 +5,11 @@ CLogger::CLogger()
 	TimeFormat = DEFAULT_TIME_FORMAT;
 	path = path_to_session_log_file();
 	out = std::ofstream(path);
-
-	this->Log("[CCore] %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);
 }
 CLogger::~CLogger()
 {
-
+	this->Log("[CLogger] CLogger shutting down\n");
+	out.close();
 }
 void CLogger::Out(const char * szBuf)
 {

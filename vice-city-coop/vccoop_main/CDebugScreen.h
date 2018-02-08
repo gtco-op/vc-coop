@@ -60,11 +60,11 @@ public:
 
 	void    Draw(bool* p_open)
 	{
-		ImGui::SetNextWindowPos(ImVec2(10, 10));
+		ImGui::SetNextWindowPos(ImVec2(5, 5));
 		ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 
 		ImGui::SetNextWindowCollapsed(!Collapsed);
-		if (!ImGui::Begin(VCCOOP_WINDOW_TITLE " Console", p_open, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize))
+		if (!ImGui::Begin(VCCOOP_WINDOW_TITLE " Console", p_open, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
 		{
 			ImGui::End();
 			return;

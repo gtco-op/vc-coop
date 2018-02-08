@@ -335,6 +335,7 @@
     <ClInclude Include="librg\librg.h" />
     <ClInclude Include="librg\zpl.h" />
     <ClInclude Include="librg\zpl_math.h" />
+    <ClInclude Include="LogoTextureArray.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="CRender.h" />
     <ClInclude Include="vendor\imgui\imconfig.h" />

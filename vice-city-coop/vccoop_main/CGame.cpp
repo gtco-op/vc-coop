@@ -4,7 +4,7 @@ DWORD dwCurPlayerActor = 0;
 CPed * localPlayer = NULL;
 static bool scriptProcessed = false;
 WNDPROC		orig_wndproc;
-HWND orig_wnd;
+HWND		orig_wnd;
 void Hook_CRunningScript__Process();
 
 CGame::CGame()
@@ -226,6 +226,12 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	switch (umsg)
 	{
+
+		case WM_DESTROY:
+		case WM_CLOSE:
+			ExitProcess(-1);
+			break;
+
 		case WM_SYSKEYDOWN:
 		case WM_KEYDOWN:
 		{

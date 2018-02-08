@@ -21,6 +21,7 @@ public:
 		gChat = new CChat();
 		gLog = new CLogger();
 
+		gLog->Log("[CCore] %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);
 		gLog->Log("[CCore] Initializing classes.\n");
 		gConfig = new CConfiguration();
 		gNetwork = new CClientNetwork();
@@ -48,5 +49,13 @@ public:
 			gGame->Run();
 			gRender->Run();
 		};
+	}
+	~VCCoop()
+	{
+		delete gRender;
+
+		gLog->Log("[CCore] CCore shutting down\n");
+
+		delete gLog;
 	}
 } vcCoop;

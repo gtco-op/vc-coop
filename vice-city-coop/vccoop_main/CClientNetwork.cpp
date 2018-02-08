@@ -24,6 +24,7 @@ CClientNetwork::CClientNetwork()
 }
 CClientNetwork::~CClientNetwork()
 {
+	gLog->Log("[CClientNetwork] CClientNetwork shutting down\n");
 	this->StopClientThread();
 }
 CEntity* CClientNetwork::GetEntityFromNetworkID(int id)

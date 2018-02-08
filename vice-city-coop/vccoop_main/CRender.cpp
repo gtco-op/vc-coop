@@ -1,4 +1,5 @@
 #include "main.h"
+#include "LogoTextureArray.h"
 
 extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
@@ -95,18 +96,22 @@ void CRender::InitFont()
 	if (!Initialized)
 	{
 		ImGui_ImplDX9_Init(orig_wnd, this->device);
-		ImGui::GetIO().DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
+		
+		ImGuiIO io = ImGui::GetIO();
+		io.DisplaySize = { screen::GetScreenWidth(), screen::GetScreenHeight() };
+
+		// Disable INI saving in ImGui (crashfix)
+		io.IniFilename = NULL;
+		io.LogFilename = NULL;
+
 		gLog->Log("[CRender] ImGui initialized\n");
 		gGame->DisableMouseInput();
 
 		if (pLogoTex == nullptr)
 		{
-			std::string exec = GetExecutablePath();
-			exec.append("\\logo.png");
-
-			HRESULT res = D3DXCreateTextureFromFileA(device, exec.c_str(), &pLogoTex);
+			HRESULT res = D3DXCreateTextureFromFileInMemory(device, &logoTexData, sizeof(logoTexData), &pLogoTex);
 			if (res != D3D_OK) {
-				gLog->Log("[CRender] Logo texture could not be created! (File: %s Error: %d)\n", exec.c_str(), res);
+				gLog->Log("[CRender] Logo texture could not be created! (Error: %d)\n", res);
 			}
 		}
 
@@ -125,9 +130,16 @@ void CRender::DestroyFont()
 		this->m_pD3DXFont = NULL;
 		gLog->Log("[CRender] Font destroyed\n");
 	}
+	if (this->pLogoTex)
+	{
+		this->pLogoTex->Release();
+		this->pLogoTex = NULL;
+		gLog->Log("[CRender] Logo texture destroyed\n");
+	}
 	if (Initialized)
 	{
-		ImGui_ImplDX9_Shutdown();
+		ImGui_ImplDX9_InvalidateDeviceObjects();
+		gLog->Log("[CRender] ImGui destroyed\n");
 	}
 	this->Initialized = false;
 }
@@ -152,21 +164,27 @@ void CRender::Draw()
 			gRender->gDebugScreen->Draw();
 #endif
 
-			if (gRender->bConnecting)
+			if (gRender->bConnecting && gNetwork->client_running)
 			{
 				ImGui::SetNextWindowPosCenter();
-				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bConnecting);
+				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bConnecting, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
 				ImGui::Text("Connecting...");
 				ImGui::End();
+			}
+			else if (gNetwork->client_running == false && gRender->bConnecting == false)
+			{
+				gRender->bGUI = true;
 			}
 			if (gRender->bGUI && !gRender->bConnecting)
 			{
 				ImGui::SetNextWindowPosCenter();
-				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bGUI);
+				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bGUI, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
+				ImGui::AlignTextToFramePadding();
 				ImGui::Text("\tWelcome to Vice City CO-OP " VCCOOP_VER "\n\t\t  - Alpha Version - ");
 				ImGui::Separator();
 				if (pLogoTex != nullptr)
 				{
+					ImGui::Indent(5.0f);
 					ImGui::Image((void*)pLogoTex, ImVec2(300,200));
 				}
 				ImGui::Separator();

@@ -34,6 +34,9 @@
     <Filter Include="Source\tools\Hook Library">
       <UniqueIdentifier>{7fb7d40f-569f-49dc-92e6-5b5719c0b155}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\misc">
+      <UniqueIdentifier>{449492df-1bf5-4282-b6e6-c0fe324f43b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -110,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="CConfiguration.h">
       <Filter>Source\tools\CConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="LogoTextureArray.h">
+      <Filter>Source\misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

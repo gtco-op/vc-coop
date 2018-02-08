@@ -16,7 +16,7 @@ CChat::CChat()
 }
 CChat::~CChat() 
 {
-
+	gLog->Log("[CChat] Shutting down\n");
 }
 void CChat::Draw()
 {

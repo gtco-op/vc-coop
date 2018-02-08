@@ -90,12 +90,13 @@
 #include "CConfiguration.h"
 #include "CClientNetwork.h"
 #include "CLogger.h"
-#include "CGame.h"
 #include "CRenderTemplate.h"
 #include "CNameTags.h"
 #include "CDebugScreen.h"
 #include "CImGui.h"
 #include "CChat.h"
+#include "CGame.h"
+
 #include "CRender.h"
 #include "CClientPlayer.h"
 
@@ -104,6 +105,10 @@
 using namespace std;
 using namespace plugin;
 using namespace Hook;
+
+
+extern WNDPROC		orig_wndproc;
+extern HWND			orig_wnd;
 
 extern CClientNetwork	*gNetwork;
 extern CConfiguration	*gConfig;

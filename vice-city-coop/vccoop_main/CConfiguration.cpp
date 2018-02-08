@@ -2,8 +2,9 @@
 
 CConfiguration::CConfiguration()
 {
-	this->_inih			= nullptr;
-	this->configOpened	= false;
+	this->_inih				= nullptr;
+	this->configOpened		= false;
+	this->configPopulated	= false;
 
 	if (this->configFilename.empty())
 		this->configFilename = VCCOOP_DEFAULT_CLIENT_CONFIG;
@@ -19,10 +20,13 @@ CConfiguration::CConfiguration()
 }
 CConfiguration::~CConfiguration()
 {
-
+	gLog->Log("[CConfiguration] CConfiguration shutting down\n");
 }
 void CConfiguration::PopulateValues(char srvIP[15], int& srvPort, char cliName[25])
 {
+	if (configPopulated)
+		return;
+
 	/* Populate configuration values from INI */
 	/* Default values specified in config.h */
 	std::string tmp = this->GetReader()->Get("Server", "ServerAddress", VCCOOP_DEFAULT_SERVER_ADDRESS);
@@ -38,6 +42,8 @@ void CConfiguration::PopulateValues(char srvIP[15], int& srvPort, char cliName[2
 	strcpy(cliName, this->Nickname);
 	
 	gLog->Log("[CConfiguration] Settings loaded from configuration file.\n");
+
+	configPopulated = true;
 }
 std::string CConfiguration::sections(INIReader &reader)
 {

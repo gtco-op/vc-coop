@@ -28,6 +28,8 @@ private:
 	INIReader* _inih;
 	
 	bool configOpened;
+
+	bool configPopulated;
 	
 	std::string configFilename;
 
