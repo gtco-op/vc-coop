@@ -16,6 +16,13 @@ public:
 	void DisableMouseInput();
 
 	void Run();
+
+	int remotePlayers = 1;
+	CPed * remotePlayerPeds[MAX_PLAYERS];
+	GTA_CONTROLSET remotePlayerKeys[MAX_PLAYERS];
+	CAMERA_AIM remotePlayerLookFrontX[MAX_PLAYERS];
+	int remotePlayerCameraMode[MAX_PLAYERS];
+
 private:
 	void InitPreGamePatches(); 
 };

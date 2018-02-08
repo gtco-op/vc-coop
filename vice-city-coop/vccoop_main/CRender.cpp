@@ -49,15 +49,28 @@ CRender::~CRender()
 }
 void CRender::Run()
 {
-	if (!wndHookInited)	{
+	if (!wndHookInited)	
+	{
 		HWND  wnd = RsGlobal.ps->window;
-		if (wnd)		{
-			if (orig_wndproc == NULL || wnd != orig_wnd)			{
+		if (wnd)		
+		{
+			if (orig_wndproc == NULL || wnd != orig_wnd)			
+			{
 				orig_wndproc = (WNDPROC)(UINT_PTR)SetWindowLong(wnd, GWL_WNDPROC, (LONG)(UINT_PTR)wnd_proc);
 				orig_wnd = wnd;
 
 				SetWindowText(wnd, VCCOOP_WINDOW_TITLE);
+				ImmAssociateContext(wnd, 0);
 			}
+			RECT rect;
+			GetWindowRect(wnd, &rect);
+
+
+			gLog->Log("rright: %d", rect.right);
+			gLog->Log("displaymode: %d", MemRead<s32>(0x9B6CBC));
+
+			MemWrite<s32>(0x9B6CBC, rect.right/2);
+
 			wndHookInited = true;
 			gLog->Log("[CRender] Original WndProc hooked\n");
 
@@ -164,7 +177,7 @@ void CRender::Draw()
 			gRender->gDebugScreen->Draw();
 #endif
 
-			if (gRender->bConnecting && gNetwork->client_running)
+			/*if (gRender->bConnecting && gNetwork->client_running)
 			{
 				ImGui::SetNextWindowPosCenter();
 				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bConnecting, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
@@ -174,7 +187,7 @@ void CRender::Draw()
 			else if (gNetwork->client_running == false && gRender->bConnecting == false)
 			{
 				gRender->bGUI = true;
-			}
+			}*/
 			if (gRender->bGUI && !gRender->bConnecting)
 			{
 				ImGui::SetNextWindowPosCenter();

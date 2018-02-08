@@ -373,6 +373,19 @@ namespace Hook
 		return p;
 	}
 
+	inline MemoryPointer MakePushOffset(MemoryPointer at, MemoryPointer dest = nullptr)
+	{
+		auto p = GetBranchDestination(at);
+		MemWrite<u8>(at, 0x68);
+
+		if (!!dest.AsInt())
+		{
+			MakeRelativeOffset(at + 1, dest, 4);
+		}
+
+		return p;
+	}
+
 	// TODO: std::forward-less
 	template <class Ret = void, class... Args>
 	inline Ret Call(MemoryPointer p, Args... a)

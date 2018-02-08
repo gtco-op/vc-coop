@@ -1,4 +1,5 @@
 #include "main.h"
+#include <d3d9.h>
 
 CClientNetwork	*gNetwork;
 CConfiguration  *gConfig;
@@ -6,6 +7,7 @@ CGame			*gGame;
 CRender			*gRender;
 CLogger			*gLog;
 CChat			*gChat;
+
 
 class VCCoop 
 {
@@ -29,7 +31,9 @@ public:
 		gRender = new CRender();
 		gRender->gGuiContainer.push_back(gChat);
 
-		gLog->Log("[CCore] Main method finished.\n");
+		gLog->Log("[CCore] Main method finished.\n"); 
+
+		MemWrite<s32>(0x9B6CBC,  800);
 
 		Events::gameProcessEvent += [] {
 			if (GetAsyncKeyState(0x2C) & 1 && CTimer::m_snTimeInMilliseconds - keyPressTime > 500)

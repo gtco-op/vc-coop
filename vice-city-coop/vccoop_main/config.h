@@ -27,6 +27,9 @@
 // VCCOOP Window Title
 #define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
 
+//print game's internal debug messages
+//#define VCCOOP_DEBUG_ENGINE
+
 //------------------------------------------------------------------------------------------
 
 #ifndef VCCOOP_SERVER
@@ -143,6 +146,9 @@ struct SPlayerData {
 	unsigned int CurrWep;
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
+
+	GTA_CONTROLSET playerKeys;
+	CAMERA_AIM playerLook;
 
 	PedSyncData pedData;
 };

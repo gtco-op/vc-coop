@@ -21,12 +21,33 @@ void CGame::Run()
 {
 
 }
+
+
+int FindIDForPed(CPed * ped)
+{
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		if (gGame->remotePlayerPeds[i] == ped)return i;
+	}
+	return -1;
+}
+
+GTA_CONTROLSET localPlayerKeys;
+CAMERA_AIM localPlayerLookFrontX;
+BYTE localPlayerCameraMode;
+
+int currentPlayerID = 0;
+
 void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 {
 	_asm mov dwCurPlayerActor, ecx
 	_asm pushad
 
+	currentPlayerID = FindIDForPed((CPed*)dwCurPlayerActor);
+
+	gChat->AddChatMessage("processing for %d", currentPlayerID);
 	localPlayer = FindPlayerPed();
+
 	if (localPlayer && (CPed*)dwCurPlayerActor == localPlayer)
 	{
 		_asm popad
@@ -36,12 +57,49 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 	}
 	else
 	{
-		//Redirect to CPed::ProccessControl instead
-		ThisCall(0x505790, (CPed*)dwCurPlayerActor);
+		// key switching
+		localPlayerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
+		// set remote player's keys
+
+		//remotePlayerKeys[currentPlayerID].wKeys1[KEY_ONFOOT_FORWARD] = 0xFF;
+		//remotePlayerKeys[currentPlayerID].wKeys2[KEY_ONFOOT_FORWARD] = 0xFF;
+
+		*(GTA_CONTROLSET*)0x7DBCB0 = gGame->remotePlayerKeys[currentPlayerID];
+
+		// save the internal cammode.
+		localPlayerCameraMode = MemRead<u8>(0x7E481C);
+
+		// onfoot mouse looking mode.
+		MemWrite<u8>(0x7E481C, 4);
+
+		// aim switching
+		localPlayerLookFrontX = *(CAMERA_AIM*)0x7E4978;
+		*(CAMERA_AIM*)0x7E4978 = gGame->remotePlayerLookFrontX[currentPlayerID];
+
+		MemWrite<BYTE>(0xA10AFB, currentPlayerID);
+
+		// call the internal CPlayerPed[]::Process
+		_asm popad
+		_asm mov edx, 0x537270
+		_asm call edx
+		_asm pushad
+
+		// restore the camera mode.
+		MemWrite<u8>(0x7E481C, localPlayerCameraMode);
+
+		// restore the local player's keys and the internal ID.
+		MemWrite<BYTE>(0xA10AFB, 0);
+
+		*(GTA_CONTROLSET*)0x7DBCB0 = localPlayerKeys;
+		*(CAMERA_AIM*)0x7E4978 = localPlayerLookFrontX;
 	}
 	_asm popad
 	_asm ret
 }
+
+//pPlayerKeys.wKeys1[KEY_ONFOOT_FORWARD] = 0xFF;
+//pPlayerKeys.wKeys2[KEY_ONFOOT_FORWARD] = 0xFF;
+
 void InstallMethodHook(DWORD dwInstallAddress,
 	DWORD dwHookFunction)
 {
@@ -51,14 +109,58 @@ void InstallMethodHook(DWORD dwInstallAddress,
 	VirtualProtect((LPVOID)dwInstallAddress, 4, oldProt, &oldProt2);
 }
 
+void LogDebug(char * msg, ...)
+{
+	char buffer[256];
+
+	va_list args;
+
+	va_start(args, msg);
+	vsprintf(buffer, msg, args);
+	va_end(args);
+
+	gLog->Log("%s\n", buffer);
+	return;
+}
+
+char cdstream[65];
 void CGame::InitPreGamePatches()
 {
+	#ifdef VCCOOP_DEBUG_ENGINE
+	for (int i = 0x401000; i < 0x67DD05; i++)
+	{
+		if (MemRead<BYTE>(i) == (BYTE)0xE8)
+		{
+			MemoryPointer at = ReadRelativeOffset(i + 1);
+			if (at == 0x401000)
+			{
+				MakeCall(i, LogDebug);
+			}
+		}
+	}
+	#endif
+	
+	//Allow multiple instances of the game
+	sprintf(cdstream, "vcc%u", GetTickCount());
+	MakePushOffset(0x408967, cdstream);
+
+
+	/*
+	//MemWrite<u8>(0x408887,0x74);
+	//MakeJmp(0x40FD86, 0x40FDA0);
+	MemWrite<u8>(0x580A7F, 0xF);                       // CTxdStore::AddRef patch
+	MemWrite<u8>(0x580A2F, 0x22);						// CTxdStore::RemoveRef patch
+	MakeNop(0x62A667, 5);*/
+
+	//VirtualAlloc((PVOID)0x401001, 5, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
+	
+	//MakeRet(0x401006);
 	//disable gamestate initialize
 	MakeNop(0x601B3B, 10);
 
-	//Set game state to loaded
+	//Set game state to loaded 
 	MemWrite<u32>(0x9B5F08, 5);
-
+	  
 	//Set bStartGame to 1
 	MemWrite<u8>(0x869641, 1);
 
@@ -99,7 +201,7 @@ void CGame::InitPreGamePatches()
 	MakeNop(0x49908B + 0x7, 5);
 	MakeNop(0x498F92 + 0x7, 5);
 	MakeNop(0x499014 + 0x7, 5);
-
+	/*
 	//-----Disable menu
 	//Disable CMenuManage::Process
 	MakeRet(0x49A01C);
@@ -111,7 +213,7 @@ void CGame::InitPreGamePatches()
 	MakeRet(0x4A37A4);
 
 	//Disable CMenuManager::LoadAllTextures
-	MakeRet(0x4A3A13);
+	MakeRet(0x4A3A13);*/
 
 	//Disable menu after focus loss
 	MakeRet(0x4A4FD0);
@@ -218,10 +320,13 @@ void Hook_CRunningScript__Process()
 
 		gRender->ToggleGUI();
 
+		gGame->remotePlayerPeds[0] = FindPlayerPed();
+
 		// First tick processed
 		scriptProcessed = true;
 	}
 }
+
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	switch (umsg)
@@ -243,6 +348,12 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 				)
 			{
 				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
+			}
+			if (vkey == 'Z')
+			{
+				CClientPlayer * player = new CClientPlayer(0, gGame->remotePlayers);
+				gGame->remotePlayerPeds[gGame->remotePlayers] = player->ped;
+				gGame->remotePlayers++;
 			}
 			if (vkey == VK_ESCAPE)
 			{

@@ -67,7 +67,7 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event) {
 	
 	connected = true;
 	local_player = event->entity;
-	event->entity->user_data = LocalPlayer();
+	event->entity->user_data = new CClientPlayer(event->entity->id);
 
 	players.push_back(std::pair<CPed*, int>(LocalPlayer(), event->entity->id));
 }
@@ -110,24 +110,21 @@ void CClientNetwork::on_entity_create(librg_event_t *event) {
 		CStreaming::RequestModel(7, 0);
 		librg_data_rptr(event->data, &spd, sizeof(SPlayerData));
 
-		CPed *ped;
-		if (event->entity->type == VCOOP_PLAYER) {
-			ped = new CPlayerPed();
+		if (event->entity->type == VCOOP_PLAYER) 
+		{
+			event->entity->user_data = new CClientPlayer(event->entity->id, 1);
+			players.push_back(std::pair<CPed*, int>(((CClientPlayer*)event->entity->user_data)->ped, event->entity->id));
 		}
-		else if (event->entity->type == VCOOP_PED) {
+		else if (event->entity->type == VCOOP_PED) 
+		{
+			CPed *ped;
 			ped = new CCivilianPed(PEDTYPE_CIVMALE, 7);
-		}
-		ped->SetModelIndex(7);
-		CWorld::Add(ped);
-		ped->Teleport(CVector(position.x, position.y, position.z));
-
-		if (event->entity->type == VCOOP_PED)
+			ped->SetModelIndex(7);
+			CWorld::Add(ped);
+			ped->Teleport(CVector(position.x, position.y, position.z));
 			ped->SetWanderPath((signed int)((long double)rand() * 0.000030517578 * 8.0));
-
-		event->entity->user_data = ped;
-
-		if (event->entity->type == VCOOP_PLAYER)
-			players.push_back(std::pair<CPed*, int>(ped, event->entity->id));
+			event->entity->user_data = ped;
+		}
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
@@ -143,8 +140,9 @@ void CClientNetwork::on_entity_update(librg_event_t *event) {
 	{
 		if (event->entity->type == VCOOP_PLAYER)
 		{
-			auto ped = (CPed *)event->entity->user_data;
+			auto player = (CClientPlayer *)event->entity->user_data;
 
+			auto ped = player->ped;
 			ped->Teleport(*(CVector *)&event->entity->position);
 
 			ped->m_nModelIndex = spd.iModelIndex;
@@ -152,6 +150,9 @@ void CClientNetwork::on_entity_update(librg_event_t *event) {
 			ped->m_fHealth = spd.Health;
 			ped->m_fRotationCur = spd.Rotation;
 			ped->m_fArmour = spd.Armour;
+
+			gGame->remotePlayerKeys[player->gameID] = spd.playerKeys;
+			gGame->remotePlayerLookFrontX[player->gameID] = spd.playerLook;
 		}
 		else
 		{
@@ -233,21 +234,30 @@ void CClientNetwork::on_entity_update(librg_event_t *event) {
 void CClientNetwork::on_client_stream(librg_event_t *event) {
 	if (event->entity->type == VCOOP_PLAYER || event->entity->type == VCOOP_PED)
 	{
-		CPed *ped = (CPed *)event->entity->user_data;
-		event->entity->position = *(zplm_vec3_t *)&ped->GetPosition();
 		SPlayerData spd;
 		if (event->entity->type == VCOOP_PLAYER)
 		{
+			auto player = (CClientPlayer *)event->entity->user_data;
+			auto ped = player->ped;
+
+			event->entity->position = *(zplm_vec3_t *)&ped->GetPosition();
+
 			spd.Health = ped->m_fHealth;
 			spd.iCurrentAnimID = ped->m_dwAnimGroupId;
 			spd.Armour = ped->m_fArmour;
 			spd.iModelIndex = ped->m_nModelIndex;
 			spd.Rotation = ped->m_fRotationCur;
 
+			spd.playerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
+			spd.playerLook = *(CAMERA_AIM*)0x7E4978;
+
 			librg_data_wptr(event->data, &spd, sizeof(SPlayerData));
 		}
 		else
 		{
+			auto ped = (CPed *)event->entity->user_data;
+			event->entity->position = *(zplm_vec3_t *)&ped->GetPosition();
+
 			spd.pedData.gameTimer = CTimer::m_snTimeInMilliseconds;
 
 			spd.Health = ped->m_fHealth;
