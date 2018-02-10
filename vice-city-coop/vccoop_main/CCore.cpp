@@ -13,6 +13,8 @@ CCore::CCore()
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
 #endif
+	srand(time(NULL));
+
 	gChat = new CChat();
 	gLog = new CLogger();
 	gLog->Log("[CCore] %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);

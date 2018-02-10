@@ -225,7 +225,25 @@ void CGame::InitPreGamePatches()
 	MakeShortJmp(0x4506D6, 0x45070E);
 
 	// Skip loading screen
-	MakeRet(0x4A69D0);
+	//MakeRet(0x4A69D0);
+
+	// Patch to load a random loading screen from array
+	const char* splash_screens[] = { "LOADSC1","LOADSC2","LOADSC3","LOADSC4","LOADSC5","LOADSC6","LOADSC7" };
+	int r = (rand() % 7);
+	gLog->Log("[CGame] Using loading screen %s\n", splash_screens[r]);
+	
+	DWORD dwVP, dwVP2;
+	VirtualProtect((PVOID)0x6D5E9C, 16, PAGE_EXECUTE_READWRITE, &dwVP);
+	strcpy((PCHAR)0x6D5E9C, splash_screens[r]);
+	VirtualProtect((PVOID)0x6D5E9C, 16, dwVP, &dwVP2);
+
+	VirtualProtect((PVOID)0x68E594, 16, PAGE_EXECUTE_READWRITE, &dwVP);
+	strcpy((PCHAR)0x68E594, splash_screens[r]);
+	VirtualProtect((PVOID)0x68E594, 16, dwVP, &dwVP2);
+
+	VirtualProtect((PVOID)0x68E6F4, 16, PAGE_EXECUTE_READWRITE, &dwVP);
+	strcpy((PCHAR)0x68E6F4, splash_screens[r]);
+	VirtualProtect((PVOID)0x68E6F4, 16, dwVP, &dwVP2);
 
 	// Skip splash screen when entering another city
 	//MakeRet(0x4A6E80);
