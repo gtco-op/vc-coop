@@ -10,7 +10,9 @@ CRender::CRender()
 {
 	this->pLogoTex			= NULL;
 	this->m_pD3DXFont		= NULL;
+
 	this->PedTags			= true;
+	
 	this->bGUI				= false;
 	this->bConnecting		= false;
 	this->bAboutWindow		= false;
@@ -160,6 +162,15 @@ void CRender::ToggleGUI()
 {
 	bGUI = !bGUI;
 
+	if (bGUI)
+	{
+		//gGame->DisableHUD();
+	}
+	else
+	{
+		//gGame->EnableHUD();
+	}
+
 	if (!gNetwork->connected && !gNetwork->client_running)
 	{
 		bConnecting = false;
@@ -176,6 +187,12 @@ void CRender::Draw()
 #ifdef VCCOOP_DEBUG
 			gRender->gDebugScreen->Draw();
 #endif
+			if (!gNetwork->client_connected)
+			{
+
+				//gGame->SetCameraPos(CVector(522.134644f, 630.235901f, 20.908245f));
+			}
+
 
 			if (gRender->bConnecting && gNetwork->client_running)
 			{

@@ -96,6 +96,16 @@ void CChat::ProcessChatInput()
 			gLog->Log("[CChat] Shutting down\n");
 			ExitProcess(-1);
 		}
+		else if (strstr(this->chatInputBuffer, "/campos"))
+		{
+			CVector pos = gGame->GetCameraPos();
+			gLog->Log("[CChat] X: %f\tY: %f\tZ: %f\n", pos.x, pos.y, pos.z);
+		}
+		else if (strstr(this->chatInputBuffer, "/pos"))
+		{
+			CVector pos = LocalPlayer()->GetPosition();
+			gLog->Log("[CChat] X: %f\tY: %f\tZ: %f\n", pos.x, pos.y, pos.z);
+		}
 #ifdef VCCOOP_DEBUG
 		else if (strstr(this->chatInputBuffer, "/collapse"))
 		{

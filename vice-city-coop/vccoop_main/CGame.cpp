@@ -9,6 +9,21 @@ void Hook_CRunningScript__Process();
 
 static int keyPressTime = 0;
 
+
+CVector CGame::GetCameraPos()
+{
+	return CVector(MemRead<float>(0x7E46B8), MemRead<float>(0x7E46BC), MemRead<float>(0x7E46C0));
+}
+void CGame::DisableHUD()
+{
+	MemWrite<BYTE>(0x86963A, 0x00);
+	MemWrite<BYTE>(0xA10B45, 0x00);
+}
+void CGame::EnableHUD()
+{
+	MemWrite<int>(0x86963A, 1);
+	MemWrite<int>(0xA10B45, 1);
+}
 bool IsWindowActive()
 {
 	return (GetActiveWindow() == orig_wnd ? true : false);
@@ -335,10 +350,14 @@ void Hook_CRunningScript__Process()
 		Call(0x5383E0, 0);
 
 		// Set player position
-		FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+		FindPlayerPed()->Teleport({ CVector(522.134644f, 630.235901f, 11.908245f)});
 
+		// Set Camera position
+		//gGame->SetCameraPos(CVector(522.134644f, 630.235901f, 20.908245f));
+	
 		// CStreaming::LoadScene
-		CVector scenePosition(VCCOOP_DEFAULT_SPAWN_POSITION);
+		//CVector scenePosition(VCCOOP_DEFAULT_SPAWN_POSITION);
+		CVector scenePosition(522.134644f, 630.235901f, 20.908245f);
 		Call(0x40AF60, &scenePosition);
 
 		CWorld::Players[0].m_bNeverGetsTired = true;
@@ -362,26 +381,6 @@ void Hook_CRunningScript__Process()
 
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	POINT ul, lr;
-	RECT rect;
-	GetClientRect(wnd, &rect);
-
-	ul.x = rect.left;
-	ul.y = rect.top;
-	lr.x = rect.right;
-	lr.y = rect.bottom;
-
-	MapWindowPoints(wnd, nullptr, &ul, 1);
-	MapWindowPoints(wnd, nullptr, &lr, 1);
-
-	rect.left = ul.x;
-	rect.top = ul.y;
-	rect.right = lr.x;
-	rect.bottom = lr.y;
-
-	if(IsWindowActive())	
-		ClipCursor(&rect);
-
 	switch (umsg)
 	{
 
@@ -390,6 +389,30 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			ExitProcess(-1);
 			break;
 
+		case WM_MOUSEMOVE:
+			POINT ul, lr;
+			RECT rect;
+			GetClientRect(wnd, &rect);
+
+			ul.x = rect.left;
+			ul.y = rect.top;
+			lr.x = rect.right;
+			lr.y = rect.bottom;
+
+			MapWindowPoints(wnd, nullptr, &ul, 1);
+			MapWindowPoints(wnd, nullptr, &lr, 1);
+
+			rect.left = ul.x;
+			rect.top = ul.y;
+			rect.right = lr.x;
+			rect.bottom = lr.y;
+
+			if (IsWindowActive())
+				ClipCursor(&rect);
+			break;
+		
+		case WM_MOUSEHOVER:
+			break;
 		case WM_SYSKEYDOWN:
 		case WM_KEYDOWN:
 		{
