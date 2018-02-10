@@ -1,36 +1,22 @@
 #include "main.h"
 
-DWORD dwCurPlayerActor = 0;
-CPed * localPlayer = NULL;
-static bool scriptProcessed = false;
-WNDPROC		orig_wndproc;
-HWND		orig_wnd;
+static bool		scriptProcessed = false;
+WNDPROC			orig_wndproc;
+HWND			orig_wnd;
+
+DWORD			dwCurPlayerActor = 0;
+CPed*			localPlayer = NULL;
+GTA_CONTROLSET	localPlayerKeys;
+CAMERA_AIM		localPlayerLookFrontX;
+BYTE			localPlayerCameraMode;
+int				currentPlayerID = 0;
+
 void Hook_CRunningScript__Process();
 
-static int keyPressTime = 0;
-
-
-CVector CGame::GetCameraPos()
-{
-	return CVector(MemRead<float>(0x7E46B8), MemRead<float>(0x7E46BC), MemRead<float>(0x7E46C0));
-}
-void CGame::DisableHUD()
-{
-	MemWrite<BYTE>(0x86963A, 0x00);
-	MemWrite<BYTE>(0xA10B45, 0x00);
-}
-void CGame::EnableHUD()
-{
-	MemWrite<int>(0x86963A, 1);
-	MemWrite<int>(0xA10B45, 1);
-}
-bool IsWindowActive()
-{
-	return (GetActiveWindow() == orig_wnd ? true : false);
-}
 CGame::CGame()
 {
 	this->InitPreGamePatches();
+	keyPressTime = 0;
 
 	gLog->Log("[CGame] CGame initialized.\n");
 }
@@ -60,7 +46,32 @@ void CGame::Run()
 			gChat->ToggleChat(true); ImGui::GetIO().ClearInputCharacters(); 
 	}
 }
-
+bool CGame::IsWindowActive()
+{
+	return (GetActiveWindow() == orig_wnd ? true : false);
+}
+void CGame::SetPlayerCameraPosition(float fX, float fY, float fZ, float fRotationX, float fRotationY, float fRotationZ)
+{
+	Command<0x015F>(fX, fY, fZ, fRotationX, fRotationY, fRotationZ);
+}
+void CGame::CameraLookAtPoint(float fX, float fY, float fZ, int iType)
+{
+	Command<0x0160>(fX, fY, fZ, iType);
+}
+CVector CGame::GetCameraPos()
+{
+	return CVector(MemRead<float>(0x7E46B8), MemRead<float>(0x7E46BC), MemRead<float>(0x7E46C0));
+}
+void CGame::DisableHUD()
+{
+	MemWrite<BYTE>(0x86963A, 0x00);
+	MemWrite<BYTE>(0xA10B45, 0x00);
+}
+void CGame::EnableHUD()
+{
+	MemWrite<int>(0x86963A, 1);
+	MemWrite<int>(0xA10B45, 1);
+}
 int FindIDForPed(CPed * ped)
 {
 	for (int i = 0; i < MAX_PLAYERS; i++)
@@ -69,12 +80,6 @@ int FindIDForPed(CPed * ped)
 	}
 	return -1;
 }
-
-GTA_CONTROLSET localPlayerKeys;
-CAMERA_AIM localPlayerLookFrontX;
-BYTE localPlayerCameraMode;
-
-int currentPlayerID = 0;
 
 void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 {
@@ -368,15 +373,14 @@ void Hook_CRunningScript__Process()
 		Call(0x5383E0, 0);
 
 		// Set player position
-		FindPlayerPed()->Teleport({ CVector(522.134644f, 630.235901f, 11.908245f)});
-
-		// Set Camera position
-		//gGame->SetCameraPos(CVector(522.134644f, 630.235901f, 20.908245f));
-	
+		FindPlayerPed()->Teleport({ CVector(531.629761f, 606.497253f, 10.901563f)});
+		
 		// CStreaming::LoadScene
-		//CVector scenePosition(VCCOOP_DEFAULT_SPAWN_POSITION);
-		CVector scenePosition(522.134644f, 630.235901f, 20.908245f);
+		CVector scenePosition(531.629761f, 606.497253f, 10.901563f);
 		Call(0x40AF60, &scenePosition);
+
+		gGame->SetPlayerCameraPosition(531.629761f, 606.497253f, 10.901563f, 0, 0, 0);
+		gGame->CameraLookAtPoint(531.629761f, 606.497253f, 10.901563f, 1);
 
 		CWorld::Players[0].m_bNeverGetsTired = true;
 
@@ -391,6 +395,7 @@ void Hook_CRunningScript__Process()
 		gRender->ToggleGUI();
 
 		gGame->remotePlayerPeds[0] = FindPlayerPed();
+
 
 		// First tick processed
 		scriptProcessed = true;
@@ -425,7 +430,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			rect.right = lr.x;
 			rect.bottom = lr.y;
 
-			if (IsWindowActive())
+			if (gGame->IsWindowActive())
 				ClipCursor(&rect);
 			break;
 		
@@ -449,7 +454,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 				gGame->remotePlayerPeds[gGame->remotePlayers] = player->ped;
 				gGame->remotePlayers++;
 			}
-			if (vkey == VK_ESCAPE)
+			if (vkey == VK_ESCAPE && gNetwork->connected)
 			{
 				if(gChat->chatToggled) gChat->ToggleChat(false);
 			}
@@ -461,7 +466,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 
 				gLog->Log("[CGame] Disconnecting from server.\n");
 			}
-			else if (vkey == VK_F9)
+			else if (vkey == VK_F9 && !gNetwork->connected)
 			{
 				FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
 				gLog->Log("[CGame] Teleporting to X: %.f Y: %.f Z: %.f\n", VCCOOP_DEFAULT_SPAWN_POSITION);

@@ -13,10 +13,15 @@ public:
 	void EnableMouseInput();
 	void DisableMouseInput();
 
+	bool IsWindowActive();
+
 	void Run();
 
 	void EnableHUD();
 	void DisableHUD();
+
+	void SetPlayerCameraPosition(float fX, float fY, float fZ, float fRotationX, float fRotationY, float fRotationZ);
+	void CameraLookAtPoint(float fX, float fY, float fZ, int iType);
 
 	CVector GetCameraPos();
 
@@ -27,6 +32,8 @@ public:
 	int remotePlayerCameraMode[MAX_PLAYERS];
 
 	bool debugEngineOutput = false;
+
+	static int keyPressTime;
 
 private:
 	void InitPreGamePatches(); 

@@ -1,7 +1,6 @@
 #include "main.h"
 #include "LogoTextureArray.h"
 
-extern bool			IsWindowActive();
 extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
 bool   wndHookInited = false;
@@ -187,12 +186,6 @@ void CRender::Draw()
 #ifdef VCCOOP_DEBUG
 			gRender->gDebugScreen->Draw();
 #endif
-			if (!gNetwork->client_connected)
-			{
-
-				//gGame->SetCameraPos(CVector(522.134644f, 630.235901f, 20.908245f));
-			}
-
 
 			if (gRender->bConnecting && gNetwork->client_running)
 			{
@@ -305,7 +298,7 @@ void CRender::Draw()
 		{
 			gGame->DisableMouseInput();
 		}
-		else if(IsWindowActive())
+		else if(gGame->IsWindowActive())
 		{
 			gGame->EnableMouseInput();
 		}
