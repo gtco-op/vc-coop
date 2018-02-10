@@ -163,11 +163,11 @@ void CRender::ToggleGUI()
 
 	if (bGUI)
 	{
-		//gGame->DisableHUD();
+		gGame->DisableHUD();
 	}
 	else
 	{
-		//gGame->EnableHUD();
+		gGame->EnableHUD();
 	}
 
 	if (!gNetwork->connected && !gNetwork->client_running)
