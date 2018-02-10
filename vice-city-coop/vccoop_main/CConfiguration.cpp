@@ -11,7 +11,20 @@ CConfiguration::CConfiguration()
 	
 	this->_inih = new INIReader(this->configFilename);
 	if (this->GetReader()->ParseError() < 0) {
-		gLog->Log("[CConfiguration] %s could not be loaded.\n", this->configFilename.c_str());
+		gLog->Log("[CConfiguration] %s could not be loaded. Creating default config file.\n", this->configFilename.c_str());
+
+		FILE* f = fopen(VCCOOP_DEFAULT_CLIENT_CONFIG, "w");
+		if (f)		{
+			char buffer[256];
+			sprintf(buffer, "[Client]\nNickname=" VCCOOP_DEFAULT_NICKNAME "\n[Server]\nServerAddress=" VCCOOP_DEFAULT_SERVER_ADDRESS "\nServerPort=%d", VCCOOP_DEFAULT_SERVER_PORT);
+			fputs(buffer, f);
+			fclose(f);
+			gLog->Log("[CConfiguration] Created default config file.\n");
+		}
+		else {
+			gLog->Log("[CConfiguration] Failed to create default config file.\n");
+		}
+
 	}
 	else {
 		gLog->Log("[CConfiguration] %s loaded successfully.\n", this->configFilename.c_str());

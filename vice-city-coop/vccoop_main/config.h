@@ -10,7 +10,7 @@
 #define VCCOOP_DEFAULT_NICKNAME			"Nickname123"
 
 // Default server address
-#define VCCOOP_DEFAULT_SERVER_ADDRESS	"192.168.0.16"
+#define VCCOOP_DEFAULT_SERVER_ADDRESS	"127.0.0.1"
 
 // Default server port
 #define VCCOOP_DEFAULT_SERVER_PORT		23546
