@@ -76,6 +76,9 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event) {
 	local_player = event->entity;
 	event->entity->user_data = new CClientPlayer(event->entity->id);
 
+	gGame->RestoreCamera();
+	gGame->SetCameraBehindPlayer();
+
 	players.push_back(std::pair<CPed*, int>(LocalPlayer(), event->entity->id));
 }
 void CClientNetwork::on_connect_refused(librg_event_t *event) {

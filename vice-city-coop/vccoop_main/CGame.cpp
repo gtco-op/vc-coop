@@ -215,7 +215,7 @@ void CGame::InitPreGamePatches()
 	MemWrite<u8>(0x580A2F, 0x22);						// CTxdStore::RemoveRef patch
 	MakeNop(0x62A667, 5);*/
 
-	VirtualAlloc((PVOID)0x401001, 5, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
+	//VirtualAlloc((PVOID)0x401001, 5, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
 	
 	//MakeRet(0x401006);
 	//disable gamestate initialize
