@@ -54,23 +54,28 @@ bool CGame::IsWindowActive()
 }
 void CGame::SetPlayerCameraPosition(float fX, float fY, float fZ, float fRotationX, float fRotationY, float fRotationZ)
 {
-	Command<0x015F>(fX, fY, fZ, fRotationX, fRotationY, fRotationZ);
+	TheCamera.SetCamPositionForFixedMode({ fX, fY, fZ }, { fRotationX, fRotationY, fRotationZ });
+	//Command<0x015F>(fX, fY, fZ, fRotationX, fRotationY, fRotationZ);
 }
 void CGame::CameraLookAtPoint(float fX, float fY, float fZ, int iType)
 {
-	Command<0x0160>(fX, fY, fZ, iType);
+	TheCamera.TakeControlNoEntity({ fX, fY, fZ }, iType, 1);
+	//Command<0x0160>(fX, fY, fZ, iType);
 }
 void CGame::SetCameraBehindPlayer()
 {
-	Command<0x0373>();
+	TheCamera.SetCameraDirectlyBehindForFollowPed_CamOnAString();
+	//Command<0x0373>();
 }
 void CGame::RestoreCamera()
 {
-	Command<0x015A>();
+	TheCamera.Restore();
+	//Command<0x015A>();
 }
 CVector CGame::GetCameraPos()
 {
-	return CVector(MemRead<float>(0x7E46B8), MemRead<float>(0x7E46BC), MemRead<float>(0x7E46C0));
+	return TheCamera.pos;
+	//return CVector(MemRead<float>(0x7E46B8), MemRead<float>(0x7E46BC), MemRead<float>(0x7E46C0));
 }
 void CGame::DisableHUD()
 {
@@ -148,19 +153,7 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 	_asm ret
 }
 
-//pPlayerKeys.wKeys1[KEY_ONFOOT_FORWARD] = 0xFF;
-//pPlayerKeys.wKeys2[KEY_ONFOOT_FORWARD] = 0xFF;
-
-void InstallMethodHook(DWORD dwInstallAddress,
-	DWORD dwHookFunction)
-{
-	DWORD oldProt, oldProt2;
-	VirtualProtect((LPVOID)dwInstallAddress, 4, PAGE_EXECUTE_READWRITE, &oldProt);
-	*(PDWORD)dwInstallAddress = (DWORD)dwHookFunction;
-	VirtualProtect((LPVOID)dwInstallAddress, 4, oldProt, &oldProt2);
-}
-
-void LogDebug(char * msg, ...)
+void Hooked_DbgPrint(char * msg, ...)
 {
 	char buffer[256];
 	bool newline = false;
@@ -183,39 +176,26 @@ void LogDebug(char * msg, ...)
 	return;
 }
 
+void Hooked_LoadingScreen(char * message, char * message2, char * splash)
+{
+	Hooked_DbgPrint("Loading screen: %s %s %s\n",(message ? message : "0"), (message2 ? message2 : "0"), (splash ? splash : "0"));
+	Call(0x4A69D0, message, message2, splash);
+	return;
+}
+
 char cdstream[65];
 void CGame::InitPreGamePatches()
 {
 	#ifdef VCCOOP_DEBUG_ENGINE
-	for (int i = 0x401000; i < 0x67DD05; i++)
-	{
-		if (MemRead<BYTE>(i) == (BYTE)0xE8)
-		{
-			MemoryPointer at = ReadRelativeOffset(i + 1);
-			if (at == 0x401000)
-			{
-				MakeCall(i, LogDebug);
-			}
-		}
-	}
+	RedirectAllCalls(0x401000, 0x67DD05, 0x401000, Hooked_DbgPrint);
+	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);
 	debugEnabled = true;
 	#endif
-	
+
 	//Allow multiple instances of the game
 	sprintf(cdstream, "vcc%u", GetTickCount());
 	MakePushOffset(0x408967, cdstream);
 
-
-	/*
-	//MemWrite<u8>(0x408887,0x74);
-	//MakeJmp(0x40FD86, 0x40FDA0);
-	MemWrite<u8>(0x580A7F, 0xF);                       // CTxdStore::AddRef patch
-	MemWrite<u8>(0x580A2F, 0x22);						// CTxdStore::RemoveRef patch
-	MakeNop(0x62A667, 5);*/
-
-	//VirtualAlloc((PVOID)0x401001, 5, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
-	
-	//MakeRet(0x401006);
 	//disable gamestate initialize
 	MakeNop(0x601B3B, 10);
 
@@ -244,19 +224,10 @@ void CGame::InitPreGamePatches()
 	const char* splash_screens[] = { "LOADSC1","LOADSC2","LOADSC3","LOADSC4","LOADSC5","LOADSC6","LOADSC7" };
 	int r = (rand() % 7);
 	gLog->Log("[CGame] Using loading screen %s\n", splash_screens[r]);
-	
-	DWORD dwVP, dwVP2;
-	VirtualProtect((PVOID)0x6D5E9C, 16, PAGE_EXECUTE_READWRITE, &dwVP);
-	strcpy((PCHAR)0x6D5E9C, splash_screens[r]);
-	VirtualProtect((PVOID)0x6D5E9C, 16, dwVP, &dwVP2);
 
-	VirtualProtect((PVOID)0x68E594, 16, PAGE_EXECUTE_READWRITE, &dwVP);
-	strcpy((PCHAR)0x68E594, splash_screens[r]);
-	VirtualProtect((PVOID)0x68E594, 16, dwVP, &dwVP2);
-
-	VirtualProtect((PVOID)0x68E6F4, 16, PAGE_EXECUTE_READWRITE, &dwVP);
-	strcpy((PCHAR)0x68E6F4, splash_screens[r]);
-	VirtualProtect((PVOID)0x68E6F4, 16, dwVP, &dwVP2);
+	MemCpy(0x6D5E9C, splash_screens[r], 8);
+	MemCpy(0x68E594, splash_screens[r], 8);
+	MemCpy(0x68E6F4, splash_screens[r], 8);
 
 	// Skip splash screen when entering another city
 	//MakeRet(0x4A6E80);
@@ -311,19 +282,12 @@ void CGame::InitPreGamePatches()
 
 	//Pedpool inc
 	MemWrite<s32>(0x4C02C8, 1000);
-	//vehicle pool inc todo: fix crash
-	//MemWrite<s32>(0x4C02EA, 250);
-	MemCpy((void*)0x4C02E4, "\x6A\x00\x68\xC8\x00\x00\x00", 7);
+	//vehicle pool inc
+	MemCpy((void*)0x4C02E4, "\x6A\x00\x68\x3E\x80\x00\x00", 7);//i hope its 1000 now
 
 	//Nop ped spawns
 	MakeNop(0x53E5C6, 5); //3peds
 	MakeNop(0x53E99B, 5);
-
-	// Disable CCarCtrl::GenerateRandomCars
-	MakeRet(0x4292A0);
-
-	// Disable CCarCtrl::GenerateOneRandomCar
-	MakeRet(0x426DB0);
 
 	//disable cworld:remove in CPopulation::ManagePopulation
 	MakeRet(0x53D690);
@@ -341,11 +305,62 @@ void CGame::InitPreGamePatches()
 	//A Cworld crash fix
 	MakeNop(0x531D40, 8);
 
-	InstallMethodHook(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
+	//Disable white splash on big building loading
+	MakeRet(0x4A68A0);
+
+	//nop CVisibilityPlugins::SetClumpAlpha in CPed::ProcessControl
+	MakeNop(0x5057EF, 5);
+
+	//Ped visibility patch
+	MakeNop(0x581A63, 2);
+	
+	//Disable test script loading
+	//MakeNop(0x4A4F57, 8);
+	//MakeRet(0x44FE60); crashes the game for some reason
+	
+	//Disable game pause (to prevent bugs in syncing)
+	MakeRet(0x4D0DA0);
+
+	//SetCUrrentWeapon fix
+	MemWrite<BYTE>(0x4FF970, 0x9D);
+
+	//Dont spawn weapons and money on dead ped (should handle by the server)
+	MakeNop(0x4F653C, 27);
+	
+	//Setting a model shouldn't set any animations
+	MakeNop(0x50D96A, 5);
+
+	//Disable replay check in processcontrol
+	MakeNop(0x537723, 2);
+
+	//Fix vehicle driveby bugs
+	MemCpy((void*)0x5C91F5, "\x85\xC9\x74\x09", 4);
+	MemCpy((void*)0x5C9558, "\x85\xC9\x74\x09", 4);
+
+	//Disable replays
+	MakeNop(0x4A45C3, 5);
+
+	//Disable SetEvasiveDive
+	MakeRet(0x4F6A20, 8);
+
+	//Dont print messages on pickups
+	MakeNop(0x440B2C, 5);
+
+	//Dont remove models in CPed::PlayIdleAnimations
+	MakeNop(0x535F17, 5);
+
+	// probably disable body part removing on weapon hit
+	MemWrite<BYTE>(0x526282, 0x00);                   
+	MemWrite<BYTE>(0x52629F, 0x00);
+	MemWrite<BYTE>(0x5262BC, 0x00);
+	MemWrite<BYTE>(0x5262D9, 0x00); 
+
+	MemWrite<DWORD>(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
+	//InstallMethodHook(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
 
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
-
+ 
 void CGame::EnableMouseInput()
 {
 	//Enable CPad:UpdateMouse
@@ -375,16 +390,17 @@ void Hook_CRunningScript__Process()
 	if (!scriptProcessed)
 	{
 		// Change player model ID
-		MemWrite<u8>(0x5384FA + 1, 7);
+		MemWrite<u8>(0x5384FA + 1, 7); //Not important if we set a new one after spawn
 
-		// CPlayerPed::SetupPlayerPed
-		Call(0x5383E0, 0);
+		// Setup own ped on 0 game ID
+		CPlayerPed::SetupPlayerPed(0);
+		gGame->remotePlayerPeds[0] = FindPlayerPed();
 
 		// Set player position
-		FindPlayerPed()->Teleport({ CVector(531.629761f, 606.497253f, 10.901563f)});
+		FindPlayerPed()->Teleport({ 531.629761f, 606.497253f, 10.901563f });
 		
 		// CStreaming::LoadScene
-		CVector scenePosition(531.629761f, 606.497253f, 10.901563f);
+		CVector scenePosition( 531.629761f, 606.497253f, 10.901563f );
 		Call(0x40AF60, &scenePosition);
 
 		gGame->SetPlayerCameraPosition(531.629761f, 606.497253f, 10.901563f, 0, 0, 0);
@@ -396,15 +412,13 @@ void Hook_CRunningScript__Process()
 		CPools::ms_pVehiclePool->Clear();
 
 		CPools::ms_pPedPool->Init(1000, NULL, NULL);
-		CPools::ms_pVehiclePool->Init(200, NULL, NULL);
+		CPools::ms_pVehiclePool->Init(1000, NULL, NULL);
 		
 		gLog->Log("[CGame] CRunningScript::Process() hook finished.\n");
 
 		gRender->ToggleGUI();
 
 		gGame->DisableHUD();
-
-		gGame->remotePlayerPeds[0] = FindPlayerPed();
 
 		// First tick processed
 		scriptProcessed = true;

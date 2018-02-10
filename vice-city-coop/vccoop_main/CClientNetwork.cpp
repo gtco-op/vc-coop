@@ -123,7 +123,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event) {
 
 		if (event->entity->type == VCOOP_PLAYER) 
 		{
-			event->entity->user_data = new CClientPlayer(event->entity->id, 1);
+			event->entity->user_data = new CClientPlayer(event->entity->id, 1);//needs to be changed later
 			players.push_back(std::pair<CPed*, int>(((CClientPlayer*)event->entity->user_data)->ped, event->entity->id));
 		}
 		else if (event->entity->type == VCOOP_PED) 

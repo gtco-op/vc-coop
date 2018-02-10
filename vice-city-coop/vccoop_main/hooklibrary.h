@@ -386,6 +386,21 @@ namespace Hook
 		return p;
 	}
 
+	inline void RedirectAllCalls(int startaddr, int endaddr, MemoryPointer with, MemoryPointer dest)
+	{
+		for (int i = startaddr; i < endaddr; i++)
+		{
+			if (MemRead<BYTE>(i) == (BYTE)0xE8)
+			{
+				MemoryPointer at = ReadRelativeOffset(i + 1);
+				if (at == with)
+				{
+					MakeCall(i, dest);
+				}
+			}
+		}
+	}
+
 	// TODO: std::forward-less
 	template <class Ret = void, class... Args>
 	inline Ret Call(MemoryPointer p, Args... a)
@@ -393,10 +408,22 @@ namespace Hook
 		return reinterpret_cast<Ret(__cdecl*)(Args...)>(p.Get<void>())(std::forward<Args>(a)...);
 	}
 
+	template <class Ret = void, class... Args>
+	inline Ret StdCall(MemoryPointer p, Args... a)
+	{
+		return reinterpret_cast<Ret(__stdcall*)(Args...)>(p.Get<void>())(std::forward<Args>(a)...);
+	}
+
 	template <u32 addr, class Ret = void, class... Args>
 	inline Ret Call(Args... a)
 	{
 		return Call<Ret>(LazyPtr<addr>(), std::forward<Args>(a)...);
+	}
+
+	template <u32 addr, class Ret = void, class... Args>
+	inline Ret StdCall(Args... a)
+	{
+		return StdCall<Ret>(LazyPtr<addr>(), std::forward<Args>(a)...);
 	}
 
 	template <class Ret = void, class... Args>
