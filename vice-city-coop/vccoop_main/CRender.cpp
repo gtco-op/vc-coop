@@ -1,6 +1,7 @@
 #include "main.h"
 #include "LogoTextureArray.h"
 
+extern bool			IsWindowActive();
 extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
 bool   wndHookInited = false;
@@ -64,10 +65,9 @@ void CRender::Run()
 			}
 			RECT rect;
 			GetWindowRect(wnd, &rect);
-
-
-			gLog->Log("rright: %d", rect.right);
-			gLog->Log("displaymode: %d", MemRead<s32>(0x9B6CBC));
+			
+			gLog->Log("[CRender] rright: %d\n", rect.right);
+			gLog->Log("[CRender] Display Mode: %d\n", MemRead<s32>(0x9B6CBC));
 
 			MemWrite<s32>(0x9B6CBC, rect.right/2);
 
@@ -177,7 +177,7 @@ void CRender::Draw()
 			gRender->gDebugScreen->Draw();
 #endif
 
-			/*if (gRender->bConnecting && gNetwork->client_running)
+			if (gRender->bConnecting && gNetwork->client_running)
 			{
 				ImGui::SetNextWindowPosCenter();
 				ImGui::Begin("Vice City CO-OP " VCCOOP_VER, &gRender->bConnecting, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
@@ -187,7 +187,7 @@ void CRender::Draw()
 			else if (gNetwork->client_running == false && gRender->bConnecting == false)
 			{
 				gRender->bGUI = true;
-			}*/
+			}
 			if (gRender->bGUI && !gRender->bConnecting)
 			{
 				ImGui::SetNextWindowPosCenter();
@@ -288,7 +288,7 @@ void CRender::Draw()
 		{
 			gGame->DisableMouseInput();
 		}
-		else
+		else if(IsWindowActive())
 		{
 			gGame->EnableMouseInput();
 		}

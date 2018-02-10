@@ -306,13 +306,16 @@
     <ClCompile Include="CClientNetwork.cpp" />
     <ClCompile Include="CClientPlayer.cpp" />
     <ClCompile Include="CConfiguration.cpp" />
+    <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CDebugScreen.cpp" />
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="CImGui.cpp" />
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="CNameTags.cpp" />
     <ClCompile Include="CRenderTemplate.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='zDebug GTAVC|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="CRender.cpp" />
     <ClCompile Include="vendor\imgui\imgui.cpp" />
     <ClCompile Include="vendor\imgui\imgui_draw.cpp" />
@@ -323,6 +326,7 @@
     <ClInclude Include="CClientNetwork.h" />
     <ClInclude Include="CClientPlayer.h" />
     <ClInclude Include="CConfiguration.h" />
+    <ClInclude Include="CCore.h" />
     <ClInclude Include="CDebugScreen.h" />
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CImGui.h" />

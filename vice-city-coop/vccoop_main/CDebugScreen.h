@@ -1,5 +1,8 @@
 #pragma once
 #ifdef VCCOOP_DEBUG
+
+extern bool debugEnabled;
+
 class DeveloperConsole
 {
 public:
@@ -19,6 +22,7 @@ public:
 		HistoryPos = -1;
 		Commands.push_back("HELP");
 		Commands.push_back("HISTORY");
+		Commands.push_back("DEBUG");
 		Commands.push_back("CLEAR");
 		Commands.push_back("CLASSIFY");  // "classify" is here to provide an example of "C"+[tab] completing to "CL" and displaying matches.
 		Commands.push_back("COLLAPSE");
@@ -192,6 +196,10 @@ public:
 		{
 			Collapsed = !Collapsed;
 		}
+		else if (Stricmp(command_line, "DEBUG") == 0)
+		{
+			debugEnabled = !debugEnabled;
+		}
 		else if (Stricmp(command_line, "EXIT") == 0)
 		{
 			ExitProcess(-1);
@@ -316,6 +324,8 @@ public:
 
 #ifdef VCCOOP_DEBUG
 	static DeveloperConsole *gDevConsole;
+
+	CLogger* gDbgLog;
 
 	bool consoleToggled;
 

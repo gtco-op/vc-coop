@@ -117,6 +117,7 @@
     <ClInclude Include="LogoTextureArray.h">
       <Filter>Source\misc</Filter>
     </ClInclude>
+    <ClInclude Include="CCore.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -164,5 +165,6 @@
     <ClCompile Include="CConfiguration.cpp">
       <Filter>Source\tools\CConfiguration</Filter>
     </ClCompile>
+    <ClCompile Include="CCore.cpp" />
   </ItemGroup>
 </Project>

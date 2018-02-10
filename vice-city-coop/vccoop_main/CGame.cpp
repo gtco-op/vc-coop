@@ -7,6 +7,12 @@ WNDPROC		orig_wndproc;
 HWND		orig_wnd;
 void Hook_CRunningScript__Process();
 
+static int keyPressTime = 0;
+
+bool IsWindowActive()
+{
+	return (GetActiveWindow() == orig_wnd ? true : false);
+}
 CGame::CGame()
 {
 	this->InitPreGamePatches();
@@ -19,9 +25,26 @@ CGame::~CGame()
 }
 void CGame::Run()
 {
-
+	if (GetAsyncKeyState(0x2C) & 1 && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && IsWindowActive())
+	{
+		keyPressTime = CTimer::m_snTimeInMilliseconds;
+		gRender->TakeScreenshot();
+	}
+#ifdef VCCOOP_DEBUG
+	if (KeyPressed(223) && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && IsWindowActive())
+	{
+		keyPressTime = CTimer::m_snTimeInMilliseconds;
+		gRender->bConsole = !gRender->bConsole;
+		ImGui::GetIO().ClearInputCharacters();
+	}
+#endif
+	if (KeyPressed('T') && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && !gChat->chatToggled && IsWindowActive())
+	{
+		keyPressTime = CTimer::m_snTimeInMilliseconds;
+		if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow)
+			gChat->ToggleChat(true); ImGui::GetIO().ClearInputCharacters(); 
+	}
 }
-
 
 int FindIDForPed(CPed * ped)
 {
@@ -45,7 +68,7 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 
 	currentPlayerID = FindIDForPed((CPed*)dwCurPlayerActor);
 
-	gChat->AddChatMessage("processing for %d", currentPlayerID);
+	//gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d", currentPlayerID);
 	localPlayer = FindPlayerPed();
 
 	if (localPlayer && (CPed*)dwCurPlayerActor == localPlayer)
@@ -112,6 +135,7 @@ void InstallMethodHook(DWORD dwInstallAddress,
 void LogDebug(char * msg, ...)
 {
 	char buffer[256];
+	bool newline = false;
 
 	va_list args;
 
@@ -119,7 +143,15 @@ void LogDebug(char * msg, ...)
 	vsprintf(buffer, msg, args);
 	va_end(args);
 
-	gLog->Log("%s\n", buffer);
+	if (!strstr(buffer, "\n"))	{
+		newline = true;
+	}
+#ifdef VCCOOP_DEBUG
+	if (gRender->gDebugScreen->gDevConsole != nullptr && debugEnabled) {
+		gRender->gDebugScreen->gDevConsole->AddLog("%s%s", buffer, (newline ? "\n" : ""));
+		gRender->gDebugScreen->gDbgLog->Log(" %s%s", buffer, (newline ? "\n" : ""));
+	}
+#endif
 	return;
 }
 
@@ -138,6 +170,7 @@ void CGame::InitPreGamePatches()
 			}
 		}
 	}
+	debugEnabled = true;
 	#endif
 	
 	//Allow multiple instances of the game
@@ -152,7 +185,7 @@ void CGame::InitPreGamePatches()
 	MemWrite<u8>(0x580A2F, 0x22);						// CTxdStore::RemoveRef patch
 	MakeNop(0x62A667, 5);*/
 
-	//VirtualAlloc((PVOID)0x401001, 5, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
+	VirtualAlloc((PVOID)0x401001, 5, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
 	
 	//MakeRet(0x401006);
 	//disable gamestate initialize
@@ -237,7 +270,7 @@ void CGame::InitPreGamePatches()
 	MemCpy((void*)0x4C02E4, "\x6A\x00\x68\xC8\x00\x00\x00", 7);
 
 	//Nop ped spawns
-	//MakeNop(0x53E5C6, 5);
+	MakeNop(0x53E5C6, 5); //3peds
 	MakeNop(0x53E99B, 5);
 
 	// Disable CCarCtrl::GenerateRandomCars
@@ -329,6 +362,26 @@ void Hook_CRunningScript__Process()
 
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
+	POINT ul, lr;
+	RECT rect;
+	GetClientRect(wnd, &rect);
+
+	ul.x = rect.left;
+	ul.y = rect.top;
+	lr.x = rect.right;
+	lr.y = rect.bottom;
+
+	MapWindowPoints(wnd, nullptr, &ul, 1);
+	MapWindowPoints(wnd, nullptr, &lr, 1);
+
+	rect.left = ul.x;
+	rect.top = ul.y;
+	rect.right = lr.x;
+	rect.bottom = lr.y;
+
+	if(IsWindowActive())	
+		ClipCursor(&rect);
+
 	switch (umsg)
 	{
 
@@ -367,13 +420,6 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 
 				gLog->Log("[CGame] Disconnecting from server.\n");
 			}
-			else if (vkey == VK_F8)
-			{
-				//gRender->ToggleGUI(); 
-				gRender->bGUI = !gRender->bGUI;
-				gRender->bConnecting = false;
-				gLog->Log("[CGame] Toggling GUI\n");
-			}
 			else if (vkey == VK_F9)
 			{
 				FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
@@ -387,6 +433,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			break;
 		}
 	}
+
 
 	if (ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam)) return 0;
 

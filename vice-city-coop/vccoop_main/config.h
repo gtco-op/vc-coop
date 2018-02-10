@@ -28,7 +28,7 @@
 #define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
 
 //print game's internal debug messages
-//#define VCCOOP_DEBUG_ENGINE
+#define VCCOOP_DEBUG_ENGINE
 
 //------------------------------------------------------------------------------------------
 
@@ -156,6 +156,10 @@ struct SPlayerData {
 enum {
 	VCOOP_CREATE_PED = LIBRG_EVENT_LAST,
 	VCOOP_CREATE_VEHICLE,
+
+	VCOOP_SEND_MESSAGE,
+	VCOOP_RECEIVE_MESSAGE,
+
 	VCOOP_DO_SOMETHING_ELSE,
 };
 

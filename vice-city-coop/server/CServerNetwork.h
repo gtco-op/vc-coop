@@ -19,6 +19,7 @@ public:
 
 	//------------------------------------------------------------------------------------------------
 
+	static void ClientSendMessage(librg_message_t* msg);
 	static void PedCreateEvent(librg_message_t* msg);
 	static void VehCreateEvent(librg_message_t* msg);
 

@@ -1,5 +1,6 @@
 #include "main.h"
 
+bool debugEnabled = true;
 char   vccoop_string[600];
 
 #ifdef VCCOOP_DEBUG
@@ -8,7 +9,8 @@ DeveloperConsole* CDebugScreen::gDevConsole;
 
 CDebugScreen::CDebugScreen() 
 {
-
+	gDbgLog = new CLogger(true);
+	debugEnabled = true;
 }
 CDebugScreen::~CDebugScreen() 
 {

@@ -17,6 +17,8 @@ public:
 	void Out(const char * szBuf);
 	void Log(char * format, ...);
 
-	CLogger();
+	bool debugLog = false;
+
+	CLogger(bool debug = false);
 	~CLogger();
 };

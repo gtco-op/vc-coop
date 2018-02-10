@@ -82,12 +82,10 @@ void CChat::AddChatMessage(const char * message, ...)
 
 	sprintf(chatBuffer[0], "%s", buffer);
 }
-
 void CChat::ToggleChat(bool toggle)
 {
 	this->chatToggled = toggle;
 }
-
 void CChat::ProcessChatInput()
 {
 	this->ToggleChat(false);
@@ -103,10 +101,20 @@ void CChat::ProcessChatInput()
 		{
 			gRender->gDebugScreen->gDevConsole->Collapsed = !gRender->gDebugScreen->gDevConsole->Collapsed;
 		}
+		else if (strstr(this->chatInputBuffer, "/debug"))
+		{
+			debugEnabled = !debugEnabled;
+		}
 #endif
 		else
 		{
-			this->AddChatMessage("[%s]%s: %s", time_stamp(LOGGER_TIME_FORMAT).c_str(), gGame->Name.c_str(), this->chatInputBuffer);
+			char buffer[256];
+			sprintf(buffer, "[%s] %s: %s", time_stamp(LOGGER_TIME_FORMAT).c_str(), gGame->Name.c_str(), this->chatInputBuffer);
+
+			this->AddChatMessage(buffer);
+
+			// now send the message to the server
+			librg_message_send_all(&gNetwork->ctx, VCOOP_SEND_MESSAGE, buffer, sizeof(buffer));
 		}
 	}
 }

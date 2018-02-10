@@ -27,6 +27,13 @@ CClientNetwork::~CClientNetwork()
 	gLog->Log("[CClientNetwork] CClientNetwork shutting down\n");
 	this->StopClientThread();
 }
+void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
+{
+	char str[256];
+	librg_data_rptr(msg->data, &str, sizeof(str));
+
+	gChat->AddChatMessage(str);
+}
 CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 {
 	CEntity* ent = NULL;
@@ -371,6 +378,8 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 	librg_event_add(&ctx, LIBRG_ENTITY_REMOVE, on_entity_remove);
 
 	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_client_stream);
+
+	librg_network_add(&ctx, VCOOP_RECEIVE_MESSAGE, ClientReceiveMessage);
 
 	addr.host = szAddress;
 	addr.port = iPort;

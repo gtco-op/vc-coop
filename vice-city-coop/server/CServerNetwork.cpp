@@ -20,6 +20,13 @@ CServerNetwork::~CServerNetwork()
 {
 
 }
+void CServerNetwork::ClientSendMessage(librg_message_t *msg)
+{
+	char msg1[256];
+	librg_data_rptr(msg->data, &msg1, sizeof(msg1));
+
+	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
+}
 void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 {
 	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_PED);
@@ -147,6 +154,8 @@ void CServerNetwork::server_thread()
 
 	librg_network_add(&ctx, VCOOP_CREATE_PED,			PedCreateEvent);
 	librg_network_add(&ctx, VCOOP_CREATE_VEHICLE,		VehCreateEvent);
+
+	librg_network_add(&ctx, VCOOP_SEND_MESSAGE,			ClientSendMessage);
 
 	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
 

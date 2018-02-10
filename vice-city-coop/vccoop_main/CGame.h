@@ -1,6 +1,4 @@
 #pragma once
-
-
 class CGame 
 {
 public:
@@ -22,6 +20,8 @@ public:
 	GTA_CONTROLSET remotePlayerKeys[MAX_PLAYERS];
 	CAMERA_AIM remotePlayerLookFrontX[MAX_PLAYERS];
 	int remotePlayerCameraMode[MAX_PLAYERS];
+
+	bool debugEngineOutput = false;
 
 private:
 	void InitPreGamePatches(); 

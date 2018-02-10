@@ -1,10 +1,16 @@
 #include "main.h"
 
-CLogger::CLogger()
+CLogger::CLogger(bool debug)
 {
-	TimeFormat = DEFAULT_TIME_FORMAT;
-	path = path_to_session_log_file();
-	out = std::ofstream(path);
+	this->debugLog = debug;
+	this->TimeFormat = DEFAULT_TIME_FORMAT;
+	
+	if(debug)
+		this->path = path_to_session_log_file().append("_debug.txt");
+	else
+		this->path = path_to_session_log_file();
+	
+	this->out = std::ofstream(path);
 }
 CLogger::~CLogger()
 {
@@ -42,12 +48,12 @@ void CLogger::Log(char * format, ...)
 	buf.append(buffer);
 	Out(buf.c_str());
 
-	gChat->AddChatMessage(buf.c_str());
+	if(!this->debugLog) gChat->AddChatMessage(buf.c_str());
 
 #ifdef VCCOOP_DEBUG
 	printf(buf.c_str());
 	
-	if(gRender->gDebugScreen->gDevConsole != nullptr)
+	if(gRender->gDebugScreen->gDevConsole != nullptr && debugLog)
 		gRender->gDebugScreen->gDevConsole->AddLog(buf.c_str());
 #endif
 }
