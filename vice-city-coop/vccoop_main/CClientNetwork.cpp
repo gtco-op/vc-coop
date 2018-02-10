@@ -78,6 +78,7 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event) {
 
 	gGame->RestoreCamera();
 	gGame->SetCameraBehindPlayer();
+	gGame->EnableHUD();
 
 	players.push_back(std::pair<CPed*, int>(LocalPlayer(), event->entity->id));
 }

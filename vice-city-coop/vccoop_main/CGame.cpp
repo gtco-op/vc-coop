@@ -74,13 +74,11 @@ CVector CGame::GetCameraPos()
 }
 void CGame::DisableHUD()
 {
-	MemWrite<BYTE>(0x86963A, 0x00);
-	MemWrite<BYTE>(0xA10B45, 0x00);
+	*(BYTE*)0xA10B45 = 0;
 }
 void CGame::EnableHUD()
 {
-	MemWrite<int>(0x86963A, 1);
-	MemWrite<int>(0xA10B45, 1);
+	*(BYTE*)0xA10B45 = 1;
 }
 int FindIDForPed(CPed * ped)
 {
@@ -403,6 +401,8 @@ void Hook_CRunningScript__Process()
 		gLog->Log("[CGame] CRunningScript::Process() hook finished.\n");
 
 		gRender->ToggleGUI();
+
+		gGame->DisableHUD();
 
 		gGame->remotePlayerPeds[0] = FindPlayerPed();
 

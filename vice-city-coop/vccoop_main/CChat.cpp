@@ -6,7 +6,7 @@ CChat::CChat()
 {
 	this->pageSize = 10;
 	this->chatToggled = false; 
-	this->chatDisplay = true;
+	this->chatDisplay = false;
 
 	memset(this->chatInputBuffer, 0, sizeof(this->chatInputBuffer));
 	for (int i = 0; i < 10; i++)
@@ -26,10 +26,28 @@ void CChat::Draw()
 	rect.top = 10;
 	rect.left = 30;
 
+#ifdef VCCOOP_DEBUG	
+	if (gRender->bConsole && gRender->gDebugScreen->gDevConsole) {
+		gRender->gDebugScreen->gDevConsole->Draw(&gRender->bConsole);
+
+		gChat->chatDisplay = false;
+		gChat->chatToggled = false;
+	}
+	else if (gRender->bConsole && !gRender->gDebugScreen->gDevConsole)
+	{
+		gRender->gDebugScreen->gDevConsole = new DeveloperConsole();
+	}
+	else
+	{
+		gChat->chatDisplay = true;
+	}
+#endif
+
 	if (this->chatDisplay 
 #ifdef VCCOOP_DEBUG
 		|| !gRender->gDebugScreen->gDevConsole->Collapsed
 #endif
+		&& gNetwork->client_connected
 		)
 	{
 		for (int i = 0; i < 10; i++)
