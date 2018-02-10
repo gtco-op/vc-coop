@@ -1,5 +1,7 @@
 #include "main.h"
 
+int CGame::keyPressTime;
+
 static bool		scriptProcessed = false;
 WNDPROC			orig_wndproc;
 HWND			orig_wnd;
@@ -57,6 +59,14 @@ void CGame::SetPlayerCameraPosition(float fX, float fY, float fZ, float fRotatio
 void CGame::CameraLookAtPoint(float fX, float fY, float fZ, int iType)
 {
 	Command<0x0160>(fX, fY, fZ, iType);
+}
+void CGame::SetCameraBehindPlayer()
+{
+	Command<0x0373>();
+}
+void CGame::RestoreCamera()
+{
+	Command<0x015A>();
 }
 CVector CGame::GetCameraPos()
 {
@@ -395,7 +405,6 @@ void Hook_CRunningScript__Process()
 		gRender->ToggleGUI();
 
 		gGame->remotePlayerPeds[0] = FindPlayerPed();
-
 
 		// First tick processed
 		scriptProcessed = true;
