@@ -51,6 +51,7 @@
 #include "CTimer.h"
 #include "CTheZones.h"
 #include "extensions\ScriptCommands.h"
+#include "CMenuManager.h"
 
 //vccoop
 #include "config.h"

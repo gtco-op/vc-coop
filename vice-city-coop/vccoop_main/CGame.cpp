@@ -188,7 +188,10 @@ void CGame::InitPreGamePatches()
 {
 	#ifdef VCCOOP_DEBUG_ENGINE
 	RedirectAllCalls(0x401000, 0x67DD05, 0x401000, Hooked_DbgPrint);
+	RedirectAllCalls(0x401000, 0x67DD05, 0x6F2434, Hooked_DbgPrint);
 	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);
+
+	
 	debugEnabled = true;
 	#endif
 
@@ -241,7 +244,7 @@ void CGame::InitPreGamePatches()
 	MakeCall(0x450245, Hook_CRunningScript__Process);
 
 	//Set fps limit
-	MemWrite(0x602D68, 500); 
+	//MemWrite(0x602D68, 500); 
 
 	// Disable re-initialization of DirectInput mouse device by the game
 	MakeNop(0x49908B, 5);
@@ -251,7 +254,7 @@ void CGame::InitPreGamePatches()
 	MakeNop(0x49908B + 0x7, 5);
 	MakeNop(0x498F92 + 0x7, 5);
 	MakeNop(0x499014 + 0x7, 5);
-	/*
+	
 	//-----Disable menu
 	//Disable CMenuManage::Process
 	MakeRet(0x49A01C);
@@ -263,7 +266,7 @@ void CGame::InitPreGamePatches()
 	MakeRet(0x4A37A4);
 
 	//Disable CMenuManager::LoadAllTextures
-	MakeRet(0x4A3A13);*/
+	MakeRet(0x4A3A13);
 
 	//Disable menu after focus loss
 	MakeRet(0x4A4FD0);
@@ -477,9 +480,18 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 				gGame->remotePlayerPeds[gGame->remotePlayers] = player->ped;
 				gGame->remotePlayers++;
 			}
-			if (vkey == VK_ESCAPE && gNetwork->connected)
+			if (vkey == VK_ESCAPE)
 			{
-				if(gChat->chatToggled) gChat->ToggleChat(false);
+				if (gChat->chatToggled)
+				{
+					gChat->ToggleChat(false);
+					return 0;
+				}
+				else
+				{
+					gRender->bEscMenu = !gRender->bEscMenu;
+					return 0;
+				}
 			}
 			if (vkey == VK_F7 && gNetwork->connected)
 			{

@@ -12,6 +12,7 @@ public:
 	bool bGUI;
 	bool bConnecting;
 	bool bAboutWindow;
+	bool bEscMenu;
 
 #ifdef VCCOOP_DEBUG
 	bool bConsole;
