@@ -98,6 +98,53 @@ int FindIDForPed(CPed * ped)
 	return -1;
 }
 
+BYTE internalPlayerID = 0;
+CVehicle * _pVehicle;
+
+void  _declspec(naked) Patched_CAutomobile_ProcessControl()
+{
+	_asm mov _pVehicle, ecx
+	_asm pushad
+
+	internalPlayerID = *(BYTE *)0xA10AFB;
+
+	localPlayer = FindPlayerPed();
+
+	if(_pVehicle->m_pDriver && _pVehicle->m_pDriver != localPlayer && internalPlayerID == 0)
+	{
+		// get the current driver's player number
+		currentPlayerID = FindIDForPed(_pVehicle->m_pDriver);
+
+		// key switching
+		localPlayerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
+
+		// set remote player's keys
+		*(GTA_CONTROLSET*)0x7DBCB0 = gGame->remotePlayerKeys[currentPlayerID];
+
+		MemWrite<BYTE>(0xA10AFB, currentPlayerID);
+
+		_asm popad
+		_asm mov edi, 0x593030
+		_asm call edi
+		_asm pushad
+
+		// restore the local player's keys and the internal ID.
+		MemWrite<BYTE>(0xA10AFB, 0);
+
+		*(GTA_CONTROLSET*)0x7DBCB0 = localPlayerKeys;
+	}
+	else
+	{
+		_asm popad
+		_asm mov edi, 0x593030
+		_asm call edi
+		_asm pushad
+	}
+
+	_asm popad
+	_asm ret
+}
+
 void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 {
 	_asm mov dwCurPlayerActor, ecx
@@ -368,8 +415,8 @@ void CGame::InitPreGamePatches()
 	MemWrite<BYTE>(0x5262BC, 0x00);
 	MemWrite<BYTE>(0x5262D9, 0x00); 
 
-	//MemWrite<DWORD>(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
-	InstallMethodHook(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
+	MemWrite<DWORD>(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
+	MemWrite<DWORD>(0x69ADB0, (DWORD)Patched_CAutomobile_ProcessControl);
 
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
