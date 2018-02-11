@@ -10,12 +10,20 @@
 //inih
 #include "vendor\inih\INIReader.h"
 
-//lua
-#include "vendor\lua\include\lua.hpp"
-#include "vendor\lua\include\luaconf.h"
-
 //hooks
 #include "hooklibrary.h"
+
+//lua
+#ifndef __cplusplus
+extern "C"
+{
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
+#else
+#include <lua.hpp>
+#endif
 
 //common
 #include <Windows.h>

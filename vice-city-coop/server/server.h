@@ -2,8 +2,17 @@
 // Dependencies
 #include "vendor\librg\librg.h"
 #include "vendor\inih\INIReader.h"
-#include "vendor\lua\include\lua.hpp"
-#include "vendor\lua\include\luaconf.h"
+//lua
+#ifndef __cplusplus
+extern "C"
+{
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
+#else
+#include <lua.hpp>
+#endif
 
 // Standard includes
 #include <Windows.h>
