@@ -41,7 +41,8 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 	ped->m_fRotationDest = spd.Rotation;
 	ped->m_fArmour = spd.Armour;
 
-	this->ConvertKeys(spd.playerKeys);
+	//this->ConvertKeys(spd.playerKeys);
+	gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
 	gGame->remotePlayerLookFrontX[this->gameID] = spd.playerLook;
 }
 
@@ -60,7 +61,7 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 
 	spd.iInteriorID = 0;
 
-	spd.playerKeys = this->GetKeys();
+	spd.playerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
 	spd.playerLook = *(CAMERA_AIM*)0x7E4978;
 	
 	this->syncData = spd;

@@ -121,8 +121,8 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 		localPlayerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
 		// set remote player's keys
 
-		gGame->remotePlayerKeys[currentPlayerID].wKeys1[KEY_ONFOOT_FORWARD] = 0xFF;
-		gGame->remotePlayerKeys[currentPlayerID].wKeys2[KEY_ONFOOT_FORWARD] = 0xFF;
+		//gGame->remotePlayerKeys[currentPlayerID].wKeys1[KEY_ONFOOT_FORWARD] = 0xFF;
+		//gGame->remotePlayerKeys[currentPlayerID].wKeys2[KEY_ONFOOT_FORWARD] = 0xFF;
 
 		*(GTA_CONTROLSET*)0x7DBCB0 = gGame->remotePlayerKeys[currentPlayerID];
 

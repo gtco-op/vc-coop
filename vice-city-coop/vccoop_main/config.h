@@ -158,7 +158,7 @@ struct PlayerSyncData
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
 
-	WORD playerKeys;
+	GTA_CONTROLSET playerKeys;
 	CAMERA_AIM playerLook;
 };
 
