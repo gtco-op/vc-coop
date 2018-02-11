@@ -105,7 +105,7 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 
 	currentPlayerID = FindIDForPed((CPed*)dwCurPlayerActor);
 
-	//gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d", currentPlayerID);
+	gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
 	localPlayer = FindPlayerPed();
 
 	if (localPlayer && (CPed*)dwCurPlayerActor == localPlayer)
@@ -121,8 +121,8 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 		localPlayerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
 		// set remote player's keys
 
-		//remotePlayerKeys[currentPlayerID].wKeys1[KEY_ONFOOT_FORWARD] = 0xFF;
-		//remotePlayerKeys[currentPlayerID].wKeys2[KEY_ONFOOT_FORWARD] = 0xFF;
+		gGame->remotePlayerKeys[currentPlayerID].wKeys1[KEY_ONFOOT_FORWARD] = 0xFF;
+		gGame->remotePlayerKeys[currentPlayerID].wKeys2[KEY_ONFOOT_FORWARD] = 0xFF;
 
 		*(GTA_CONTROLSET*)0x7DBCB0 = gGame->remotePlayerKeys[currentPlayerID];
 
@@ -153,6 +153,7 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 		*(GTA_CONTROLSET*)0x7DBCB0 = localPlayerKeys;
 		*(CAMERA_AIM*)0x7E4978 = localPlayerLookFrontX;
 	}
+	
 	_asm popad
 	_asm ret
 }
@@ -185,6 +186,14 @@ void Hooked_LoadingScreen(char * message, char * message2, char * splash)
 	Hooked_DbgPrint("Loading screen: %s %s %s\n",(message ? message : "0"), (message2 ? message2 : "0"), (splash ? splash : "0"));
 	Call(0x4A69D0, message, message2, splash);
 	return;
+}
+
+void InstallMethodHook(DWORD dwInstallAddress, DWORD dwHookFunction)
+{
+	DWORD dwVP, dwVP2;
+	VirtualProtect((LPVOID)dwInstallAddress, 4, PAGE_EXECUTE_READWRITE, &dwVP);
+	*(PDWORD)dwInstallAddress = (DWORD)dwHookFunction;
+	VirtualProtect((LPVOID)dwInstallAddress, 4, dwVP, &dwVP2);
 }
 
 char cdstream[65];
@@ -362,8 +371,8 @@ void CGame::InitPreGamePatches()
 	MemWrite<BYTE>(0x5262BC, 0x00);
 	MemWrite<BYTE>(0x5262D9, 0x00); 
 
-	MemWrite<DWORD>(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
-	//InstallMethodHook(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
+	//MemWrite<DWORD>(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
+	InstallMethodHook(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
 
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }

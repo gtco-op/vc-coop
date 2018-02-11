@@ -27,8 +27,6 @@ CCore::CCore()
 
 	gLog->Log("[CCore] Main method finished.\n");
 
-	MemWrite<s32>(0x9B6CBC, 800);
-
 	Events::gameProcessEvent += [] {
 		gGame->Run();
 		gRender->Run();

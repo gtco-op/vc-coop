@@ -33,7 +33,7 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 	librg_entity_control_set(&ctx, entity->id, msg->peer);
 
 	// crate our custom data container for ped
-	entity->user_data = new SPlayerData();
+	entity->user_data = new PedSyncData();
 
 	// spawn a ped at player's position
 	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
@@ -65,25 +65,43 @@ void CServerNetwork::on_connect_request(librg_event_t *event) {
 	}
 }
 void CServerNetwork::on_connect_accepted(librg_event_t *event) {
-	event->entity->user_data = new SPlayerData();
+	event->entity->user_data = new PlayerSyncData();
 	librg_entity_control_set(event->ctx, event->entity->id, event->entity->client_peer);
 
 	playerEntities.push_back(event->entity);
 	gLog->Log("[CServerNetwork][CLIENT CONNECTION] Network entity %d connected\n", event->entity->id);
 }
-void CServerNetwork::on_creating_entity(librg_event_t *event) {
-	if (event->entity->type == VCOOP_PED || event->entity->type == VCOOP_PLAYER) {
-		librg_data_wptr(event->data, event->entity->user_data, sizeof(SPlayerData));
+void CServerNetwork::on_creating_entity(librg_event_t *event) 
+{
+	if (event->entity->type == VCOOP_PLAYER) 
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
+	}
+	else if (event->entity->type == VCOOP_PED)
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(PedSyncData));
 	}
 }
-void CServerNetwork::on_entity_update(librg_event_t *event) {
-	if (event->entity->type == VCOOP_PED || event->entity->type == VCOOP_PLAYER) {
-		librg_data_wptr(event->data, event->entity->user_data, sizeof(SPlayerData));
+void CServerNetwork::on_entity_update(librg_event_t *event) 
+{
+	if (event->entity->type == VCOOP_PLAYER)
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
+	}
+	else if (event->entity->type == VCOOP_PED)
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(PedSyncData));
 	}
 }
-void CServerNetwork::on_stream_update(librg_event_t *event) {
-	if (event->entity->type == VCOOP_PED || event->entity->type == VCOOP_PLAYER) {
-		librg_data_rptr(event->data, event->entity->user_data, sizeof(SPlayerData));
+void CServerNetwork::on_stream_update(librg_event_t *event) 
+{
+	if (event->entity->type == VCOOP_PLAYER)
+	{
+		librg_data_rptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
+	}
+	else if (event->entity->type == VCOOP_PED)
+	{
+		librg_data_rptr(event->data, event->entity->user_data, sizeof(PedSyncData));
 	}
 }
 

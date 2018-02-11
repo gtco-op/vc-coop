@@ -76,6 +76,18 @@ typedef struct _GTA_CONTROLSET
 
 struct PedSyncData 
 {
+	float Health;
+	float Armour;
+	float Rotation;
+
+	int iModelIndex;
+	int iInteriorID;
+	int iCurrentAnimID;
+
+	unsigned int CurrWep;
+	unsigned int WepModelIndex;
+	unsigned int Ammo;
+
 	int gameTimer;
 
 	float m_fActionX;
@@ -132,9 +144,8 @@ struct PedSyncData
 	float m_fEventOrThreatY;
 };
 
-struct SPlayerData {
-	char szName[25];
-	
+struct PlayerSyncData 
+{
 	float Health;
 	float Armour;
 	float Rotation;
@@ -147,10 +158,8 @@ struct SPlayerData {
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
 
-	GTA_CONTROLSET playerKeys;
+	WORD playerKeys;
 	CAMERA_AIM playerLook;
-
-	PedSyncData pedData;
 };
 
 enum eBlipType {

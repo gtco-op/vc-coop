@@ -132,8 +132,6 @@ extern CRender			*gRender;
 extern CLogger			*gLog;
 extern CChat			*gChat;
 
-extern SPlayerData		LocalPlayerInfo;
-
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 #include "CCore.h"
