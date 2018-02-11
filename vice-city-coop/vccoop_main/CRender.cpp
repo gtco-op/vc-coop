@@ -379,13 +379,18 @@ void CRender::Draw()
 #ifdef VCCOOP_DEBUG
 			|| gRender->bConsole
 #endif
+			|| gRender->bEscMenu
 			)
 		{
 			gGame->DisableMouseInput();
+			gRender->device->ShowCursor(TRUE);
+			ImGui::GetIO().MouseDrawCursor = TRUE;
 		}
 		else if(gGame->IsWindowActive())
 		{
 			gGame->EnableMouseInput();
+			gRender->device->ShowCursor(FALSE);
+			ImGui::GetIO().MouseDrawCursor = FALSE;
 		}
 	}
 }

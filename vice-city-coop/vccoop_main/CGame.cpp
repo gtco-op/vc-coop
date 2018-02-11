@@ -372,9 +372,6 @@ void CGame::EnableMouseInput()
 	MemCpy((void*)0x4AB6E6, "\xE8\x45\xCE\x16\x00", 5);
 	//CControllerConfigManager::AffectPadFromMouse restore
 	MemCpy((void*)0x4AB6F0, "\xE8\x9B\xCD\x16\x00", 5);
-
-	gRender->device->ShowCursor(false);
-	ImGui::GetIO().MouseDrawCursor = false;
 }
 void CGame::DisableMouseInput()
 {
@@ -384,9 +381,6 @@ void CGame::DisableMouseInput()
 	MakeNop(0x4AB6E6, 5);
 	//CControllerConfigManager::AffectPadFromMouse nop
 	MakeNop(0x4AB6F0, 5);
-
-	gRender->device->ShowCursor(true);
-	ImGui::GetIO().MouseDrawCursor = true;
 }
 void Hook_CRunningScript__Process()
 {
