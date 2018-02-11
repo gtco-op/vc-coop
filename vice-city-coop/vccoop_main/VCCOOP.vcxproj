@@ -114,7 +114,7 @@
     <TargetName>vccoop</TargetName>
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(ProjectDir)\vendor\lua</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA3|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -144,7 +144,7 @@
     <TargetName>vccoopd</TargetName>
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(ProjectDir)\vendor\lua</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='zDebug GTA3|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -311,6 +311,7 @@
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="CImGui.cpp" />
     <ClCompile Include="CLogger.cpp" />
+    <ClCompile Include="CLua.cpp" />
     <ClCompile Include="CNameTags.cpp" />
     <ClCompile Include="CRenderTemplate.cpp" />
     <ClCompile Include="main.cpp">
@@ -331,6 +332,7 @@
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CImGui.h" />
     <ClInclude Include="CLogger.h" />
+    <ClInclude Include="CLua.h" />
     <ClInclude Include="CNameTags.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="CRenderTemplate.h" />

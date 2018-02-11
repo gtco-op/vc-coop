@@ -10,6 +10,10 @@
 //inih
 #include "vendor\inih\INIReader.h"
 
+//lua
+#include "vendor\lua\include\lua.hpp"
+#include "vendor\lua\include\luaconf.h"
+
 //hooks
 #include "hooklibrary.h"
 
@@ -100,6 +104,8 @@
 
 #include "CRender.h"
 #include "CClientPlayer.h"
+
+#include "CLua.h"
 
 #define SAFE_RELEASE(p)          { if (p) { (p)->Release(); (p)=NULL; } }
 #define LocalPlayer				 FindPlayerPed

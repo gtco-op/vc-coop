@@ -37,6 +37,9 @@
     <Filter Include="Source\misc">
       <UniqueIdentifier>{449492df-1bf5-4282-b6e6-c0fe324f43b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\scripting">
+      <UniqueIdentifier>{a851cbee-fe4c-4afe-9746-47b921ca74c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -118,6 +121,9 @@
       <Filter>Source\misc</Filter>
     </ClInclude>
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CLua.h">
+      <Filter>Source\scripting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -166,5 +172,8 @@
       <Filter>Source\tools\CConfiguration</Filter>
     </ClCompile>
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CLua.cpp">
+      <Filter>Source\scripting</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
