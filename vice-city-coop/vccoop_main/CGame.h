@@ -13,6 +13,8 @@ public:
 	void EnableMouseInput();
 	void DisableMouseInput();
 
+	void SetCoordBlip(CVector coord, uint unk, eBlipDisplay blipDisplay);
+	
 	bool IsWindowActive();
 
 	void Run();

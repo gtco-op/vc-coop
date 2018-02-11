@@ -153,6 +153,24 @@ struct SPlayerData {
 	PedSyncData pedData;
 };
 
+enum eBlipType {
+	BLIP_NONE,          // 0
+	BLIP_CAR,           // 1
+	BLIP_CHAR,          // 2
+	BLIP_OBJECT,        // 3
+	BLIP_COORD,         // 4 - Checkpoint.
+	BLIP_CONTACTPOINT,  // 5 - Sphere.
+	BLIP_SPOTLIGHT,     // 6
+	BLIP_PICKUP,        // 7
+	BLIP_AIRSTRIP       // 8
+};
+enum eBlipDisplay {
+	BLIP_DISPLAY_NEITHER,    // 0
+	BLIP_DISPLAY_MARKERONLY, // 1
+	BLIP_DISPLAY_BLIPONLY,   // 2
+	BLIP_DISPLAY_BOTH        // 3
+};
+
 enum {
 	VCOOP_CREATE_PED = LIBRG_EVENT_LAST,
 	VCOOP_CREATE_VEHICLE,

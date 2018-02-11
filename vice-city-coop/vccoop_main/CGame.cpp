@@ -85,6 +85,10 @@ void CGame::EnableHUD()
 {
 	*(BYTE*)0xA10B45 = 1;
 }
+void CGame::SetCoordBlip(CVector coord, uint unk, eBlipDisplay blipDisplay)
+{
+	Call(0x4c3c80, eBlipType::BLIP_COORD, coord, unk, blipDisplay);
+}
 int FindIDForPed(CPed * ped)
 {
 	for (int i = 0; i < MAX_PLAYERS; i++)
