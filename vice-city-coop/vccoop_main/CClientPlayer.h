@@ -13,9 +13,6 @@ public:
 	CClientPlayer(int nID, int gID);
 	~CClientPlayer();
 
-	WORD GetKeys();
-	void ConvertKeys(WORD wKeys);
-
 	void SyncPlayer(PlayerSyncData spd);
 	PlayerSyncData CClientPlayer::BuildSyncData();
 };
