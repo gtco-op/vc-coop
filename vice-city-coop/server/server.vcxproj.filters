@@ -29,6 +29,12 @@
     <Filter Include="Source\config">
       <UniqueIdentifier>{4ba0e5c8-5d30-4bb9-a15a-c424c040ca61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\lua">
+      <UniqueIdentifier>{1ad7cf6d-7d05-4a7b-ad3d-5aa0746789c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\scripting">
+      <UniqueIdentifier>{263b9255-6905-46e3-9ce1-b1eadca72571}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CServerNetwork.h">
@@ -61,6 +67,24 @@
     <ClInclude Include="vendor\inih\INIReader.h">
       <Filter>vendor\inih</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\lua\include\lauxlib.h">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\lua\include\lua.h">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\lua\include\lua.hpp">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\lua\include\luaconf.h">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\lua\include\lualib.h">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="CLua.h">
+      <Filter>Source\scripting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
@@ -74,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="CConfiguration.cpp">
       <Filter>Source\utils\CConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="CLua.cpp">
+      <Filter>Source\scripting</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

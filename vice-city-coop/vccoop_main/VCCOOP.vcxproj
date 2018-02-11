@@ -351,6 +351,11 @@
     <ClInclude Include="vendor\imgui\stb_rect_pack.h" />
     <ClInclude Include="vendor\imgui\stb_textedit.h" />
     <ClInclude Include="vendor\imgui\stb_truetype.h" />
+    <ClInclude Include="vendor\lua\include\lauxlib.h" />
+    <ClInclude Include="vendor\lua\include\lua.h" />
+    <ClInclude Include="vendor\lua\include\lua.hpp" />
+    <ClInclude Include="vendor\lua\include\luaconf.h" />
+    <ClInclude Include="vendor\lua\include\lualib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,6 +2,8 @@
 // Dependencies
 #include "vendor\librg\librg.h"
 #include "vendor\inih\INIReader.h"
+#include "vendor\lua\include\lua.hpp"
+#include "vendor\lua\include\luaconf.h"
 
 // Standard includes
 #include <Windows.h>
@@ -32,6 +34,8 @@
 #include "CConfiguration.h"
 #include "CLogger.h"
 #include "CServerNetwork.h"
+
+#include "CLua.h"
 
 //------------------------------------------------------------------------------------------------
 
