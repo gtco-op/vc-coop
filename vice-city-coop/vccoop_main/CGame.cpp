@@ -44,7 +44,7 @@ void CGame::Run()
 	if (KeyPressed('T') && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && !gChat->chatToggled && IsWindowActive())
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
-		if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow)
+		if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow && !gRender->bEscMenu)
 			gChat->ToggleChat(true); ImGui::GetIO().ClearInputCharacters(); 
 	}
 }
