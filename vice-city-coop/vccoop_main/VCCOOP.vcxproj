@@ -305,6 +305,7 @@
     <ClCompile Include="CChat.cpp" />
     <ClCompile Include="CClientNetwork.cpp" />
     <ClCompile Include="CClientPlayer.cpp" />
+    <ClCompile Include="CClientVehicle.cpp" />
     <ClCompile Include="CConfiguration.cpp" />
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CDebugScreen.cpp" />
@@ -326,6 +327,7 @@
     <ClInclude Include="CChat.h" />
     <ClInclude Include="CClientNetwork.h" />
     <ClInclude Include="CClientPlayer.h" />
+    <ClInclude Include="CClientVehicle.h" />
     <ClInclude Include="CConfiguration.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CDebugScreen.h" />

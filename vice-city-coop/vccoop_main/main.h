@@ -64,6 +64,7 @@ extern "C"
 #include "CTheZones.h"
 #include "extensions\ScriptCommands.h"
 #include "CMenuManager.h"
+#include "CPathFind.h"
 
 //vccoop
 #include "config.h"
@@ -112,6 +113,7 @@ extern "C"
 
 #include "CRender.h"
 #include "CClientPlayer.h"
+#include "CClientVehicle.h"
 
 #include "CLua.h"
 

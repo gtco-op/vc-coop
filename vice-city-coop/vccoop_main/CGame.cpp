@@ -152,7 +152,7 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 
 	currentPlayerID = FindIDForPed((CPed*)dwCurPlayerActor);
 
-	gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
+	//gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
 	localPlayer = FindPlayerPed();
 
 	if (localPlayer && (CPed*)dwCurPlayerActor == localPlayer)
@@ -415,6 +415,27 @@ void CGame::InitPreGamePatches()
 	MemWrite<BYTE>(0x5262BC, 0x00);
 	MemWrite<BYTE>(0x5262D9, 0x00); 
 
+	//EntryInfoNode limit patch
+	MemWrite<BYTE>(0x4C02A6, 0x75);
+	MemWrite<BYTE>(0x4C02A7, 0x30);
+
+	//EntryInfoNode limit patch
+	MemWrite<BYTE>(0x4C0284, 0xEA);
+	MemWrite<BYTE>(0x4C0285, 0x60);
+
+	//Object limit patch
+	MemWrite<BYTE>(0x4C0284, 0x13);
+	MemWrite<BYTE>(0x4C0285, 0x88);
+
+	//Dummys limit patch
+	MemWrite<BYTE>(0x4C036C, 0x4E);
+	MemWrite<BYTE>(0x4C036D, 0x20);
+
+	//Buildings limit patch
+	MemWrite<BYTE>(0x4C0309, 0x4E);
+	MemWrite<BYTE>(0x4C030A, 0x20);
+	
+
 	MemWrite<DWORD>(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
 	MemWrite<DWORD>(0x69ADB0, (DWORD)Patched_CAutomobile_ProcessControl);
 
@@ -443,6 +464,12 @@ void Hook_CRunningScript__Process()
 {
 	if (!scriptProcessed)
 	{
+		CPools::ms_pPedPool->Clear();
+		CPools::ms_pVehiclePool->Clear();
+
+		CPools::ms_pPedPool->Init(1000, NULL, NULL);
+		CPools::ms_pVehiclePool->Init(1000, NULL, NULL);
+
 		// Change player model ID
 		MemWrite<u8>(0x5384FA + 1, 7); //Not important if we set a new one after spawn
 
@@ -461,12 +488,6 @@ void Hook_CRunningScript__Process()
 		gGame->CameraLookAtPoint(531.629761f, 606.497253f, 10.901563f, 1);
 
 		CWorld::Players[0].m_bNeverGetsTired = true;
-
-		CPools::ms_pPedPool->Clear();
-		CPools::ms_pVehiclePool->Clear();
-
-		CPools::ms_pPedPool->Init(1000, NULL, NULL);
-		CPools::ms_pVehiclePool->Init(1000, NULL, NULL);
 		
 		gLog->Log("[CGame] CRunningScript::Process() hook finished.\n");
 
@@ -527,9 +548,32 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			if (vkey == 'Z')
 			{
-				CClientPlayer * player = new CClientPlayer(0, gGame->remotePlayers);
-				gGame->remotePlayerPeds[gGame->remotePlayers] = player->ped;
-				gGame->remotePlayers++;
+				//CClientPlayer * player = new CClientPlayer(0, gGame->remotePlayers);
+				//gGame->remotePlayerPeds[gGame->remotePlayers] = player->ped;
+				//gGame->remotePlayers++;
+				CVector pos = FindPlayerPed()->GetPosition();
+
+				bool res = false;
+
+				//FindPlayerPed()->Teleport(pos);
+
+				for (int i = 0; i < 30; i++)
+				{
+					int xrand = Random(0, 200) - 100;
+					int yrand = Random(0, 200) - 100;
+
+					int path = ThePaths.FindNodeClosestToCoors({ pos.x + xrand, pos.y + yrand, pos.z }, 1, 10000.0f, 1, 0, 0, 0);
+					CPathNode node = ThePaths.nodes[path];
+
+					CVector spawnPos = { (float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, CWorld::FindGroundZFor3DCoord((float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, (float)node.m_wPosZ*0.125f, &res) + 1.0f };
+
+					CPed * ped = new CCivilianPed(ePedType::PEDTYPE_CIVMALE, 7);
+					CWorld::Add(ped);
+					ped->Teleport(spawnPos);
+					ped->SetWanderPath(Random(0, 9650));
+				}
+
+				//gLog->Log("node %d: %f %f %f\n", path, (long double)array1[path]*0.125f, (long double)array2[path] * 0.125f, (long double)array3[path] * 0.125f);
 			}
 			if (vkey == VK_ESCAPE)
 			{
