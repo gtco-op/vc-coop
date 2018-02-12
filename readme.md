@@ -9,6 +9,7 @@ you have to set these system environment values</br>
 **PSDK_VC_LIB** the place where VC Lib of Pluginsdk exists</br>
 **DXSDK_DIR** The DirectX SDK Directory</br>
 **RW_LIB** the place where RW Lib exists (hmm you can find it in rw folder in vccoopmain project)</br>
+**LUA_DIR** the place where Lua lib exists (you can find it in server/vendor) </br>
 **Also you have to put these dlls in your game directory** </br>
 [d3d8.dll](https://cdn.discordapp.com/attachments/368152497300307969/405034698629447681/d3d8.dll) </br>
 [rwd3d9.dll](https://cdn.discordapp.com/attachments/368152497300307969/405034659991519232/rwd3d9.dll)
