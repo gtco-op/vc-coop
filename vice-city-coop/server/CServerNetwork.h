@@ -17,6 +17,8 @@ public:
 	static std::vector<librg_entity_t*> playerEntities;
 	static std::vector<librg_entity_t*> otherEntities;
 
+	static std::pair<char*, int> LoadScript(std::string filename);
+
 	//------------------------------------------------------------------------------------------------
 
 	static void ClientSendMessage(librg_message_t* msg);

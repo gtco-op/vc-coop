@@ -28,8 +28,8 @@ int main(int argc, char const *argv[]) {
 
 	gConfig->PopulateValues();
 
-	gLog->Log("[CCore] Port: %d\n", gServerNetwork->ServerPort);
-	gLog->Log("[CCore] Secret: %d\n", gServerNetwork->ServerSecret);
+	gLog->Log("[CCore] Server Port: %d\n", gServerNetwork->ServerPort);
+	gLog->Log("[CCore] Server Secret: %d\n", gServerNetwork->ServerSecret);
 
 	while (console_active)
 	{

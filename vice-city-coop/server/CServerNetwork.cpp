@@ -10,6 +10,8 @@ librg_ctx_t						CServerNetwork::ctx;
 std::vector<librg_entity_t*>	CServerNetwork::playerEntities;
 std::vector<librg_entity_t*>	CServerNetwork::otherEntities;
 
+std::vector<std::pair<char*, int>> dataArray;
+
 CServerNetwork::CServerNetwork()
 {
 	ctx = { 0 };
@@ -64,12 +66,45 @@ void CServerNetwork::on_connect_request(librg_event_t *event) {
 		librg_event_reject(event);
 	}
 }
+std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
+{
+	// load the data into memory
+	std::string path = GetExecutablePath();
+	path.append("\\scripts\\");
+	path.append(filename);
+
+	std::ifstream t(path);
+	std::stringstream buffer;
+	buffer << t.rdbuf();
+
+	// allocate data
+	std::string dataData = buffer.str();
+	int dataLen = buffer.str().size() + 1;
+
+#ifdef VCCOOP_LIBRG_DEBUG
+	gLog->Log("[CServerNetwork] Loaded data with size %d\n", dataLen);
+	gLog->Log("[CServerNetwork] Total data Size: %d\n", sizeof(dataLen) + (buffer.str().size() + 1));
+#endif
+
+	// construct the dataset
+	char* databuf = new char[sizeof(dataLen) + (buffer.str().size() + 1)];
+	memset(databuf, 0, sizeof(dataLen) + (buffer.str().size() + 1));
+	sprintf(databuf, "%d%s", dataLen, dataData.c_str());
+
+	return std::pair<char*, int>(databuf, sizeof(dataLen) + (buffer.str().size() + 1));
+}
 void CServerNetwork::on_connect_accepted(librg_event_t *event) {
+	// initialize sync data and set entity control of the new client
 	event->entity->user_data = new PlayerSyncData();
 	librg_entity_control_set(event->ctx, event->entity->id, event->entity->client_peer);
 
+	// push back the entity into the entities vector
 	playerEntities.push_back(event->entity);
 	gLog->Log("[CServerNetwork][CLIENT CONNECTION] Network entity %d connected\n", event->entity->id);
+
+	// send every script/data to the client
+	for (auto it : dataArray)
+		librg_message_send_to(&ctx, VCOOP_GET_LUA_SCRIPT, event->peer, it.first, it.second);
 }
 void CServerNetwork::on_creating_entity(librg_event_t *event) 
 {
@@ -152,7 +187,6 @@ void CServerNetwork::measure(void *userptr) {
 	}
 #endif
 }
-
 void CServerNetwork::server_thread()
 {
 	ctx.world_size		= zplm_vec3(5000.0f, 5000.0f, 5000.0f);
@@ -162,20 +196,19 @@ void CServerNetwork::server_thread()
 	ctx.max_entities	= 2000;
 	librg_init(&ctx);
 	
-	librg_event_add(&ctx, LIBRG_CONNECTION_REQUEST,		on_connect_request);
-	librg_event_add(&ctx, LIBRG_CONNECTION_ACCEPT,		on_connect_accepted);
-	librg_event_add(&ctx, LIBRG_CONNECTION_DISCONNECT,	on_disconnect);
+	librg_event_add(&ctx,	LIBRG_CONNECTION_REQUEST,		on_connect_request);
+	librg_event_add(&ctx,	LIBRG_CONNECTION_ACCEPT,		on_connect_accepted);
+	librg_event_add(&ctx,	LIBRG_CONNECTION_DISCONNECT,	on_disconnect);
 
-	librg_event_add(&ctx, LIBRG_ENTITY_CREATE,			on_creating_entity);
-	librg_event_add(&ctx, LIBRG_ENTITY_UPDATE,			on_entity_update);
-	librg_event_add(&ctx, LIBRG_ENTITY_REMOVE,			on_disconnect);
+	librg_event_add(&ctx,	LIBRG_ENTITY_CREATE,			on_creating_entity);
+	librg_event_add(&ctx,	LIBRG_ENTITY_UPDATE,			on_entity_update);
+	librg_event_add(&ctx,	LIBRG_ENTITY_REMOVE,			on_disconnect);
 
-	librg_network_add(&ctx, VCOOP_CREATE_PED,			PedCreateEvent);
-	librg_network_add(&ctx, VCOOP_CREATE_VEHICLE,		VehCreateEvent);
-
-	librg_network_add(&ctx, VCOOP_SEND_MESSAGE,			ClientSendMessage);
-
-	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
+	librg_network_add(&ctx, VCOOP_CREATE_PED,				PedCreateEvent);
+	librg_network_add(&ctx, VCOOP_CREATE_VEHICLE,			VehCreateEvent);
+	librg_network_add(&ctx, VCOOP_SEND_MESSAGE,				ClientSendMessage);
+	
+	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
 
 	gLog->Log("[CServerNetwork] Server thread initialized\n");
 
@@ -189,6 +222,10 @@ void CServerNetwork::server_thread()
 	zpl_timer_set(tick_timer, 1000 * 1000, -1, measure);
 	zpl_timer_start(tick_timer, 1000);
 #endif
+
+	gLog->Log("[CServerNetwork] Loading main client script into memory..\n");
+	dataArray.push_back(LoadScript("client.lua"));
+	gLog->Log("[CServerNetwork] Script processed.\n");
 
 	while (server_running) {
 		librg_tick(&ctx);

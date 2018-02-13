@@ -13,7 +13,7 @@ CCore::CCore()
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
 #endif
-	srand(time(NULL));
+	srand((int)time(NULL));
 
 	gChat = new CChat();
 	gLog = new CLogger();

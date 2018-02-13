@@ -74,11 +74,6 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event)
 	connected = true;
 	local_player = event->entity;
 	event->entity->user_data = new CClientPlayer(event->entity->id);
-
-	gGame->RestoreCamera();
-	gGame->SetCameraBehindPlayer();
-	gGame->EnableHUD();
-
 	players.push_back(std::pair<CPed*, int>(LocalPlayer(), event->entity->id));
 }
 void CClientNetwork::on_connect_refused(librg_event_t *event) 
@@ -349,6 +344,32 @@ void CClientNetwork::on_disconnect(librg_event_t *event)
 
 	gLog->Log("[CClientNetwork] Disconnected.\n");
 }
+void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
+{
+	// read all of the data..
+	char* scriptData = new char[msg->data->capacity-2];
+	librg_data_rptr(msg->data, scriptData, msg->data->capacity-2);
+
+	// copy the first four bytes to obtain the script size..
+	int scriptSize = 0;
+	char buf[4];
+	memcpy(buf, scriptData, 4);
+	scriptSize = atoi(buf);
+
+#ifdef VCCOOP_DEBUG
+	gLog->Log("[CClientNetwork] Received script with size: %d\n", scriptSize);
+#endif
+
+	// remove the first four bytes, scriptData now contains just the script
+	memcpy(scriptData, scriptData + 4, scriptSize);
+
+	// execute (not done yet)
+
+	// "spawn"
+	gGame->RestoreCamera();
+	gGame->SetCameraBehindPlayer();
+	gGame->EnableHUD();
+}
 void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 {
 	client_running = true;
@@ -366,6 +387,7 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_client_stream);
 
 	librg_network_add(&ctx, VCOOP_RECEIVE_MESSAGE, ClientReceiveMessage);
+	librg_network_add(&ctx, VCOOP_GET_LUA_SCRIPT, ClientReceiveScript);
 
 	addr.host = szAddress;
 	addr.port = iPort;
