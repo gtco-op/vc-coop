@@ -37,6 +37,9 @@ extern "C"
 #include <map>
 #include <utility>
 
+//detours
+#include "detours.h"
+
 //plugin sdk
 #include "plugin.h"
 #include "RenderWare.h"
@@ -114,6 +117,7 @@ extern "C"
 #include "CRender.h"
 #include "CClientPlayer.h"
 #include "CClientVehicle.h"
+#include "CClientPed.h"
 
 #include "CLua.h"
 

@@ -232,21 +232,23 @@ void Hooked_LoadingScreen(char * message, char * message2, char * splash)
 	return;
 }
 
-void InstallMethodHook(DWORD dwInstallAddress, DWORD dwHookFunction)
+char(__thiscall* original_CPed__InflictDamage)(void*, void*, eWeaponType, float, ePedPieceTypes, UCHAR);
+char __fastcall CPed__InflictDamage_Hook(void * This, DWORD _EDX, void* entity, eWeaponType weapon, float damage, ePedPieceTypes bodypart, UCHAR unk)
 {
-	DWORD dwVP, dwVP2;
-	VirtualProtect((LPVOID)dwInstallAddress, 4, PAGE_EXECUTE_READWRITE, &dwVP);
-	*(PDWORD)dwInstallAddress = (DWORD)dwHookFunction;
-	VirtualProtect((LPVOID)dwInstallAddress, 4, dwVP, &dwVP2);
+	//gLog->Log("damage inflicted %d %f", weapon, damage);
+	return original_CPed__InflictDamage(This, entity, weapon, damage, bodypart, unk);
 }
 
 char cdstream[65];
 void CGame::InitPreGamePatches()
 {
+	original_CPed__InflictDamage = (char(__thiscall*)(void*, void*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
+
 	#ifdef VCCOOP_DEBUG_ENGINE
-	RedirectAllCalls(0x401000, 0x67DD05, 0x401000, Hooked_DbgPrint);
-	RedirectAllCalls(0x401000, 0x67DD05, 0x6F2434, Hooked_DbgPrint);
-	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);
+
+	patch::RedirectFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
+	RedirectAllCalls(0x401000, 0x67DD05, 0x6F2434, Hooked_DbgPrint);//the original is needed
+	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);//the original is needed
 
 	
 	debugEnabled = true;
@@ -538,11 +540,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		case WM_KEYDOWN:
 		{
 			int vkey = (int)wparam;
-			if (vkey == 'P' && gNetwork->connected 
-#ifdef VCCOOP_DEBUG
-				&& !gRender->gDebugScreen->consoleToggled
-#endif
-				)
+			if (vkey == 'P' && gNetwork->connected)
 			{
 				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
 			}

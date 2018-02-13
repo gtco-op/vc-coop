@@ -12,7 +12,7 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	this->gameID = gID;
 	this->networkID = nID;
 	
-	gLog->Log("GameID: %d\nNetwork ID: %d\nPed pointer: 0x%X\n\n", gID, nID, ped);
+	gLog->Log("[CClientPlayer]GameID: %d\nNetwork ID: %d\nPed pointer: 0x%X\n\n", gID, nID, ped);
 
 	gGame->remotePlayerPeds[gID] = this->ped;
 	gGame->remotePlayers++;

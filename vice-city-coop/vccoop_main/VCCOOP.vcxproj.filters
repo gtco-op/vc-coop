@@ -145,6 +145,9 @@
     <ClInclude Include="CClientVehicle.h">
       <Filter>Source\network</Filter>
     </ClInclude>
+    <ClInclude Include="CClientPed.h">
+      <Filter>Source\network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -197,6 +200,9 @@
       <Filter>Source\scripting</Filter>
     </ClCompile>
     <ClCompile Include="CClientVehicle.cpp">
+      <Filter>Source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientPed.cpp">
       <Filter>Source\network</Filter>
     </ClCompile>
   </ItemGroup>

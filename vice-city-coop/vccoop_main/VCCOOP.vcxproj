@@ -263,7 +263,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>VCCOOP_DEBUG;_USING_V110_SDK71_;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;GTAVC;GTAGAME_NAME="Vice City";GTAGAME_ABBR="VC";GTAGAME_ABBRLOW="vc";GTAGAME_PROTAGONISTNAME="Tommy";GTAGAME_CITYNAME="Vice City";_DX9_SDK_INSTALLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(PLUGIN_SDK_DIR)\plugin_vc;$(PLUGIN_SDK_DIR)\plugin_vc\game_vc;$(RWD3D9_DIR)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\vendor\detours\;$(PLUGIN_SDK_DIR)\plugin_vc;$(PLUGIN_SDK_DIR)\plugin_vc\game_vc;$(RWD3D9_DIR)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -273,7 +273,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>lua.lib;user32.lib;winmm.lib;ws2_32.lib;paths_d.lib;plugin_vc_d.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\gitvccoop\vice-city-coop\server\vendor\lua;$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\vendor\detours\;$(ProjectDir)\vendor\lua\;$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.VC_d.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -304,6 +304,7 @@
   <ItemGroup>
     <ClCompile Include="CChat.cpp" />
     <ClCompile Include="CClientNetwork.cpp" />
+    <ClCompile Include="CClientPed.cpp" />
     <ClCompile Include="CClientPlayer.cpp" />
     <ClCompile Include="CClientVehicle.cpp" />
     <ClCompile Include="CConfiguration.cpp" />
@@ -326,6 +327,7 @@
   <ItemGroup>
     <ClInclude Include="CChat.h" />
     <ClInclude Include="CClientNetwork.h" />
+    <ClInclude Include="CClientPed.h" />
     <ClInclude Include="CClientPlayer.h" />
     <ClInclude Include="CClientVehicle.h" />
     <ClInclude Include="CConfiguration.h" />
