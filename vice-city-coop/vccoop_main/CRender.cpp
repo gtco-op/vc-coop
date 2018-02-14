@@ -428,3 +428,19 @@ void CRender::TakeScreenshot()
 
 	gLog->Log("[CRender] Screenshot saved to %s\n", fName.c_str());
 }
+void CRender::DrawProgressBar(CRect size, int value, CRGBA color, float max)
+{
+	CRGBA darkbg = color;
+	if (color.red < 65)darkbg.red = 0;
+	else darkbg.red = color.red - 65;
+	if (color.green < 65)darkbg.green = 0;
+	else darkbg.green = color.green - 65;
+	if (color.blue < 65)darkbg.blue = 0;
+	else darkbg.blue = color.blue - 65;
+
+	CSprite2d::DrawRect(CRect(size.left, size.top, size.right, size.bottom), CRGBA(0, 0, 0, 255));
+	CSprite2d::DrawRect(CRect(size.left + 1, size.top + 1, size.right - 1, size.bottom - 1), darkbg);
+
+	int len = (size.right - size.left);
+	CSprite2d::DrawRect(CRect(size.left + 1, size.top + 1, size.left + ceil((len / max)*value) - 1, size.bottom - 1), color);
+}

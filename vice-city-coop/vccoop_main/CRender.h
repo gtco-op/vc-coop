@@ -29,6 +29,7 @@ public:
 	bool PedTags;
 
 	void RenderText(const char *sz, RECT rect, DWORD dwColor); 
+	void DrawProgressBar(CRect size, int value, CRGBA color, float max = 100.0f);
 	SIZE MeasureText(const char * szString);
 
 	void InitFont();
