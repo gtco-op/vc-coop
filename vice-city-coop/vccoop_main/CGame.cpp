@@ -239,24 +239,29 @@ char __fastcall CPed__InflictDamage_Hook(void * This, DWORD _EDX, void* entity, 
 	return original_CPed__InflictDamage(This, entity, weapon, damage, bodypart, unk);
 }
 
-char cdstream[65];
+
 void CGame::InitPreGamePatches()
 {
 	original_CPed__InflictDamage = (char(__thiscall*)(void*, void*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
 
 	#ifdef VCCOOP_DEBUG_ENGINE
-
 	patch::RedirectFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x6F2434, Hooked_DbgPrint);//the original is needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);//the original is needed
-
-	
 	debugEnabled = true;
 	#endif
 
-	//Allow multiple instances of the game
-	sprintf(cdstream, "vcc%u", GetTickCount());
-	MakePushOffset(0x408967, cdstream);
+	// Patch to allow multiple instances of the game
+	SYSTEMTIME time; 
+	GetSystemTime(&time); 
+	char StreamName[15]; 
+	sprintf_s(StreamName, "CdStream%02d%02d%02d", time.wHour, time.wMinute, time.wSecond); 
+	auto Pointer = (DWORD *)0x408968; 
+	
+	DWORD Protect; 
+	VirtualProtect(Pointer, 4, PAGE_READWRITE, &Protect); 
+	*Pointer = (DWORD)StreamName; 
+	VirtualProtect(Pointer, 4, Protect, &Protect);
 
 	//disable gamestate initialize
 	MakeNop(0x601B3B, 10);
