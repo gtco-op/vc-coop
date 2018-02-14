@@ -16,14 +16,19 @@ void CNameTags::Draw()
 
 			if(!CWorld::GetIsLineOfSightClear(camPos, posn, true, false, false, false, false, false, false))continue;
 
+			/*float distance = DistanceBetweenPoints(camPos, posn);
+			float above = distance * 0.25f;
+			if (distance <= 5)above = 1.25f;
+			if(distance > 10)above = above / (1.25 * 1.45);*/
+
 			RwV3d screenCoors; float w, h;
-			if (CSprite::CalcScreenCoors({ posn.x, posn.y, posn.z + 1.3f }, &screenCoors, &w, &h, true))
+			if (CSprite::CalcScreenCoors({ posn.x, posn.y, posn.z + 1.25f }, &screenCoors, &w, &h, true))
 			{
-				char text[600];
+				char text[600]; 
 				if (ped->IsPlayer())
 				{
-					sprintf(text, "Player(%d)", id);
-
+					sprintf(text, "Player(%d)", id); 
+					 
 					SIZE size = gRender->MeasureText(text);
 
 					gRender->RenderText(text, { (LONG)screenCoors.x - (LONG)ceil(size.cx / 2.0), (LONG)screenCoors.y }, 0xFFFFFFFF);

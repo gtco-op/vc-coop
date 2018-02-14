@@ -41,6 +41,23 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 	ped->m_fRotationDest = spd.Rotation;
 	ped->m_fArmour = spd.Armour;
 
+	if (spd.WepModelIndex > 0 && spd.CurrWep > 0)
+	{
+		if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)
+		{
+			CStreaming::RequestModel(spd.WepModelIndex, 22);
+			CStreaming::LoadAllRequestedModels(false);
+		}
+
+		ped->GiveWeapon((eWeaponType)spd.CurrWep, 1000, true);
+		ped->SetCurrentWeapon((eWeaponType)spd.CurrWep);
+		ped->SetAmmo((eWeaponType)spd.CurrWep, 1000);
+	}
+	else
+	{
+		ped->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
+	}
+
 	gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
 	gGame->remotePlayerLookFrontX[this->gameID] = spd.playerLook;
 }
@@ -54,9 +71,10 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.iModelIndex = ped->m_nModelIndex;
 	spd.Rotation = ped->m_fRotationCur;
 
-	spd.CurrWep = 0;
-	spd.WepModelIndex = 0;
+	spd.CurrWep = ped->m_aWeapons[ped->m_nWepSlot].m_nType;
+	spd.WepModelIndex = ped->m_dwWepModelID;
 	spd.Ammo = 0;
+
 
 	spd.iInteriorID = 0;
 
