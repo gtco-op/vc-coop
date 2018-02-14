@@ -14,16 +14,12 @@
 #include "hooklibrary.h"
 
 //lua
-#ifndef __cplusplus
-extern "C"
-{
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 }
-#else
-#include <lua.hpp>
-#endif
+
 
 //common
 #include <Windows.h>
@@ -71,6 +67,9 @@ extern "C"
 
 //vccoop
 #include "config.h"
+
+#define GetKey(a)		((GetAsyncKeyState(a)&0x8000))
+#define GetTwoKeys(a,b) ((GetAsyncKeyState(a)&0x8000) && (GetAsyncKeyState(b)&0x8000))
 
 //keys
 #define	KEY_INCAR_TURRETLR			0

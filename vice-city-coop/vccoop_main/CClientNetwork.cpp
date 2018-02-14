@@ -67,15 +67,6 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event)
 {
 	gLog->Log("[CClientNetwork] Connection Accepted\n");
 
-	gRender->bConnecting = false;
-	gRender->bGUI = false;
-	gRender->bAboutWindow = false;
-	
-	connected = true;
-
-	gGame->RestoreCamera();
-	gGame->SetCameraBehindPlayer();
-
 	local_player = event->entity;
 	event->entity->user_data = new CClientPlayer(event->entity->id);
 	players.push_back(std::pair<CPed*, int>(LocalPlayer(), event->entity->id));
@@ -239,11 +230,25 @@ void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 #endif
 
 	// remove the first four bytes, scriptData now contains just the script
-	memcpy(scriptData, scriptData + 4, scriptSize);
+	memcpy(scriptData, scriptData + 5, scriptSize);
 
 	// execute (not done yet)
+	CLua* lua = new CLua();
+	
+	lua->SetLuaStatus(TRUE);
+	
+	lua->mainScript = new char[scriptSize];
+	memcpy(lua->mainScript, scriptData, scriptSize);
+
+	lua->CreateLuaThread();
 
 	// "spawn"
+	connected				= true;
+
+	gRender->bConnecting	= false;
+	gRender->bGUI			= false;
+	gRender->bAboutWindow	= false;
+
 	gGame->RestoreCamera();
 	gGame->SetCameraBehindPlayer();
 	gGame->EnableHUD();
