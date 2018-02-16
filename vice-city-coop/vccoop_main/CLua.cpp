@@ -32,12 +32,15 @@ void CLua::LuaThread(LPVOID lParam)
 	if (state == nullptr)
 		return;
 
-	luaL_dostring(state->GetState(), state->mainScript);
+	lua_State* tmp = state->GetState();
+
+	luaL_loadbuffer(tmp, state->mainScript, state->mainScriptSize, "script");
+	lua_pcall(tmp, NULL, 0, NULL);
+
 	state->SetLuaStatus(FALSE);
-
 	lua_close(state->GetState());
-	gLog->Log("[CLua] Lua script finished\n");
 
+	gLog->Log("[CLua] Lua script finished\n");
 	delete state;
 }
 void CLua::CreateLuaThread()
@@ -47,7 +50,7 @@ void CLua::CreateLuaThread()
 int CLua::lua_Log(lua_State* L) {
 	int nargs = lua_gettop(L);
 
-	std::string buffer("[CLua][Script Output] ");
+	std::string buffer("[Server]");
 	for (int i = 1; i <= nargs; ++i) {
 		buffer.append((char*)lua_tostring(L, i));
 	}

@@ -11,7 +11,7 @@ bool								CClientNetwork::client_connected;
 bool								CClientNetwork::client_running;
 bool								CClientNetwork::connected;
 
-CClientPlayer *networkPlayers[MAX_PLAYERS];
+CClientPlayer*						networkPlayers[MAX_PLAYERS];
 
 CClientNetwork::CClientNetwork()
 {
@@ -36,9 +36,9 @@ void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
 {
 	u32 playerid;
 	librg_data_rptr(msg->data, &playerid, sizeof(u32));
-
+	
 	networkPlayers[playerid]->Respawn();
-
+	
 	vector <pair<CPed*, int>> ::iterator it;
 	for (it = players.begin(); it != players.end(); it++)
 	{
@@ -47,11 +47,9 @@ void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
 			it->first = networkPlayers[playerid]->ped;
 			break;
 		}
-	}
-
+	}	
 	gLog->Log("Respawning entity: %d\n", playerid);
 }
-
 void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 {
 	char str[256];
@@ -143,7 +141,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
-		//not done yet 
+		//not done yet
 	}
 	gLog->Log("[CClientNetwork] Network entity %d initialized\n", event->entity->id);
 }
@@ -233,11 +231,15 @@ void CClientNetwork::on_entity_remove(librg_event_t *event)
 		auto pedestrian = (CClientPed *)event->entity->user_data;
 		delete pedestrian;
 	}
+
 	vector <pair<CPed*, int>> ::iterator it;
 	for (it = players.begin(); it != players.end(); it++) 
 	{
 		if (it->second == event->entity->id) 
 		{
+			if (it->first)
+				CWorld::Remove(it->first);   // VCCOOP-001: Potential Crash
+
 			players.erase(it);
 			break;
 		}
@@ -261,20 +263,25 @@ void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 	memcpy(buf, scriptData, 4);
 	scriptSize = atoi(buf);
 
+	// remove the first four bytes, scriptData now contains just the script
+	memcpy(scriptData, scriptData + 4, scriptSize);
+	
 #ifdef VCCOOP_DEBUG
 	gLog->Log("[CClientNetwork] Received script with size: %d\n", scriptSize);
 #endif
 
-	// remove the first four bytes, scriptData now contains just the script
-	memcpy(scriptData, scriptData + 5, scriptSize);
-
-	// execute (not done yet)
 	CLua* lua = new CLua();
-	
 	lua->SetLuaStatus(TRUE);
-	
 	lua->mainScript = new char[scriptSize];
+	lua->mainScriptSize = scriptSize;
+	
 	memcpy(lua->mainScript, scriptData, scriptSize);
+	
+	for (int i = 0; i < scriptSize; i++)
+	{
+		printf("%c", lua->mainScript[i]);
+	}
+	printf("\n");
 
 	lua->CreateLuaThread();
 

@@ -22,29 +22,22 @@ CServerNetwork::~CServerNetwork()
 {
 
 }
-
 void CServerNetwork::PlayerDeathEvent(librg_message_t *msg)
 {
 	deathData dData;
 	librg_data_rptr(msg->data, &dData, sizeof(deathData));
-
-	librg_entity_t *player = librg_entity_find(msg->ctx, msg->peer);
 	
+	librg_entity_t * player = librg_entity_find(msg->ctx, msg->peer);
 	char msg1[256];
-	
 	sprintf(msg1, "[CServerNetwork] Player %d is killed by entity %d with weapon %d\n", player->id, dData.killer, dData.weapon);
-	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
-
+	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));	
 	gLog->Log(msg1);
 }
-
 void CServerNetwork::PlayerSpawnEvent(librg_message_t *msg)
 {
-	librg_entity_t *player = librg_entity_find(msg->ctx, msg->peer);
-
+	librg_entity_t * player = librg_entity_find(msg->ctx, msg->peer);	
 	librg_message_send_except(&ctx, VCOOP_RESPAWN_AFTER_DEATH, msg->peer, &player->id, sizeof(u32));
 }
-
 void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 {
 	char msg1[256];
@@ -52,7 +45,6 @@ void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 
 	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
 }
-
 void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 {
 	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_PED);
@@ -67,7 +59,6 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 	otherEntities.push_back(entity);
 	gLog->Log("[CServerNetwork] Ped created. (%d)\n", entity->id);
 }
-
 void CServerNetwork::VehCreateEvent(librg_message_t *msg)
 {
 	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_VEHICLE);
@@ -91,6 +82,8 @@ void CServerNetwork::on_connect_request(librg_event_t *event) {
 		librg_event_reject(event);
 	}
 }
+
+#include <regex>
 std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 {
 	// load the data into memory
@@ -112,11 +105,21 @@ std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 #endif
 
 	// construct the dataset
-	char* databuf = new char[sizeof(dataLen) + (buffer.str().size() + 1)];
-	memset(databuf, 0, sizeof(dataLen) + (buffer.str().size() + 1));
-	sprintf(databuf, "%d%s", dataLen, dataData.c_str());
+	char* databuf = new char[buffer.str().size() + 1];
+	memset(databuf, 0, (buffer.str().size() + 1));
+	sprintf(databuf, "%s", dataData.c_str());
 
-	return std::pair<char*, int>(databuf, sizeof(dataLen) + (buffer.str().size() + 1));
+	// compile to bytecode
+	CLua* gLua = new CLua(filename, databuf, buffer.str().size() +1);
+	while(!gLua->GetLuaStatus()) { }
+	delete[] databuf;
+
+	databuf = new char[gLua->scriptOutput.size() + sizeof(dataLen)];
+	dataLen = gLua->scriptOutput.size();
+	sprintf(databuf, "%d", dataLen);
+	memcpy(databuf+4, gLua->scriptOutput.c_str(), gLua->scriptOutput.size());
+
+	return std::pair<char*, int>(databuf, dataLen);
 }
 void CServerNetwork::on_connect_accepted(librg_event_t *event) {
 	// initialize sync data and set entity control of the new client
@@ -234,7 +237,6 @@ void CServerNetwork::server_thread()
 	librg_network_add(&ctx, VCOOP_SEND_MESSAGE,				ClientSendMessage);
 	librg_network_add(&ctx, VCOOP_PED_IS_DEAD,				PlayerDeathEvent);
 	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH,		PlayerSpawnEvent);
-
 
 	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
 
