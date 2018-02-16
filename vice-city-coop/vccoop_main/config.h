@@ -4,7 +4,7 @@
 //#define VCCOOP_VERBOSE_LOG
 
 // Temporary spawn position
-#define VCCOOP_DEFAULT_SPAWN_POSITION	10.0f, 5.0f, 25.0f
+#define VCCOOP_DEFAULT_SPAWN_POSITION	531.629761f, 606.497253f, 10.901563f
 
 // Default nickname
 #define VCCOOP_DEFAULT_NICKNAME			"Nickname123"
@@ -162,6 +162,12 @@ struct PlayerSyncData
 	CAMERA_AIM playerLook;
 };
 
+struct deathData
+{
+	int killer;
+	int weapon;
+};
+
 enum eBlipType {
 	BLIP_NONE,          // 0
 	BLIP_CAR,           // 1
@@ -188,6 +194,9 @@ enum {
 	VCOOP_RECEIVE_MESSAGE,
 
 	VCOOP_GET_LUA_SCRIPT,
+
+	VCOOP_PED_IS_DEAD,
+	VCOOP_RESPAWN_AFTER_DEATH,
 
 	VCOOP_DO_SOMETHING_ELSE,
 };

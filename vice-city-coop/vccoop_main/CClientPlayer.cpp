@@ -11,12 +11,39 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 
 	this->gameID = gID;
 	this->networkID = nID;
-	
-	gLog->Log("[CClientPlayer]GameID: %d\nNetwork ID: %d\nPed pointer: 0x%X\n\n", gID, nID, ped);
+
+	gLog->Log("[CClientPlayer]GameID: %d Network ID: %d Ped pointer: 0x%X\n\n", gID, nID, ped);
 
 	gGame->remotePlayerPeds[gID] = this->ped;
 	gGame->remotePlayers++;
 }
+
+
+void CClientPlayer::Respawn()
+{
+	if (this->ped)
+	{
+		CWorld::Remove(this->ped);
+		if (this->ped)
+		{
+			this->ped->Remove();
+			CPed::operator delete(this->ped);
+			this->ped = NULL;
+		}
+	}
+
+	CPlayerPed::SetupPlayerPed(this->gameID);
+	CWorld::Players[this->gameID].m_pPed->m_nPedStatus = 2;
+	this->ped = CWorld::Players[this->gameID].m_pPed;
+	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+	this->ped->SetModelIndex(7);
+
+
+	gLog->Log("[CClientPlayer]GameID: %d Network ID: %d Ped pointer: 0x%X\n\n", this->gameID, this->networkID, ped);
+
+	gGame->remotePlayerPeds[this->gameID] = this->ped;
+}
+
 
 CClientPlayer::CClientPlayer(int nID)
 {
@@ -27,7 +54,19 @@ CClientPlayer::CClientPlayer(int nID)
 
 CClientPlayer::~CClientPlayer()
 {
+	if (this->ped)
+	{
+		CWorld::Remove(this->ped);
+		if (this->ped)
+		{
+			this->ped->Remove();
+			CPed::operator delete(this->ped);
+			this->ped = NULL;
+		}
+	}
 
+	this->gameID = -1;
+	this->networkID = -1;
 }
 
 void CClientPlayer::SyncPlayer(PlayerSyncData spd)

@@ -23,10 +23,23 @@ CClientPed::CClientPed(int nID)
 
 	this->networkID = nID;
 
-	gLog->Log("[CClientPed]Network ID: %d\nPed pointer: 0x%X\n\n", nID, this->ped);
+	gLog->Log("[CClientPed]Network ID: %d Ped pointer: 0x%X\n\n", nID, this->ped);
 }
 
-
+CClientPed::~CClientPed()
+{
+	if (this->ped)
+	{
+		CWorld::Remove(this->ped);
+		if (this->ped)
+		{
+			this->ped->Remove();
+			CPed::operator delete(this->ped);
+			this->ped = NULL;
+		}
+	}
+	this->networkID = -1;
+}
 
 void CClientPed::SyncPed(PedSyncData spd)
 {

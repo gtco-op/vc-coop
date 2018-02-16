@@ -27,6 +27,7 @@ public:
 
 	static void ClientReceiveMessage(librg_message_t* msg);
 	static void ClientReceiveScript(librg_message_t* msg);
+	static void PlayerSpawnEvent(librg_message_t* msg);
 
 	static void on_connect_request(librg_event_t *event);
 	static void on_connect_accepted(librg_event_t *event);

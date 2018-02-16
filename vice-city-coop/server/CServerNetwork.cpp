@@ -22,6 +22,29 @@ CServerNetwork::~CServerNetwork()
 {
 
 }
+
+void CServerNetwork::PlayerDeathEvent(librg_message_t *msg)
+{
+	deathData dData;
+	librg_data_rptr(msg->data, &dData, sizeof(deathData));
+
+	librg_entity_t *player = librg_entity_find(msg->ctx, msg->peer);
+	
+	char msg1[256];
+	
+	sprintf(msg1, "[CServerNetwork] Player %d is killed by entity %d with weapon %d\n", player->id, dData.killer, dData.weapon);
+	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
+
+	gLog->Log(msg1);
+}
+
+void CServerNetwork::PlayerSpawnEvent(librg_message_t *msg)
+{
+	librg_entity_t *player = librg_entity_find(msg->ctx, msg->peer);
+
+	librg_message_send_except(&ctx, VCOOP_RESPAWN_AFTER_DEATH, msg->peer, &player->id, sizeof(u32));
+}
+
 void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 {
 	char msg1[256];
@@ -29,6 +52,7 @@ void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 
 	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
 }
+
 void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 {
 	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_PED);
@@ -43,6 +67,7 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 	otherEntities.push_back(entity);
 	gLog->Log("[CServerNetwork] Ped created. (%d)\n", entity->id);
 }
+
 void CServerNetwork::VehCreateEvent(librg_message_t *msg)
 {
 	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_VEHICLE);
@@ -207,7 +232,10 @@ void CServerNetwork::server_thread()
 	librg_network_add(&ctx, VCOOP_CREATE_PED,				PedCreateEvent);
 	librg_network_add(&ctx, VCOOP_CREATE_VEHICLE,			VehCreateEvent);
 	librg_network_add(&ctx, VCOOP_SEND_MESSAGE,				ClientSendMessage);
-	
+	librg_network_add(&ctx, VCOOP_PED_IS_DEAD,				PlayerDeathEvent);
+	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH,		PlayerSpawnEvent);
+
+
 	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
 
 	gLog->Log("[CServerNetwork] Server thread initialized\n");

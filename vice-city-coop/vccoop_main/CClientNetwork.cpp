@@ -11,6 +11,8 @@ bool								CClientNetwork::client_connected;
 bool								CClientNetwork::client_running;
 bool								CClientNetwork::connected;
 
+CClientPlayer *networkPlayers[MAX_PLAYERS];
+
 CClientNetwork::CClientNetwork()
 {
 	ctx = { 0 };
@@ -19,12 +21,37 @@ CClientNetwork::CClientNetwork()
 	client_running = false;
 	client_connected = false;
 	connected = false;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		networkPlayers[i] = NULL;
+	}
 }
 CClientNetwork::~CClientNetwork()
 {
 	gLog->Log("[CClientNetwork] CClientNetwork shutting down\n");
 	this->StopClientThread();
 }
+void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
+{
+	u32 playerid;
+	librg_data_rptr(msg->data, &playerid, sizeof(u32));
+
+	networkPlayers[playerid]->Respawn();
+
+	vector <pair<CPed*, int>> ::iterator it;
+	for (it = players.begin(); it != players.end(); it++)
+	{
+		if (it->second == playerid)
+		{
+			it->first = networkPlayers[playerid]->ped;
+			break;
+		}
+	}
+
+	gLog->Log("Respawning entity: %d\n", playerid);
+}
+
 void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 {
 	char str[256];
@@ -45,7 +72,7 @@ CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 }
 int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 {
-	int ID = 0;
+	int ID = -1;
 	vector <pair<CPed*, int>> ::iterator it;
 	for (it = players.begin(); it != players.end(); it++) {
 		if (it->first == ent) {
@@ -106,6 +133,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 		if (event->entity->type == VCOOP_PLAYER) 
 		{
 			event->entity->user_data = new CClientPlayer(event->entity->id, 1);//needs to be changed later
+			networkPlayers[event->entity->id] = (CClientPlayer*)event->entity->user_data;
 			players.push_back(std::pair<CPed*, int>(((CClientPlayer*)event->entity->user_data)->ped, event->entity->id));
 		}
 		else if (event->entity->type == VCOOP_PED) 
@@ -115,7 +143,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
-		//not done yet
+		//not done yet 
 	}
 	gLog->Log("[CClientNetwork] Network entity %d initialized\n", event->entity->id);
 }
@@ -194,14 +222,22 @@ void CClientNetwork::on_client_stream(librg_event_t *event)
 }
 void CClientNetwork::on_entity_remove(librg_event_t *event) 
 {
+	if (event->entity->type == VCOOP_PLAYER)
+	{
+		auto player = (CClientPlayer *)event->entity->user_data;
+		delete player;
+		networkPlayers[event->entity->id] = NULL;
+	}
+	else if (event->entity->type == VCOOP_PED)
+	{
+		auto pedestrian = (CClientPed *)event->entity->user_data;
+		delete pedestrian;
+	}
 	vector <pair<CPed*, int>> ::iterator it;
 	for (it = players.begin(); it != players.end(); it++) 
 	{
 		if (it->second == event->entity->id) 
 		{
-			if (it->first)
-				CWorld::Remove(it->first);   // VCCOOP-001: Potential Crash
-
 			players.erase(it);
 			break;
 		}
@@ -270,6 +306,7 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_client_stream);
 
 	librg_network_add(&ctx, VCOOP_RECEIVE_MESSAGE, ClientReceiveMessage);
+	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH, PlayerSpawnEvent);
 	librg_network_add(&ctx, VCOOP_GET_LUA_SCRIPT, ClientReceiveScript);
 
 	addr.host = szAddress;

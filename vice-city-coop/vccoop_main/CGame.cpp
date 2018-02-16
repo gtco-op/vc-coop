@@ -240,9 +240,34 @@ char __fastcall CPed__InflictDamage_Hook(void * This, DWORD _EDX, void* entity, 
 }
 
 
+int(__thiscall* original_CPed__SetDead)(void*);
+int __fastcall CPed__SetDead_Hook(void * This, DWORD _EDX)
+{
+	CPed * ped = (CPed*)This;
+	if (ped == FindPlayerPed())
+	{
+		gLog->Log("player is ded");
+		deathData dData;
+		dData.killer = gNetwork->GetNetworkIDFromEntity(ped->m_pLastDamEntity);
+		dData.weapon = ped->m_nLastDamWep;
+		librg_message_send_all(&gNetwork->ctx, VCOOP_PED_IS_DEAD, &dData, sizeof(deathData));
+	}
+	return original_CPed__SetDead(This);
+}
+
+void Hooked_SpawnPedAfterDeath()
+{
+	gLog->Log("game tried to spawn me");
+	CPed * ped = FindPlayerPed();
+	ped->Teleport({VCCOOP_DEFAULT_SPAWN_POSITION});
+	CTimer::Stop();
+	librg_message_send_all(&gNetwork->ctx, VCOOP_RESPAWN_AFTER_DEATH, NULL, 0);
+}
+
 void CGame::InitPreGamePatches()
 {
 	original_CPed__InflictDamage = (char(__thiscall*)(void*, void*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
+	original_CPed__SetDead = (int(__thiscall*)(void*))DetourFunction((PBYTE)0x4F6430, (PBYTE)CPed__SetDead_Hook);
 
 	#ifdef VCCOOP_DEBUG_ENGINE
 	patch::RedirectFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
@@ -250,6 +275,8 @@ void CGame::InitPreGamePatches()
 	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);//the original is needed
 	debugEnabled = true;
 	#endif
+
+	MakeCall(0x42BDA8, Hooked_SpawnPedAfterDeath);
 
 	// Patch to allow multiple instances of the game
 	SYSTEMTIME time; 
@@ -485,10 +512,10 @@ void Hook_CRunningScript__Process()
 		gGame->remotePlayerPeds[0] = FindPlayerPed();
 
 		// Set player position
-		FindPlayerPed()->Teleport({ 531.629761f, 606.497253f, 10.901563f });
+		FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
 		
 		// CStreaming::LoadScene
-		CVector scenePosition( 531.629761f, 606.497253f, 10.901563f );
+		CVector scenePosition(VCCOOP_DEFAULT_SPAWN_POSITION);
 		Call(0x40AF60, &scenePosition);
 
 		gGame->SetPlayerCameraPosition(531.629761f, 606.497253f, 10.901563f, 0, 0, 0);

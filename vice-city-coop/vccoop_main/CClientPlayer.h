@@ -13,6 +13,8 @@ public:
 	CClientPlayer(int nID, int gID);
 	~CClientPlayer();
 
+	void Respawn();
+
 	void SyncPlayer(PlayerSyncData spd);
 	PlayerSyncData CClientPlayer::BuildSyncData();
 };
