@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "launcher", "launcher\launcher.vbproj", "{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VCCOOP", "vccoop_main\VCCOOP.vcxproj", "{3885DEAC-2427-0983-0DE2-1CD7F92290D3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D996109-98EA-4BF3-990E-B7E7A1E27DBD} = {2D996109-98EA-4BF3-990E-B7E7A1E27DBD}
@@ -14,8 +12,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "server\server.vcx
 	ProjectSection(ProjectDependencies) = postProject
 		{2D996109-98EA-4BF3-990E-B7E7A1E27DBD} = {2D996109-98EA-4BF3-990E-B7E7A1E27DBD}
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ACA6C6BE-605A-49A0-81B0-59CF164A05AE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "vccoop_main\vendor\lua\lua\lua.vcxproj", "{2D996109-98EA-4BF3-990E-B7E7A1E27DBD}"
 EndProject
@@ -29,18 +25,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Debug|x64.Build.0 = Debug|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Debug|x86.Build.0 = Debug|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Release|x64.ActiveCfg = Release|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Release|x64.Build.0 = Release|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Release|x86.ActiveCfg = Release|Any CPU
-		{D83A96E5-9C1F-4BF6-9FE6-BD1447ED9C79}.Release|x86.Build.0 = Release|Any CPU
 		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.Debug|Any CPU.ActiveCfg = zDebug GTAVC|Win32
 		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.Debug|Any CPU.Build.0 = zDebug GTAVC|Win32
 		{3885DEAC-2427-0983-0DE2-1CD7F92290D3}.Debug|Any CPU.Deploy.0 = zDebug GTAVC|Win32
