@@ -80,6 +80,8 @@ int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 	return ID;
 }
 void CClientNetwork::on_connect_request(librg_event_t *event) {
+	gNetwork->SetReadyToSpawn(FALSE);
+	
 	char name[25];
 	strcpy(name, gGame->Name.c_str());
 

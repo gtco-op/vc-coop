@@ -43,11 +43,11 @@
     <Filter Include="vendor\lua">
       <UniqueIdentifier>{7628081b-ebec-4711-a099-d8931df203fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\main">
+      <UniqueIdentifier>{b0963210-2b99-45e7-86e4-502c745110cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="CGame.h">
       <Filter>Source\game</Filter>
     </ClInclude>
@@ -123,7 +123,6 @@
     <ClInclude Include="LogoTextureArray.h">
       <Filter>Source\misc</Filter>
     </ClInclude>
-    <ClInclude Include="CCore.h" />
     <ClInclude Include="CLua.h">
       <Filter>Source\scripting</Filter>
     </ClInclude>
@@ -148,11 +147,14 @@
     <ClInclude Include="CClientPed.h">
       <Filter>Source\network</Filter>
     </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Source\main</Filter>
+    </ClInclude>
+    <ClInclude Include="CCore.h">
+      <Filter>Source\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="CGame.cpp">
       <Filter>Source\game</Filter>
     </ClCompile>
@@ -195,7 +197,6 @@
     <ClCompile Include="CConfiguration.cpp">
       <Filter>Source\tools\CConfiguration</Filter>
     </ClCompile>
-    <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CLua.cpp">
       <Filter>Source\scripting</Filter>
     </ClCompile>
@@ -204,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="CClientPed.cpp">
       <Filter>Source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="CCore.cpp">
+      <Filter>Source\main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
