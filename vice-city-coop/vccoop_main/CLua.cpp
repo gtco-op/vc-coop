@@ -50,7 +50,7 @@ void CLua::CreateLuaThread()
 int CLua::lua_Log(lua_State* L) {
 	int nargs = lua_gettop(L);
 
-	std::string buffer("[Server]");
+	std::string buffer("[Server] ");
 	for (int i = 1; i <= nargs; ++i) {
 		buffer.append((char*)lua_tostring(L, i));
 	}

@@ -276,12 +276,6 @@ void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 	lua->mainScriptSize = scriptSize;
 	
 	memcpy(lua->mainScript, scriptData, scriptSize);
-	
-	for (int i = 0; i < scriptSize; i++)
-	{
-		printf("%c", lua->mainScript[i]);
-	}
-	printf("\n");
 
 	lua->CreateLuaThread();
 
