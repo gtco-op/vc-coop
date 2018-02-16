@@ -25,6 +25,8 @@ public:
 	static CEntity*		GetEntityFromNetworkID(int id);
 	static int			GetNetworkIDFromEntity(CEntity* ent);
 
+	static void SetReadyToSpawn(bool bReady);
+
 	static void ClientReceiveMessage(librg_message_t* msg);
 	static void ClientReceiveScript(librg_message_t* msg);
 	static void PlayerSpawnEvent(librg_message_t* msg);

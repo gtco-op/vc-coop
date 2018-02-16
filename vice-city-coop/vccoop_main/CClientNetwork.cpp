@@ -279,16 +279,28 @@ void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 
 	lua->CreateLuaThread();
 
-	// "spawn"
-	connected				= true;
-
-	gRender->bConnecting	= false;
-	gRender->bGUI			= false;
-	gRender->bAboutWindow	= false;
-
-	gGame->RestoreCamera();
-	gGame->SetCameraBehindPlayer();
-	gGame->EnableHUD();
+	// Set spawn status to true..
+	gNetwork->SetReadyToSpawn(TRUE);
+}
+void CClientNetwork::SetReadyToSpawn(bool bReady)
+{
+	if (bReady)
+	{
+		connected				= true;
+		gRender->bConnecting	= false;
+		gRender->bGUI			= false;
+		gRender->bAboutWindow	= false;
+		gGame->RestoreCamera();
+		gGame->SetCameraBehindPlayer();
+		gGame->EnableHUD();
+	}
+	else
+	{
+		connected				= false;
+		gRender->bConnecting	= false;
+		gRender->bGUI			= true;
+		gGame->DisableHUD();
+	}
 }
 void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 {
