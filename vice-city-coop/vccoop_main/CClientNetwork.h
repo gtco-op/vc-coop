@@ -13,6 +13,8 @@ public:
 	void InitializeClient();
 	void UpdateNetwork();
 	void Connect(const char* Host, unsigned short Port, const char* Password);
+	void Disconnect();
+
 	void SetCanSpawn(bool bStatus);
 
 	static void NetworkThread(LPVOID param);

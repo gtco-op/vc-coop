@@ -56,6 +56,15 @@ void CClientNetwork::Connect(const char* Host, unsigned short Port, const char* 
 	
 	g_RakPeer->Connect(Host, Port, 0, 0);
 }
+void CClientNetwork::Disconnect()
+{
+	if (!initialized)
+		return;
+	if (!client_connected || !client_running)
+		return;
+
+	g_RakPeer->CloseConnection(g_RPC->GetMyGUIDUnified(), true);
+}
 void CClientNetwork::UpdateNetwork()
 {
 	Packet *g_Packet = NULL;
@@ -148,19 +157,31 @@ void CClientNetwork::SetCanSpawn(bool bStatus)
 	if (bStatus)
 	{
 		connected = true;
+		client_connected = true;
+		client_running = true;
+
 		gRender->bConnecting = false;
 		gRender->bGUI = false;
 		gRender->bAboutWindow = false;
+
 		gGame->RestoreCamera();
 		gGame->SetCameraBehindPlayer();
 		gGame->EnableHUD();
+
+		Log("Allowed player to spawn");
 	}
 	else
 	{
 		connected = false;
+		client_connected = false;
+		client_running = false;
+
 		gRender->bConnecting = false;
 		gRender->bGUI = true;
+
 		gGame->DisableHUD();
+
+		Log("Disallowed player from spawning");
 	}
 }
 void CClientNetwork::NetworkThread(LPVOID param)
