@@ -140,16 +140,6 @@
     <ClInclude Include="CLua.h" />
     <ClInclude Include="CServerNetwork.h" />
     <ClInclude Include="server.h" />
-    <ClInclude Include="vendor\inih\INIReader.h" />
-    <ClInclude Include="vendor\librg\enet.h" />
-    <ClInclude Include="vendor\librg\librg.h" />
-    <ClInclude Include="vendor\librg\zpl.h" />
-    <ClInclude Include="vendor\librg\zpl_math.h" />
-    <ClInclude Include="vendor\lua\include\lauxlib.h" />
-    <ClInclude Include="vendor\lua\include\lua.h" />
-    <ClInclude Include="vendor\lua\include\lua.hpp" />
-    <ClInclude Include="vendor\lua\include\luaconf.h" />
-    <ClInclude Include="vendor\lua\include\lualib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

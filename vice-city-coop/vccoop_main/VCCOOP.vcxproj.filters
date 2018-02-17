@@ -19,9 +19,6 @@
     <Filter Include="vendor\imgui">
       <UniqueIdentifier>{a129ce68-c1a9-492e-8b10-37ea973cf2e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="vendor\librg">
-      <UniqueIdentifier>{318d37ef-26bd-4b7b-8f56-e3d2342fa823}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\network">
       <UniqueIdentifier>{0aa3e63f-3bbb-49e0-93e1-214e08de0fc9}</UniqueIdentifier>
     </Filter>
@@ -40,9 +37,6 @@
     <Filter Include="Source\scripting">
       <UniqueIdentifier>{a851cbee-fe4c-4afe-9746-47b921ca74c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="vendor\lua">
-      <UniqueIdentifier>{7628081b-ebec-4711-a099-d8931df203fd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\main">
       <UniqueIdentifier>{b0963210-2b99-45e7-86e4-502c745110cc}</UniqueIdentifier>
     </Filter>
@@ -56,18 +50,6 @@
     </ClInclude>
     <ClInclude Include="config.h">
       <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="librg\enet.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="librg\librg.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="librg\zpl.h">
-      <Filter>vendor\librg</Filter>
-    </ClInclude>
-    <ClInclude Include="librg\zpl_math.h">
-      <Filter>vendor\librg</Filter>
     </ClInclude>
     <ClInclude Include="CRenderTemplate.h">
       <Filter>Source\rendering</Filter>
@@ -125,21 +107,6 @@
     </ClInclude>
     <ClInclude Include="CLua.h">
       <Filter>Source\scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\lua\include\lauxlib.h">
-      <Filter>vendor\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\lua\include\lua.h">
-      <Filter>vendor\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\lua\include\lua.hpp">
-      <Filter>vendor\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\lua\include\luaconf.h">
-      <Filter>vendor\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\lua\include\lualib.h">
-      <Filter>vendor\lua</Filter>
     </ClInclude>
     <ClInclude Include="CClientVehicle.h">
       <Filter>Source\network</Filter>
