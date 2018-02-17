@@ -1,5 +1,7 @@
 #include "main.h"
 
+#define Log(fmt, ...) gLog->Log("[CClientPlayer] " fmt "\n", __VA_ARGS__)
+
 CClientPlayer::CClientPlayer(int nID, int gID)
 {
 	this->ped = NULL;
@@ -12,7 +14,7 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	this->gameID = gID;
 	this->networkID = nID;
 
-	gLog->Log("[CClientPlayer]GameID: %d Network ID: %d Ped pointer: 0x%X\n\n", gID, nID, ped);
+	Log("GameID: %d Network ID: %d Ped pointer: 0x%X", gID, nID, ped);
 
 	gGame->remotePlayerPeds[gID] = this->ped;
 	gGame->remotePlayers++;
@@ -39,7 +41,7 @@ void CClientPlayer::Respawn()
 	this->ped->SetModelIndex(7);
 
 
-	gLog->Log("[CClientPlayer]GameID: %d Network ID: %d Ped pointer: 0x%X\n\n", this->gameID, this->networkID, ped);
+	Log("GameID: %d Network ID: %d Ped pointer: 0x%X", this->gameID, this->networkID, ped);
 
 	gGame->remotePlayerPeds[this->gameID] = this->ped;
 }

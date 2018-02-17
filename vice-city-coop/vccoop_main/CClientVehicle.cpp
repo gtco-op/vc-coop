@@ -2,6 +2,8 @@
 #include "CModelInfo.h"
 #include "CBike.h"
 
+#define Log(fmt, ...) gLog->Log("[CClientVehicle] " fmt "\n", __VA_ARGS__)
+
 CVehicle * CreateVehicle(unsigned int modelIndex, CVector position) 
 {
 	CStreaming::RequestModel(modelIndex, 22);

@@ -1,5 +1,7 @@
 #include "main.h"
 
+#define Log(fmt, ...) gLog->Log("[CClientPed] " fmt "\n", __VA_ARGS__)
+
 CClientPed::CClientPed(int nID)
 {
 	this->ped = NULL;
@@ -23,7 +25,7 @@ CClientPed::CClientPed(int nID)
 
 	this->networkID = nID;
 
-	gLog->Log("[CClientPed]Network ID: %d Ped pointer: 0x%X\n\n", nID, this->ped);
+	Log("Network ID: %d Ped pointer: 0x%X", nID, this->ped);
 }
 
 CClientPed::~CClientPed()
