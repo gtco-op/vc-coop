@@ -31,7 +31,7 @@ std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 	std::string dataData = buffer.str();
 	int dataLen = buffer.str().size() + 1;
 
-#ifdef VCCOOP_LIBRG_DEBUG
+#ifdef VCCOOP_DEBUG
 	gLog->Log("[CServerNetwork] Loaded data with size %d\n", dataLen);
 	gLog->Log("[CServerNetwork] Total data Size: %d\n", sizeof(dataLen) + (buffer.str().size() + 1));
 #endif

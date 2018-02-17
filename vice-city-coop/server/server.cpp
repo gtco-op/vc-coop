@@ -6,11 +6,6 @@
 
 	Copyright (c) 2017-2018 VC:CO-OP Team
 */
-#ifdef VCCOOP_LIBRG_DEBUG
-#define LIBRG_DEBUG
-#endif
-#define LIBRG_IMPLEMENTATION
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "server.h"
 
 CConfiguration  *gConfig;
