@@ -1,5 +1,11 @@
 #pragma once
 
+// Dependencies
+#include "RakPeerInterface.h"
+#include "MessageIdentifiers.h"
+#include "BitStream.h"
+#include "RakNetTypes.h"
+
 // Standard includes
 #include <Windows.h>
 #include <iostream>
@@ -11,7 +17,7 @@
 #include <vector>
 #include <ctime>
 
-// Dependencies
+
 
 // INIH
 #include "vendor\inih\INIReader.h"
@@ -51,3 +57,4 @@ extern CLogger			*gLog;
 extern CServerNetwork	*gServerNetwork;
 
 using namespace std;
+using namespace RakNet;

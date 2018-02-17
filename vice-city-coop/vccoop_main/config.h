@@ -53,6 +53,7 @@
 #define VC_TITLE						"GTA: Vice City"
 
 #define MAX_PLAYERS						500
+#define MAX_CONNECTIONS					2000
 
 #pragma pack(1)
 typedef struct _CAMERA_AIM

@@ -26,6 +26,9 @@ int main(int argc, char const *argv[]) {
 	gLog->Log("[CCore] Server Port: %d\n", gServerNetwork->ServerPort);
 	gLog->Log("[CCore] Server Secret: %d\n", gServerNetwork->ServerSecret);
 
+	gServerNetwork->InitializeServer();
+	gServerNetwork->CreateServerThread();
+
 	while (console_active)
 	{
 		getline(cin, input);
