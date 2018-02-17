@@ -12,6 +12,7 @@ public:
 
 	void InitializeClient();
 	void UpdateNetwork();
+	void Connect(const char* Host, unsigned short Port, const char* Password);
 	static void NetworkThread(LPVOID param);
 
 	char	*ServerAddress;

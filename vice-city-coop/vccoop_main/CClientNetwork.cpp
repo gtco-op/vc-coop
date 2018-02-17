@@ -38,10 +38,17 @@ void CClientNetwork::InitializeClient()
 	g_RakPeer->Startup(1, &SocketDescriptor(), 1, THREAD_PRIORITY_NORMAL);
 
 	initialized = true;
-
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CClientNetwork::NetworkThread, this, 0, NULL);
 	
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CClientNetwork::NetworkThread, this, 0, NULL);
 	Log("RakNet initialized");
+}
+void CClientNetwork::Connect(const char* Host, unsigned short Port, const char* Password)
+{
+	if (!initialized)
+		return;
+
+	Log("Attempting to connect to %s:%d", Host, Port);
+	g_RakPeer->Connect(Host, Port, Password, sizeof(Password));
 }
 void CClientNetwork::UpdateNetwork()
 {
