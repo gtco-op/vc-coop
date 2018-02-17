@@ -306,7 +306,7 @@ void CRender::Draw()
 						gNetwork->ServerPort = Port;
 
 						if (strlen(gGame->Name.c_str()) >= 3 && gNetwork->ServerPort != 0 && gNetwork->ServerAddress != "") {
-							//gNetwork->AttemptConnect(gNetwork->ServerAddress, gNetwork->ServerPort);
+							gNetwork->Connect(gNetwork->ServerAddress, gNetwork->ServerPort, "");
 
 							gRender->bConnecting = true;
 							gRender->bGUI = false;
@@ -326,7 +326,7 @@ void CRender::Draw()
 
 						if (strlen(gGame->Name.c_str()) >= 3)
 						{
-							//gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
+							gNetwork->Connect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT, "");
 
 							gRender->bConnecting = true;
 							gRender->bGUI = false;
