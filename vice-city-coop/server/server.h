@@ -1,13 +1,4 @@
 #pragma once
-// Dependencies
-#include "vendor\inih\INIReader.h"
-
-// Lua
-extern "C" {
-	#include "lua.h"
-	#include "lualib.h"
-	#include "lauxlib.h"
-}
 
 // Standard includes
 #include <Windows.h>
@@ -19,6 +10,18 @@ extern "C" {
 #include <sstream>
 #include <vector>
 #include <ctime>
+
+// Dependencies
+
+// INIH
+#include "vendor\inih\INIReader.h"
+
+// Lua
+extern "C" {
+	#include "lua.h"
+	#include "lualib.h"
+	#include "lauxlib.h"
+}
 
 // Plugin-SDK
 #include "plugin.h"

@@ -113,7 +113,7 @@
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Release\</IntDir>
     <TargetName>vccoop</TargetName>
     <TargetExt>.asi</TargetExt>
-    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(SolutionDir)\vendor\lua\include;$(SolutionDir);</IncludePath>
+    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(SolutionDir)\vendor\lua\include;$(SolutionDir);$(SolutionDir)\vendor\RakNet\Source;$(SolutionDir)\vendor\RakNet\DependentExtensions\jansson-2.4\src;</IncludePath>
     <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(SolutionDir)\vendor;$(SolutionDir)\Lib;$(ProjectDir)\vendor\detours;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA3|Win32'">
@@ -143,7 +143,7 @@
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Debug\</IntDir>
     <TargetName>vccoopd</TargetName>
     <TargetExt>.asi</TargetExt>
-    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(SolutionDir)\vendor\lua\include;$(SolutionDir);</IncludePath>
+    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(SolutionDir)\vendor\lua\include;$(SolutionDir);$(SolutionDir)\vendor\RakNet\Source;$(SolutionDir)\vendor\RakNet\DependentExtensions\jansson-2.4\src;</IncludePath>
     <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(SolutionDir)\vendor;$(SolutionDir)\Lib;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='zDebug GTA3|Win32'">
