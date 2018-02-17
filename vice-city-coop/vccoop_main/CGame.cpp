@@ -631,7 +631,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			if (vkey == VK_F7 && gNetwork->connected)
 			{
-				//gNetwork->StopClientThread(); 
+				gNetwork->Disconnect(); 
 				gRender->bConnecting	= false;
 				gRender->bGUI			= true;
 
@@ -644,7 +644,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			else if (vkey == VK_F10 && !gNetwork->connected) // crashfix
 			{
-				//gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
+				gNetwork->Connect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT, 0);
 				gLog->Log("[CGame] Attempting to connect to local server\n");
 			}
 			break;

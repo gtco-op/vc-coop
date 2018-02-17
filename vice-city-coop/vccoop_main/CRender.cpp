@@ -306,7 +306,7 @@ void CRender::Draw()
 						gNetwork->ServerPort = Port;
 
 						if (strlen(gGame->Name.c_str()) >= 3 && gNetwork->ServerPort != 0 && gNetwork->ServerAddress != "") {
-							gNetwork->Connect(gNetwork->ServerAddress, gNetwork->ServerPort, "");
+							gNetwork->Connect(gNetwork->ServerAddress, gNetwork->ServerPort, 0);
 
 							gRender->bConnecting = true;
 							gRender->bGUI = false;
@@ -315,9 +315,9 @@ void CRender::Draw()
 						else
 						{
 							gChat->AddChatMessage("[ERROR] Please ensure all connection settings are valid!");
-#ifdef VCCOOP_DEBUG
+							#ifdef VCCOOP_DEBUG
 							gRender->gDebugScreen->gDevConsole->AddLog("[ERROR] Please ensure all connection settings are valid!");
-#endif
+							#endif
 						}
 					}
 					if (ImGui::Button("Local Server"))
