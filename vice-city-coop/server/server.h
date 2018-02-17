@@ -1,10 +1,15 @@
 #pragma once
 
 // Dependencies
-#include "RakPeerInterface.h"
-#include "MessageIdentifiers.h"
-#include "BitStream.h"
-#include "RakNetTypes.h"
+#include <RakPeerInterface.h>
+#include <BitStream.h>
+#include <MessageIdentifiers.h>
+#include <RPC4Plugin.h>
+#include <DirectoryDeltaTransfer.h>
+#include <FileListTransfer.h>
+#include <IncrementalReadInterface.h>
+#include <RakNetStatistics.h>
+using namespace RakNet;
 
 // Standard includes
 #include <Windows.h>
@@ -46,6 +51,7 @@ extern "C" {
 #include "..\vccoop_main\config.h"
 #include "CConfiguration.h"
 #include "CLogger.h"
+#include "CServerPlayer.h"
 #include "CServerNetwork.h"
 
 #include "CLua.h"

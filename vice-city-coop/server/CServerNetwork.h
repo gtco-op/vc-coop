@@ -19,5 +19,7 @@ public:
 	static bool server_running;
 
 	static std::pair<char*, int> LoadScript(std::string filename);
+
+	static std::list<CServerPlayer*> NetworkPlayers;
 };
 

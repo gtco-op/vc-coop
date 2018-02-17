@@ -37,6 +37,7 @@ void CClientNetwork::InitializeClient()
 	g_RakPeer->SetSplitMessageProgressInterval(100);
 	g_RakPeer->Startup(1, &SocketDescriptor(), 1, THREAD_PRIORITY_NORMAL);
 
+	gLocalClient = NULL;
 	initialized = true;
 	
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CClientNetwork::NetworkThread, this, 0, NULL);
@@ -132,7 +133,27 @@ void CClientNetwork::UpdateNetwork()
 		case ID_CONNECTION_REQUEST_ACCEPTED:
 		{
 			Log("Accepted connection request");
+			this->SetCanSpawn(FALSE);
+
+			//Connected but the handshake is not done yet
+
+			BitStream bitstream;
+			bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
+			bitstream.Write(RakString(gGame->Name.c_str()));
+			g_RakPeer->Send(&bitstream, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, g_Packet->systemAddress, false);
+
+			break;
+		}
+		case ID_REQUEST_SERVER_SYNC:
+		{
+			Log("Handshake with the server is done");
 			this->SetCanSpawn(TRUE);
+			BitStream g_BitStream(g_Packet->data + 1, g_Packet->length + 1, false);
+
+			int id = 0;
+			g_BitStream.Read(id);
+			gLocalClient = new CClientPlayer(id);
+
 			break;
 		}
 		case ID_DISCONNECTION_NOTIFICATION:
@@ -198,5 +219,15 @@ void CClientNetwork::NetworkThread(LPVOID param)
 	{
 		network->UpdateNetwork();
 		Sleep(100);
+	}
+}
+
+void CClientNetwork::Run()
+{
+	if (client_connected && client_running)
+	{
+		BitStream bs;
+		bs.Write((unsigned char)ID_PACKET_PLAYER);
+		bs.Write<PlayerSyncData>(this->gLocalClient->BuildSyncData());
 	}
 }

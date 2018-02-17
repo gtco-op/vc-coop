@@ -18,6 +18,9 @@ public:
 	void SetCanSpawn(bool bStatus);
 
 	static void NetworkThread(LPVOID param);
+	void Run();
+
+	CClientPlayer * gLocalClient;
 
 	char	*ServerAddress;
 	int		ServerPort;

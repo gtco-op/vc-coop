@@ -150,6 +150,8 @@ struct PedSyncData
 
 struct PlayerSyncData 
 {
+	CVector pos;
+
 	float Health;
 	float Armour;
 	float Rotation;

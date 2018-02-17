@@ -12,7 +12,8 @@ CConfiguration  *gConfig;
 CLogger			*gLog;
 CServerNetwork	*gServerNetwork;
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const *argv[]) 
+{
 	bool console_active = true;
 	std::string input;
 	

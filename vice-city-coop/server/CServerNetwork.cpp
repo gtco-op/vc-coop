@@ -45,7 +45,8 @@ void CServerNetwork::ServerThread(LPVOID param)
 
 	Log("Server thread started on port %d", srvNetwork->ServerPort);
 	Packet *packet;
-	while (srvNetwork->server_running) {
+	while (srvNetwork->server_running) 
+	{
 		for (packet = srvNetwork->peerInterface->Receive(); packet; srvNetwork->peerInterface->DeallocatePacket(packet), packet = srvNetwork->peerInterface->Receive())
 		{
 			switch (packet->data[0])
@@ -58,6 +59,24 @@ void CServerNetwork::ServerThread(LPVOID param)
 				break;
 			case ID_CONNECTION_LOST:
 				Log("A remote system lost the connection.");
+				break;
+			case ID_REQUEST_SERVER_SYNC:
+				BitStream g_BitStream(packet->data + 1, packet->length + 1, false);
+
+				char playerName[25];
+				g_BitStream.Read(playerName);
+
+				const int index = NetworkPlayers.size();
+
+				CServerPlayer * player = new CServerPlayer(playerName, packet->systemAddress, index);
+				NetworkPlayers.push_back(player);
+
+				Log("player with name %s(%d) connected!", playerName);
+
+				BitStream bitstream;
+				bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
+				bitstream.Write(index);
+				srvNetwork->peerInterface->Send(&bitstream, LOW_PRIORITY, RELIABLE_ORDERED, 0, packet->systemAddress, false);
 				break;
 			}
 		}

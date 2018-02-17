@@ -137,6 +137,7 @@
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="CLua.cpp" />
     <ClCompile Include="CServerNetwork.cpp" />
+    <ClCompile Include="CServerPlayer.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +146,7 @@
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CLua.h" />
     <ClInclude Include="CServerNetwork.h" />
+    <ClInclude Include="CServerPlayer.h" />
     <ClInclude Include="server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

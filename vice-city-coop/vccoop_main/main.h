@@ -108,21 +108,22 @@ extern "C" {
 #define	KEY_ONFOOT_CROUCH			16
 #define	KEY_ONFOOT_LOOKBEHIND		17
 
+#include "CClientPlayer.h"
+#include "CClientVehicle.h"
+#include "CClientPed.h"
 
-#include "CConfiguration.h"
 #include "CClientNetwork.h"
+#include "CConfiguration.h"
 #include "CLogger.h"
 #include "CRenderTemplate.h"
 #include "CNameTags.h"
 #include "CDebugScreen.h"
+#include "CRender.h"
 #include "CImGui.h"
 #include "CChat.h"
 #include "CGame.h"
 
-#include "CRender.h"
-#include "CClientPlayer.h"
-#include "CClientVehicle.h"
-#include "CClientPed.h"
+
 
 #include "CLua.h"
 
