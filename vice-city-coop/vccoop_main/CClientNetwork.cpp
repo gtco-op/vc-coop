@@ -47,8 +47,14 @@ void CClientNetwork::Connect(const char* Host, unsigned short Port, const char* 
 	if (!initialized)
 		return;
 
+	gRender->bConnecting	= true;
+	gRender->bGUI			= true;
+	gRender->bAboutWindow	= false;
+	gRender->bEscMenu		= false;
+
 	Log("Attempting to connect to %s:%d", Host, Port);
-	g_RakPeer->Connect(Host, Port, Password, sizeof(Password));
+	
+	g_RakPeer->Connect(Host, Port, 0, 0);
 }
 void CClientNetwork::UpdateNetwork()
 {
@@ -75,55 +81,86 @@ void CClientNetwork::UpdateNetwork()
 		case ID_IP_RECENTLY_CONNECTED:
 		{
 			Log("Failed to connect, recently connected");
+			this->SetCanSpawn(FALSE);
 			break;
 		}
 		case ID_INCOMPATIBLE_PROTOCOL_VERSION:
 		{
 			Log("Failed to connect, incompatible protocol version");
+			this->SetCanSpawn(FALSE);
 			break;
 		}
 		case ID_ALREADY_CONNECTED:
 		{
 			Log("Failed to connect, already connected");
+			this->SetCanSpawn(FALSE);
 			break;
 		}
 		case ID_NO_FREE_INCOMING_CONNECTIONS:
 		{
 			Log("Failed to connect, max client");
+			this->SetCanSpawn(FALSE);
 			break;
 		}
 		case ID_INVALID_PASSWORD:
 		{
 			Log("Failed to connect, invalid password");
+			this->SetCanSpawn(FALSE);
 			break;
 		}
 		case ID_CONNECTION_ATTEMPT_FAILED:
 		{
 			Log("Failed to connect, server not responding");
+			this->SetCanSpawn(FALSE);
 			break;
 		}
 		case ID_CONNECTION_BANNED:
 		{
 			Log("Failed to connect, banned");
+			this->SetCanSpawn(FALSE);
 			break;
 		}
 		case ID_CONNECTION_REQUEST_ACCEPTED:
 		{
 			Log("Accepted connection request");
+			this->SetCanSpawn(TRUE);
 			break;
 		}
 		case ID_DISCONNECTION_NOTIFICATION:
 		{
 			Log("Client disconnected");
+			this->SetCanSpawn(FALSE);
 			break;
 		}
 		case ID_CONNECTION_LOST:
 		{
 			Log("Connection lost");
+			this->SetCanSpawn(FALSE);
 			break;
 		}
 		}
 		g_RakPeer->DeallocatePacket(g_Packet);
+	}
+}
+// Sets internal variables appropriately after a server connection state has been returned.
+void CClientNetwork::SetCanSpawn(bool bStatus)
+{
+	if (bStatus)
+	{
+		connected = true;
+		gRender->bConnecting = false;
+		gRender->bGUI = false;
+		gRender->bAboutWindow = false;
+		gGame->RestoreCamera();
+		gGame->SetCameraBehindPlayer();
+		gGame->EnableHUD();
+	}
+	else
+	{
+		connected = false;
+		gRender->bConnecting = false;
+		gRender->bGUI = true;
+		gGame->DisableHUD();
 	}
 }
 void CClientNetwork::NetworkThread(LPVOID param)
