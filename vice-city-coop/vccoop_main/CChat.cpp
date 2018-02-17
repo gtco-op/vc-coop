@@ -142,7 +142,7 @@ void CChat::ProcessChatInput()
 			this->AddChatMessage(buffer);
 
 			// now send the message to the server
-			librg_message_send_all(&gNetwork->ctx, VCOOP_SEND_MESSAGE, buffer, sizeof(buffer));
+			//librg_message_send_all(&gNetwork->ctx, VCOOP_SEND_MESSAGE, buffer, sizeof(buffer));
 		}
 	}
 }

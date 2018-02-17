@@ -1,18 +1,13 @@
 #pragma once
 // Dependencies
-#include "vendor\librg\librg.h"
 #include "vendor\inih\INIReader.h"
-//lua
-#ifndef __cplusplus
-extern "C"
-{
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
+
+// Lua
+extern "C" {
+	#include "lua.h"
+	#include "lualib.h"
+	#include "lauxlib.h"
 }
-#else
-#include <lua.hpp>
-#endif
 
 // Standard includes
 #include <Windows.h>

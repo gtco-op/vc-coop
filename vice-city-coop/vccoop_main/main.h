@@ -1,8 +1,5 @@
 #pragma once
 
-//librg
-#include "vendor\librg\librg.h"
-
 //imgui
 #include "vendor\imgui\imgui.h"
 #include "vendor\imgui\imgui_impl_dx9.h"
@@ -15,11 +12,10 @@
 
 //lua
 extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+	#include "lua.h"
+	#include "lualib.h"
+	#include "lauxlib.h"
 }
-
 
 //common
 #include <Windows.h>
@@ -34,7 +30,7 @@ extern "C" {
 #include <utility>
 
 //detours
-#include "detours.h"
+#include "vendor\detours\detours.h"
 
 //plugin sdk
 #include "plugin.h"

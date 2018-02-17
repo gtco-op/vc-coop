@@ -67,7 +67,7 @@ void CClientPed::SyncPed(PedSyncData spd)
 	ped->m_dwObjectiveTimer = spd.m_dwObjectiveTimer;
 	ped->m_vecObjective = spd.m_vecObjective;
 	ped->m_fObjectiveAngle = spd.m_fObjectiveAngle;
-	ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
+	//ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
 	//ped->m_pObjectiveVehicle		= spd.m_pObjectiveVehicle;
 
 	//Flee sync
@@ -136,7 +136,7 @@ PedSyncData CClientPed::BuildSyncData()
 	spd.m_dwObjectiveTimer = ped->m_dwObjectiveTimer;
 	spd.m_vecObjective = ped->m_vecObjective;
 	spd.m_fObjectiveAngle = ped->m_fObjectiveAngle;
-	ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
+	//ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
 	//spd.m_pObjectiveVehicle		= ped->m_pObjectiveVehicle;
 
 	//Flee sync

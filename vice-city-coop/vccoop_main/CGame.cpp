@@ -248,9 +248,9 @@ int __fastcall CPed__SetDead_Hook(void * This, DWORD _EDX)
 	{
 		gLog->Log("player is ded");
 		deathData dData;
-		dData.killer = gNetwork->GetNetworkIDFromEntity(ped->m_pLastDamEntity);
+		//dData.killer = gNetwork->GetNetworkIDFromEntity(ped->m_pLastDamEntity);
 		dData.weapon = ped->m_nLastDamWep;
-		librg_message_send_all(&gNetwork->ctx, VCOOP_PED_IS_DEAD, &dData, sizeof(deathData));
+		//librg_message_send_all(&gNetwork->ctx, VCOOP_PED_IS_DEAD, &dData, sizeof(deathData));
 	}
 	return original_CPed__SetDead(This);
 }
@@ -261,7 +261,7 @@ void Hooked_SpawnPedAfterDeath()
 	CPed * ped = FindPlayerPed();
 	ped->Teleport({VCCOOP_DEFAULT_SPAWN_POSITION});
 	CTimer::Stop();
-	librg_message_send_all(&gNetwork->ctx, VCOOP_RESPAWN_AFTER_DEATH, NULL, 0);
+	//librg_message_send_all(&gNetwork->ctx, VCOOP_RESPAWN_AFTER_DEATH, NULL, 0);
 }
 
 void CGame::InitPreGamePatches()
@@ -273,22 +273,29 @@ void CGame::InitPreGamePatches()
 	patch::RedirectFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x6F2434, Hooked_DbgPrint);//the original is needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);//the original is needed
+
+	#ifdef VCCOOP_DEBUG
 	debugEnabled = true;
+	#endif
+
 	#endif
 
 	MakeCall(0x42BDA8, Hooked_SpawnPedAfterDeath);
 
+#ifdef VCCOOP_DEBUG
 	// Patch to allow multiple instances of the game
 	SYSTEMTIME time; 
 	GetSystemTime(&time); 
 	char StreamName[15]; 
 	sprintf_s(StreamName, "CdStream%02d%02d%02d", time.wHour, time.wMinute, time.wSecond); 
 	auto Pointer = (DWORD *)0x408968; 
+
 	
 	DWORD Protect; 
 	VirtualProtect(Pointer, 4, PAGE_READWRITE, &Protect); 
 	*Pointer = (DWORD)StreamName; 
 	VirtualProtect(Pointer, 4, Protect, &Protect);
+#endif
 
 	//disable gamestate initialize
 	MakeNop(0x601B3B, 10);
@@ -574,7 +581,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			int vkey = (int)wparam;
 			if (vkey == 'P' && gNetwork->connected)
 			{
-				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
+				//librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
 			}
 			if (vkey == 'Z')
 			{
@@ -620,7 +627,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			if (vkey == VK_F7 && gNetwork->connected)
 			{
-				gNetwork->StopClientThread(); 
+				//gNetwork->StopClientThread(); 
 				gRender->bConnecting	= false;
 				gRender->bGUI			= true;
 
@@ -633,7 +640,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			else if (vkey == VK_F10 && !gNetwork->connected) // crashfix
 			{
-				gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
+				//gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
 				gLog->Log("[CGame] Attempting to connect to local server\n");
 			}
 			break;
