@@ -4,6 +4,10 @@
 # ASI files
 *.asi
 
+# LIB files
+*.lib
+*.idb
+
 # User-specific files
 *.suo
 *.user
