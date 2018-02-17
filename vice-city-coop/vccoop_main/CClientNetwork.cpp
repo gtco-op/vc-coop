@@ -133,8 +133,6 @@ void CClientNetwork::UpdateNetwork()
 		case ID_CONNECTION_REQUEST_ACCEPTED:
 		{
 			Log("Accepted connection request");
-			this->SetCanSpawn(FALSE);
-
 			//Connected but the handshake is not done yet
 
 			BitStream bitstream;

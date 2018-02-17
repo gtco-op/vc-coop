@@ -6,9 +6,9 @@ int								CServerNetwork::ServerPort;
 int								CServerNetwork::ServerSecret;
 HANDLE							CServerNetwork::server_handle;
 bool							CServerNetwork::server_running;
+std::list<CServerPlayer*>		CServerNetwork::NetworkPlayers;
 
 std::vector<std::pair<char*, int>> dataArray;
-
 
 CServerNetwork::CServerNetwork()
 {
@@ -71,7 +71,7 @@ void CServerNetwork::ServerThread(LPVOID param)
 				CServerPlayer * player = new CServerPlayer(playerName, packet->systemAddress, index);
 				NetworkPlayers.push_back(player);
 
-				Log("player with name %s(%d) connected!", playerName);
+				Log("Player %s(%d) connected!", playerName, packet->guid);
 
 				BitStream bitstream;
 				bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
