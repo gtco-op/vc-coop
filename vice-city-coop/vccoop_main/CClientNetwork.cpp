@@ -184,6 +184,7 @@ void CClientNetwork::SetCanSpawn(bool bStatus)
 		Log("Disallowed player from spawning");
 	}
 }
+
 void CClientNetwork::NetworkThread(LPVOID param)
 {
 	CClientNetwork* network = (CClientNetwork*)param;
