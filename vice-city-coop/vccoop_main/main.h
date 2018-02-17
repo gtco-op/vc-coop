@@ -1,5 +1,15 @@
 #pragma once
 
+// RakNet
+#include <RakPeerInterface.h>
+#include <BitStream.h>
+#include <MessageIdentifiers.h>
+#include <RPC4Plugin.h>
+#include <DirectoryDeltaTransfer.h>
+#include <FileListTransfer.h>
+#include <IncrementalReadInterface.h>
+#include <RakNetStatistics.h>
+
 //imgui
 #include "vendor\imgui\imgui.h"
 #include "vendor\imgui\imgui_impl_dx9.h"
@@ -122,6 +132,7 @@ extern "C" {
 using namespace std;
 using namespace plugin;
 using namespace Hook;
+using namespace RakNet;
 
 extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
@@ -132,6 +143,9 @@ extern CGame			*gGame;
 extern CRender			*gRender;
 extern CLogger			*gLog;
 extern CChat			*gChat;
+
+extern RakPeerInterface	*g_RakPeer;
+extern RPC4			*g_RPC;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 

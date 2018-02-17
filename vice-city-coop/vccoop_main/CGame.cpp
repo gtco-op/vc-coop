@@ -28,6 +28,10 @@ CGame::~CGame()
 }
 void CGame::Run()
 {
+	if (!gNetwork->initialized) {
+		gNetwork->InitializeClient();
+	}
+
 	if (GetAsyncKeyState(0x2C) & 1 && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && IsWindowActive())
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;

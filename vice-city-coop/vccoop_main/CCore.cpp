@@ -12,17 +12,18 @@ CCore::CCore()
 #ifdef VCCOOP_DEBUG
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
-#endif
 	srand((int)time(NULL));
+#endif
 
-	gChat = new CChat();
-	gLog = new CLogger();
+	gChat			= new CChat();
+	gLog			= new CLogger();
 	gLog->Log("[CCore] %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);
 	gLog->Log("[CCore] Initializing classes.\n");
-	gConfig = new CConfiguration();
-	gNetwork = new CClientNetwork();
-	gGame = new CGame();
-	gRender = new CRender();
+
+	gConfig			= new CConfiguration();
+	gNetwork		= new CClientNetwork();
+	gGame			= new CGame();
+	gRender			= new CRender();
 	gRender->gGuiContainer.push_back(gChat);
 
 	gLog->Log("[CCore] Main method finished.\n");

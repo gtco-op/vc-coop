@@ -10,6 +10,10 @@ public:
 	CClientNetwork();
 	~CClientNetwork();
 
+	void InitializeClient();
+	void UpdateNetwork();
+	static void NetworkThread(LPVOID param);
+
 	char	*ServerAddress;
 	int		ServerPort;
 
@@ -18,4 +22,5 @@ public:
 	static bool client_running;
 	static bool client_connected;
 	static bool connected;	
+	static bool initialized;
 };
