@@ -24,6 +24,9 @@
 // Default client config filename
 #define VCCOOP_DEFAULT_CLIENT_CONFIG	"client.ini"
 
+// Default server scripts folder
+#define VCCOOP_SERVER_SCRIPTS_DIR		"scripts"
+
 // VCCOOP Window Title
 #define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
 

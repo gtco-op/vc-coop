@@ -1,4 +1,5 @@
 #include "server.h"
+#define Log(fmt, ...) gLog->Log("[CServerNetwork] " fmt "\n", __VA_ARGS__)
 
 /* Server Configuration */
 int								CServerNetwork::ServerPort;
@@ -8,19 +9,22 @@ bool							CServerNetwork::server_running, CServerNetwork::console_active;
 
 std::vector<std::pair<char*, int>> dataArray;
 
+
 CServerNetwork::CServerNetwork()
 {
 	server_running = true;
 }
 CServerNetwork::~CServerNetwork()
 {
-
+	
 }
+// Loads a script into memory, compiles to bytecode and returns a std::pair containing data and size
+// TODO: Support for Linux
 std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 {
 	// load the data into memory
 	std::string path = GetExecutablePath();
-	path.append("\\scripts\\");
+	path.append("\\" VCCOOP_SERVER_SCRIPTS_DIR "\\");
 	path.append(filename);
 
 	std::ifstream t(path);
@@ -32,8 +36,8 @@ std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 	int dataLen = buffer.str().size() + 1;
 
 #ifdef VCCOOP_DEBUG
-	gLog->Log("[CServerNetwork] Loaded data with size %d\n", dataLen);
-	gLog->Log("[CServerNetwork] Total data Size: %d\n", sizeof(dataLen) + (buffer.str().size() + 1));
+	Log("[CServerNetwork] Loaded data with size %d", dataLen);
+	Log("[CServerNetwork] Total data Size: %d", sizeof(dataLen) + (buffer.str().size() + 1));
 #endif
 
 	// construct the dataset
