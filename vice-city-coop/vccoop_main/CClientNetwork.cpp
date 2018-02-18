@@ -26,6 +26,23 @@ CClientNetwork::~CClientNetwork()
 {
 	Log("CClientNetwork shutting down");
 }
+// Called when the server performs the handshake on a newly-connected client.
+void CClientNetwork::OnClientConnect(RakNet::BitStream *userData, RakNet::Packet *packet)
+{
+	RakNetGUID playerGUID;
+	char playerName[25];
+	int index = 0;
+
+	userData->Read(playerName);
+	userData->Read(playerGUID);
+	userData->Read(index);
+
+	gChat->AddChatMessage("Player %s (ID: %d | GUID: %d) joined!", playerName, index, playerGUID);
+
+	CClientPlayer* newPlayer	= new CClientPlayer(index, 1);//needs to be changed later
+	networkPlayers[index]		= newPlayer;
+	players.push_back(std::pair<CPed*, int>((newPlayer)->ped, index));
+}
 // Called when the server sends a chat message sent from another client.
 void CClientNetwork::OnClientReceiveMessage(BitStream *userData, Packet *packet)
 {
@@ -42,6 +59,7 @@ void CClientNetwork::InitializeClient()
 	g_RakPeer->Startup(1, &SocketDescriptor(), 1, THREAD_PRIORITY_NORMAL);
 
 	g_RakPeer->AttachPlugin(g_RPC);
+	g_RPC->RegisterFunction("ClientConnect",		CClientNetwork::OnClientConnect);
 	g_RPC->RegisterFunction("ClientReceiveMessage", CClientNetwork::OnClientReceiveMessage);
 
 	gLocalClient = NULL;

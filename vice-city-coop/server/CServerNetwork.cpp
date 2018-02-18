@@ -95,12 +95,24 @@ void CServerNetwork::ServerThread(LPVOID param)
 				CServerPlayer * player = new CServerPlayer(playerName, packet->systemAddress, index);
 				NetworkPlayers.push_back(player);
 
-				Log("Player %s(%d) connected!", playerName, packet->guid);
-
 				BitStream bitstream;
 				bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
 				bitstream.Write(index);
 				srvNetwork->peerInterface->Send(&bitstream, LOW_PRIORITY, RELIABLE_ORDERED, 0, packet->systemAddress, false);
+
+				BitStream bs;
+				bs.Write(playerName);
+				bs.Write(packet->guid);
+				bs.Write(index);
+
+				RakNetGUID clientGUID = packet->guid;
+				for (int i = 0; i < MAX_PLAYERS; i++) {
+					if (gServerNetwork->peerInterface->GetGUIDFromIndex(i) != clientGUID &&
+						gServerNetwork->peerInterface->GetConnectionState(gServerNetwork->peerInterface->GetGUIDFromIndex(i)) == IS_CONNECTED) {
+						gServerNetwork->RPC->Call("ClientConnect", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, gServerNetwork->peerInterface->GetGUIDFromIndex(i), false);
+					}
+				}
+				Log("Player %s (ID: %d | GUID: %d) connected!", playerName, index, packet->guid);
 				break;
 			}
 		}

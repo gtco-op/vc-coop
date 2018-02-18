@@ -16,6 +16,7 @@ public:
 	void Disconnect();
 
 	static void OnClientReceiveMessage(RakNet::BitStream *userData, RakNet::Packet *packet);
+	static void OnClientConnect(RakNet::BitStream *userData, RakNet::Packet *packet);
 
 	RakNet::RakPeerInterface					*g_RakPeer;
 	RakNet::RPC4								*g_RPC;
