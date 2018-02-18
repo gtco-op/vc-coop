@@ -15,6 +15,10 @@ public:
 	//------------------------------------------------------------------------------------------------
 
 	RakNet::RakPeerInterface *peerInterface;
+	RakNet::RPC4 *RPC;
+
+	static void OnClientSendMessage(BitStream *userData, Packet *packet);
+
 	static HANDLE server_handle;
 	static bool server_running;
 

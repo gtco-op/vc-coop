@@ -141,8 +141,10 @@ void CChat::ProcessChatInput()
 
 			this->AddChatMessage(buffer);
 
-			// now send the message to the server
-			//librg_message_send_all(&gNetwork->ctx, VCOOP_SEND_MESSAGE, buffer, sizeof(buffer));
+			BitStream bs;
+			bs.Write(buffer);
+			
+			gNetwork->g_RPC->Call("ClientSendMessage", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, gNetwork->sAddress, false);
 		}
 	}
 }

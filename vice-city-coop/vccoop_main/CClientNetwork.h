@@ -15,6 +15,12 @@ public:
 	void Connect(const char* Host, unsigned short Port, const char* Password);
 	void Disconnect();
 
+	static void OnClientReceiveMessage(RakNet::BitStream *userData, RakNet::Packet *packet);
+
+	RakNet::RakPeerInterface					*g_RakPeer;
+	RakNet::RPC4								*g_RPC;
+	RakNet::SystemAddress						sAddress;
+
 	void SetCanSpawn(bool bStatus);
 
 	static void NetworkThread(LPVOID param);

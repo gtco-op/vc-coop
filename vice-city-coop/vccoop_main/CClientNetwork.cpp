@@ -7,9 +7,6 @@ bool								CClientNetwork::initialized;
 std::vector<std::pair<CPed*, int>>	CClientNetwork::players;
 CClientPlayer*						networkPlayers[MAX_PLAYERS];
 
-RakPeerInterface					*g_RakPeer;
-RPC4								*g_RPC;
-
 #define Log(fmt, ...) gLog->Log("[CClientNetwork] " fmt "\n", __VA_ARGS__)
 
 CClientNetwork::CClientNetwork()
@@ -29,13 +26,23 @@ CClientNetwork::~CClientNetwork()
 {
 	Log("CClientNetwork shutting down");
 }
+// Called when the server sends a chat message sent from another client.
+void CClientNetwork::OnClientReceiveMessage(BitStream *userData, Packet *packet)
+{
+	char message[256];
+	userData->Read(message);
+
+	gChat->AddChatMessage(message);
+}
 void CClientNetwork::InitializeClient()
 {
-	g_RakPeer = RakPeerInterface::GetInstance();
-	g_RPC = RPC4::GetInstance();
-	g_RakPeer->AttachPlugin(g_RPC);
+	g_RakPeer	= RakPeerInterface::GetInstance();
+	g_RPC		= new RPC4();
 	g_RakPeer->SetSplitMessageProgressInterval(100);
 	g_RakPeer->Startup(1, &SocketDescriptor(), 1, THREAD_PRIORITY_NORMAL);
+
+	g_RakPeer->AttachPlugin(g_RPC);
+	g_RPC->RegisterFunction("ClientReceiveMessage", CClientNetwork::OnClientReceiveMessage);
 
 	gLocalClient = NULL;
 	initialized = true;
@@ -76,96 +83,97 @@ void CClientNetwork::UpdateNetwork()
 
 		switch (g_Packet->data[0])
 		{
-		case ID_UNCONNECTED_PONG:
-		{
-			break;
-		}
-		case ID_ADVERTISE_SYSTEM:
-		{
-			break;
-		}
-		case ID_DOWNLOAD_PROGRESS:
-		{
-			break;
-		}
-		case ID_IP_RECENTLY_CONNECTED:
-		{
-			Log("Failed to connect, recently connected");
-			this->SetCanSpawn(FALSE);
-			break;
-		}
-		case ID_INCOMPATIBLE_PROTOCOL_VERSION:
-		{
-			Log("Failed to connect, incompatible protocol version");
-			this->SetCanSpawn(FALSE);
-			break;
-		}
-		case ID_ALREADY_CONNECTED:
-		{
-			Log("Failed to connect, already connected");
-			this->SetCanSpawn(FALSE);
-			break;
-		}
-		case ID_NO_FREE_INCOMING_CONNECTIONS:
-		{
-			Log("Failed to connect, max client");
-			this->SetCanSpawn(FALSE);
-			break;
-		}
-		case ID_INVALID_PASSWORD:
-		{
-			Log("Failed to connect, invalid password");
-			this->SetCanSpawn(FALSE);
-			break;
-		}
-		case ID_CONNECTION_ATTEMPT_FAILED:
-		{
-			Log("Failed to connect, server not responding");
-			this->SetCanSpawn(FALSE);
-			break;
-		}
-		case ID_CONNECTION_BANNED:
-		{
-			Log("Failed to connect, banned");
-			this->SetCanSpawn(FALSE);
-			break;
-		}
-		case ID_CONNECTION_REQUEST_ACCEPTED:
-		{
-			Log("Accepted connection request");
-			//Connected but the handshake is not done yet
+			case ID_UNCONNECTED_PONG:
+			{
+				break;
+			}
+			case ID_ADVERTISE_SYSTEM:
+			{
+				break;
+			}
+			case ID_DOWNLOAD_PROGRESS:
+			{
+				break;
+			}
+			case ID_IP_RECENTLY_CONNECTED:
+			{
+				Log("Failed to connect, recently connected");
+				this->SetCanSpawn(FALSE);
+				break;
+			}
+			case ID_INCOMPATIBLE_PROTOCOL_VERSION:
+			{
+				Log("Failed to connect, incompatible protocol version");
+				this->SetCanSpawn(FALSE);
+				break;
+			}
+			case ID_ALREADY_CONNECTED:
+			{
+				Log("Failed to connect, already connected");
+				this->SetCanSpawn(FALSE);
+				break;
+			}
+			case ID_NO_FREE_INCOMING_CONNECTIONS:
+			{
+				Log("Failed to connect, max client");
+				this->SetCanSpawn(FALSE);
+				break;
+			}
+			case ID_INVALID_PASSWORD:
+			{
+				Log("Failed to connect, invalid password");
+				this->SetCanSpawn(FALSE);
+				break;
+			}
+			case ID_CONNECTION_ATTEMPT_FAILED:
+			{
+				Log("Failed to connect, server not responding");
+				this->SetCanSpawn(FALSE);
+				break;
+			}
+			case ID_CONNECTION_BANNED:
+			{
+				Log("Failed to connect, banned");
+				this->SetCanSpawn(FALSE);
+				break;
+			}
+			case ID_CONNECTION_REQUEST_ACCEPTED:
+			{
+				Log("Accepted connection request");
+				//Connected but the handshake is not done yet
 
-			BitStream bitstream;
-			bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
-			bitstream.Write(RakString(gGame->Name.c_str()));
-			g_RakPeer->Send(&bitstream, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, g_Packet->systemAddress, false);
+				BitStream bitstream;
+				bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
+				bitstream.Write(RakString(gGame->Name.c_str()));
+				g_RakPeer->Send(&bitstream, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, g_Packet->systemAddress, false);
 
-			break;
-		}
-		case ID_REQUEST_SERVER_SYNC:
-		{
-			Log("Handshake with the server is done");
-			this->SetCanSpawn(TRUE);
-			BitStream g_BitStream(g_Packet->data + 1, g_Packet->length + 1, false);
+				break;
+			}
+			case ID_REQUEST_SERVER_SYNC:
+			{
+				Log("Handshake with the server is done");
+				this->SetCanSpawn(TRUE);
+				BitStream g_BitStream(g_Packet->data + 1, g_Packet->length + 1, false);
 
-			int id = 0;
-			g_BitStream.Read(id);
-			gLocalClient = new CClientPlayer(id);
+				this->sAddress = g_Packet->systemAddress;
 
-			break;
-		}
-		case ID_DISCONNECTION_NOTIFICATION:
-		{
-			Log("Client disconnected");
-			this->SetCanSpawn(FALSE);
-			break;
-		}
-		case ID_CONNECTION_LOST:
-		{
-			Log("Connection lost");
-			this->SetCanSpawn(FALSE);
-			break;
-		}
+				int id = 0;
+				g_BitStream.Read(id);
+				gLocalClient = new CClientPlayer(id);
+				break;
+			}
+			case ID_DISCONNECTION_NOTIFICATION:
+			{
+				Log("Client disconnected");
+				this->SetCanSpawn(FALSE);
+				break;
+			}
+			case ID_CONNECTION_LOST:
+			{
+				Log("Connection lost");
+				this->SetCanSpawn(FALSE);
+				break;
+			}
 		}
 		g_RakPeer->DeallocatePacket(g_Packet);
 	}

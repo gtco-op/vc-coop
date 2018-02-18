@@ -18,13 +18,37 @@ CServerNetwork::~CServerNetwork()
 {
 	RakPeerInterface::DestroyInstance(peerInterface);
 }
+// Called when a client sends a chat message to the server.
+void CServerNetwork::OnClientSendMessage(BitStream *userData, Packet *packet)
+{
+	RakNetGUID senderGUID = packet->guid;
+	BitStream bs;
+	char message[256];
+
+	userData->Read(message);
+	bs.Write(message);
+
+	Log("Received: %s from %d", message, senderGUID);
+
+	for (int i = 0; i < MAX_PLAYERS; i++)	{
+		if (gServerNetwork->peerInterface->GetGUIDFromIndex(i) != senderGUID &&
+			gServerNetwork->peerInterface->GetConnectionState(gServerNetwork->peerInterface->GetGUIDFromIndex(i)) == IS_CONNECTED)		{
+			gServerNetwork->RPC->Call("ClientReceiveMessage", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, gServerNetwork->peerInterface->GetGUIDFromIndex(i), false);
+		}
+	}
+}
 // Initializes RakNet server instance
 void CServerNetwork::InitializeServer()
 {
 	peerInterface = RakPeerInterface::GetInstance();
 	peerInterface->SetMaximumIncomingConnections(MAX_CONNECTIONS);
+	peerInterface->SetOccasionalPing(true);
 	peerInterface->Startup(MAX_CONNECTIONS, &SocketDescriptor(ServerPort, 0), 1);
 
+	RPC = new RPC4();
+	peerInterface->AttachPlugin(RPC);
+	RPC->RegisterFunction("ClientSendMessage", CServerNetwork::OnClientSendMessage);
+	
 	server_running = true;
 	Log("Server initialized");
 }
@@ -80,6 +104,7 @@ void CServerNetwork::ServerThread(LPVOID param)
 				break;
 			}
 		}
+		RakSleep(1);
 	}
 }
 // Loads a script into memory, compiles to bytecode and returns a std::pair containing data and size
@@ -101,16 +126,16 @@ std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 
 #ifdef VCCOOP_DEBUG
 	Log("[CServerNetwork] Loaded data with size %d", dataLen);
-	Log("[CServerNetwork] Total data Size: %d", sizeof(dataLen) + (buffer.str().size() + 1));
+	Log("[CServerNetwork] Total data Size: %d", sizeof(dataLen) + (dataLen));
 #endif
 
 	// construct the dataset
-	char* databuf = new char[buffer.str().size() + 1];
-	memset(databuf, 0, (buffer.str().size() + 1));
+	char* databuf = new char[dataLen];
+	memset(databuf, 0, dataLen);
 	sprintf(databuf, "%s", dataData.c_str());
 
 	// compile to bytecode
-	CLua* gLua = new CLua(filename, databuf, buffer.str().size() +1);
+	CLua* gLua = new CLua(filename, databuf, dataLen);
 	while(!gLua->GetLuaStatus()) { }
 	delete[] databuf;
 
