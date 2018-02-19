@@ -323,6 +323,8 @@ void CRender::Draw()
 					if (ImGui::Button("Local Server"))
 					{
 						gGame->Name = Nickname;
+						gNetwork->ServerAddress = "127.0.0.1";
+						gNetwork->ServerPort = VCCOOP_DEFAULT_SERVER_PORT;
 
 						if (strlen(gGame->Name.c_str()) >= 3)
 						{

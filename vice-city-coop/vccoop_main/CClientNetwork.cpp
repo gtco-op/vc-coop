@@ -101,6 +101,18 @@ void CClientNetwork::UpdateNetwork()
 
 		switch (g_Packet->data[0])
 		{
+			case ID_PACKET_PLAYER:
+			{
+				if (g_Packet->systemAddress != this->sAddress)
+				{
+					int playerid;
+					PlayerSyncData syncData;
+					g_BitStream.Read(playerid);
+					g_BitStream.Read<PlayerSyncData>(syncData);
+					networkPlayers[playerid]->SyncPlayer(syncData);
+				}
+				break;
+			}
 			case ID_UNCONNECTED_PONG:
 			{
 				break;
@@ -164,6 +176,8 @@ void CClientNetwork::UpdateNetwork()
 				bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
 				bitstream.Write(RakString(gGame->Name.c_str()));
 				g_RakPeer->Send(&bitstream, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, g_Packet->systemAddress, false);
+
+				this->RakServerAddress = g_Packet->systemAddress;
 
 				break;
 			}
@@ -253,5 +267,6 @@ void CClientNetwork::Run()
 		BitStream bs;
 		bs.Write((unsigned char)ID_PACKET_PLAYER);
 		bs.Write<PlayerSyncData>(this->gLocalClient->BuildSyncData());
+		g_RakPeer->Send(&bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, this->RakServerAddress, false);
 	}
 }

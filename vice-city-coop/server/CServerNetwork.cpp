@@ -6,7 +6,6 @@ int								CServerNetwork::ServerPort;
 int								CServerNetwork::ServerSecret;
 HANDLE							CServerNetwork::server_handle;
 bool							CServerNetwork::server_running;
-std::list<CServerPlayer*>		CServerNetwork::NetworkPlayers;
 
 std::vector<std::pair<char*, int>> dataArray;
 
@@ -66,7 +65,6 @@ void CServerNetwork::ServerThread(LPVOID param)
 		return;
 	if (!srvNetwork->server_running)
 		return;
-
 	Log("Server thread started on port %d", srvNetwork->ServerPort);
 	Packet *packet;
 	while (srvNetwork->server_running) 
@@ -84,16 +82,26 @@ void CServerNetwork::ServerThread(LPVOID param)
 			case ID_CONNECTION_LOST:
 				Log("A remote system lost the connection.");
 				break;
+			case ID_PACKET_PLAYER:
+				for (int i = 0; i < srvNetwork->NetworkPlayers.size(); i++)
+				{
+					if (srvNetwork->NetworkPlayers[i]->guid == packet->guid) 
+					{
+						srvNetwork->NetworkPlayers[i]->Update(packet);
+						break;
+					}
+				}
+				break;
 			case ID_REQUEST_SERVER_SYNC:
 				BitStream g_BitStream(packet->data + 1, packet->length + 1, false);
 
 				char playerName[25];
 				g_BitStream.Read(playerName);
 
-				const int index = NetworkPlayers.size();
+				const int index = srvNetwork->NetworkPlayers.size();
 
-				CServerPlayer * player = new CServerPlayer(playerName, packet->systemAddress, index);
-				NetworkPlayers.push_back(player);
+				CServerPlayer * player = new CServerPlayer(playerName, packet->systemAddress, index, packet->guid);
+				srvNetwork->NetworkPlayers.push_back(player);
 
 				BitStream bitstream;
 				bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
@@ -106,10 +114,13 @@ void CServerNetwork::ServerThread(LPVOID param)
 				bs.Write(index);
 
 				RakNetGUID clientGUID = packet->guid;
-				for (int i = 0; i < MAX_PLAYERS; i++) {
+				for (int i = 0; i < MAX_PLAYERS; i++) 
+				{
 					if (gServerNetwork->peerInterface->GetGUIDFromIndex(i) != clientGUID &&
-						gServerNetwork->peerInterface->GetConnectionState(gServerNetwork->peerInterface->GetGUIDFromIndex(i)) == IS_CONNECTED) {
+						gServerNetwork->peerInterface->GetConnectionState(gServerNetwork->peerInterface->GetGUIDFromIndex(i)) == IS_CONNECTED) 
+					{
 						gServerNetwork->RPC->Call("ClientConnect", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, gServerNetwork->peerInterface->GetGUIDFromIndex(i), false);
+						gServerNetwork->RPC->Call("ClientConnect", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
 					}
 				}
 				Log("Player %s (ID: %d | GUID: %d) connected!", playerName, index, packet->guid);

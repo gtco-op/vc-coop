@@ -38,4 +38,6 @@ public:
 	static bool client_connected;
 	static bool connected;	
 	static bool initialized;
+
+	RakNet::SystemAddress RakServerAddress;
 };

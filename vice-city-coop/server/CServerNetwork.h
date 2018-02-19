@@ -24,6 +24,6 @@ public:
 
 	static std::pair<char*, int> LoadScript(std::string filename);
 
-	static std::list<CServerPlayer*> NetworkPlayers;
+	std::vector<CServerPlayer*> NetworkPlayers;
 };
 
