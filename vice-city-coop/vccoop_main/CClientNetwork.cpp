@@ -91,7 +91,7 @@ void CClientNetwork::Disconnect()
 
 	g_RakPeer->CloseConnection(g_RPC->GetMyGUIDUnified(), true);
 }
-void CClientNetwork::UpdateNetwork()
+void CClientNetwork::Update()
 {
 	Packet *g_Packet = NULL;
 
@@ -109,6 +109,7 @@ void CClientNetwork::UpdateNetwork()
 					PlayerSyncData syncData;
 					g_BitStream.Read(playerid);
 					g_BitStream.Read<PlayerSyncData>(syncData);
+
 					networkPlayers[playerid]->SyncPlayer(syncData);
 				}
 				break;
@@ -191,7 +192,8 @@ void CClientNetwork::UpdateNetwork()
 
 				int id = 0;
 				g_BitStream.Read(id);
-				gLocalClient = new CClientPlayer(id);
+
+				 gLocalClient = new CClientPlayer(id);
 				break;
 			}
 			case ID_DISCONNECTION_NOTIFICATION:
@@ -255,18 +257,19 @@ void CClientNetwork::NetworkThread(LPVOID param)
 
 	while (network->initialized)
 	{
-		network->UpdateNetwork();
+		network->Update();
 		Sleep(100);
 	}
 }
 
-void CClientNetwork::Run()
+void CClientNetwork::Tick()
 {
 	if (client_connected && client_running)
 	{
 		BitStream bs;
 		bs.Write((unsigned char)ID_PACKET_PLAYER);
 		bs.Write<PlayerSyncData>(this->gLocalClient->BuildSyncData());
+
 		g_RakPeer->Send(&bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, this->RakServerAddress, false);
 	}
 }

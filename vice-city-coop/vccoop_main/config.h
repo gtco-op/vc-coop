@@ -156,7 +156,7 @@ struct PlayerSyncData
 	float Armour;
 	float Rotation;
 
-	int iModelIndex;
+	short iModelIndex;
 	int iInteriorID;
 	int iCurrentAnimID;
 

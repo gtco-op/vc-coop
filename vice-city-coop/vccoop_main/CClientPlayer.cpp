@@ -2,9 +2,18 @@
 
 #define Log(fmt, ...) gLog->Log("[CClientPlayer] " fmt "\n", __VA_ARGS__)
 
+
+
+CPed* tmpPed = nullptr;
+
 CClientPlayer::CClientPlayer(int nID, int gID)
 {
+	if (tmpPed == this->ped)
+		return;
+
+	tmpPed = this->ped;
 	this->ped = NULL;
+
 	CPlayerPed::SetupPlayerPed(gID);
 	CWorld::Players[gID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[gID].m_pPed;
@@ -14,7 +23,7 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	this->gameID = gID;
 	this->networkID = nID;
 
-	Log("GameID: %d Network ID: %d Ped pointer: 0x%X", gID, nID, ped);
+	Log("[INIT] GameID: %d Network ID: %d Ped pointer: 0x%X", gID, nID, ped);
 
 	gGame->remotePlayerPeds[gID] = this->ped;
 	gGame->remotePlayers++;
@@ -41,7 +50,7 @@ void CClientPlayer::Respawn()
 	this->ped->SetModelIndex(7);
 
 
-	Log("GameID: %d Network ID: %d Ped pointer: 0x%X", this->gameID, this->networkID, ped);
+	Log("[RESPAWN] GameID: %d Network ID: %d Ped pointer: 0x%X", this->gameID, this->networkID, ped);
 
 	gGame->remotePlayerPeds[this->gameID] = this->ped;
 }
@@ -73,6 +82,9 @@ CClientPlayer::~CClientPlayer()
 
 void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 {
+	if (this == nullptr)
+		return;
+
 	this->syncData = spd;
 
 	ped->m_nModelIndex = spd.iModelIndex;

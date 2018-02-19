@@ -11,9 +11,10 @@ public:
 	~CClientNetwork();
 
 	void InitializeClient();
-	void UpdateNetwork();
+	void Update();
 	void Connect(const char* Host, unsigned short Port, const char* Password);
 	void Disconnect();
+	void Tick();
 
 	static void OnClientReceiveMessage(RakNet::BitStream *userData, RakNet::Packet *packet);
 	static void OnClientConnect(RakNet::BitStream *userData, RakNet::Packet *packet);
@@ -25,7 +26,6 @@ public:
 	void SetCanSpawn(bool bStatus);
 
 	static void NetworkThread(LPVOID param);
-	void Run();
 
 	CClientPlayer * gLocalClient;
 

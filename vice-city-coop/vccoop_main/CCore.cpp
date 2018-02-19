@@ -29,7 +29,8 @@ CCore::CCore()
 	gLog->Log("[CCore] Main method finished.\n");
 
 	Events::gameProcessEvent += [] {
-		gNetwork->Run();
+		gNetwork->Tick();
+
 		gGame->Run();
 		gRender->Run();
 	};
