@@ -18,7 +18,7 @@ CRender::CRender()
 	this->Initialized		= false;
 	this->bEscMenu			= false;
 
-	this->gGuiContainer.push_back(new CNameTags());
+	//this->gGuiContainer.push_back(new CNameTags());
 
 #ifdef VCCOOP_DEBUG
 	this->bConsole = false;
