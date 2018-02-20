@@ -1,7 +1,5 @@
 #include "main.h"
 
-#define Log(fmt, ...) gLog->Log("[CClientPed] " fmt "\n", __VA_ARGS__)
-
 CClientPed::CClientPed(int nID)
 {
 	this->ped = NULL;
@@ -25,7 +23,7 @@ CClientPed::CClientPed(int nID)
 
 	this->networkID = nID;
 
-	Log("Network ID: %d Ped pointer: 0x%X", nID, this->ped);
+	gLog->Log("[CClientPed]Network ID: %d Ped pointer: 0x%X\n\n", nID, this->ped);
 }
 
 CClientPed::~CClientPed()
@@ -69,7 +67,7 @@ void CClientPed::SyncPed(PedSyncData spd)
 	ped->m_dwObjectiveTimer = spd.m_dwObjectiveTimer;
 	ped->m_vecObjective = spd.m_vecObjective;
 	ped->m_fObjectiveAngle = spd.m_fObjectiveAngle;
-	//ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
+	ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
 	//ped->m_pObjectiveVehicle		= spd.m_pObjectiveVehicle;
 
 	//Flee sync
@@ -138,7 +136,7 @@ PedSyncData CClientPed::BuildSyncData()
 	spd.m_dwObjectiveTimer = ped->m_dwObjectiveTimer;
 	spd.m_vecObjective = ped->m_vecObjective;
 	spd.m_fObjectiveAngle = ped->m_fObjectiveAngle;
-	//ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
+	ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
 	//spd.m_pObjectiveVehicle		= ped->m_pObjectiveVehicle;
 
 	//Flee sync

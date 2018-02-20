@@ -28,10 +28,6 @@ CGame::~CGame()
 }
 void CGame::Run()
 {
-	if (!gNetwork->initialized) {
-		gNetwork->InitializeClient();
-	}
-
 	if (GetAsyncKeyState(0x2C) & 1 && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && IsWindowActive())
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
@@ -236,70 +232,70 @@ void Hooked_LoadingScreen(char * message, char * message2, char * splash)
 	return;
 }
 
-char(__thiscall* original_CPed__InflictDamage)(void*, void*, eWeaponType, float, ePedPieceTypes, UCHAR);
-char __fastcall CPed__InflictDamage_Hook(void * This, DWORD _EDX, void* entity, eWeaponType weapon, float damage, ePedPieceTypes bodypart, UCHAR unk)
+char(__thiscall* original_CPed__InflictDamage)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR);
+char __fastcall CPed__InflictDamage_Hook(CPed * This, DWORD _EDX, CEntity* entity, eWeaponType weapon, float damage, ePedPieceTypes bodypart, UCHAR unk)
 {
 	//gLog->Log("damage inflicted %d %f", weapon, damage);
 	return original_CPed__InflictDamage(This, entity, weapon, damage, bodypart, unk);
 }
 
 
-int(__thiscall* original_CPed__SetDead)(void*);
-int __fastcall CPed__SetDead_Hook(void * This, DWORD _EDX)
+int(__thiscall* original_CPed__SetDead)(CPed*);
+int __fastcall CPed__SetDead_Hook(CPed * This, DWORD _EDX)
 {
-	CPed * ped = (CPed*)This;
-	if (ped == FindPlayerPed())
+	if (This == FindPlayerPed())
 	{
-		gLog->Log("player is ded");
+		gLog->Log("player is ded 0x%X\n", This);
 		deathData dData;
-		//dData.killer = gNetwork->GetNetworkIDFromEntity(ped->m_pLastDamEntity);
-		dData.weapon = ped->m_nLastDamWep;
-		//librg_message_send_all(&gNetwork->ctx, VCOOP_PED_IS_DEAD, &dData, sizeof(deathData));
+		dData.killer = gNetwork->GetNetworkIDFromEntity(This->m_pLastDamEntity);
+		dData.weapon = This->m_nLastDamWep;
+		librg_message_send_all(&gNetwork->ctx, VCOOP_PED_IS_DEAD, &dData, sizeof(deathData));
 	}
 	return original_CPed__SetDead(This);
 }
 
+signed int(__cdecl* original_ShowExceptionBox)(DWORD*, int, int);
+signed int __cdecl ShowExceptionBox_Hook(DWORD* a1, int a2, int a3)
+{
+	gLog->Log("Exception %08X occurred at address %08X\n", *a1, *(DWORD *)(a3 + 184));
+	return original_ShowExceptionBox(a1, a2, a3);
+}
+
 void Hooked_SpawnPedAfterDeath()
 {
-	gLog->Log("game tried to spawn me");
+	gLog->Log("game tried to spawn me\n");
 	CPed * ped = FindPlayerPed();
 	ped->Teleport({VCCOOP_DEFAULT_SPAWN_POSITION});
 	CTimer::Stop();
-	//librg_message_send_all(&gNetwork->ctx, VCOOP_RESPAWN_AFTER_DEATH, NULL, 0);
+	librg_message_send_all(&gNetwork->ctx, VCOOP_RESPAWN_AFTER_DEATH, NULL, 0);
 }
 
 void CGame::InitPreGamePatches()
 {
-	original_CPed__InflictDamage = (char(__thiscall*)(void*, void*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
-	original_CPed__SetDead = (int(__thiscall*)(void*))DetourFunction((PBYTE)0x4F6430, (PBYTE)CPed__SetDead_Hook);
+	original_CPed__InflictDamage = (char(__thiscall*)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
+	original_CPed__SetDead = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4F6430, (PBYTE)CPed__SetDead_Hook);
+	original_ShowExceptionBox = (signed int(__cdecl*)(DWORD*, int, int))DetourFunction((PBYTE)0x677E40, (PBYTE)ShowExceptionBox_Hook);
 
 	#ifdef VCCOOP_DEBUG_ENGINE
 	patch::RedirectFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x6F2434, Hooked_DbgPrint);//the original is needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);//the original is needed
-
-	#ifdef VCCOOP_DEBUG
 	debugEnabled = true;
-	#endif
-
 	#endif
 
 	MakeCall(0x42BDA8, Hooked_SpawnPedAfterDeath);
 
-#ifdef VCCOOP_DEBUG
 	// Patch to allow multiple instances of the game
 	SYSTEMTIME time; 
 	GetSystemTime(&time); 
 	char StreamName[15]; 
 	sprintf_s(StreamName, "CdStream%02d%02d%02d", time.wHour, time.wMinute, time.wSecond); 
 	auto Pointer = (DWORD *)0x408968; 
-
 	
 	DWORD Protect; 
 	VirtualProtect(Pointer, 4, PAGE_READWRITE, &Protect); 
 	*Pointer = (DWORD)StreamName; 
 	VirtualProtect(Pointer, 4, Protect, &Protect);
-#endif
 
 	//disable gamestate initialize
 	MakeNop(0x601B3B, 10);
@@ -585,7 +581,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			int vkey = (int)wparam;
 			if (vkey == 'P' && gNetwork->connected)
 			{
-				//librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
+				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
 			}
 			if (vkey == 'Z')
 			{
@@ -631,7 +627,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			if (vkey == VK_F7 && gNetwork->connected)
 			{
-				gNetwork->Disconnect(); 
+				gNetwork->StopClientThread(); 
 				gRender->bConnecting	= false;
 				gRender->bGUI			= true;
 
@@ -644,7 +640,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			else if (vkey == VK_F10 && !gNetwork->connected) // crashfix
 			{
-				gNetwork->Connect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT, 0);
+				gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
 				gLog->Log("[CGame] Attempting to connect to local server\n");
 			}
 			break;

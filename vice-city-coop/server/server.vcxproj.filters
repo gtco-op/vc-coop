@@ -5,11 +5,20 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{d35773d6-3228-462c-9d1f-b6427e73ae27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\librg">
+      <UniqueIdentifier>{c835a08c-97aa-4204-8c25-cee1a18ee531}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\utils">
       <UniqueIdentifier>{751b5b6c-0a7d-4c32-887d-b5161dee6c65}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\network">
       <UniqueIdentifier>{3b8e1a6c-6aa5-4ece-921e-65ca8e463c1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\inih">
+      <UniqueIdentifier>{6346b55b-771b-44d0-a7bc-beb163ca13c0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\utils\CLogger">
       <UniqueIdentifier>{44b758c5-a51a-4562-98cc-7b96ae40a654}</UniqueIdentifier>
@@ -20,11 +29,11 @@
     <Filter Include="Source\config">
       <UniqueIdentifier>{4ba0e5c8-5d30-4bb9-a15a-c424c040ca61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\lua">
+      <UniqueIdentifier>{1ad7cf6d-7d05-4a7b-ad3d-5aa0746789c4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\scripting">
       <UniqueIdentifier>{263b9255-6905-46e3-9ce1-b1eadca72571}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\network\networkentities">
-      <UniqueIdentifier>{4073c002-2c73-41c8-afda-556f04bdd08d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,11 +52,38 @@
     <ClInclude Include="..\vccoop_main\config.h">
       <Filter>Source\config</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\librg\enet.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\librg\librg.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\librg\zpl.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\librg\zpl_math.h">
+      <Filter>vendor\librg</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\inih\INIReader.h">
+      <Filter>vendor\inih</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\lua\include\lauxlib.h">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\lua\include\lua.h">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\lua\include\lua.hpp">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\lua\include\luaconf.h">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\lua\include\lualib.h">
+      <Filter>vendor\lua</Filter>
+    </ClInclude>
     <ClInclude Include="CLua.h">
       <Filter>Source\scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="CServerPlayer.h">
-      <Filter>Source\network\networkentities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -65,9 +101,6 @@
     </ClCompile>
     <ClCompile Include="CLua.cpp">
       <Filter>Source\scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="CServerPlayer.cpp">
-      <Filter>Source\network\networkentities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

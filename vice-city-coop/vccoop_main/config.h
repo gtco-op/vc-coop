@@ -1,7 +1,7 @@
 #pragma once
 
 // Define this for verbose log output
-//#define VCCOOP_VERBOSE_LOG
+#define VCCOOP_VERBOSE_LOG
 
 // Temporary spawn position
 #define VCCOOP_DEFAULT_SPAWN_POSITION	531.629761f, 606.497253f, 10.901563f
@@ -24,9 +24,6 @@
 // Default client config filename
 #define VCCOOP_DEFAULT_CLIENT_CONFIG	"client.ini"
 
-// Default server scripts folder
-#define VCCOOP_SERVER_SCRIPTS_DIR		"scripts"
-
 // VCCOOP Window Title
 #define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
 
@@ -38,7 +35,6 @@
 #ifndef VCCOOP_SERVER
 #define VCCOOP_NAME						"VC CO-OP"
 #else
-
 #define VCCOOP_NAME						"VC CO-OP Server"
 #endif
 
@@ -53,7 +49,6 @@
 #define VC_TITLE						"GTA: Vice City"
 
 #define MAX_PLAYERS						500
-#define MAX_CONNECTIONS					2000
 
 #pragma pack(1)
 typedef struct _CAMERA_AIM
@@ -150,13 +145,11 @@ struct PedSyncData
 
 struct PlayerSyncData 
 {
-	CVector pos;
-
 	float Health;
 	float Armour;
 	float Rotation;
 
-	short iModelIndex;
+	int iModelIndex;
 	int iInteriorID;
 	int iCurrentAnimID;
 
@@ -193,7 +186,7 @@ enum eBlipDisplay {
 };
 
 enum {
-	VCOOP_CREATE_PED = 0,
+	VCOOP_CREATE_PED = LIBRG_EVENT_LAST,
 	VCOOP_CREATE_VEHICLE,
 
 	VCOOP_SEND_MESSAGE,

@@ -6,14 +6,18 @@
 
 	Copyright (c) 2017-2018 VC:CO-OP Team
 */
+#ifdef VCCOOP_LIBRG_DEBUG
+#define LIBRG_DEBUG
+#endif
+#define LIBRG_IMPLEMENTATION
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "server.h"
 
 CConfiguration  *gConfig;
 CLogger			*gLog;
 CServerNetwork	*gServerNetwork;
 
-int main(int argc, char const *argv[]) 
-{
+int main(int argc, char const *argv[]) {
 	bool console_active = true;
 	std::string input;
 	
@@ -26,9 +30,6 @@ int main(int argc, char const *argv[])
 
 	gLog->Log("[CCore] Server Port: %d\n", gServerNetwork->ServerPort);
 	gLog->Log("[CCore] Server Secret: %d\n", gServerNetwork->ServerSecret);
-
-	gServerNetwork->InitializeServer();
-	gServerNetwork->CreateServerThread();
 
 	while (console_active)
 	{

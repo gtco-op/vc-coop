@@ -1,19 +1,8 @@
 #include "main.h"
 
-#define Log(fmt, ...) gLog->Log("[CClientPlayer] " fmt "\n", __VA_ARGS__)
-
-
-
-CPed* tmpPed = nullptr;
-
 CClientPlayer::CClientPlayer(int nID, int gID)
 {
-	if (tmpPed == this->ped)
-		return;
-
-	tmpPed = this->ped;
 	this->ped = NULL;
-
 	CPlayerPed::SetupPlayerPed(gID);
 	CWorld::Players[gID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[gID].m_pPed;
@@ -23,7 +12,7 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	this->gameID = gID;
 	this->networkID = nID;
 
-	Log("[INIT] GameID: %d Network ID: %d Ped pointer: 0x%X", gID, nID, ped);
+	gLog->Log("[CClientPlayer]GameID: %d Network ID: %d Ped pointer: 0x%X\n\n", gID, nID, ped);
 
 	gGame->remotePlayerPeds[gID] = this->ped;
 	gGame->remotePlayers++;
@@ -48,9 +37,10 @@ void CClientPlayer::Respawn()
 	this->ped = CWorld::Players[this->gameID].m_pPed;
 	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
 	this->ped->SetModelIndex(7);
+	this->ped->m_fHealth = 100.0f;
 
 
-	Log("[RESPAWN] GameID: %d Network ID: %d Ped pointer: 0x%X", this->gameID, this->networkID, ped);
+	gLog->Log("[CClientPlayer]GameID: %d Network ID: %d Ped pointer: 0x%X\n\n", this->gameID, this->networkID, ped);
 
 	gGame->remotePlayerPeds[this->gameID] = this->ped;
 }
@@ -82,13 +72,10 @@ CClientPlayer::~CClientPlayer()
 
 void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 {
-	if (this == nullptr)
-		return;
-
 	this->syncData = spd;
 
 	ped->m_nModelIndex = spd.iModelIndex;
-	ped->m_dwAnimGroupId = spd.iCurrentAnimID;
+	//ped->m_dwAnimGroupId = spd.iCurrentAnimID;
 	ped->m_fHealth = spd.Health;
 	ped->m_fRotationCur = spd.Rotation;
 	ped->m_fRotationDest = spd.Rotation;

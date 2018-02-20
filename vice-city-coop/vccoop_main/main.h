@@ -1,14 +1,7 @@
 #pragma once
 
-// RakNet
-#include <RakPeerInterface.h>
-#include <BitStream.h>
-#include <MessageIdentifiers.h>
-#include <RPC4Plugin.h>
-#include <DirectoryDeltaTransfer.h>
-#include <FileListTransfer.h>
-#include <IncrementalReadInterface.h>
-#include <RakNetStatistics.h>
+//librg
+#include "vendor\librg\librg.h"
 
 //imgui
 #include "vendor\imgui\imgui.h"
@@ -22,10 +15,11 @@
 
 //lua
 extern "C" {
-	#include "lua.h"
-	#include "lualib.h"
-	#include "lauxlib.h"
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 }
+
 
 //common
 #include <Windows.h>
@@ -40,7 +34,7 @@ extern "C" {
 #include <utility>
 
 //detours
-#include "vendor\detours\detours.h"
+#include "detours.h"
 
 //plugin sdk
 #include "plugin.h"
@@ -108,22 +102,21 @@ extern "C" {
 #define	KEY_ONFOOT_CROUCH			16
 #define	KEY_ONFOOT_LOOKBEHIND		17
 
+
+#include "CConfiguration.h"
 #include "CClientPlayer.h"
 #include "CClientVehicle.h"
 #include "CClientPed.h"
-
 #include "CClientNetwork.h"
-#include "CConfiguration.h"
 #include "CLogger.h"
 #include "CRenderTemplate.h"
 #include "CNameTags.h"
 #include "CDebugScreen.h"
-#include "CRender.h"
 #include "CImGui.h"
 #include "CChat.h"
 #include "CGame.h"
 
-
+#include "CRender.h"
 
 #include "CLua.h"
 
@@ -133,7 +126,6 @@ extern "C" {
 using namespace std;
 using namespace plugin;
 using namespace Hook;
-using namespace RakNet;
 
 extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
@@ -144,9 +136,6 @@ extern CGame			*gGame;
 extern CRender			*gRender;
 extern CLogger			*gLog;
 extern CChat			*gChat;
-
-extern RakPeerInterface	*g_RakPeer;
-extern RPC4			*g_RPC;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 

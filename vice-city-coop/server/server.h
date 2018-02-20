@@ -1,15 +1,18 @@
 #pragma once
-
 // Dependencies
-#include <RakPeerInterface.h>
-#include <BitStream.h>
-#include <MessageIdentifiers.h>
-#include <RPC4Plugin.h>
-#include <DirectoryDeltaTransfer.h>
-#include <FileListTransfer.h>
-#include <IncrementalReadInterface.h>
-#include <RakNetStatistics.h>
-using namespace RakNet;
+#include "vendor\librg\librg.h"
+#include "vendor\inih\INIReader.h"
+//lua
+#ifndef __cplusplus
+extern "C"
+{
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
+#else
+#include <lua.hpp>
+#endif
 
 // Standard includes
 #include <Windows.h>
@@ -21,18 +24,6 @@ using namespace RakNet;
 #include <sstream>
 #include <vector>
 #include <ctime>
-
-
-
-// INIH
-#include "vendor\inih\INIReader.h"
-
-// Lua
-extern "C" {
-	#include "lua.h"
-	#include "lualib.h"
-	#include "lauxlib.h"
-}
 
 // Plugin-SDK
 #include "plugin.h"
@@ -47,11 +38,12 @@ extern "C" {
 #include "game_vc\CPlayerInfo.h"
 #include "game_vc\CPopulation.h"
 
+#define VCCOOP_DEBUG
+
 // VCCOOP
 #include "..\vccoop_main\config.h"
 #include "CConfiguration.h"
 #include "CLogger.h"
-#include "CServerPlayer.h"
 #include "CServerNetwork.h"
 
 #include "CLua.h"
@@ -63,4 +55,3 @@ extern CLogger			*gLog;
 extern CServerNetwork	*gServerNetwork;
 
 using namespace std;
-using namespace RakNet;

@@ -9,10 +9,8 @@ DeveloperConsole* CDebugScreen::gDevConsole;
 
 CDebugScreen::CDebugScreen() 
 {
-#ifdef VCCOOP_DEBUG
 	gDbgLog = new CLogger(true);
 	debugEnabled = true;
-#endif
 }
 CDebugScreen::~CDebugScreen() 
 {
@@ -26,7 +24,7 @@ void CDebugScreen::Draw()
 	}
 	else
 	{
-		sprintf(vccoop_string, "%s %s     Server: %s:%d   Press F7 to disconnect", VCCOOP_NAME, VCCOOP_VER, gNetwork->ServerAddress, gNetwork->ServerPort);
+		sprintf(vccoop_string, "%s %s     Server: %s:%d   Press F7 to disconnect", VCCOOP_NAME, VCCOOP_VER, gNetwork->addr.host, gNetwork->addr.port);
 	}
 
 	SIZE textSize = gRender->MeasureText(vccoop_string);

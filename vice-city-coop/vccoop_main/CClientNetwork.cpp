@@ -1,275 +1,303 @@
-﻿#include "main.h"
+﻿#define LIBRG_IMPLEMENTATION
+#define LIBRG_DEBUG
+#include "main.h"
+
+librg_address_t						CClientNetwork::addr;
+librg_ctx_t							CClientNetwork::ctx;
+librg_entity_t *					CClientNetwork::local_player;
 
 bool								CClientNetwork::client_connected;
 bool								CClientNetwork::client_running;
 bool								CClientNetwork::connected;
-bool								CClientNetwork::initialized;
-std::vector<std::pair<CPed*, int>>	CClientNetwork::players;
-CClientPlayer*						networkPlayers[MAX_PLAYERS];
 
-#define Log(fmt, ...) gLog->Log("[CClientNetwork] " fmt "\n", __VA_ARGS__)
 
 CClientNetwork::CClientNetwork()
 {
-	client_running		= false;
-	client_connected	= false;
-	connected			= false;
-	initialized			= false;
+	ctx = { 0 };
+	local_player = nullptr;
+
+	client_running = false;
+	client_connected = false;
+	connected = false;
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
-		networkPlayers[i] = NULL;
+		this->networkPlayers[i] = NULL;
 	}
-	Log("CClientNetwork initialized");
 }
 CClientNetwork::~CClientNetwork()
 {
-	Log("CClientNetwork shutting down");
+	gLog->Log("[CClientNetwork] CClientNetwork shutting down\n");
+	this->StopClientThread();
 }
-// Called when the server performs the handshake on a newly-connected client.
-void CClientNetwork::OnClientConnect(RakNet::BitStream *userData, RakNet::Packet *packet)
+void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
 {
-	RakNetGUID playerGUID;
-	char playerName[25];
-	int index = 0;
-
-	userData->Read(playerName);
-	userData->Read(playerGUID);
-	userData->Read(index);
-
-	gChat->AddChatMessage("Player %s (ID: %d | GUID: %d) joined!", playerName, index, playerGUID);
-
-	CClientPlayer* newPlayer	= new CClientPlayer(index, 1);//needs to be changed later
-	networkPlayers[index]		= newPlayer;
-	players.push_back(std::pair<CPed*, int>((newPlayer)->ped, index));
-}
-// Called when the server sends a chat message sent from another client.
-void CClientNetwork::OnClientReceiveMessage(BitStream *userData, Packet *packet)
-{
-	char message[256];
-	userData->Read(message);
-
-	gChat->AddChatMessage(message);
-}
-void CClientNetwork::InitializeClient()
-{
-	g_RakPeer	= RakPeerInterface::GetInstance();
-	g_RPC		= new RPC4();
-	g_RakPeer->SetSplitMessageProgressInterval(100);
-	g_RakPeer->Startup(1, &SocketDescriptor(), 1, THREAD_PRIORITY_NORMAL);
-
-	g_RakPeer->AttachPlugin(g_RPC);
-	g_RPC->RegisterFunction("ClientConnect",		CClientNetwork::OnClientConnect);
-	g_RPC->RegisterFunction("ClientReceiveMessage", CClientNetwork::OnClientReceiveMessage);
-
-	gLocalClient = NULL;
-	initialized = true;
+	u32 playerid;
+	librg_data_rptr(msg->data, &playerid, sizeof(u32));
 	
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CClientNetwork::NetworkThread, this, 0, NULL);
-	Log("RakNet initialized");
+	gNetwork->networkPlayers[playerid]->Respawn();
+
+	gLog->Log("Respawning entity: %d\n", playerid);
 }
-void CClientNetwork::Connect(const char* Host, unsigned short Port, const char* Password)
+void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 {
-	if (!initialized)
-		return;
+	char str[256];
+	librg_data_rptr(msg->data, &str, sizeof(str));
 
-	gRender->bConnecting	= true;
-	gRender->bGUI			= true;
-	gRender->bAboutWindow	= false;
-	gRender->bEscMenu		= false;
-
-	Log("Attempting to connect to %s:%d", Host, Port);
-	
-	g_RakPeer->Connect(Host, Port, 0, 0);
+	gChat->AddChatMessage(str);
 }
-void CClientNetwork::Disconnect()
+CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 {
-	if (!initialized)
-		return;
-	if (!client_connected || !client_running)
-		return;
-
-	g_RakPeer->CloseConnection(g_RPC->GetMyGUIDUnified(), true);
+	return gNetwork->networkPlayers[id]->ped;
 }
-void CClientNetwork::Update()
+int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 {
-	Packet *g_Packet = NULL;
-
-	while (g_Packet = g_RakPeer->Receive())
+	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
-		BitStream g_BitStream(g_Packet->data + 1, g_Packet->length + 1, false);
-
-		switch (g_Packet->data[0])
+		if (!gNetwork->networkPlayers[i])continue;
+		if (gNetwork->networkPlayers[i]->ped == ent)
 		{
-			case ID_PACKET_PLAYER:
-			{
-				if (g_Packet->systemAddress != this->sAddress)
-				{
-					int playerid;
-					PlayerSyncData syncData;
-					g_BitStream.Read(playerid);
-					g_BitStream.Read<PlayerSyncData>(syncData);
-
-					networkPlayers[playerid]->SyncPlayer(syncData);
-				}
-				break;
-			}
-			case ID_UNCONNECTED_PONG:
-			{
-				break;
-			}
-			case ID_ADVERTISE_SYSTEM:
-			{
-				break;
-			}
-			case ID_DOWNLOAD_PROGRESS:
-			{
-				break;
-			}
-			case ID_IP_RECENTLY_CONNECTED:
-			{
-				Log("Failed to connect, recently connected");
-				this->SetCanSpawn(FALSE);
-				break;
-			}
-			case ID_INCOMPATIBLE_PROTOCOL_VERSION:
-			{
-				Log("Failed to connect, incompatible protocol version");
-				this->SetCanSpawn(FALSE);
-				break;
-			}
-			case ID_ALREADY_CONNECTED:
-			{
-				Log("Failed to connect, already connected");
-				this->SetCanSpawn(FALSE);
-				break;
-			}
-			case ID_NO_FREE_INCOMING_CONNECTIONS:
-			{
-				Log("Failed to connect, max client");
-				this->SetCanSpawn(FALSE);
-				break;
-			}
-			case ID_INVALID_PASSWORD:
-			{
-				Log("Failed to connect, invalid password");
-				this->SetCanSpawn(FALSE);
-				break;
-			}
-			case ID_CONNECTION_ATTEMPT_FAILED:
-			{
-				Log("Failed to connect, server not responding");
-				this->SetCanSpawn(FALSE);
-				break;
-			}
-			case ID_CONNECTION_BANNED:
-			{
-				Log("Failed to connect, banned");
-				this->SetCanSpawn(FALSE);
-				break;
-			}
-			case ID_CONNECTION_REQUEST_ACCEPTED:
-			{
-				Log("Accepted connection request");
-				//Connected but the handshake is not done yet
-
-				BitStream bitstream;
-				bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
-				bitstream.Write(RakString(gGame->Name.c_str()));
-				g_RakPeer->Send(&bitstream, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, g_Packet->systemAddress, false);
-
-				this->RakServerAddress = g_Packet->systemAddress;
-
-				break;
-			}
-			case ID_REQUEST_SERVER_SYNC:
-			{
-				Log("Handshake with the server is done");
-				this->SetCanSpawn(TRUE);
-				BitStream g_BitStream(g_Packet->data + 1, g_Packet->length + 1, false);
-
-				this->sAddress = g_Packet->systemAddress;
-
-				int id = 0;
-				g_BitStream.Read(id);
-
-				 gLocalClient = new CClientPlayer(id);
-				break;
-			}
-			case ID_DISCONNECTION_NOTIFICATION:
-			{
-				Log("Client disconnected");
-				this->SetCanSpawn(FALSE);
-				break;
-			}
-			case ID_CONNECTION_LOST:
-			{
-				Log("Connection lost");
-				this->SetCanSpawn(FALSE);
-				break;
-			}
+			return gNetwork->networkPlayers[i]->networkID;
 		}
-		g_RakPeer->DeallocatePacket(g_Packet);
+	}
+	return -1;
+}
+void CClientNetwork::on_connect_request(librg_event_t *event) {
+	gNetwork->SetReadyToSpawn(FALSE);
+	
+	char name[25];
+	strcpy(name, gGame->Name.c_str());
+
+	gLog->Log("[CClientNetwork] Connecting as %s\n", name);
+
+	librg_data_wptr(event->data, (void*)&name, sizeof(name));
+	librg_data_wu32(event->data, VCCOOP_DEFAULT_SERVER_SECRET);
+}
+void CClientNetwork::on_connect_accepted(librg_event_t *event) 
+{
+	gLog->Log("[CClientNetwork] Connection Accepted\n");
+
+	local_player = event->entity;
+	event->entity->user_data = new CClientPlayer(event->entity->id);
+}
+void CClientNetwork::on_connect_refused(librg_event_t *event) 
+{
+	gLog->Log("[CClientNetwork] Connection Refused\n");
+}
+
+void CClientNetwork::StopClientThread()
+{
+	client_running = false;
+	client_connected = false;
+	connected = false;
+}
+void CClientNetwork::ClientConnectThread()
+{
+	while (client_running) 
+	{
+		librg_tick(&ctx);
+		zpl_sleep_ms(1);
+	}
+
+	librg_network_stop(&ctx);
+	librg_free(&ctx);
+}
+void CClientNetwork::on_entity_create(librg_event_t *event) 
+{
+	zplm_vec3_t position = event->entity->position;
+
+	if (event->entity->type == VCOOP_PLAYER || event->entity->type == VCOOP_PED)
+	{
+		PlayerSyncData spd;
+		CStreaming::RequestModel(7, 0);
+		librg_data_rptr(event->data, &spd, sizeof(PlayerSyncData));
+
+		if (event->entity->type == VCOOP_PLAYER) 
+		{
+			event->entity->user_data = new CClientPlayer(event->entity->id, 1);//needs to be changed later
+			gNetwork->networkPlayers[event->entity->id] = (CClientPlayer*)event->entity->user_data;
+		}
+		else if (event->entity->type == VCOOP_PED) 
+		{
+			event->entity->user_data = new CClientPed(event->entity->id);
+		}
+	}
+	else if (event->entity->type == VCOOP_VEHICLE)
+	{
+		//not done yet
+	}
+	gLog->Log("[CClientNetwork] Network entity %d initialized\n", event->entity->id);
+}
+void CClientNetwork::on_entity_update(librg_event_t *event) 
+{
+	if (event->entity->type == VCOOP_PLAYER)
+	{
+		PlayerSyncData spd;
+		librg_data_rptr(event->data, &spd, sizeof(PlayerSyncData));
+
+		auto player = (CClientPlayer *)event->entity->user_data;
+		auto ped = player->ped;
+
+		ped->Teleport(*(CVector *)&event->entity->position);
+
+		player->SyncPlayer(spd);
+	}
+	else if(event->entity->type == VCOOP_PED)
+	{
+		PedSyncData spd;
+		librg_data_rptr(event->data, &spd, sizeof(PedSyncData));
+
+		auto pedestrian = (CClientPed *)event->entity->user_data;
+		auto ped = pedestrian->ped;
+
+		ped->Teleport(*(CVector *)&event->entity->position);
+
+		pedestrian->SyncPed(spd);
+	}
+	else if (event->entity->type == VCOOP_VEHICLE)
+	{
+		auto veh = (CVehicle *)event->entity->user_data;
+		veh->Teleport(*(CVector *)&event->entity->position);
 	}
 }
-// Sets internal variables appropriately after a server connection state has been returned.
-void CClientNetwork::SetCanSpawn(bool bStatus)
+void CClientNetwork::on_client_stream(librg_event_t *event) 
 {
-	if (bStatus)
+	if (event->entity->type == VCOOP_PLAYER)
 	{
-		connected = true;
-		client_connected = true;
-		client_running = true;
+		PlayerSyncData spd;
 
-		gRender->bConnecting = false;
-		gRender->bGUI = false;
-		gRender->bAboutWindow = false;
+		auto player = (CClientPlayer *)event->entity->user_data;
+		auto ped = player->ped;
 
+		event->entity->position = *(zplm_vec3_t *)&ped->GetPosition();
+
+		spd = player->BuildSyncData();
+
+		librg_data_wptr(event->data, &spd, sizeof(PlayerSyncData));
+	}
+	else if(event->entity->type == VCOOP_PED)
+	{
+		PedSyncData spd;
+
+		auto pedestrian = (CClientPed *)event->entity->user_data;
+		auto ped = pedestrian->ped;
+
+		event->entity->position = *(zplm_vec3_t *)&ped->GetPosition();
+
+		spd = pedestrian->BuildSyncData();
+
+		spd.gameTimer = 0;
+
+		librg_data_wptr(event->data, &spd, sizeof(PedSyncData));
+	}
+	else if (event->entity->type == VCOOP_VEHICLE)
+	{
+		//not done yet
+		CVehicle *veh = (CVehicle *)event->entity->user_data;
+		event->entity->position = *(zplm_vec3_t *)&veh->GetPosition();
+
+		//SPlayerData spd;
+		//spd.Health = veh->m_fHealth;
+		//librg_data_wptr(event->data, &spd, sizeof(SPlayerData));
+	}
+}
+void CClientNetwork::on_entity_remove(librg_event_t *event) 
+{
+	if (event->entity->type == VCOOP_PLAYER)
+	{
+		auto player = (CClientPlayer *)event->entity->user_data;
+		delete player;
+		gNetwork->networkPlayers[event->entity->id] = NULL;
+	}
+	else if (event->entity->type == VCOOP_PED)
+	{
+		auto pedestrian = (CClientPed *)event->entity->user_data;
+		delete pedestrian;
+	}
+}
+
+void CClientNetwork::on_disconnect(librg_event_t *event) 
+{
+	StopClientThread();
+
+	gLog->Log("[CClientNetwork] Disconnected.\n");
+}
+void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
+{
+	// read all of the data..
+	char* scriptData = new char[msg->data->capacity-2];
+	librg_data_rptr(msg->data, scriptData, msg->data->capacity-2);
+
+	// copy the first four bytes to obtain the script size..
+	int scriptSize = 0;
+	char buf[4];
+	memcpy(buf, scriptData, 4);
+	scriptSize = atoi(buf);
+
+	// remove the first four bytes, scriptData now contains just the script
+	memcpy(scriptData, scriptData + 4, scriptSize);
+	
+#ifdef VCCOOP_DEBUG
+	gLog->Log("[CClientNetwork] Received script with size: %d\n", scriptSize);
+#endif
+
+	CLua* lua = new CLua();
+	lua->SetLuaStatus(TRUE);
+	lua->mainScript = new char[scriptSize];
+	lua->mainScriptSize = scriptSize;
+	
+	memcpy(lua->mainScript, scriptData, scriptSize);
+
+	lua->CreateLuaThread();
+
+	// Set spawn status to true..
+	gNetwork->SetReadyToSpawn(TRUE);
+}
+void CClientNetwork::SetReadyToSpawn(bool bReady)
+{
+	if (bReady)
+	{
+		connected				= true;
+		gRender->bConnecting	= false;
+		gRender->bGUI			= false;
+		gRender->bAboutWindow	= false;
 		gGame->RestoreCamera();
 		gGame->SetCameraBehindPlayer();
 		gGame->EnableHUD();
-
-		Log("Allowed player to spawn");
 	}
 	else
 	{
-		connected = false;
-		client_connected = false;
-		client_running = false;
-
-		gRender->bConnecting = false;
-		gRender->bGUI = true;
-
+		connected				= false;
+		gRender->bConnecting	= false;
+		gRender->bGUI			= true;
 		gGame->DisableHUD();
-
-		Log("Disallowed player from spawning");
 	}
 }
-
-void CClientNetwork::NetworkThread(LPVOID param)
+void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 {
-	CClientNetwork* network = (CClientNetwork*)param;
-	
-	if (!network)
-		return;
+	client_running = true;
+	ctx.mode = LIBRG_MODE_CLIENT;
+	librg_init(&ctx);
 
-	Log("Entering client network loop");
+	librg_event_add(&ctx, LIBRG_CONNECTION_REQUEST, on_connect_request);
+	librg_event_add(&ctx, LIBRG_CONNECTION_ACCEPT, on_connect_accepted);
+	librg_event_add(&ctx, LIBRG_CONNECTION_DISCONNECT, on_disconnect);
 
-	while (network->initialized)
-	{
-		network->Update();
-		Sleep(100);
-	}
-}
+	librg_event_add(&ctx, LIBRG_ENTITY_CREATE, on_entity_create);
+	librg_event_add(&ctx, LIBRG_ENTITY_UPDATE, on_entity_update);
+	librg_event_add(&ctx, LIBRG_ENTITY_REMOVE, on_entity_remove);
 
-void CClientNetwork::Tick()
-{
-	if (client_connected && client_running)
-	{
-		BitStream bs;
-		bs.Write((unsigned char)ID_PACKET_PLAYER);
-		bs.Write<PlayerSyncData>(this->gLocalClient->BuildSyncData());
+	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_client_stream);
 
-		g_RakPeer->Send(&bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, this->RakServerAddress, false);
-	}
+	librg_network_add(&ctx, VCOOP_RECEIVE_MESSAGE, ClientReceiveMessage);
+	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH, PlayerSpawnEvent);
+	librg_network_add(&ctx, VCOOP_GET_LUA_SCRIPT, ClientReceiveScript);
+
+	addr.host = szAddress;
+	addr.port = iPort;
+
+	gLog->Log("[CClientNetwork] Attempting to connect to %s:%d\n", addr.host, addr.port);
+	librg_network_start(&ctx, addr);
+
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&ClientConnectThread, NULL, 0, NULL);
 }

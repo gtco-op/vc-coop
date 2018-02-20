@@ -18,7 +18,7 @@ CRender::CRender()
 	this->Initialized		= false;
 	this->bEscMenu			= false;
 
-	//this->gGuiContainer.push_back(new CNameTags());
+	this->gGuiContainer.push_back(new CNameTags());
 
 #ifdef VCCOOP_DEBUG
 	this->bConsole = false;
@@ -306,7 +306,7 @@ void CRender::Draw()
 						gNetwork->ServerPort = Port;
 
 						if (strlen(gGame->Name.c_str()) >= 3 && gNetwork->ServerPort != 0 && gNetwork->ServerAddress != "") {
-							gNetwork->Connect(gNetwork->ServerAddress, gNetwork->ServerPort, 0);
+							gNetwork->AttemptConnect(gNetwork->ServerAddress, gNetwork->ServerPort);
 
 							gRender->bConnecting = true;
 							gRender->bGUI = false;
@@ -315,20 +315,18 @@ void CRender::Draw()
 						else
 						{
 							gChat->AddChatMessage("[ERROR] Please ensure all connection settings are valid!");
-							#ifdef VCCOOP_DEBUG
+#ifdef VCCOOP_DEBUG
 							gRender->gDebugScreen->gDevConsole->AddLog("[ERROR] Please ensure all connection settings are valid!");
-							#endif
+#endif
 						}
 					}
 					if (ImGui::Button("Local Server"))
 					{
 						gGame->Name = Nickname;
-						gNetwork->ServerAddress = "127.0.0.1";
-						gNetwork->ServerPort = VCCOOP_DEFAULT_SERVER_PORT;
 
 						if (strlen(gGame->Name.c_str()) >= 3)
 						{
-							gNetwork->Connect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT, "");
+							gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
 
 							gRender->bConnecting = true;
 							gRender->bGUI = false;

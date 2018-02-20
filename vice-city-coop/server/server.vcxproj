@@ -23,7 +23,6 @@
     <ProjectGuid>{332FD9D2-7B9A-48FB-846C-ADE7D07319D1}</ProjectGuid>
     <RootNamespace>server</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-    <ProjectName>Server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -72,27 +71,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\server\Debug\</OutDir>
-    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(SolutionDir)\vendor\lua\include;$(SolutionDir);$(SolutionDir)\vendor\RakNet\Source;$(SolutionDir)\vendor\RakNet\DependentExtensions\jansson-2.4\src;</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)\Lib</LibraryPath>
+    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(SolutionDir)\vendor\lua\include;$(SolutionDir);$(SolutionDir)\vendor\RakNet\Source;$(SolutionDir)\vendor\RakNet\DependentExtensions\jansson-2.4\src;</IncludePath>
+    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include</IncludePath>
     <OutDir>$(SolutionDir)\server\Release\</OutDir>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)\Lib</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>VCCOOP_DEBUG;VCCOOP_SERVER;_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)\vendor\RakNet;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VCCOOP_SERVER;VCCOOP_LIBRG_DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>RakNetd.lib;lua_debug.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,14 +104,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>VCCOOP_SERVER;_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)\vendor\RakNet;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VCCOOP_SERVER;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>RakNet.lib;lua_release.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,7 +130,6 @@
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="CLua.cpp" />
     <ClCompile Include="CServerNetwork.cpp" />
-    <ClCompile Include="CServerPlayer.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -146,8 +138,17 @@
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CLua.h" />
     <ClInclude Include="CServerNetwork.h" />
-    <ClInclude Include="CServerPlayer.h" />
     <ClInclude Include="server.h" />
+    <ClInclude Include="vendor\inih\INIReader.h" />
+    <ClInclude Include="vendor\librg\enet.h" />
+    <ClInclude Include="vendor\librg\librg.h" />
+    <ClInclude Include="vendor\librg\zpl.h" />
+    <ClInclude Include="vendor\librg\zpl_math.h" />
+    <ClInclude Include="vendor\lua\include\lauxlib.h" />
+    <ClInclude Include="vendor\lua\include\lua.h" />
+    <ClInclude Include="vendor\lua\include\lua.hpp" />
+    <ClInclude Include="vendor\lua\include\luaconf.h" />
+    <ClInclude Include="vendor\lua\include\lualib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

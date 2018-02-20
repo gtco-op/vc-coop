@@ -3,41 +3,46 @@
 static char Nickname[25] = { 0 };
 static char IP[15]	= VCCOOP_DEFAULT_SERVER_ADDRESS;
 static int Port		= VCCOOP_DEFAULT_SERVER_PORT;
-
 class CClientNetwork
 {
 public:
 	CClientNetwork();
 	~CClientNetwork();
 
-	void InitializeClient();
-	void Update();
-	void Connect(const char* Host, unsigned short Port, const char* Password);
-	void Disconnect();
-	void Tick();
-
-	static void OnClientReceiveMessage(RakNet::BitStream *userData, RakNet::Packet *packet);
-	static void OnClientConnect(RakNet::BitStream *userData, RakNet::Packet *packet);
-
-	RakNet::RakPeerInterface					*g_RakPeer;
-	RakNet::RPC4								*g_RPC;
-	RakNet::SystemAddress						sAddress;
-
-	void SetCanSpawn(bool bStatus);
-
-	static void NetworkThread(LPVOID param);
-
-	CClientPlayer * gLocalClient;
-
 	char	*ServerAddress;
 	int		ServerPort;
 
-	static std::vector<std::pair<CPed*, int>> players;
+	static librg_address_t addr;
+
+	static librg_ctx_t ctx;
+	static librg_entity_t * local_player;
 	
 	static bool client_running;
 	static bool client_connected;
 	static bool connected;	
-	static bool initialized;
 
-	RakNet::SystemAddress RakServerAddress;
+	static CEntity*		GetEntityFromNetworkID(int id);
+	static int			GetNetworkIDFromEntity(CEntity* ent);
+
+	static void SetReadyToSpawn(bool bReady);
+
+	static void ClientReceiveMessage(librg_message_t* msg);
+	static void ClientReceiveScript(librg_message_t* msg);
+	static void PlayerSpawnEvent(librg_message_t* msg);
+
+	static void on_connect_request(librg_event_t *event);
+	static void on_connect_accepted(librg_event_t *event);
+	static void on_connect_refused(librg_event_t *event);
+	static void on_disconnect(librg_event_t *event);
+	
+	static void on_entity_remove(librg_event_t *event);
+	static void on_entity_create(librg_event_t * event);
+	static void on_entity_update(librg_event_t *event);
+	static void on_client_stream(librg_event_t *event);
+
+	static void ClientConnectThread();
+	static void StopClientThread();
+	static void AttemptConnect(char* szAddress, int iPort);
+
+	CClientPlayer *networkPlayers[MAX_PLAYERS];
 };

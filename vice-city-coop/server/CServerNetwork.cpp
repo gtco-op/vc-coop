@@ -1,142 +1,94 @@
 #include "server.h"
-#define Log(fmt, ...) gLog->Log("[CServerNetwork] " fmt "\n", __VA_ARGS__)
 
 /* Server Configuration */
 int								CServerNetwork::ServerPort;
 int								CServerNetwork::ServerSecret;
+
 HANDLE							CServerNetwork::server_handle;
-bool							CServerNetwork::server_running;
+bool							CServerNetwork::server_running, CServerNetwork::console_active;
+librg_ctx_t						CServerNetwork::ctx;
+std::vector<librg_entity_t*>	CServerNetwork::playerEntities;
+std::vector<librg_entity_t*>	CServerNetwork::otherEntities;
 
 std::vector<std::pair<char*, int>> dataArray;
 
 CServerNetwork::CServerNetwork()
 {
-	server_running = false;
+	ctx = { 0 };
+	server_running = true;
+	server_handle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)server_thread, NULL, 0, NULL);
 }
 CServerNetwork::~CServerNetwork()
 {
-	RakPeerInterface::DestroyInstance(peerInterface);
+
 }
-// Called when a client sends a chat message to the server.
-void CServerNetwork::OnClientSendMessage(BitStream *userData, Packet *packet)
+void CServerNetwork::PlayerDeathEvent(librg_message_t *msg)
 {
-	RakNetGUID senderGUID = packet->guid;
-	BitStream bs;
-	char message[256];
-
-	userData->Read(message);
-	bs.Write(message);
-
-	Log("Received: %s from %d", message, senderGUID);
-
-	for (int i = 0; i < MAX_PLAYERS; i++)	{
-		if (gServerNetwork->peerInterface->GetGUIDFromIndex(i) != senderGUID &&
-			gServerNetwork->peerInterface->GetConnectionState(gServerNetwork->peerInterface->GetGUIDFromIndex(i)) == IS_CONNECTED)		{
-			gServerNetwork->RPC->Call("ClientReceiveMessage", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, gServerNetwork->peerInterface->GetGUIDFromIndex(i), false);
-		}
-	}
-}
-// Initializes RakNet server instance
-void CServerNetwork::InitializeServer()
-{
-	peerInterface = RakPeerInterface::GetInstance();
-	peerInterface->SetMaximumIncomingConnections(MAX_CONNECTIONS);
-	peerInterface->SetOccasionalPing(true);
-	peerInterface->Startup(MAX_CONNECTIONS, &SocketDescriptor(ServerPort, 0), 1);
-
-	RPC = new RPC4();
-	peerInterface->AttachPlugin(RPC);
-	RPC->RegisterFunction("ClientSendMessage", CServerNetwork::OnClientSendMessage);
+	deathData dData;
+	librg_data_rptr(msg->data, &dData, sizeof(deathData));
 	
-	server_running = true;
-	Log("Server initialized");
+	librg_entity_t * player = librg_entity_find(msg->ctx, msg->peer);
+	char msg1[256];
+	sprintf(msg1, "[CServerNetwork] Player %d is killed by entity %d with weapon %d\n", player->id, dData.killer, dData.weapon);
+	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));	
+	gLog->Log(msg1);
 }
-// Creates a server thread for handling messages, packets etc.
-void CServerNetwork::CreateServerThread()
+void CServerNetwork::PlayerSpawnEvent(librg_message_t *msg)
 {
-	server_handle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&CServerNetwork::ServerThread, this, 0, NULL);
-	Log("Created server thread");
+	librg_entity_t * player = librg_entity_find(msg->ctx, msg->peer);	
+	librg_message_send_except(&ctx, VCOOP_RESPAWN_AFTER_DEATH, msg->peer, &player->id, sizeof(u32));
 }
-// Server thread for handling messages, packets etc.
-void CServerNetwork::ServerThread(LPVOID param)
+void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 {
-	CServerNetwork* srvNetwork = (CServerNetwork*)param;
-	if (!srvNetwork)
-		return;
-	if (!srvNetwork->server_running)
-		return;
-	Log("Server thread started on port %d", srvNetwork->ServerPort);
-	Packet *packet;
-	while (srvNetwork->server_running) 
-	{
-		for (packet = srvNetwork->peerInterface->Receive(); packet; srvNetwork->peerInterface->DeallocatePacket(packet), packet = srvNetwork->peerInterface->Receive())
-		{
-			switch (packet->data[0])
-			{
-			case ID_NEW_INCOMING_CONNECTION:
-				Log("A remote system has successfully connected.");
-				break;
-			case ID_DISCONNECTION_NOTIFICATION:
-				Log("A remote system has disconnected.");
-				break;
-			case ID_CONNECTION_LOST:
-				Log("A remote system lost the connection.");
-				break;
-			case ID_PACKET_PLAYER:
-				for (int i = 0; i < srvNetwork->NetworkPlayers.size(); i++)
-				{
-					if (srvNetwork->NetworkPlayers[i]->guid == packet->guid) 
-					{
-						srvNetwork->NetworkPlayers[i]->Update(packet);
-						break;
-					}
-				}
-				break;
-			case ID_REQUEST_SERVER_SYNC:
-				BitStream g_BitStream(packet->data + 1, packet->length + 1, false);
+	char msg1[256];
+	librg_data_rptr(msg->data, &msg1, sizeof(msg1));
 
-				char playerName[25];
-				g_BitStream.Read(playerName);
+	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
+}
+void CServerNetwork::PedCreateEvent(librg_message_t *msg)
+{
+	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_PED);
+	librg_entity_control_set(&ctx, entity->id, msg->peer);
 
-				const int index = srvNetwork->NetworkPlayers.size();
+	// crate our custom data container for ped
+	entity->user_data = new PedSyncData();
 
-				CServerPlayer * player = new CServerPlayer(playerName, packet->systemAddress, index, packet->guid);
-				srvNetwork->NetworkPlayers.push_back(player);
+	// spawn a ped at player's position
+	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
 
-				BitStream bitstream;
-				bitstream.Write((unsigned char)ID_REQUEST_SERVER_SYNC);
-				bitstream.Write(index);
-				srvNetwork->peerInterface->Send(&bitstream, LOW_PRIORITY, RELIABLE_ORDERED, 0, packet->systemAddress, false);
+	otherEntities.push_back(entity);
+	gLog->Log("[CServerNetwork] Ped created. (%d)\n", entity->id);
+}
+void CServerNetwork::VehCreateEvent(librg_message_t *msg)
+{
+	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_VEHICLE);
+	librg_entity_control_set(&ctx, entity->id, msg->peer);
+	
+	// spawn a vehicle at player's position
+	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
 
-				BitStream bs;
-				bs.Write(playerName);
-				bs.Write(packet->guid);
-				bs.Write(index);
+	gLog->Log("[CServerNetwork] Vehicle created. (%d)\n", entity->id);
+}
+void CServerNetwork::on_connect_request(librg_event_t *event) {
+	// Player Name
+	char name[25];
+	librg_data_rptr(event->data, (void*)&name, 25);
 
-				RakNetGUID clientGUID = packet->guid;
-				for (int i = 0; i < MAX_PLAYERS; i++) 
-				{
-					if (gServerNetwork->peerInterface->GetGUIDFromIndex(i) != clientGUID &&
-						gServerNetwork->peerInterface->GetConnectionState(gServerNetwork->peerInterface->GetGUIDFromIndex(i)) == IS_CONNECTED) 
-					{
-						gServerNetwork->RPC->Call("ClientConnect", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, gServerNetwork->peerInterface->GetGUIDFromIndex(i), false);
-						gServerNetwork->RPC->Call("ClientConnect", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
-					}
-				}
-				Log("Player %s (ID: %d | GUID: %d) connected!", playerName, index, packet->guid);
-				break;
-			}
-		}
-		RakSleep(1);
+	u32 secret = librg_data_ru32(event->data);
+	gLog->Log("[CServerNetwork][CLIENT REQUEST] Network entity with name '%s' is requesting to connect\n", name);
+
+	if (strlen(name) < 0 || secret != gServerNetwork->ServerSecret) {
+		gLog->Log("[CServerNetwork] Rejected event from network entity\n");
+		librg_event_reject(event);
 	}
 }
-// Loads a script into memory, compiles to bytecode and returns a std::pair containing data and size
-// TODO: Support for Linux
+
+#include <regex>
 std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 {
 	// load the data into memory
 	std::string path = GetExecutablePath();
-	path.append("\\" VCCOOP_SERVER_SCRIPTS_DIR "\\");
+	path.append("\\scripts\\");
 	path.append(filename);
 
 	std::ifstream t(path);
@@ -147,18 +99,18 @@ std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 	std::string dataData = buffer.str();
 	int dataLen = buffer.str().size() + 1;
 
-#ifdef VCCOOP_DEBUG
-	Log("[CServerNetwork] Loaded data with size %d", dataLen);
-	Log("[CServerNetwork] Total data Size: %d", sizeof(dataLen) + (dataLen));
+#ifdef VCCOOP_LIBRG_DEBUG
+	gLog->Log("[CServerNetwork] Loaded data with size %d\n", dataLen);
+	gLog->Log("[CServerNetwork] Total data Size: %d\n", sizeof(dataLen) + (buffer.str().size() + 1));
 #endif
 
 	// construct the dataset
-	char* databuf = new char[dataLen];
-	memset(databuf, 0, dataLen);
+	char* databuf = new char[buffer.str().size() + 1];
+	memset(databuf, 0, (buffer.str().size() + 1));
 	sprintf(databuf, "%s", dataData.c_str());
 
 	// compile to bytecode
-	CLua* gLua = new CLua(filename, databuf, dataLen);
+	CLua* gLua = new CLua(filename, databuf, buffer.str().size() +1);
 	while(!gLua->GetLuaStatus()) { }
 	delete[] databuf;
 
@@ -168,4 +120,149 @@ std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 	memcpy(databuf+4, gLua->scriptOutput.c_str(), gLua->scriptOutput.size());
 
 	return std::pair<char*, int>(databuf, dataLen);
+}
+void CServerNetwork::on_connect_accepted(librg_event_t *event) {
+	// initialize sync data and set entity control of the new client
+	event->entity->user_data = new PlayerSyncData();
+	librg_entity_control_set(event->ctx, event->entity->id, event->entity->client_peer);
+
+	// push back the entity into the entities vector
+	playerEntities.push_back(event->entity);
+	gLog->Log("[CServerNetwork][CLIENT CONNECTION] Network entity %d connected\n", event->entity->id);
+
+	// send every script/data to the client
+	for (auto it : dataArray)
+		librg_message_send_to(&ctx, VCOOP_GET_LUA_SCRIPT, event->peer, it.first, it.second);
+}
+void CServerNetwork::on_creating_entity(librg_event_t *event) 
+{
+	if (event->entity->type == VCOOP_PLAYER) 
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
+	}
+	else if (event->entity->type == VCOOP_PED)
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(PedSyncData));
+	}
+}
+void CServerNetwork::on_entity_update(librg_event_t *event) 
+{
+	if (event->entity->type == VCOOP_PLAYER)
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
+	}
+	else if (event->entity->type == VCOOP_PED)
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(PedSyncData));
+	}
+}
+void CServerNetwork::on_stream_update(librg_event_t *event) 
+{
+	if (event->entity->type == VCOOP_PLAYER)
+	{
+		librg_data_rptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
+	}
+	else if (event->entity->type == VCOOP_PED)
+	{
+		librg_data_rptr(event->data, event->entity->user_data, sizeof(PedSyncData));
+	}
+}
+
+void CServerNetwork::on_disconnect(librg_event_t* event){
+	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
+	if (tmp != playerEntities.end())	{
+		playerEntities.erase(tmp);
+		delete event->entity->user_data;
+	}	
+	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
+}
+
+void CServerNetwork::measure(void *userptr) {
+#ifndef VCCOOP_VERBOSE_LOG
+	system("CLS");
+#endif
+
+	librg_ctx_t *ctx = (librg_ctx_t *)userptr;
+
+	if (!ctx || !ctx->network.host) return;
+
+	static u32 lastdl = 0;
+	static u32 lastup = 0;
+
+	f32 dl = (ctx->network.host->totalReceivedData - lastdl) * 8.0f / (1000.0f * 1000); // mbps
+	f32 up = (ctx->network.host->totalSentData - lastup) * 8.0f / (1000.0f * 1000); // mbps
+
+	lastdl = ctx->network.host->totalReceivedData;
+	lastup = ctx->network.host->totalSentData;
+
+#ifndef VCCOOP_VERBOSE_LOG
+	std::string buf("[");
+	buf.append(time_stamp(LOGGER_TIME_FORMAT));
+	buf.append("][" VCCOOP_NAME "][CServerNetwork]");
+	printf("%s Server Port: %d | Players: %d/2000 | Entities: %d/2000\n%s took %f ms. Used bandwidth D/U: (%f / %f) mbps.\n", buf.c_str(), ServerPort, playerEntities.size(), otherEntities.size(), buf.c_str(), ctx->last_update, dl, up);
+
+	if (playerEntities.size() >= 1)	{
+		printf("%s \tActive Players\n=======================================================================================================================\n", buf.c_str());
+		for (auto it : playerEntities)		{
+			printf("\t\t\t\t\t\tID#%d\t|\tPLAYER\n", it->id);
+		}
+	}
+	if (otherEntities.size() >= 1) {
+		printf("\n=======================================================================================================================\n\t\t\t\t\t    \tActive Entities\n=======================================================================================================================\n");
+		for (auto it : otherEntities) {
+			printf("\t\t\t\t\t\tID#%d\t|\tENTITY\n", it->id);
+		}
+	}
+#endif
+}
+void CServerNetwork::server_thread()
+{
+	ctx.world_size		= zplm_vec3(5000.0f, 5000.0f, 5000.0f);
+	ctx.mode			= LIBRG_MODE_SERVER;
+	ctx.tick_delay		= 32;
+	ctx.max_connections = 2000;
+	ctx.max_entities	= 2000;
+	librg_init(&ctx);
+	
+	librg_event_add(&ctx,	LIBRG_CONNECTION_REQUEST,		on_connect_request);
+	librg_event_add(&ctx,	LIBRG_CONNECTION_ACCEPT,		on_connect_accepted);
+	librg_event_add(&ctx,	LIBRG_CONNECTION_DISCONNECT,	on_disconnect);
+
+	librg_event_add(&ctx,	LIBRG_ENTITY_CREATE,			on_creating_entity);
+	librg_event_add(&ctx,	LIBRG_ENTITY_UPDATE,			on_entity_update);
+	librg_event_add(&ctx,	LIBRG_ENTITY_REMOVE,			on_disconnect);
+
+	librg_network_add(&ctx, VCOOP_CREATE_PED,				PedCreateEvent);
+	librg_network_add(&ctx, VCOOP_CREATE_VEHICLE,			VehCreateEvent);
+	librg_network_add(&ctx, VCOOP_SEND_MESSAGE,				ClientSendMessage);
+	librg_network_add(&ctx, VCOOP_PED_IS_DEAD,				PlayerDeathEvent);
+	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH,		PlayerSpawnEvent);
+
+	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
+
+	gLog->Log("[CServerNetwork] Server thread initialized\n");
+
+	librg_address_t addr = { ServerPort };
+	librg_network_start(&ctx, addr);
+	gLog->Log("[CServerNetwork] Server starting on port %d\n", addr.port);
+
+#ifndef VCCOOP_VERBOSE_LOG	
+	zpl_timer_t *tick_timer = zpl_timer_add(ctx.timers);
+	tick_timer->user_data = (void *)&ctx; /* provide ctx as a argument to timer */
+	zpl_timer_set(tick_timer, 1000 * 1000, -1, measure);
+	zpl_timer_start(tick_timer, 1000);
+#endif
+
+	gLog->Log("[CServerNetwork] Loading main client script into memory..\n");
+	dataArray.push_back(LoadScript("client.lua"));
+	gLog->Log("[CServerNetwork] Script processed.\n");
+
+	while (server_running) {
+		librg_tick(&ctx);
+	}
+
+	librg_network_stop(&ctx);
+	librg_free(&ctx);
+
+	server_running = false;
 }
