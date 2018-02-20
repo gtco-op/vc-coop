@@ -50,7 +50,7 @@ CClientPlayer::CClientPlayer(int nID)
 {
 	this->gameID = 0;
 	this->networkID = nID;
-	this->ped = FindPlayerPed();
+	this->ped = LocalPlayer();
 }
 
 CClientPlayer::~CClientPlayer()
@@ -86,7 +86,8 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 		if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)
 		{
 			CStreaming::RequestModel(spd.WepModelIndex, 22);
-			CStreaming::LoadAllRequestedModels(false);
+			CStreaming::LoadAllRequestedModels(false); 
+			gGame->WaitUntilTheModelIsLoaded(spd.WepModelIndex);
 		}
 
 		ped->GiveWeapon((eWeaponType)spd.CurrWep, 1000, true);

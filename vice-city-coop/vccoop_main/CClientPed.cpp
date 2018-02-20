@@ -4,7 +4,7 @@ CClientPed::CClientPed(int nID)
 {
 	this->ped = NULL;
 
-	CVector pos = FindPlayerPed()->GetPosition();
+	CVector pos =LocalPlayer()->GetPosition();
 
 	bool res = false;
 

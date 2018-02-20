@@ -9,7 +9,7 @@ public:
 	bool IsLuaActive()				{ return bActive; }
 	void SetLuaStatus(bool Status)	{ bActive = Status; }
 	
-	static int lua_FindPlayerPed(lua_State* L);
+	static int lua_FindLocalPed(lua_State* L);
 	static int lua_Log(lua_State* L);
 
 	void CreateLuaThread();

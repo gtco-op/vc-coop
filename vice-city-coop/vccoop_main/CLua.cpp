@@ -17,7 +17,7 @@ CLua::CLua()
 	luaL_setfuncs(this->lState, printlib, 0);
 	lua_pop(this->lState, 1);
 
-	lua_register(this->lState, "FindPlayerPed",	CLua::lua_FindPlayerPed);
+	lua_register(this->lState, "FindLocalPed",	CLua::lua_FindLocalPed);
 
 	gLog->Log("[CLua] Lua state initialized\n");
 }
@@ -58,11 +58,11 @@ int CLua::lua_Log(lua_State* L) {
 	gLog->Log((char*)buffer.c_str());
 	return 0;
 }
-int CLua::lua_FindPlayerPed(lua_State* L)
+int CLua::lua_FindLocalPed(lua_State* L)
 {
 	bool ret = false;
 
-	if (FindPlayerPed())
+	if (LocalPlayer())
 		ret = true;
 
 	lua_pushboolean(L, ret);

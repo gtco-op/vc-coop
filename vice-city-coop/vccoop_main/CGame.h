@@ -34,6 +34,9 @@ public:
 	GTA_CONTROLSET remotePlayerKeys[MAX_PLAYERS];
 	CAMERA_AIM remotePlayerLookFrontX[MAX_PLAYERS];
 	int remotePlayerCameraMode[MAX_PLAYERS];
+	CPed *FindLocalPed();
+
+	void WaitUntilTheModelIsLoaded(int model);
 
 	bool debugEngineOutput = false;
 

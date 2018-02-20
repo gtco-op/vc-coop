@@ -205,6 +205,7 @@ void CClientNetwork::on_entity_remove(librg_event_t *event)
 {
 	if (event->entity->type == VCOOP_PLAYER)
 	{
+		gLog->Log("Removing player %d due to inactivity", event->entity->id);
 		auto player = (CClientPlayer *)event->entity->user_data;
 		delete player;
 		gNetwork->networkPlayers[event->entity->id] = NULL;

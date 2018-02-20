@@ -31,7 +31,7 @@ void CDebugScreen::Draw()
 
 	gRender->RenderText(vccoop_string, { 10, (LONG)screen::GetScreenHeight() - textSize.cy - 5 }, (gNetwork->connected ? 0xFF00FF00 : 0xFFFFFFFF));
 
-	sprintf(vccoop_string, "Ped pool: %d/%d\nVehicle pool: %d/%d", CPools::ms_pPedPool->GetNoOfFreeSpaces(), CPools::ms_pPedPool->m_nSize, CPools::ms_pVehiclePool->GetNoOfFreeSpaces(), CPools::ms_pVehiclePool->m_nSize);
+	sprintf(vccoop_string, "Ped pool: %d/%d\nVehicle pool: %d/%d\nmsTime: %d\n", CPools::ms_pPedPool->GetNoOfFreeSpaces(), CPools::ms_pPedPool->m_nSize, CPools::ms_pVehiclePool->GetNoOfFreeSpaces(), CPools::ms_pVehiclePool->m_nSize, CTimer::m_snTimeInMilliseconds);
 	textSize = gRender->MeasureText(vccoop_string);
 	gRender->RenderText(vccoop_string, { (LONG)screen::GetScreenWidth() - textSize.cx - 5, (LONG)screen::GetScreenHeight() -textSize.cy - 5 }, 0xFFFFFFFF);
 }

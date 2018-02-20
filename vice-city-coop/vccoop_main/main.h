@@ -121,7 +121,7 @@ extern "C" {
 #include "CLua.h"
 
 #define SAFE_RELEASE(p)          { if (p) { (p)->Release(); (p)=NULL; } }
-#define LocalPlayer				 FindPlayerPed
+#define LocalPlayer				 gGame->FindLocalPed
 
 using namespace std;
 using namespace plugin;

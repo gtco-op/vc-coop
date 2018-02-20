@@ -26,6 +26,22 @@ CGame::~CGame()
 {
 	gLog->Log("[CGame] CGame shutting down.\n");
 }
+
+CPed * CGame::FindLocalPed()
+{
+	return CWorld::Players[0].m_pPed;
+}
+
+void CGame::WaitUntilTheModelIsLoaded(int model)
+{
+	gLog->Log("[CGame] Loading model %d.\n", model);
+	while (CStreaming::ms_aInfoForModel[model].m_nLoadState != LOADSTATE_LOADED)
+	{
+		Sleep(5);
+	}
+	gLog->Log("[CGame] Model is loaded %d.\n", model);
+}
+
 void CGame::Run()
 {
 	if (GetAsyncKeyState(0x2C) & 1 && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && IsWindowActive())
@@ -108,7 +124,7 @@ void  _declspec(naked) Patched_CAutomobile_ProcessControl()
 
 	internalPlayerID = *(BYTE *)0xA10AFB;
 
-	localPlayer = FindPlayerPed();
+	localPlayer = LocalPlayer();
 
 	if(_pVehicle->m_pDriver && _pVehicle->m_pDriver != localPlayer && internalPlayerID == 0)
 	{
@@ -153,7 +169,7 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 	currentPlayerID = FindIDForPed((CPed*)dwCurPlayerActor);
 
 	//gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
-	localPlayer = FindPlayerPed();
+	localPlayer =LocalPlayer();
 
 	if (localPlayer && (CPed*)dwCurPlayerActor == localPlayer)
 	{
@@ -181,7 +197,7 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 		*(CAMERA_AIM*)0x7E4978 = gGame->remotePlayerLookFrontX[currentPlayerID];
 
 		MemWrite<BYTE>(0xA10AFB, currentPlayerID);
-
+		
 		// call the internal CPlayerPed[]::Process
 		_asm popad
 		_asm mov edx, 0x537270
@@ -222,6 +238,7 @@ void Hooked_DbgPrint(char * msg, ...)
 		gRender->gDebugScreen->gDbgLog->Log(" %s%s", buffer, (newline ? "\n" : ""));
 	}
 #endif
+	gLog->Log("%s\n", buffer);
 	return;
 }
 
@@ -243,7 +260,7 @@ char __fastcall CPed__InflictDamage_Hook(CPed * This, DWORD _EDX, CEntity* entit
 int(__thiscall* original_CPed__SetDead)(CPed*);
 int __fastcall CPed__SetDead_Hook(CPed * This, DWORD _EDX)
 {
-	if (This == FindPlayerPed())
+	if (This == LocalPlayer())
 	{
 		gLog->Log("player is ded 0x%X\n", This);
 		deathData dData;
@@ -264,7 +281,7 @@ signed int __cdecl ShowExceptionBox_Hook(DWORD* a1, int a2, int a3)
 void Hooked_SpawnPedAfterDeath()
 {
 	gLog->Log("game tried to spawn me\n");
-	CPed * ped = FindPlayerPed();
+	CPed * ped = LocalPlayer();
 	ped->Teleport({VCCOOP_DEFAULT_SPAWN_POSITION});
 	CTimer::Stop();
 	librg_message_send_all(&gNetwork->ctx, VCOOP_RESPAWN_AFTER_DEATH, NULL, 0);
@@ -516,10 +533,10 @@ void Hook_CRunningScript__Process()
 
 		// Setup own ped on 0 game ID
 		CPlayerPed::SetupPlayerPed(0);
-		gGame->remotePlayerPeds[0] = FindPlayerPed();
+		gGame->remotePlayerPeds[0] = LocalPlayer();
 
 		// Set player position
-		FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+		LocalPlayer()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
 		
 		// CStreaming::LoadScene
 		CVector scenePosition(VCCOOP_DEFAULT_SPAWN_POSITION);
@@ -588,11 +605,11 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 				//CClientPlayer * player = new CClientPlayer(0, gGame->remotePlayers);
 				//gGame->remotePlayerPeds[gGame->remotePlayers] = player->ped;
 				//gGame->remotePlayers++;
-				CVector pos = FindPlayerPed()->GetPosition();
+				CVector pos =LocalPlayer()->GetPosition();
 
 				bool res = false;
 
-				//FindPlayerPed()->Teleport(pos);
+				//FindLocalPed()->Teleport(pos);
 
 				for (int i = 0; i < 30; i++)
 				{
@@ -635,7 +652,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			else if (vkey == VK_F9 && !gNetwork->connected)
 			{
-				FindPlayerPed()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+				LocalPlayer()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
 				gLog->Log("[CGame] Teleporting to X: %.f Y: %.f Z: %.f\n", VCCOOP_DEFAULT_SPAWN_POSITION);
 			}
 			else if (vkey == VK_F10 && !gNetwork->connected) // crashfix

@@ -8,7 +8,7 @@ void CNameTags::Draw()
 	{ 
 		if (!gNetwork->networkPlayers[i])continue;
 		CPed * ped = gNetwork->networkPlayers[i]->ped; 
-		if (ped && ped != FindPlayerPed())
+		if (ped && ped != LocalPlayer())
 		{
 			CVector camPos = TheCamera.m_vecGameCamPos;
 			CVector posn = ped->GetPosition();
