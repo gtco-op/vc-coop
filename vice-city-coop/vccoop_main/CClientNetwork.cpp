@@ -10,6 +10,9 @@ bool								CClientNetwork::client_connected;
 bool								CClientNetwork::client_running;
 bool								CClientNetwork::connected;
 
+std::vector<librg_entity_t*>	playerEntities;
+char							playerNames[MAX_PLAYERS][25];
+std::vector<librg_entity_t*>	otherEntities;
 
 CClientNetwork::CClientNetwork()
 {

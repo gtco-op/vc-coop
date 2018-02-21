@@ -14,8 +14,6 @@ public:
 	static HANDLE server_handle;
 	static bool server_running, console_active;
 	static librg_ctx_t ctx;
-	static std::vector<librg_entity_t*> playerEntities;
-	static std::vector<librg_entity_t*> otherEntities;
 
 	static std::pair<char*, int> LoadScript(std::string filename);
 

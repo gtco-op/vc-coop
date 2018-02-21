@@ -214,3 +214,7 @@ enum {
 	VCOOP_PED,
 	VCOOP_VEHICLE,
 };
+
+extern std::vector<librg_entity_t*>	playerEntities;
+extern char							playerNames[MAX_PLAYERS][25];
+extern std::vector<librg_entity_t*>	otherEntities;
