@@ -35,12 +35,18 @@ CPed * CGame::FindLocalPed()
 void CGame::WaitUntilTheModelIsLoaded(int model)
 {
 	gLog->Log("[CGame] Loading model %d.\n", model);
-	while (CStreaming::ms_aInfoForModel[model].m_nLoadState != LOADSTATE_LOADED)
+	Command<0x0247>(model);//request
+	Command<0x038B>();//load requested
+	int ret = 0;
+	Command<0x0248>(model, &ret);
+	while (!ret)
 	{
-		Sleep(5);
+		Sleep(1);
+		Command<0x0248>(model, &ret);
 	}
 	gLog->Log("[CGame] Model is loaded %d.\n", model);
 }
+
 
 void CGame::Run()
 {
@@ -253,7 +259,16 @@ void Hooked_LoadingScreen(char * message, char * message2, char * splash)
 char(__thiscall* original_CPed__InflictDamage)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR);
 char __fastcall CPed__InflictDamage_Hook(CPed * This, DWORD _EDX, CEntity* entity, eWeaponType weapon, float damage, ePedPieceTypes bodypart, UCHAR unk)
 {
-	//gLog->Log("damage inflicted %d %f", weapon, damage);
+	if (entity == LocalPlayer())
+	{
+		gLog->Log("You did %f damage on someone with %d", weapon, damage);
+		return 0;
+	}
+	if (This == entity)
+	{
+		gLog->Log("Stop shooting yourself retard");
+		return 0;
+	}
 	return original_CPed__InflictDamage(This, entity, weapon, damage, bodypart, unk);
 }
 
@@ -609,6 +624,35 @@ void Hook_CRunningScript__Process()
 
 		// First tick processed
 		scriptProcessed = true;
+
+		CStreaming::RequestModel(269, 1);
+		CStreaming::RequestModel(270, 1);
+		CStreaming::RequestModel(275, 1);
+		CStreaming::RequestModel(278, 1);
+		CStreaming::RequestModel(284, 1);
+		CStreaming::RequestModel(280, 1);
+		CStreaming::RequestModel(286, 1);
+		CStreaming::RequestModel(290, 1);
+		CStreaming::RequestModel(294, 1);
+		CStreaming::RequestModel(268, 1);
+		CStreaming::RequestModel(270, 1);
+		CStreaming::RequestModel(291, 1);
+		CStreaming::RequestModel(275, 1);
+		CStreaming::RequestModel(279, 1);
+		CStreaming::RequestModel(283, 1);
+		CStreaming::RequestModel(280, 1);
+		CStreaming::RequestModel(286, 1);
+		CStreaming::RequestModel(287, 1);
+		CStreaming::RequestModel(259, 1);
+		CStreaming::RequestModel(264, 1);
+		CStreaming::RequestModel(272, 1);
+		CStreaming::RequestModel(274, 1);
+		CStreaming::RequestModel(277, 1);
+		CStreaming::RequestModel(281, 1);
+		CStreaming::RequestModel(276, 1);
+		CStreaming::RequestModel(285, 1);
+		CStreaming::RequestModel(288, 1);
+		CStreaming::LoadAllRequestedModels(0);
 	}
 }
 

@@ -120,16 +120,42 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	if (spd.WepModelIndex > 0 && spd.CurrWep > 0)
 	{
-		if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)
+		/*if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)
 		{
-			CStreaming::RequestModel(spd.WepModelIndex, 22);
-			CStreaming::LoadAllRequestedModels(false); 
-			gGame->WaitUntilTheModelIsLoaded(spd.WepModelIndex);
-		}
+			gLog->Log("Weapon model %d was not loaded so loading int rn", spd.WepModelIndex);
+			CStreaming::RequestModel(spd.WepModelIndex, 1); //for weapons its 1 as i see in the weapon cheats sources
+			CStreaming::LoadAllRequestedModels(false);
+		}*/
 
-		ped->GiveWeapon((eWeaponType)spd.CurrWep, 1000, true);
+		//gGame->WaitUntilTheModelIsLoaded(spd.WepModelIndex);
+		switch ((eWeaponType)spd.CurrWep)
+		{
+			case eWeaponType::WEAPONTYPE_CHAINSAW:
+			case eWeaponType::WEAPONTYPE_BASEBALLBAT:
+			case eWeaponType::WEAPONTYPE_BRASSKNUCKLE:
+			case eWeaponType::WEAPONTYPE_CAMERA:
+			case eWeaponType::WEAPONTYPE_CLEAVER:
+			case eWeaponType::WEAPONTYPE_DETONATOR:
+			case eWeaponType::WEAPONTYPE_GOLFCLUB:
+			case eWeaponType::WEAPONTYPE_HAMMER:
+			case eWeaponType::WEAPONTYPE_KATANA:
+			case eWeaponType::WEAPONTYPE_KNIFE:
+			case eWeaponType::WEAPONTYPE_MACHETE:
+			case eWeaponType::WEAPONTYPE_NIGHTSTICK:
+			case eWeaponType::WEAPONTYPE_SCREWDRIVER:
+			{
+				ped->GiveWeapon((eWeaponType)spd.CurrWep, 1, true);
+				ped->SetAmmo((eWeaponType)spd.CurrWep, 1);
+				break;
+			}
+			default: 
+			{
+				ped->GiveWeapon((eWeaponType)spd.CurrWep, 1000, true);
+				ped->SetAmmo((eWeaponType)spd.CurrWep, 1000);
+				break;
+			}
+		}
 		ped->SetCurrentWeapon((eWeaponType)spd.CurrWep);
-		ped->SetAmmo((eWeaponType)spd.CurrWep, 1000);
 	}
 	else
 	{
