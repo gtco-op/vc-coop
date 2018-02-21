@@ -72,6 +72,125 @@ typedef struct _GTA_CONTROLSET
 	BYTE byteCrouchAnalog[5];
 } GTA_CONTROLSET;
 
+typedef struct PED_FLAGS
+{
+	unsigned char bIsStanding : 1;
+	unsigned char bWasStanding : 1;
+	unsigned char b03 : 1;
+	unsigned char bIsPointingGunAt : 1;
+	unsigned char bIsLooking : 1;
+	unsigned char b06 : 1;
+	unsigned char bIsRestoringLook : 1;
+	unsigned char bIsAimingGun : 1;
+
+	unsigned char bIsRestoringGun : 1;
+	unsigned char bCanPointGunAtTarget : 1;
+	unsigned char bIsTalking : 1;
+	unsigned char bIsInTheAir : 1;
+	unsigned char bIsLanding : 1;
+	unsigned char bIsRunning : 1;
+	unsigned char b15 : 1;
+	unsigned char b16 : 1;
+
+	unsigned char bCanPedEnterSeekedCar : 1;
+	unsigned char bRespondsToThreats : 1;
+	unsigned char bRenderPedInCar : 1;
+	unsigned char b20 : 1;
+	unsigned char bUpdateAnimHeading : 1;
+	unsigned char bRemoveHead : 1;
+	unsigned char bFiringWeapon : 1;
+	unsigned char b24 : 1;
+
+	unsigned char b25a : 1;
+	unsigned char b25b : 1;
+	unsigned char bPedIsBleeding : 1;
+	unsigned char bStopAndShoot : 1;
+	unsigned char bIsPedDieAnimPlaying : 1;
+	unsigned char b30 : 1;
+	unsigned char b31 : 1;
+	unsigned char b32 : 1;
+
+	unsigned char bKindaStayInSamePlace : 1;
+	unsigned char bBeingChasedByPolice : 1;
+	unsigned char bNotAllowedToDuck : 1;
+	unsigned char bCrouchWhenShooting : 1;
+	unsigned char bIsDucking : 1;
+	unsigned char bGetUpAnimStarted : 1;
+	unsigned char bDoBloodyFootprints : 1;
+	unsigned char b40 : 1;
+
+	unsigned char b41 : 1;
+	unsigned char b42 : 1;
+	unsigned char b43 : 1;
+	unsigned char b44 : 1;
+	unsigned char b45 : 1;
+	unsigned char b46 : 1;
+	unsigned char b47 : 1;
+	unsigned char b48 : 1;
+
+	unsigned char b49 : 1;
+	unsigned char b50 : 1;
+	unsigned char b51 : 1;
+	unsigned char b52 : 1;
+	unsigned char b53 : 1;
+	unsigned char b54 : 1;
+	unsigned char bIsBeingJacked : 1;
+	unsigned char bFadeOut : 1;
+
+	unsigned char b57 : 1;
+	unsigned char b58 : 1;
+	unsigned char b59 : 1;
+	unsigned char bClearObjective : 1;
+	unsigned char b61 : 1;
+	unsigned char b62 : 1;
+	unsigned char b63 : 1;
+	unsigned char b64 : 1;
+
+	unsigned char bShakeFist : 1;
+	unsigned char bNoCriticalHits : 1;
+	unsigned char b67 : 1;
+	unsigned char bHasAlreadyBeenRecorded : 1;
+	unsigned char bFallenDown : 1;
+	unsigned char bUpdateMatricesRequired : 1;
+	unsigned char b71 : 1;
+	unsigned char b72 : 1;
+
+	unsigned char b73 : 1;
+	unsigned char b74 : 1;
+	unsigned char b75 : 1;
+	unsigned char b76 : 1;
+	unsigned char b77 : 1;
+	unsigned char bMiamiViceCop : 1;
+	unsigned char bMoneyHasBeenGivenByScript : 1;
+	unsigned char bHasBeenPhotographed : 1;
+
+	unsigned char bIsDrowning : 1;
+	unsigned char bDrownsInWater : 1;
+	unsigned char bStayBehindIfLeaderTooFar : 1;
+	unsigned char bUsingExitCarTimer : 1;
+	unsigned char bScriptPedIsPlayerAlly : 1;
+	unsigned char bKnockedUpIntoAir : 1;
+	unsigned char bDeadPedInFrontOfCar : 1;
+	unsigned char bStayInCarOnJack : 1;
+
+	unsigned char b89 : 1;
+	unsigned char bDoomAim : 1;
+	unsigned char bCanBeShotInVehicle : 1;
+	unsigned char b92 : 1;
+	unsigned char b93 : 1;
+	unsigned char b94 : 1;
+	unsigned char b95 : 1;
+	unsigned char b96 : 1;
+
+	unsigned char b97 : 1;
+	unsigned char bCrouchWhenScared : 1;
+	unsigned char b99 : 1;
+	unsigned char b100 : 1;
+	unsigned char b101 : 1;
+	unsigned char b102 : 1;
+	unsigned char bPedWasSetOutOfCollision : 1;
+	unsigned char bGangMemberReturnsFire : 1;
+};
 
 struct PedSyncData 
 {
@@ -157,7 +276,7 @@ struct PlayerSyncData
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
 
-	unsigned char bIsShooting;
+	PED_FLAGS m_nPedFlags;
 
 	GTA_CONTROLSET playerKeys;
 	CAMERA_AIM playerLook;
