@@ -1,7 +1,7 @@
 #pragma once
 
 // Define this for verbose log output
-#define VCCOOP_VERBOSE_LOG
+//#define VCCOOP_VERBOSE_LOG
 
 // Temporary spawn position
 #define VCCOOP_DEFAULT_SPAWN_POSITION	531.629761f, 606.497253f, 10.901563f
@@ -214,3 +214,7 @@ enum {
 	VCOOP_PED,
 	VCOOP_VEHICLE,
 };
+
+extern std::vector<librg_entity_t*>	playerEntities;
+extern char							playerNames[MAX_PLAYERS][25];
+extern std::vector<librg_entity_t*>	otherEntities;

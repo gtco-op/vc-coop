@@ -245,7 +245,9 @@ void Hooked_DbgPrint(char * msg, ...)
 		gRender->gDebugScreen->gDbgLog->Log(" %s%s", buffer, (newline ? "\n" : ""));
 	}
 #endif
+#ifdef VCCOOP_VERBOSE_LOG
 	gLog->Log("%s\n", buffer);
+#endif
 	return;
 }
 

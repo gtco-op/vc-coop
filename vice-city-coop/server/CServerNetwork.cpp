@@ -7,9 +7,11 @@ int								CServerNetwork::ServerSecret;
 HANDLE							CServerNetwork::server_handle;
 bool							CServerNetwork::server_running, CServerNetwork::console_active;
 librg_ctx_t						CServerNetwork::ctx;
-std::vector<librg_entity_t*>	CServerNetwork::playerEntities;
-std::vector<librg_entity_t*>	CServerNetwork::otherEntities;
 
+
+std::vector<librg_entity_t*>	playerEntities;
+char							playerNames[MAX_PLAYERS][25];
+std::vector<librg_entity_t*>	otherEntities;
 std::vector<std::pair<char*, int>> dataArray;
 
 CServerNetwork::CServerNetwork()
@@ -69,9 +71,6 @@ void CServerNetwork::VehCreateEvent(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Vehicle created. (%d)\n", entity->id);
 }
-
-char playerNames[MAX_PLAYERS][25];
-
 void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 {
 	char name[25];
@@ -115,8 +114,6 @@ void CServerNetwork::on_connect_request(librg_event_t *event)
 		librg_event_reject(event);
 	}
 }
-
-#include <regex>
 std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 {
 	// load the data into memory

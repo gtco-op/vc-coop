@@ -10,6 +10,9 @@ bool								CClientNetwork::client_connected;
 bool								CClientNetwork::client_running;
 bool								CClientNetwork::connected;
 
+std::vector<librg_entity_t*>	playerEntities;
+char							playerNames[MAX_PLAYERS][25];
+std::vector<librg_entity_t*>	otherEntities;
 
 CClientNetwork::CClientNetwork()
 {
@@ -37,7 +40,7 @@ void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
 	
 	gNetwork->networkPlayers[playerid]->Respawn();
 
-	gLog->Log("Respawning entity: %d\n", playerid);
+	gLog->Log("Respawning %s\n", gNetwork->networkPlayers[playerid]->szName);
 }
 void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 {
@@ -117,7 +120,7 @@ void CClientNetwork::ClientConnect(librg_message_t* msg)
 	sprintf(player->szName, cData.name);
 	gNetwork->networkPlayers[cData.playerId] = player;
 
-	gLog->Log("Player %d connected", cData.playerId);
+	gLog->Log("%s connected\n", gNetwork->networkPlayers[cData.playerId]->szName);
 }
 
 void CClientNetwork::on_entity_create(librg_event_t *event) 
@@ -131,10 +134,11 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 
 		if (event->entity->type == VCOOP_PLAYER) 
 		{
-			if (!gNetwork->networkPlayers[event->entity->id])return;
-			gLog->Log("Player %d streamed in", event->entity->id);
+			if (!gNetwork->networkPlayers[event->entity->id]) return;
 			if (!event->entity->user_data) event->entity->user_data = gNetwork->networkPlayers[event->entity->id];
+
 			gNetwork->networkPlayers[event->entity->id]->StreamIn();
+			gLog->Log("%s streamed in\n", gNetwork->networkPlayers[event->entity->id]->szName);
 		}
 		else if (event->entity->type == VCOOP_PED) 
 		{
@@ -230,7 +234,7 @@ void CClientNetwork::on_entity_remove(librg_event_t *event)
 		if (player)
 		{
 			player->StreamOut();
-			gLog->Log("Player %d streamed out", event->entity->id);
+			gLog->Log("%s streamed out\n", gNetwork->networkPlayers[event->entity->id]->szName);
 		}
 	}
 	else if (event->entity->type == VCOOP_PED)
@@ -250,7 +254,7 @@ void CClientNetwork::ClientDisconnect(librg_message_t* msg)
 	delete gNetwork->networkPlayers[playerid];
 	gNetwork->networkPlayers[playerid] = NULL;
 
-	gLog->Log("[CClientNetwork] Player %d has disconnected.\n", playerid);
+	gLog->Log("[CClientNetwork] %s has disconnected.\n", gNetwork->networkPlayers[playerid]->szName);
 }
 
 void CClientNetwork::on_disconnect(librg_event_t *event) 
