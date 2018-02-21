@@ -8,6 +8,7 @@ public:
 	int gameID;
 	CPed * ped;
 	PlayerSyncData syncData;
+	bool streamed;
 
 	CClientPlayer(int nID);
 	CClientPlayer(int nID, int gID);
@@ -17,4 +18,7 @@ public:
 
 	void SyncPlayer(PlayerSyncData spd);
 	PlayerSyncData CClientPlayer::BuildSyncData();
+
+	void StreamIn();
+	void StreamOut();
 };

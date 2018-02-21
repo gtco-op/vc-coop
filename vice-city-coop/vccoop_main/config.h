@@ -167,6 +167,12 @@ struct deathData
 	int weapon;
 };
 
+struct connectData
+{
+	char name[25];
+	int playerId;
+};
+
 enum eBlipType {
 	BLIP_NONE,          // 0
 	BLIP_CAR,           // 1
@@ -196,6 +202,9 @@ enum {
 
 	VCOOP_PED_IS_DEAD,
 	VCOOP_RESPAWN_AFTER_DEATH,
+
+	VCOOP_DISCONNECT,
+	VCOOP_CONNECT,
 
 	VCOOP_DO_SOMETHING_ELSE,
 };

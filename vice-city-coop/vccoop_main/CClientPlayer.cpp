@@ -7,10 +7,13 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	CWorld::Players[gID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[gID].m_pPed;
 	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+	CStreaming::RequestModel(7, 0);
 	this->ped->SetModelIndex(7);
 
 	this->gameID = gID;
 	this->networkID = nID;
+
+	this->streamed = true;
 
 	gLog->Log("[CClientPlayer]GameID: %d Network ID: %d Ped pointer: 0x%X\n\n", gID, nID, ped);
 
@@ -18,9 +21,42 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	gGame->remotePlayers++;
 }
 
+void CClientPlayer::StreamIn()
+{
+	if (this->streamed)return;
+	this->streamed = true;
+
+	this->ped = NULL;
+	CPlayerPed::SetupPlayerPed(this->gameID);
+	CWorld::Players[this->gameID].m_pPed->m_nPedStatus = 2;
+	this->ped = CWorld::Players[this->gameID].m_pPed;
+	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+	CStreaming::RequestModel(7, 0);
+	this->ped->SetModelIndex(7);
+
+	gGame->remotePlayerPeds[this->gameID] = this->ped;
+}
+
+void CClientPlayer::StreamOut()
+{
+	if (this->streamed == false)return;
+	this->streamed = false;
+
+	if (this->ped)
+	{
+		CWorld::Remove(this->ped);
+		if (this->ped)
+		{
+			this->ped->Remove();
+			CPed::operator delete(this->ped);
+			this->ped = NULL;
+		}
+	}
+}
 
 void CClientPlayer::Respawn()
 {
+	if (!this->streamed)return;
 	if (this->ped)
 	{
 		CWorld::Remove(this->ped);
@@ -36,6 +72,7 @@ void CClientPlayer::Respawn()
 	CWorld::Players[this->gameID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[this->gameID].m_pPed;
 	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+	CStreaming::RequestModel(7, 0);
 	this->ped->SetModelIndex(7);
 	this->ped->m_fHealth = 100.0f;
 

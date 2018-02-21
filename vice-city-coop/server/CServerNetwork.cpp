@@ -69,15 +69,48 @@ void CServerNetwork::VehCreateEvent(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Vehicle created. (%d)\n", entity->id);
 }
-void CServerNetwork::on_connect_request(librg_event_t *event) {
+
+char playerNames[MAX_PLAYERS][25];
+
+void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
+{
+	char name[25];
+	librg_data_rptr(msg->data, (void*)&name, 25);
+	librg_entity_t * entity = librg_entity_find(msg->ctx, msg->peer);
+	strcpy(playerNames[entity->id], name);
+	
+	//inform everyone we are connected
+	connectData cData;
+	sprintf(cData.name, playerNames[entity->id]);
+	cData.playerId = entity->id;
+	librg_message_send_except(msg->ctx, VCOOP_CONNECT, entity->client_peer, &cData, sizeof(connectData));
+
+	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
+
+	//loop trough connected playera and send it to this guy
+	for (auto it : playerEntities)
+	{
+		if (it->id != entity->id)
+		{
+			sprintf(cData.name, playerNames[it->id]);
+			cData.playerId = it->id;
+			librg_message_send_to(msg->ctx, VCOOP_CONNECT, entity->client_peer, &cData, sizeof(connectData));
+		}
+	}
+}
+
+
+void CServerNetwork::on_connect_request(librg_event_t *event) 
+{
 	// Player Name
 	char name[25];
 	librg_data_rptr(event->data, (void*)&name, 25);
 
 	u32 secret = librg_data_ru32(event->data);
-	gLog->Log("[CServerNetwork][CLIENT REQUEST] Network entity with name '%s' is requesting to connect\n", name);
+	gLog->Log("[CServerNetwork][CLIENT REQUEST] Network entity with name %s is requesting to connect\n", name);
 
-	if (strlen(name) < 0 || secret != gServerNetwork->ServerSecret) {
+	if (secret != gServerNetwork->ServerSecret) 
+	{
 		gLog->Log("[CServerNetwork] Rejected event from network entity\n");
 		librg_event_reject(event);
 	}
@@ -121,7 +154,8 @@ std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
 
 	return std::pair<char*, int>(databuf, dataLen);
 }
-void CServerNetwork::on_connect_accepted(librg_event_t *event) {
+void CServerNetwork::on_connect_accepted(librg_event_t *event) 
+{
 	// initialize sync data and set entity control of the new client
 	event->entity->user_data = new PlayerSyncData();
 	librg_entity_control_set(event->ctx, event->entity->id, event->entity->client_peer);
@@ -168,12 +202,18 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 	}
 }
 
-void CServerNetwork::on_disconnect(librg_event_t* event){
+void CServerNetwork::on_disconnect(librg_event_t* event)
+{
+	librg_entity_control_remove(event->ctx, event->entity->id);
 	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
-	if (tmp != playerEntities.end())	{
+	if (tmp != playerEntities.end())	
+	{
 		playerEntities.erase(tmp);
 		delete event->entity->user_data;
 	}	
+
+	librg_message_send_except(&ctx, VCOOP_DISCONNECT, event->peer, &event->entity->id, sizeof(u32));
+
 	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
 }
 
@@ -230,13 +270,13 @@ void CServerNetwork::server_thread()
 
 	librg_event_add(&ctx,	LIBRG_ENTITY_CREATE,			on_creating_entity);
 	librg_event_add(&ctx,	LIBRG_ENTITY_UPDATE,			on_entity_update);
-	librg_event_add(&ctx,	LIBRG_ENTITY_REMOVE,			on_disconnect);
 
 	librg_network_add(&ctx, VCOOP_CREATE_PED,				PedCreateEvent);
 	librg_network_add(&ctx, VCOOP_CREATE_VEHICLE,			VehCreateEvent);
 	librg_network_add(&ctx, VCOOP_SEND_MESSAGE,				ClientSendMessage);
 	librg_network_add(&ctx, VCOOP_PED_IS_DEAD,				PlayerDeathEvent);
 	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH,		PlayerSpawnEvent);
+	librg_network_add(&ctx, VCOOP_CONNECT,					HandShakeIsDone);
 
 	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
 

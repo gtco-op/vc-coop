@@ -233,7 +233,8 @@ void Hooked_DbgPrint(char * msg, ...)
 		newline = true;
 	}
 #ifdef VCCOOP_DEBUG
-	if (gRender->gDebugScreen->gDevConsole != nullptr && debugEnabled) {
+	if (gRender->gDebugScreen->gDevConsole != nullptr && debugEnabled)
+	{
 		gRender->gDebugScreen->gDevConsole->AddLog("%s%s", buffer, (newline ? "\n" : ""));
 		gRender->gDebugScreen->gDbgLog->Log(" %s%s", buffer, (newline ? "\n" : ""));
 	}
@@ -492,7 +493,60 @@ void CGame::InitPreGamePatches()
 	//Buildings limit patch
 	MemWrite<BYTE>(0x4C0309, 0x4E);
 	MemWrite<BYTE>(0x4C030A, 0x20);
-	
+
+	// flhreference patch
+	MemWrite<BYTE>(0x628E00, 5);
+
+	//probably disable sliding in CPed::UpdatePosition
+	MemCpy((void*)0x50A4BE, "\x69\x1E\xE8", 3);
+
+	//disable CPop::RemovePedIfPoolGetsFUll
+	MakeRet(0x53D560);
+
+	//PlayOneShotScriptObject patching something in statement
+	MemWrite<BYTE>(0x5F9233, 0x4C);
+	MemWrite<BYTE>(0x5C45A6, 0xEE);
+	MemWrite<BYTE>(0x5C4688, 0x36);
+
+	//nop removing models in CPlayerPed::PlayIdleAnimations
+	MakeNop(0x535F17, 5);
+
+	// ProcessEntitiesInSectorList currArea patch
+	MemWrite<BYTE>(0x40E7FC, 0xEBu);
+	MemWrite<BYTE>(0x40E8CC, 0xEBu);
+	MemWrite<BYTE>(0x40E686, 0xEBu);
+	MemWrite<BYTE>(0x40E6C3, 0xEBu);
+	MemWrite<BYTE>(0x40E703, 0xEBu);
+	MemWrite<BYTE>(0x40E743, 0xEBu);
+
+	// CTxdStore::AddRef patch
+	MemWrite<BYTE>(0x580A7F, 0xF);
+	// CTxdStore::RemoveRef patch
+	MemWrite<BYTE>(0x580A2F, 0x22);
+
+	// disable CPlayerPed::KeepAreaAroundPlayerClear
+	MakeRet(0x531D60);
+
+	//Disable choking
+	MakeNop(0x4D4E0F, 6);
+
+	//nop smth in RenderPedCB
+	MakeNop(0x581A63, 2);
+
+	/*
+	// nop CVehicle:SetDriver switch
+	MakeNop(0x5B8A4B2, 2);                   
+	// ^ probably stopping the game from giving hp/arm/weps
+	MakeNop(0x5B8A50, 2);
+	MakeNop(0x5B8A5A, 2);
+	MakeNop(0x5B8A5C, 4);
+	MakeNop(0x5B8A68, 4);
+	MakeNop(0x5B8A6C, 2);
+	MemWrite<BYTE>(0x5B893A, 0x9FE9);
+	MemWrite<BYTE>(0x5B893C, 0x90000000);*/
+
+	//disable random melee thing
+	MakeNop(0x5D2E88, 6);
 
 	MemWrite<DWORD>(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
 	MemWrite<DWORD>(0x69ADB0, (DWORD)Patched_CAutomobile_ProcessControl);

@@ -29,7 +29,7 @@ void CNameTags::Draw()
 				char text[600]; 
 				if (ped->IsPlayer())
 				{
-					sprintf(text, "Player(%d)", i); 
+					sprintf(text, "%s(%d)", gNetwork->networkPlayers[i]->szName, i);
 					 
 					SIZE size = gRender->MeasureText(text);
 

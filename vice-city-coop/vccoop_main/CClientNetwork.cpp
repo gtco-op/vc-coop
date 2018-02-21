@@ -79,6 +79,11 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event)
 
 	local_player = event->entity;
 	event->entity->user_data = new CClientPlayer(event->entity->id);
+
+	//Inform server about our name
+	char name[25];
+	strcpy(name, gGame->Name.c_str());
+	librg_message_send_all(&gNetwork->ctx, VCOOP_CONNECT, &name, sizeof(name));
 }
 void CClientNetwork::on_connect_refused(librg_event_t *event) 
 {
@@ -102,6 +107,19 @@ void CClientNetwork::ClientConnectThread()
 	librg_network_stop(&ctx);
 	librg_free(&ctx);
 }
+
+void CClientNetwork::ClientConnect(librg_message_t* msg)
+{
+	connectData cData;
+	librg_data_rptr(msg->data, &cData, sizeof(connectData));
+
+	CClientPlayer * player = new CClientPlayer(cData.playerId, 1);
+	sprintf(player->szName, cData.name);
+	gNetwork->networkPlayers[cData.playerId] = player;
+
+	gLog->Log("Player %d connected", cData.playerId);
+}
+
 void CClientNetwork::on_entity_create(librg_event_t *event) 
 {
 	zplm_vec3_t position = event->entity->position;
@@ -109,13 +127,14 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 	if (event->entity->type == VCOOP_PLAYER || event->entity->type == VCOOP_PED)
 	{
 		PlayerSyncData spd;
-		CStreaming::RequestModel(7, 0);
 		librg_data_rptr(event->data, &spd, sizeof(PlayerSyncData));
 
 		if (event->entity->type == VCOOP_PLAYER) 
 		{
-			event->entity->user_data = new CClientPlayer(event->entity->id, 1);//needs to be changed later
-			gNetwork->networkPlayers[event->entity->id] = (CClientPlayer*)event->entity->user_data;
+			if (!gNetwork->networkPlayers[event->entity->id])return;
+			gLog->Log("Player %d streamed in", event->entity->id);
+			if (!event->entity->user_data) event->entity->user_data = gNetwork->networkPlayers[event->entity->id];
+			gNetwork->networkPlayers[event->entity->id]->StreamIn();
 		}
 		else if (event->entity->type == VCOOP_PED) 
 		{
@@ -126,10 +145,12 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 	{
 		//not done yet
 	}
-	gLog->Log("[CClientNetwork] Network entity %d initialized\n", event->entity->id);
+	gLog->Log("[CClientNetwork] Network entity %d initialized\n", event->entity->id); 
 }
 void CClientNetwork::on_entity_update(librg_event_t *event) 
 {
+	if (!event->entity->user_data)return; //dont do shit if its not initialized yet
+
 	if (event->entity->type == VCOOP_PLAYER)
 	{
 		PlayerSyncData spd;
@@ -205,16 +226,31 @@ void CClientNetwork::on_entity_remove(librg_event_t *event)
 {
 	if (event->entity->type == VCOOP_PLAYER)
 	{
-		gLog->Log("Removing player %d due to inactivity", event->entity->id);
 		auto player = (CClientPlayer *)event->entity->user_data;
-		delete player;
-		gNetwork->networkPlayers[event->entity->id] = NULL;
+		if (player)
+		{
+			player->StreamOut();
+			gLog->Log("Player %d streamed out", event->entity->id);
+		}
 	}
 	else if (event->entity->type == VCOOP_PED)
 	{
 		auto pedestrian = (CClientPed *)event->entity->user_data;
 		delete pedestrian;
 	}
+}
+
+void CClientNetwork::ClientDisconnect(librg_message_t* msg)
+{
+	u32 playerid;
+	librg_data_rptr(msg->data, &playerid, sizeof(u32));
+	librg_entity_t * entity = librg_entity_fetch(msg->ctx, playerid);
+	entity->user_data = NULL;
+
+	delete gNetwork->networkPlayers[playerid];
+	gNetwork->networkPlayers[playerid] = NULL;
+
+	gLog->Log("[CClientNetwork] Player %d has disconnected.\n", playerid);
 }
 
 void CClientNetwork::on_disconnect(librg_event_t *event) 
@@ -293,6 +329,8 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 	librg_network_add(&ctx, VCOOP_RECEIVE_MESSAGE, ClientReceiveMessage);
 	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH, PlayerSpawnEvent);
 	librg_network_add(&ctx, VCOOP_GET_LUA_SCRIPT, ClientReceiveScript);
+	librg_network_add(&ctx, VCOOP_DISCONNECT, ClientDisconnect);
+	librg_network_add(&ctx, VCOOP_CONNECT, ClientConnect);
 
 	addr.host = szAddress;
 	addr.port = iPort;

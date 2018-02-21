@@ -43,6 +43,8 @@ public:
 	static void ClientConnectThread();
 	static void StopClientThread();
 	static void AttemptConnect(char* szAddress, int iPort);
+	static void ClientDisconnect(librg_message_t* msg);
+	static void ClientConnect(librg_message_t* msg);
 
 	CClientPlayer *networkPlayers[MAX_PLAYERS];
 };
