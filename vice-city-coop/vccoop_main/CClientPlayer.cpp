@@ -120,12 +120,12 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	if (spd.WepModelIndex > 0 && spd.CurrWep > 0)
 	{
-		/*if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)
+		if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)
 		{
 			gLog->Log("Weapon model %d was not loaded so loading int rn", spd.WepModelIndex);
-			CStreaming::RequestModel(spd.WepModelIndex, 1); //for weapons its 1 as i see in the weapon cheats sources
+			CStreaming::RequestModel(spd.WepModelIndex, 0x16); //for weapons its 1 as i see in the weapon cheats sources
 			CStreaming::LoadAllRequestedModels(false);
-		}*/
+		}
 
 		//gGame->WaitUntilTheModelIsLoaded(spd.WepModelIndex);
 		switch ((eWeaponType)spd.CurrWep)
@@ -145,7 +145,7 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 			case eWeaponType::WEAPONTYPE_SCREWDRIVER:
 			{
 				ped->GiveWeapon((eWeaponType)spd.CurrWep, 1, true);
-				ped->SetAmmo((eWeaponType)spd.CurrWep, 1);
+				//ped->SetAmmo((eWeaponType)spd.CurrWep, 1);
 				break;
 			}
 			default: 
@@ -164,6 +164,8 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
 	gGame->remotePlayerLookFrontX[this->gameID] = spd.playerLook;
+
+	ped->m_nPedFlags.bFiringWeapon = spd.bIsShooting;
 }
 
 PlayerSyncData CClientPlayer::BuildSyncData()
@@ -174,6 +176,7 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.Armour = ped->m_fArmour;
 	spd.iModelIndex = ped->m_nModelIndex;
 	spd.Rotation = ped->m_fRotationCur;
+	spd.bIsShooting = ped->m_nPedFlags.bFiringWeapon;
 
 	spd.CurrWep = ped->m_aWeapons[ped->m_nWepSlot].m_nType;
 	spd.WepModelIndex = ped->m_dwWepModelID;

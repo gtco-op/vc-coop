@@ -174,7 +174,7 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 
 	currentPlayerID = FindIDForPed((CPed*)dwCurPlayerActor);
 
-	//gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
+	gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
 	localPlayer =LocalPlayer();
 
 	if (localPlayer && (CPed*)dwCurPlayerActor == localPlayer)
@@ -223,7 +223,7 @@ void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
 	_asm popad
 	_asm ret
 }
-
+#define VCCOOP_VERBOSE_LOG
 void Hooked_DbgPrint(char * msg, ...)
 {
 	char buffer[256];
@@ -263,12 +263,12 @@ char __fastcall CPed__InflictDamage_Hook(CPed * This, DWORD _EDX, CEntity* entit
 {
 	if (entity == LocalPlayer())
 	{
-		gLog->Log("You did %f damage on someone with %d", weapon, damage);
+		gLog->Log("You did %f damage on someone with %d\n", weapon, damage);
 		return 0;
 	}
 	if (This == entity)
 	{
-		gLog->Log("Stop shooting yourself retard");
+		gLog->Log("Stop shooting yourself retard\n");
 		return 0;
 	}
 	return original_CPed__InflictDamage(This, entity, weapon, damage, bodypart, unk);
@@ -307,6 +307,9 @@ void Hooked_SpawnPedAfterDeath()
 
 void CGame::InitPreGamePatches()
 {
+	DWORD flOldProtect;
+	VirtualProtect((LPVOID)0x401000, 0x27CE00u, PAGE_EXECUTE_READWRITE, &flOldProtect);
+
 	original_CPed__InflictDamage = (char(__thiscall*)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
 	original_CPed__SetDead = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4F6430, (PBYTE)CPed__SetDead_Hook);
 	original_ShowExceptionBox = (signed int(__cdecl*)(DWORD*, int, int))DetourFunction((PBYTE)0x677E40, (PBYTE)ShowExceptionBox_Hook);
@@ -549,6 +552,9 @@ void CGame::InitPreGamePatches()
 
 	//nop smth in RenderPedCB
 	MakeNop(0x581A63, 2);
+
+	//CPed::Refresh patch
+	MakeNop(0x50D96A, 5);
 
 	/*
 	// nop CVehicle:SetDriver switch
