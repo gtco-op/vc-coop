@@ -118,6 +118,8 @@ extern "C" {
 
 #include "CRender.h"
 
+#include "CDebugEngine.h"
+
 #include "CLua.h"
 
 #include "CCameraStuff.h"
@@ -139,6 +141,10 @@ extern CGame			*gGame;
 extern CRender			*gRender;
 extern CLogger			*gLog;
 extern CChat			*gChat;
+
+#ifdef VCCOOP_DEBUG_ENGINE
+extern CDebugEngine		*gDbgEngine;
+#endif
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 

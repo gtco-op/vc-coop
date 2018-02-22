@@ -159,6 +159,9 @@
     <ClInclude Include="CHooks.h">
       <Filter>Source\game</Filter>
     </ClInclude>
+    <ClInclude Include="CDebugEngine.h">
+      <Filter>Source\rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CGame.cpp">
@@ -223,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="CHooks.cpp">
       <Filter>Source\game</Filter>
+    </ClCompile>
+    <ClCompile Include="CDebugEngine.cpp">
+      <Filter>Source\rendering</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

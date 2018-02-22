@@ -141,8 +141,8 @@ void Hooked_DbgPrint(char * msg, ...)
 		gRender->gDebugScreen->gDbgLog->Log(" %s%s", buffer, (newline ? "\n" : ""));
 	}
 #endif
-#ifdef VCCOOP_VERBOSE_LOG
-	gLog->Log("%s\n", buffer);
+#ifdef VCCOOP_DEBUG_ENGINE
+	gDbgEngine->AddDebugMessage("[DEBUG] %s", buffer);
 #endif
 	return;
 }
@@ -276,7 +276,7 @@ char __cdecl RemoveModel_Hook(int model)
 	if (model < 300 && model >= 268)
 	{
 		gLog->Log("[CHooks]Game removed weapon model: %d\n", model);
-		return;
+		return 0;
 	}
 	return original_RemoveModel(model);
 }

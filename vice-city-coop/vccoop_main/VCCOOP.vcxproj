@@ -313,6 +313,7 @@
     <ClCompile Include="CClientVehicle.cpp" />
     <ClCompile Include="CConfiguration.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CDebugEngine.cpp" />
     <ClCompile Include="CDebugScreen.cpp" />
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="CHooks.cpp" />
@@ -338,6 +339,7 @@
     <ClInclude Include="CClientVehicle.h" />
     <ClInclude Include="CConfiguration.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CDebugEngine.h" />
     <ClInclude Include="CDebugScreen.h" />
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CHooks.h" />

@@ -6,6 +6,9 @@ CGame			*gGame;
 CRender			*gRender;
 CLogger			*gLog;
 CChat			*gChat;
+#ifdef VCCOOP_DEBUG_ENGINE
+CDebugEngine	*gDbgEngine;
+#endif
 
 CCore::CCore()
 {
@@ -15,6 +18,9 @@ CCore::CCore()
 #endif
 	srand((int)time(NULL));
 
+#ifdef VCCOOP_DEBUG_ENGINE
+	gDbgEngine = new CDebugEngine();
+#endif
 	gChat = new CChat();
 	gLog = new CLogger();
 	gLog->Log("[CCore] %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);
@@ -24,6 +30,10 @@ CCore::CCore()
 	gGame = new CGame();
 	gRender = new CRender();
 	gRender->gGuiContainer.push_back(gChat);
+
+#ifdef VCCOOP_DEBUG_ENGINE
+	gRender->gGuiContainer.push_back(gDbgEngine);
+#endif
 
 	gLog->Log("[CCore] Main method finished.\n");
 
