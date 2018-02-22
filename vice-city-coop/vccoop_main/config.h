@@ -28,7 +28,7 @@
 #define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
 
 //print game's internal debug messages
-#define VCCOOP_DEBUG_ENGINE
+//#define VCCOOP_DEBUG_ENGINE
 
 //------------------------------------------------------------------------------------------
 

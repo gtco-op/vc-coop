@@ -48,7 +48,7 @@ void CLogger::Log(char * format, ...)
 	buf.append(buffer);
 	Out(buf.c_str());
 
-	if(!this->debugLog) gChat->AddChatMessage(buf.c_str());
+	gChat->AddChatMessage(buf.c_str());
 
 #ifdef VCCOOP_DEBUG
 	printf(buf.c_str());

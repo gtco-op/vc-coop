@@ -113,7 +113,7 @@
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Release\</IntDir>
     <TargetName>vccoop</TargetName>
     <TargetExt>.asi</TargetExt>
-    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(ProjectDir)\vendor\lua\include</IncludePath>
+    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include</IncludePath>
     <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(SolutionDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA3|Win32'">
@@ -187,7 +187,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_USING_V110_SDK71_;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;GTAVC;GTAGAME_NAME="Vice City";GTAGAME_ABBR="VC";GTAGAME_ABBRLOW="vc";GTAGAME_PROTAGONISTNAME="Tommy";GTAGAME_CITYNAME="Vice City";_DX9_SDK_INSTALLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(PLUGIN_SDK_DIR)\plugin_vc;$(PLUGIN_SDK_DIR)\plugin_vc\game_vc;$(RWD3D9_DIR)\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\vendor\detours\;$(PLUGIN_SDK_DIR)\plugin_vc;$(PLUGIN_SDK_DIR)\plugin_vc\game_vc;$(RWD3D9_DIR)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -203,9 +203,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>lua.lib;winmm.lib;ws2_32.lib;paths.lib;plugin_vc.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\vendor\detours\;$(ProjectDir)\vendor\lua\;$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.VC.lib</ImportLibrary>
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
       <Command>XCOPY /Y /J /C $(OutDir)vccoop.asi $(GTA_VC_DIR)</Command>
