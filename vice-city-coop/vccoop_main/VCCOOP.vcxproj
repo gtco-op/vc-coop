@@ -305,6 +305,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CCameraStuff.cpp" />
     <ClCompile Include="CChat.cpp" />
     <ClCompile Include="CClientNetwork.cpp" />
     <ClCompile Include="CClientPed.cpp" />
@@ -314,6 +315,7 @@
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CDebugScreen.cpp" />
     <ClCompile Include="CGame.cpp" />
+    <ClCompile Include="CHooks.cpp" />
     <ClCompile Include="CImGui.cpp" />
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="CLua.cpp" />
@@ -328,6 +330,7 @@
     <ClCompile Include="vendor\imgui\imgui_impl_dx9.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CCameraStuff.h" />
     <ClInclude Include="CChat.h" />
     <ClInclude Include="CClientNetwork.h" />
     <ClInclude Include="CClientPed.h" />
@@ -337,6 +340,7 @@
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CDebugScreen.h" />
     <ClInclude Include="CGame.h" />
+    <ClInclude Include="CHooks.h" />
     <ClInclude Include="CImGui.h" />
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CLua.h" />

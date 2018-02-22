@@ -116,7 +116,7 @@ void CChat::ProcessChatInput()
 		}
 		else if (strstr(this->chatInputBuffer, "/campos"))
 		{
-			CVector pos = gGame->GetCameraPos();
+			CVector pos = CCameraStuff::GetCameraPos();
 			gLog->Log("[CChat] X: %f\tY: %f\tZ: %f\n", pos.x, pos.y, pos.z);
 		}
 		else if (strstr(this->chatInputBuffer, "/pos"))

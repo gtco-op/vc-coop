@@ -120,13 +120,13 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	if (spd.WepModelIndex > 0 && spd.CurrWep > 0)
 	{
-		if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)
+		/*if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)
 		{
 			gLog->Log("Weapon model %d was not loaded so loading int rn", spd.WepModelIndex);
 			CStreaming::RequestModel(spd.WepModelIndex, 0x16); //for weapons its 1 as i see in the weapon cheats sources
 			CStreaming::LoadAllRequestedModels(false);
 		}
-
+		*/
 		//gGame->WaitUntilTheModelIsLoaded(spd.WepModelIndex);
 		switch ((eWeaponType)spd.CurrWep)
 		{

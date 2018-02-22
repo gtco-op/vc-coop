@@ -72,7 +72,7 @@ typedef struct _GTA_CONTROLSET
 	BYTE byteCrouchAnalog[5];
 } GTA_CONTROLSET;
 
-typedef struct PED_FLAGS
+typedef struct _PED_FLAGS
 {
 	unsigned char bIsStanding : 1;
 	unsigned char bWasStanding : 1;
@@ -190,7 +190,7 @@ typedef struct PED_FLAGS
 	unsigned char b102 : 1;
 	unsigned char bPedWasSetOutOfCollision : 1;
 	unsigned char bGangMemberReturnsFire : 1;
-};
+} PED_FLAGS;
 
 struct PedSyncData 
 {

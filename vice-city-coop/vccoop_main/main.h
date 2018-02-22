@@ -120,6 +120,9 @@ extern "C" {
 
 #include "CLua.h"
 
+#include "CCameraStuff.h"
+#include "CHooks.h"
+
 #define SAFE_RELEASE(p)          { if (p) { (p)->Release(); (p)=NULL; } }
 #define LocalPlayer				 gGame->FindLocalPed
 

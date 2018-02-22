@@ -153,6 +153,12 @@
     <ClInclude Include="CCore.h">
       <Filter>Source\main</Filter>
     </ClInclude>
+    <ClInclude Include="CCameraStuff.h">
+      <Filter>Source\game</Filter>
+    </ClInclude>
+    <ClInclude Include="CHooks.h">
+      <Filter>Source\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CGame.cpp">
@@ -211,6 +217,12 @@
     </ClCompile>
     <ClCompile Include="CCore.cpp">
       <Filter>Source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="CCameraStuff.cpp">
+      <Filter>Source\game</Filter>
+    </ClCompile>
+    <ClCompile Include="CHooks.cpp">
+      <Filter>Source\game</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

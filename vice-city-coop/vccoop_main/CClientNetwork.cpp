@@ -302,8 +302,8 @@ void CClientNetwork::SetReadyToSpawn(bool bReady)
 		gRender->bConnecting	= false;
 		gRender->bGUI			= false;
 		gRender->bAboutWindow	= false;
-		gGame->RestoreCamera();
-		gGame->SetCameraBehindPlayer();
+		CCameraStuff::RestoreCamera();
+		CCameraStuff::SetCameraBehindPlayer();
 		gGame->EnableHUD();
 	}
 	else
