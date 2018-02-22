@@ -340,7 +340,7 @@ void CGame::DisableMouseInput()
 
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	SetMenu(wnd, NULL);
+	//SetMenu(wnd, NULL);
 	switch (umsg)
 	{
 
