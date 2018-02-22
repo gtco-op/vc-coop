@@ -18,8 +18,6 @@ CLua::CLua()
 	lua_pop(this->lState, 1);
 
 	lua_register(this->lState, "FindLocalPed",	CLua::lua_FindLocalPed);
-
-	gLog->Log("[CLua] Lua state initialized\n");
 }
 CLua::~CLua()
 {
@@ -34,13 +32,12 @@ void CLua::LuaThread(LPVOID lParam)
 
 	lua_State* tmp = state->GetState();
 
-	luaL_loadbuffer(tmp, state->mainScript, state->mainScriptSize, "script");
+	luaL_loadbuffer(tmp, state->mainScript, state->mainScriptSize, "vccoop_client_script");
 	lua_pcall(tmp, NULL, 0, NULL);
 
 	state->SetLuaStatus(FALSE);
 	lua_close(state->GetState());
 
-	gLog->Log("[CLua] Lua script finished\n");
 	delete state;
 }
 void CLua::CreateLuaThread()
