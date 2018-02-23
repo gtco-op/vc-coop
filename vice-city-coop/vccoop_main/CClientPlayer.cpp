@@ -416,8 +416,8 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 
 	spd.iInteriorID = 0;
 
-	spd.playerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
-	spd.playerLook = *(CAMERA_AIM*)0x7E4978;
+	spd.playerKeys = *(GTA_CONTROLSET*)CPad::GetPad(0);
+	spd.playerLook = *(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front;
 	
 	this->syncData = spd;
 

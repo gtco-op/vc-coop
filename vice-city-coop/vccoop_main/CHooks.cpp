@@ -1,11 +1,8 @@
 #include "main.h"
 
-DWORD			dwCurPlayerActor			= 0;
-CPed*			localPlayer					= NULL;
 GTA_CONTROLSET	localPlayerKeys;
 CAMERA_AIM		localPlayerLookFrontX;
 BYTE			localPlayerCameraMode;
-int				currentPlayerID				= 0;
 BYTE			internalPlayerID			= 0;
 CVehicle *		_pVehicle;
 static bool		scriptProcessed				= false;
@@ -18,7 +15,7 @@ int FindIDForPed(CPed * ped)
 	}
 	return -1;
 }
-
+/*
 void  _declspec(naked) Patched_CAutomobile_ProcessControl()
 {
 	_asm mov _pVehicle, ecx
@@ -62,63 +59,8 @@ void  _declspec(naked) Patched_CAutomobile_ProcessControl()
 	_asm popad
 	_asm ret
 }
+*/
 
-void  _declspec(naked) Patched_CPlayerPed__ProcessControl()
-{
-	_asm mov dwCurPlayerActor, ecx
-	_asm pushad
-
-	currentPlayerID = FindIDForPed((CPed*)dwCurPlayerActor);
-
-	//gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
-	localPlayer = LocalPlayer();
-
-	if (localPlayer && (CPed*)dwCurPlayerActor == localPlayer)
-	{
-		_asm popad
-		_asm mov edx, 0x537270
-		_asm call edx
-		_asm pushad
-	}
-	else
-	{
-		// key switching
-		localPlayerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
-
-		// set remote player's keys
-		*(GTA_CONTROLSET*)0x7DBCB0 = gGame->remotePlayerKeys[currentPlayerID];
-
-		// save the internal cammode.
-		localPlayerCameraMode = MemRead<u8>(0x7E481C);
-
-		// onfoot mouse looking mode.
-		MemWrite<u8>(0x7E481C, 4);
-
-		// aim switching
-		localPlayerLookFrontX = *(CAMERA_AIM*)0x7E4978;
-		*(CAMERA_AIM*)0x7E4978 = gGame->remotePlayerLookFrontX[currentPlayerID];
-
-		MemWrite<BYTE>(0xA10AFB, currentPlayerID);
-
-		// call the internal CPlayerPed[]::Process
-		_asm popad
-		_asm mov edx, 0x537270
-		_asm call edx
-		_asm pushad
-
-		// restore the camera mode.
-		MemWrite<u8>(0x7E481C, localPlayerCameraMode);
-
-		// restore the local player's keys and the internal ID.
-		MemWrite<BYTE>(0xA10AFB, 0);
-
-		*(GTA_CONTROLSET*)0x7DBCB0 = localPlayerKeys;
-		*(CAMERA_AIM*)0x7E4978 = localPlayerLookFrontX;
-	}
-
-	_asm popad
-	_asm ret
-}
 #define VCCOOP_VERBOSE_LOG
 void Hooked_DbgPrint(char * msg, ...)
 {
@@ -281,12 +223,56 @@ char __cdecl RemoveModel_Hook(int model)
 	return original_RemoveModel(model);
 }
 
+char(__thiscall* original_CPlayerPed__ProcessControl)(CPlayerPed*);
+char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
+{
+	if (This != LocalPlayer())
+	{
+		int currentPlayerID = FindIDForPed((CPed*)This);
+
+		//gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
+
+		// key switching
+		localPlayerKeys = *(GTA_CONTROLSET*)CPad::GetPad(0);
+
+		// set remote player's keys
+		*(GTA_CONTROLSET*)CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
+
+		// save the internal cammode.
+		localPlayerCameraMode = (BYTE)TheCamera.Cams[TheCamera.ActiveCam].Mode;
+
+		// onfoot mouse looking mode.
+		TheCamera.Cams[TheCamera.ActiveCam].Mode = 4;
+
+		// aim switching
+		localPlayerLookFrontX = *(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front;
+		*(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front = gGame->remotePlayerLookFrontX[currentPlayerID];
+
+		CWorld::PlayerInFocus = currentPlayerID;
+
+		// call the internal CPlayerPed[]::Process
+		original_CPlayerPed__ProcessControl(This);
+
+		// restore the camera mode.
+		TheCamera.Cams[TheCamera.ActiveCam].Mode = localPlayerCameraMode;
+
+		// restore the local player's keys and the internal ID.
+		CWorld::PlayerInFocus = 0;
+
+		*(GTA_CONTROLSET*)CPad::GetPad(0) = localPlayerKeys;
+		*(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front = localPlayerLookFrontX;
+		return 0;
+	}
+	return original_CPlayerPed__ProcessControl(This);
+}
+
 void CHooks::InitHooks()
 {
 	original_CPed__InflictDamage = (char(__thiscall*)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
 	original_CPed__SetDead = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4F6430, (PBYTE)CPed__SetDead_Hook);
 	original_ShowExceptionBox = (signed int(__cdecl*)(DWORD*, int, int))DetourFunction((PBYTE)0x677E40, (PBYTE)ShowExceptionBox_Hook);
 	original_RemoveModel = (char(__cdecl*)(int))DetourFunction((PBYTE)0x40D6E0, (PBYTE)RemoveModel_Hook);
+	original_CPlayerPed__ProcessControl = (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
 
 #ifdef VCCOOP_DEBUG_ENGINE
 	patch::RedirectFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
@@ -300,6 +286,6 @@ void CHooks::InitHooks()
 	// Hook script process (so we can spawn a local player)
 	MakeCall(0x450245, Hook_CRunningScript__Process);
 
-	MemWrite<DWORD>(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
-	MemWrite<DWORD>(0x69ADB0, (DWORD)Patched_CAutomobile_ProcessControl);
+	//MemWrite<DWORD>(0x694D90, (DWORD)Patched_CPlayerPed__ProcessControl);
+	//MemWrite<DWORD>(0x69ADB0, (DWORD)Patched_CAutomobile_ProcessControl);
 }
