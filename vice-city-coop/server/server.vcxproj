@@ -127,6 +127,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CConfiguration.cpp" />
+    <ClCompile Include="CCustomData.cpp" />
+    <ClCompile Include="CCustomDataManager.cpp" />
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="CLua.cpp" />
     <ClCompile Include="CServerNetwork.cpp" />
@@ -135,6 +137,8 @@
   <ItemGroup>
     <ClInclude Include="..\vccoop_main\config.h" />
     <ClInclude Include="CConfiguration.h" />
+    <ClInclude Include="CCustomData.h" />
+    <ClInclude Include="CCustomDataManager.h" />
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CLua.h" />
     <ClInclude Include="CServerNetwork.h" />

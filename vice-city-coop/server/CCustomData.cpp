@@ -4,6 +4,7 @@ CCustomData::CCustomData(std::string szName, CustomDataType data_type, char* dat
 {
 	if (szName.empty())
 	{
+		gLog->Log("[CCustomData] Failed to initialize CCustomData object. Reason: No name set for data object.\n");
 		return;
 	}
 	if (data_size <= 0)	
@@ -11,25 +12,22 @@ CCustomData::CCustomData(std::string szName, CustomDataType data_type, char* dat
 		gLog->Log("[CCustomData] Failed to initialize CCustomData object. Reason: data_size <= 0 (%d)\n", data_size);
 		return;
 	}
-	else
-	{
-		pDataSize = data_size;
-	}
 	if (!dir.empty())
 	{
 		szDir = dir;
 	}
 
-	this->szName = szName;
-	cType		 = data_type;
-	pData		 = new char[pDataSize];
+	this->szName	 = szName;
+	this->cType		 = data_type;
+	this->pDataSize	 = data_size;
+	this->pData		 = new char[this->pDataSize];
+	memset(this->pData, 0x00, this->pDataSize);
 
-	memset(pData, 0x00, pDataSize);
-	memcpy(pData, data_ptr, pDataSize);
+	memcpy(this->pData, data_ptr, this->pDataSize);
 
-	gLog->Log("[CCustomData] Name: %s\t Type: %s\tData Size: %d\n", szName.c_str(), gDataMgr->GetCustomDataTypeString(cType).c_str(), pDataSize);
+	gLog->Log("[CCustomData] %s\tType: %s\tData Size: %d\n", this->szName.c_str(), gDataMgr->GetCustomDataTypeString(cType).c_str(), this->pDataSize);
 }
-CCustomData::~CCustomData()
+CCustomData::~CCustomData() 
 {
-
+	delete[] this->pData;
 }
