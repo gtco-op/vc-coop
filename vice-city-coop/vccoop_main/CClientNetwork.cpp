@@ -277,18 +277,11 @@ void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 
 	// remove the first four bytes, scriptData now contains just the script
 	memcpy(scriptData, scriptData + 4, scriptSize);
-	
-#ifdef VCCOOP_DEBUG
-	gLog->Log("[CClientNetwork] Received script with size: %d\n", scriptSize);
-#endif
 
 	CLua* lua = new CLua();
 	lua->SetLuaStatus(TRUE);
 	lua->mainScript = new char[scriptSize];
 	lua->mainScriptSize = scriptSize;
-	
-	memcpy(lua->mainScript, scriptData, scriptSize);
-
 	lua->CreateLuaThread();
 
 	// Set spawn status to true..
