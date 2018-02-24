@@ -1,7 +1,7 @@
 #pragma once
 
 // Define this for verbose log output
-//#define VCCOOP_VERBOSE_LOG
+#define VCCOOP_VERBOSE_LOG
 
 // Temporary spawn position
 #define VCCOOP_DEFAULT_SPAWN_POSITION	531.629761f, 606.497253f, 10.901563f
@@ -28,7 +28,7 @@
 #define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
 
 //print game's internal debug messages
-//#define VCCOOP_DEBUG_ENGINE
+#define VCCOOP_DEBUG_ENGINE
 
 //------------------------------------------------------------------------------------------
 
@@ -326,6 +326,8 @@ enum {
 
 	VCOOP_DISCONNECT,
 	VCOOP_CONNECT,
+
+	VCOOP_SPAWN_ALLOWED,
 
 	VCOOP_DO_SOMETHING_ELSE,
 };

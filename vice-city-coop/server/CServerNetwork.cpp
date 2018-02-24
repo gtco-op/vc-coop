@@ -8,11 +8,9 @@ HANDLE							CServerNetwork::server_handle;
 bool							CServerNetwork::server_running, CServerNetwork::console_active;
 librg_ctx_t						CServerNetwork::ctx;
 
-
 std::vector<librg_entity_t*>	playerEntities;
 char							playerNames[MAX_PLAYERS][25];
 std::vector<librg_entity_t*>	otherEntities;
-std::vector<std::pair<char*, int>> dataArray;
 
 CServerNetwork::CServerNetwork()
 {
@@ -114,43 +112,6 @@ void CServerNetwork::on_connect_request(librg_event_t *event)
 		librg_event_reject(event);
 	}
 }
-std::pair<char*,int> CServerNetwork::LoadScript(std::string filename)
-{
-	// load the data into memory
-	std::string path = GetExecutablePath();
-	path.append("\\scripts\\");
-	path.append(filename);
-
-	std::ifstream t(path);
-	std::stringstream buffer;
-	buffer << t.rdbuf();
-
-	// allocate data
-	std::string dataData = buffer.str();
-	int dataLen = buffer.str().size() + 1;
-
-#ifdef VCCOOP_LIBRG_DEBUG
-	gLog->Log("[CServerNetwork] Loaded data with size %d\n", dataLen);
-	gLog->Log("[CServerNetwork] Total data Size: %d\n", sizeof(dataLen) + (buffer.str().size() + 1));
-#endif
-
-	// construct the dataset
-	char* databuf = new char[buffer.str().size() + 1];
-	memset(databuf, 0, (buffer.str().size() + 1));
-	sprintf(databuf, "%s", dataData.c_str());
-
-	// compile to bytecode
-	CLua* gLua = new CLua(filename, databuf, buffer.str().size() +1);
-	while(!gLua->GetLuaStatus()) { }
-	delete[] databuf;
-
-	databuf = new char[gLua->scriptOutput.size() + sizeof(dataLen)];
-	dataLen = gLua->scriptOutput.size();
-	sprintf(databuf, "%d", dataLen);
-	memcpy(databuf+4, gLua->scriptOutput.c_str(), gLua->scriptOutput.size());
-
-	return std::pair<char*, int>(databuf, dataLen);
-}
 void CServerNetwork::on_connect_accepted(librg_event_t *event) 
 {
 	// initialize sync data and set entity control of the new client
@@ -162,8 +123,14 @@ void CServerNetwork::on_connect_accepted(librg_event_t *event)
 	gLog->Log("[CServerNetwork][CLIENT CONNECTION] Network entity %d connected\n", event->entity->id);
 
 	// send every script/data to the client
-	for (auto it : dataArray)
-		librg_message_send_to(&ctx, VCOOP_GET_LUA_SCRIPT, event->peer, it.first, it.second);
+	for (auto it : gDataMgr->GetItems()) {
+		if (it->GetType() == TYPE_CLIENT_SCRIPT)
+		{
+			librg_message_send_to(&ctx, VCOOP_GET_LUA_SCRIPT, event->peer, it->GetData(), it->GetSize());
+		}
+	}
+
+	librg_message_send_to(&ctx, VCOOP_SPAWN_ALLOWED, event->peer, 0, 0);
 }
 void CServerNetwork::on_creating_entity(librg_event_t *event) 
 {
@@ -290,9 +257,14 @@ void CServerNetwork::server_thread()
 	zpl_timer_start(tick_timer, 1000);
 #endif
 
-	gLog->Log("[CServerNetwork] Loading main client script into memory..\n");
-	dataArray.push_back(LoadScript("client.lua"));
-	gLog->Log("[CServerNetwork] Script processed.\n");
+	// Find all server & client scripts and insert them into the Data Manager
+	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\server")))
+		if (p.path().extension() == std::string(".lua"))
+			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_SERVER_SCRIPT, p.path());
+	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\client")))
+		if (p.path().extension() == std::string(".lua"))
+			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_CLIENT_SCRIPT, p.path());
+
 
 	while (server_running) {
 		librg_tick(&ctx);

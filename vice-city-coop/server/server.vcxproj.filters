@@ -35,6 +35,9 @@
     <Filter Include="Source\scripting">
       <UniqueIdentifier>{263b9255-6905-46e3-9ce1-b1eadca72571}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\utils\CCustomData">
+      <UniqueIdentifier>{79579ec4-184f-45de-a4b1-be41ac9c3c8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CServerNetwork.h">
@@ -85,6 +88,12 @@
     <ClInclude Include="CLua.h">
       <Filter>Source\scripting</Filter>
     </ClInclude>
+    <ClInclude Include="CCustomData.h">
+      <Filter>Source\utils\CCustomData</Filter>
+    </ClInclude>
+    <ClInclude Include="CCustomDataManager.h">
+      <Filter>Source\utils\CCustomData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
@@ -101,6 +110,12 @@
     </ClCompile>
     <ClCompile Include="CLua.cpp">
       <Filter>Source\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="CCustomData.cpp">
+      <Filter>Source\utils\CCustomData</Filter>
+    </ClCompile>
+    <ClCompile Include="CCustomDataManager.cpp">
+      <Filter>Source\utils\CCustomData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

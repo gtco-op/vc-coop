@@ -24,6 +24,7 @@ extern "C"
 #include <sstream>
 #include <vector>
 #include <ctime>
+#include <experimental/filesystem>
 
 // Plugin-SDK
 #include "plugin.h"
@@ -46,12 +47,17 @@ extern "C"
 #include "CLogger.h"
 #include "CServerNetwork.h"
 
+#include "CCustomData.h"
+#include "CCustomDataManager.h"
+
 #include "CLua.h"
 
 //------------------------------------------------------------------------------------------------
 
-extern CConfiguration   *gConfig;
-extern CLogger			*gLog;
-extern CServerNetwork	*gServerNetwork;
+extern CConfiguration		*gConfig;
+extern CLogger				*gLog;
+extern CServerNetwork		*gServerNetwork;
+
+extern CCustomDataManager	*gDataMgr;
 
 using namespace std;
