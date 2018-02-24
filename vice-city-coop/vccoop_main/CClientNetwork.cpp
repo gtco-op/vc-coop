@@ -282,10 +282,13 @@ void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 	lua->SetLuaStatus(TRUE);
 	lua->mainScript = new char[scriptSize];
 	lua->mainScriptSize = scriptSize;
+	
 	memcpy(lua->mainScript, scriptData, scriptSize);
+	
 	lua->CreateLuaThread();
-
-	// Set spawn status to true..
+}
+void CClientNetwork::ClientSpawnAllowed(librg_message_t* msg)
+{
 	gNetwork->SetReadyToSpawn(TRUE);
 }
 void CClientNetwork::SetReadyToSpawn(bool bReady)
@@ -329,6 +332,7 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 	librg_network_add(&ctx, VCOOP_GET_LUA_SCRIPT, ClientReceiveScript);
 	librg_network_add(&ctx, VCOOP_DISCONNECT, ClientDisconnect);
 	librg_network_add(&ctx, VCOOP_CONNECT, ClientConnect);
+	librg_network_add(&ctx, VCOOP_SPAWN_ALLOWED, ClientSpawnAllowed);
 
 	addr.host = szAddress;
 	addr.port = iPort;

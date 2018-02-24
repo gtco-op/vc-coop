@@ -129,6 +129,8 @@ void CServerNetwork::on_connect_accepted(librg_event_t *event)
 			librg_message_send_to(&ctx, VCOOP_GET_LUA_SCRIPT, event->peer, it->GetData(), it->GetSize());
 		}
 	}
+
+	librg_message_send_to(&ctx, VCOOP_SPAWN_ALLOWED, event->peer, 0, 0);
 }
 void CServerNetwork::on_creating_entity(librg_event_t *event) 
 {
