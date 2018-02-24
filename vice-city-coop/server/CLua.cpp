@@ -1,6 +1,6 @@
 #include "server.h"
 
-std::string CLua::scriptOutput;
+std::string CLua::compiledScriptOutput;
 
 CLua::CLua(std::string scriptName, std::string scriptBuffer, int size)
 {
@@ -15,10 +15,9 @@ CLua::CLua(std::string scriptName, std::string scriptBuffer, int size)
 	lua_getglobal(this->lState, "_G");
 	luaL_loadstring(this->lState, scriptBuffer.c_str());
 
-	if (lua_dump(this->lState, this->luaWriter, NULL, 0) == 0)	
+	if (lua_dump(this->lState, CLua::luaWriter, NULL, 0) == 0)	
 	{
-		this->scriptOutput		= scriptOutput;
-		this->scriptOutputSize	= scriptOutput.size();
+		this->scriptOutputSize	= compiledScriptOutput.size();
 		this->luaFinished		= true;
 	}
 	else
@@ -31,5 +30,5 @@ CLua::~CLua()
 }
 int CLua::luaWriter(lua_State* L, const void* p, size_t size, void* u)
 {
-	return (scriptOutput.append((char*)p, size)).empty();
+	return (compiledScriptOutput.append((char*)p, size)).empty();
 }	

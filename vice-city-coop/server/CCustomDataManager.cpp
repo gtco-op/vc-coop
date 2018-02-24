@@ -39,11 +39,11 @@ CCustomData* CCustomDataManager::InsertScript(bool type_relative, std::string fi
 	while (!gLua->GetLuaStatus()) {}
 	delete[] databuf;
 
-	databuf = new char[gLua->scriptOutput.size() + sizeof(dataLen)];
-	dataLen = gLua->scriptOutput.size();
+	databuf = new char[gLua->compiledScriptOutput.size() + sizeof(dataLen)];
+	dataLen = gLua->compiledScriptOutput.size();
 	
 	sprintf(databuf, "%d", dataLen);
-	memcpy(databuf + 4, gLua->scriptOutput.c_str(), dataLen);
+	memcpy(databuf + 4, gLua->compiledScriptOutput.c_str(), dataLen);
 
 	if(!type_relative)
 		cData = new CCustomData(path_when_absolute.filename().string(), type, databuf, dataLen);
@@ -51,11 +51,9 @@ CCustomData* CCustomDataManager::InsertScript(bool type_relative, std::string fi
 		cData = new CCustomData(filename, type, databuf, dataLen);
 
 	this->InsertItem(cData);
-
+	
+	gLua->compiledScriptOutput.clear();
 	t.close();
-
-	gLua->scriptOutput.clear();
-
 	delete[] databuf;
 
 	return cData;

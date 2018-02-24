@@ -5,11 +5,11 @@ public:
 	CLua(std::string scriptName, std::string scriptBuffer, int size);
 	~CLua();
 	
-	std::string GetScriptData() { return scriptOutput; }
+	std::string GetScriptData() { return compiledScriptOutput; }
 	lua_State*	GetLuaState() { return lState; }
 	bool		GetLuaStatus() { return luaFinished; }
 
-	static std::string scriptOutput;
+	static std::string compiledScriptOutput;
 	std::pair<char*, int> GetScript() { return std::pair<char*, int>((char*)this->GetScriptData().c_str(), this->scriptOutputSize); }
 
 private:
