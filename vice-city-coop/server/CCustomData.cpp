@@ -1,6 +1,6 @@
 #include "server.h"
 
-CCustomData::CCustomData(std::string szName, CustomDataType data_type, char* data_ptr, size_t data_size, std::string dir)
+CCustomData::CCustomData(std::string szName, CustomDataType data_type, char* data_ptr, double data_size, std::string dir)
 {
 	if (szName.empty())
 	{

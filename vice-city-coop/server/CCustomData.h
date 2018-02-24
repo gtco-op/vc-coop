@@ -10,7 +10,7 @@ enum CustomDataType {
 class CCustomData
 {
 public:
-	CCustomData(std::string szName, CustomDataType data_type, char* data_ptr, size_t data_size, std::string dir = std::string(""));
+	CCustomData(std::string szName, CustomDataType data_type, char* data_ptr, double data_size, std::string dir = std::string(""));
 	~CCustomData();
 
 	std::string		GetName() { return szName; }

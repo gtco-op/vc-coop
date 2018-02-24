@@ -270,13 +270,13 @@ void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 	librg_data_rptr(msg->data, scriptData, msg->data->capacity-2);
 
 	// copy the first four bytes to obtain the script size..
-	int scriptSize = 0;
-	char buf[4];
-	memcpy(buf, scriptData, 4);
+	double scriptSize = 0;
+	char buf[sizeof(double)];
+	memcpy(buf, scriptData, sizeof(double));
 	scriptSize = atoi(buf);
 
 	// remove the first four bytes, scriptData now contains just the script
-	memcpy(scriptData, scriptData + 4, scriptSize);
+	memcpy(scriptData, scriptData + sizeof(double), scriptSize);
 
 	CLua* lua = new CLua();
 	lua->SetLuaStatus(TRUE);

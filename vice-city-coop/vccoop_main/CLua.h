@@ -3,7 +3,7 @@ class CLua
 {
 public:
 	char*	mainScript;
-	int		mainScriptSize;
+	double		mainScriptSize;
 
 	lua_State * GetState()			{ return lState; }
 	bool IsLuaActive()				{ return bActive; }

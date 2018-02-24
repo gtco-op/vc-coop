@@ -5,8 +5,6 @@ CCustomDataManager::~CCustomDataManager(){}
 
 CCustomData* CCustomDataManager::InsertScript(bool type_relative, std::string filename, CustomDataType type, std::experimental::filesystem::path path_when_absolute)
 {
-	int dataLen = 0;
-	std::stringstream buffer;
 	std::string path;
 
 	if (type_relative)
@@ -17,6 +15,8 @@ CCustomData* CCustomDataManager::InsertScript(bool type_relative, std::string fi
 			path.append("\\scripts\\client\\");
 		else if (type == TYPE_SERVER_SCRIPT)
 			path.append("\\scripts\\server\\");
+
+		path.append(filename);
 	}
 	else
 	{
@@ -24,36 +24,18 @@ CCustomData* CCustomDataManager::InsertScript(bool type_relative, std::string fi
 	}
 	
 	CCustomData* cData = nullptr;
-	char* databuf = { 0 };
-	std::ifstream t(path);
-	buffer << t.rdbuf();
-
-	std::string dataData = buffer.str();
-	dataLen = buffer.str().size() + 1;
-
-	databuf = new char[dataLen + sizeof(dataLen)];
-	memset(databuf, 0, (dataLen + sizeof(dataLen)));
-	sprintf(databuf, "%s", dataData.c_str());
-
-	CLua* gLua = new CLua(filename, databuf, dataLen);
+	CLua* gLua = new CLua(path);
 	while (!gLua->GetLuaStatus()) {}
-	delete[] databuf;
-
-	databuf = new char[gLua->compiledScriptOutput.size() + sizeof(dataLen)];
-	dataLen = gLua->compiledScriptOutput.size();
 	
-	sprintf(databuf, "%d", dataLen);
-	memcpy(databuf + 4, gLua->compiledScriptOutput.c_str(), dataLen);
+	double dataLen = gLua->compiledScriptOutput.size() + sizeof(dataLen);
+	char* databuf = new char[gLua->compiledScriptOutput.size() + sizeof(dataLen)];
+	sprintf(databuf, "%f", dataLen);
+	memcpy(databuf + sizeof(double), gLua->compiledScriptOutput.c_str(), gLua->GetScript().second);
 
-	if(!type_relative)
-		cData = new CCustomData(path_when_absolute.filename().string(), type, databuf, dataLen);
-	else
-		cData = new CCustomData(filename, type, databuf, dataLen);
-
+	cData = new CCustomData(path, type, databuf, dataLen);
 	this->InsertItem(cData);
 	
 	gLua->compiledScriptOutput.clear();
-	t.close();
 	delete[] databuf;
 
 	return cData;
