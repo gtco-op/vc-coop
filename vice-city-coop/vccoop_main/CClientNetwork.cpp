@@ -282,6 +282,7 @@ void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 	lua->SetLuaStatus(TRUE);
 	lua->mainScript = new char[scriptSize];
 	lua->mainScriptSize = scriptSize;
+	memcpy(lua->mainScript, scriptData, scriptSize);
 	lua->CreateLuaThread();
 
 	// Set spawn status to true..
