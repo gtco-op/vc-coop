@@ -13,16 +13,13 @@ CLua::CLua(std::string scriptName, std::string scriptBuffer, int size)
 	
 	luaL_openlibs(this->lState);
 	lua_getglobal(this->lState, "_G");
-
-	gLog->Log("[CLua][%s] Dumping script with size %d\n", scriptName.c_str(), size);
 	luaL_loadstring(this->lState, scriptBuffer.c_str());
 
-	if (lua_dump(this->lState, this->luaWriter, NULL, 0) == 0)	{
-		gLog->Log("[CLua][%s] Dumped script size: %d\n", scriptName.c_str(), scriptOutput.size());
-
+	if (lua_dump(this->lState, this->luaWriter, NULL, 0) == 0)	
+	{
 		this->scriptOutput		= scriptOutput;
 		this->scriptOutputSize	= scriptOutput.size();
-		this->luaFinished = true;
+		this->luaFinished		= true;
 	}
 	else
 	{
@@ -35,4 +32,4 @@ CLua::~CLua()
 int CLua::luaWriter(lua_State* L, const void* p, size_t size, void* u)
 {
 	return (scriptOutput.append((char*)p, size)).empty();
-}
+}	

@@ -15,8 +15,6 @@ public:
 	static bool server_running, console_active;
 	static librg_ctx_t ctx;
 
-	static std::pair<char*, int> LoadScript(std::string filename);
-
 	//------------------------------------------------------------------------------------------------
 
 	static void ClientSendMessage(librg_message_t* msg);

@@ -13,9 +13,11 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "server.h"
 
-CConfiguration  *gConfig;
-CLogger			*gLog;
-CServerNetwork	*gServerNetwork;
+CConfiguration		*gConfig;
+CLogger				*gLog;
+CServerNetwork		*gServerNetwork;
+CCustomDataManager	*gDataMgr;
+
 
 int main(int argc, char const *argv[]) {
 	bool console_active = true;
@@ -23,6 +25,8 @@ int main(int argc, char const *argv[]) {
 	
 	SetConsoleTitle(TEXT("Vice City CO-OP " VCCOOP_VER " Server"));
 	gLog			= new CLogger;
+
+	gDataMgr		= new CCustomDataManager();
 	gConfig			= new CConfiguration;
 	gServerNetwork	= new CServerNetwork;
 
