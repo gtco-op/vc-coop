@@ -10,6 +10,8 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	CStreaming::RequestModel(7, 0);
 	this->ped->SetModelIndex(7);
 
+	CWorld::Players[gID].m_bNeverGetsTired = true;
+
 	this->gameID = gID;
 	this->networkID = nID;
 
@@ -145,7 +147,7 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 			case eWeaponType::WEAPONTYPE_SCREWDRIVER:
 			{
 				ped->GiveWeapon((eWeaponType)spd.CurrWep, 1, true);
-				//ped->SetAmmo((eWeaponType)spd.CurrWep, 1);
+				ped->SetAmmo((eWeaponType)spd.CurrWep, 1);
 				break;
 			}
 			default: 
@@ -155,11 +157,11 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 				break;
 			}
 		}
-		ped->SetCurrentWeapon((eWeaponType)spd.CurrWep);
+		if(ped->m_dwWepModelID != spd.WepModelIndex)ped->SetCurrentWeapon((eWeaponType)spd.CurrWep);
 	}
 	else
 	{
-		ped->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
+		if (ped->m_dwWepModelID != -1)ped->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
 	}
 
 	gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
@@ -417,6 +419,14 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.iInteriorID = 0;
 
 	spd.playerKeys = *(GTA_CONTROLSET*)CPad::GetPad(0);
+
+	if (this->ped->m_aWeapons[this->ped->m_nWepSlot].m_nAmmoInClip < 1 && this->ped->m_nWepSlot > 0)//dont send fire key if there is no ammo in the clip
+	{
+		spd.playerKeys.wKeys1[KEY_ONFOOT_FIRE] = 0;
+		spd.playerKeys.wKeys1[KEY_INCAR_FIRE] = 0;
+		spd.playerKeys.wKeys2[KEY_ONFOOT_FIRE] = 0;
+		spd.playerKeys.wKeys2[KEY_INCAR_FIRE] = 0;
+	}
 	spd.playerLook = *(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front;
 	
 	this->syncData = spd;

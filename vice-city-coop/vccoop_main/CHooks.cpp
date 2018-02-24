@@ -101,12 +101,11 @@ char __fastcall CPed__InflictDamage_Hook(CPed * This, DWORD _EDX, CEntity* entit
 {
 	if (entity == LocalPlayer())
 	{
-		gLog->Log("You did %f damage on someone with %d\n", weapon, damage);
+		gLog->Log("You did %f damage on someone with %d\n", damage, weapon);
 		return 0;
 	}
-	if (This == entity)
+	if (This == entity)//yes its possible
 	{
-		gLog->Log("Stop shooting yourself retard\n");
 		return 0;
 	}
 	return original_CPed__InflictDamage(This, entity, weapon, damage, bodypart, unk);
@@ -136,10 +135,10 @@ signed int __cdecl ShowExceptionBox_Hook(DWORD* a1, int a2, int a3)
 
 void Hooked_SpawnPedAfterDeath()
 {
+	CTimer::Update();
 	gLog->Log("game tried to spawn me\n");
 	CPed * ped = LocalPlayer();
 	ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
-	CTimer::Stop();
 	librg_message_send_all(&gNetwork->ctx, VCOOP_RESPAWN_AFTER_DEATH, NULL, 0);
 }
 
@@ -156,7 +155,7 @@ void Hook_CRunningScript__Process()
 		// Change player model ID
 		MemWrite<u8>(0x5384FA + 1, 7); //Not important if we set a new one after spawn
 
-									   // Setup own ped on 0 game ID
+		// Setup own ped on 0 game ID
 		CPlayerPed::SetupPlayerPed(0);
 		gGame->remotePlayerPeds[0] = LocalPlayer();
 
@@ -229,11 +228,11 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 	if (This != LocalPlayer())
 	{
 		int currentPlayerID = FindIDForPed((CPed*)This);
+		if (currentPlayerID == -1)return 0;
 
 		//gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
 
-		// key switching
-		localPlayerKeys = *(GTA_CONTROLSET*)CPad::GetPad(0);
+		CWorld::PlayerInFocus = currentPlayerID;
 
 		// set remote player's keys
 		*(GTA_CONTROLSET*)CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
@@ -248,8 +247,6 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 		localPlayerLookFrontX = *(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front;
 		*(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front = gGame->remotePlayerLookFrontX[currentPlayerID];
 
-		CWorld::PlayerInFocus = currentPlayerID;
-
 		// call the internal CPlayerPed[]::Process
 		original_CPlayerPed__ProcessControl(This);
 
@@ -259,11 +256,50 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 		// restore the local player's keys and the internal ID.
 		CWorld::PlayerInFocus = 0;
 
-		*(GTA_CONTROLSET*)CPad::GetPad(0) = localPlayerKeys;
 		*(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front = localPlayerLookFrontX;
 		return 0;
 	}
 	return original_CPlayerPed__ProcessControl(This);
+}
+
+INT16(__cdecl* original_GetPad)(int);
+INT16 __cdecl GetPad_Hook(int pad)
+{
+	return original_GetPad(CWorld::PlayerInFocus);
+}
+
+int(__thiscall* original_CPed__SetIdle)(CPed*);
+int __fastcall CPed__SetIdle_Hook(CPed * This, DWORD _EDX)//probably unnecessary
+{
+	gLog->Log("SetIdle called");
+	if (This->IsPlayer())
+	{
+		gLog->Log("prevented SetIdle on player ped");
+		return 0;
+	}
+	return original_CPed__SetIdle(This);
+}
+
+int(__thiscall* original_CWeapon__DoBulletImpact)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D);
+int __fastcall CWeapon__DoBulletImpact_Hook(CWeapon*This, DWORD _EDX, CEntity* source, CEntity* target, CVector* start, CVector* end, CColPoint* colpoint, CVector2D ahead)//probably unnecessary
+{
+	if (source != LocalPlayer()) // we dont need original bullets from
+	{
+		return 0;
+	}
+	else
+	{
+		bulletSyncData bsData;
+		bsData.player = gNetwork->GetNetworkIDFromEntity(source);
+		bsData.targetEntityID = gNetwork->GetNetworkIDFromEntity(target);
+		bsData.start = *start;
+		bsData.end = *end;
+		bsData.colPoint = *colpoint;
+		bsData.ahead = ahead;
+
+		librg_message_send_all(&gNetwork->ctx, VCOOP_BULLET_SYNC, &bsData, sizeof(bulletSyncData));
+	}
+	return original_CWeapon__DoBulletImpact(This, source, target, start, end, colpoint, ahead);
 }
 
 void CHooks::InitHooks()
@@ -273,6 +309,9 @@ void CHooks::InitHooks()
 	original_ShowExceptionBox = (signed int(__cdecl*)(DWORD*, int, int))DetourFunction((PBYTE)0x677E40, (PBYTE)ShowExceptionBox_Hook);
 	original_RemoveModel = (char(__cdecl*)(int))DetourFunction((PBYTE)0x40D6E0, (PBYTE)RemoveModel_Hook);
 	original_CPlayerPed__ProcessControl = (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
+	original_GetPad = (INT16(__cdecl*)(int))DetourFunction((PBYTE)0x4AB060, (PBYTE)GetPad_Hook);
+	original_CPed__SetIdle = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4FDFD0, (PBYTE)CPed__SetIdle_Hook);
+	original_CWeapon__DoBulletImpact = (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
 
 #ifdef VCCOOP_DEBUG_ENGINE
 	patch::RedirectFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
@@ -281,7 +320,7 @@ void CHooks::InitHooks()
 	debugEnabled = true;
 #endif
 
-	MakeCall(0x42BDA8, Hooked_SpawnPedAfterDeath);
+	MakeCall(0x42BE05, Hooked_SpawnPedAfterDeath);
 
 	// Hook script process (so we can spawn a local player)
 	MakeCall(0x450245, Hook_CRunningScript__Process);

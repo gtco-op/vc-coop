@@ -37,10 +37,24 @@ void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
 {
 	u32 playerid;
 	librg_data_rptr(msg->data, &playerid, sizeof(u32));
-	
+
 	gNetwork->networkPlayers[playerid]->Respawn();
 
 	gLog->Log("Respawning %s\n", gNetwork->networkPlayers[playerid]->szName);
+}
+
+void CClientNetwork::BulletSyncEvent(librg_message_t* msg)
+{
+	bulletSyncData bsData;
+	librg_data_rptr(msg->data, &bsData, sizeof(bulletSyncData));
+
+	CPed * shooterPlayer = (CPed*)GetEntityFromNetworkID(bsData.player); 
+	if (shooterPlayer && shooterPlayer != LocalPlayer())
+	{
+		CEntity * hitEntity = NULL;
+		if (bsData.targetEntityID != -1)hitEntity = GetEntityFromNetworkID(bsData.targetEntityID);
+		shooterPlayer->m_aWeapons[shooterPlayer->m_nWepSlot].DoBulletImpact(shooterPlayer, hitEntity, &bsData.start, &bsData.end, &bsData.colPoint, bsData.ahead);
+	}
 }
 void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 {
@@ -333,6 +347,7 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 	librg_network_add(&ctx, VCOOP_DISCONNECT, ClientDisconnect);
 	librg_network_add(&ctx, VCOOP_CONNECT, ClientConnect);
 	librg_network_add(&ctx, VCOOP_SPAWN_ALLOWED, ClientSpawnAllowed);
+	librg_network_add(&ctx, VCOOP_BULLET_SYNC, BulletSyncEvent);
 
 	addr.host = szAddress;
 	addr.port = iPort;

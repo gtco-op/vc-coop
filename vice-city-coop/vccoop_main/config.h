@@ -282,6 +282,18 @@ struct PlayerSyncData
 	CAMERA_AIM playerLook;
 };
 
+//CWeapon*This, DWORD _EDX, CEntity* source, CEntity* target, CVector* start, CVector* end, CColPoint* colpoint, CVector2D ahead
+
+struct bulletSyncData
+{
+	int player;
+	int targetEntityID;
+	CVector start;
+	CVector end;
+	CColPoint colPoint;
+	CVector2D ahead;
+};
+
 struct deathData
 {
 	int killer;
@@ -322,6 +334,7 @@ enum {
 	VCOOP_GET_LUA_SCRIPT,
 
 	VCOOP_PED_IS_DEAD,
+	VCOOP_BULLET_SYNC,
 	VCOOP_RESPAWN_AFTER_DEATH,
 
 	VCOOP_DISCONNECT,

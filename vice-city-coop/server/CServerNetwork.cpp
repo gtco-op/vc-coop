@@ -22,15 +22,22 @@ CServerNetwork::~CServerNetwork()
 {
 
 }
+void CServerNetwork::BulletSyncEvent(librg_message_t *msg)
+{
+	bulletSyncData dData;
+	librg_data_rptr(msg->data, &dData, sizeof(bulletSyncData));
+	librg_message_send_except(&ctx, VCOOP_BULLET_SYNC, msg->peer, &dData, sizeof(bulletSyncData));
+}
+
 void CServerNetwork::PlayerDeathEvent(librg_message_t *msg)
 {
 	deathData dData;
 	librg_data_rptr(msg->data, &dData, sizeof(deathData));
-	
+
 	librg_entity_t * player = librg_entity_find(msg->ctx, msg->peer);
 	char msg1[256];
 	sprintf(msg1, "[CServerNetwork] Player %d is killed by entity %d with weapon %d\n", player->id, dData.killer, dData.weapon);
-	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));	
+	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
 	gLog->Log(msg1);
 }
 void CServerNetwork::PlayerSpawnEvent(librg_message_t *msg)
@@ -241,6 +248,7 @@ void CServerNetwork::server_thread()
 	librg_network_add(&ctx, VCOOP_PED_IS_DEAD,				PlayerDeathEvent);
 	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH,		PlayerSpawnEvent);
 	librg_network_add(&ctx, VCOOP_CONNECT,					HandShakeIsDone);
+	librg_network_add(&ctx, VCOOP_BULLET_SYNC,				BulletSyncEvent);
 
 	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
 

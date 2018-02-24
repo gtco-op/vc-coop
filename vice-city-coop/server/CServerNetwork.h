@@ -22,7 +22,8 @@ public:
 	static void VehCreateEvent(librg_message_t* msg);
 	static void PlayerDeathEvent(librg_message_t* msg);
 	static void PlayerSpawnEvent(librg_message_t* msg);
-	static void HandShakeIsDone(librg_message_t *msg);
+	static void BulletSyncEvent(librg_message_t* msg);
+	static void HandShakeIsDone(librg_message_t *msg); 
 
 	//------------------------------------------------------------------------------------------------
 

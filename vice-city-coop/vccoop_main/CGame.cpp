@@ -272,9 +272,6 @@ void CGame::InitPreGamePatches()
 	MemWrite<BYTE>(0x5C45A6, 0xEE);
 	MemWrite<BYTE>(0x5C4688, 0x36);
 
-	//nop removing models in CPlayerPed::PlayIdleAnimations
-	MakeNop(0x535F17, 5);
-
 	// ProcessEntitiesInSectorList currArea patch
 	MemWrite<BYTE>(0x40E7FC, 0xEBu);
 	MemWrite<BYTE>(0x40E8CC, 0xEBu);
@@ -315,6 +312,18 @@ void CGame::InitPreGamePatches()
 	//disable random melee thing
 	MakeNop(0x5D2E88, 6);
 
+	//disable CPlayerInfo::MakePlayerSafe causes crash
+	//MakeRet(0x4BBC10, 8);
+
+	// Disable ValidateVersion
+	// Contains a stupid check for 'grandtheftauto3' string in peds.col
+	MakeRet(0x4A5320);
+
+	//cAudioManager::GetPedCommentSfx()
+	MemWrite<BYTE>(0x5EA1FC, 0x75);
+
+	//Stop time passing on death
+	MakeNop(0x42BD69, 15); 
 
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
