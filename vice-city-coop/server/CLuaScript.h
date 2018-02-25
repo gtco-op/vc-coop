@@ -3,7 +3,7 @@ class CLuaScript
 {
 public:
 	CLuaScript(CCustomData* ptr);
-	~CLuaScript();
+	~CLuaScript() {};
 
 	virtual CCustomData* GetData() { return m_Data; }
 protected:

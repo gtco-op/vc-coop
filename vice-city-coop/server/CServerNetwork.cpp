@@ -272,11 +272,6 @@ void CServerNetwork::server_thread()
 		if (p.path().extension() == std::string(".lua"))
 			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_CLIENT_SCRIPT, p.path());
 
-	if (gGamemodeScript->GetData()->GetSize() <= 0)	{
-		gLog->Log("[CServerNetwork] Game mode script invalid.\n");
-		server_running = false;
-	}
-	
 	while (server_running) {
 		librg_tick(&ctx);
 	}

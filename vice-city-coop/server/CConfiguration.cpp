@@ -17,10 +17,6 @@ CConfiguration::CConfiguration()
 		this->configOpened = true;
 	}
 }
-CConfiguration::~CConfiguration()
-{
-
-}
 void CConfiguration::PopulateValues()
 {
 	/* Populate configuration values from INI */

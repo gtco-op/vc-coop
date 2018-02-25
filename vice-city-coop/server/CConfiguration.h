@@ -3,7 +3,7 @@ class CConfiguration
 {
 public:
 	CConfiguration();
-	~CConfiguration();
+	~CConfiguration() {};
 
 	/* Autodetect Server Game Mode when none is defined */
 	bool AutodetectServerGamemode();
