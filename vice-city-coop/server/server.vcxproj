@@ -130,7 +130,8 @@
     <ClCompile Include="CCustomData.cpp" />
     <ClCompile Include="CCustomDataManager.cpp" />
     <ClCompile Include="CLogger.cpp" />
-    <ClCompile Include="CLua.cpp" />
+    <ClCompile Include="CLuaDumper.cpp" />
+    <ClCompile Include="CLuaScript.cpp" />
     <ClCompile Include="CServerNetwork.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
@@ -140,7 +141,8 @@
     <ClInclude Include="CCustomData.h" />
     <ClInclude Include="CCustomDataManager.h" />
     <ClInclude Include="CLogger.h" />
-    <ClInclude Include="CLua.h" />
+    <ClInclude Include="CLuaDumper.h" />
+    <ClInclude Include="CLuaScript.h" />
     <ClInclude Include="CServerNetwork.h" />
     <ClInclude Include="server.h" />
     <ClInclude Include="vendor\inih\INIReader.h" />

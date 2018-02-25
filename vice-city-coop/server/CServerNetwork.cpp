@@ -12,6 +12,8 @@ std::vector<librg_entity_t*>	playerEntities;
 char							playerNames[MAX_PLAYERS][25];
 std::vector<librg_entity_t*>	otherEntities;
 
+CLuaScript						*gGamemodeScript;
+
 CServerNetwork::CServerNetwork()
 {
 	ctx = { 0 };
@@ -91,6 +93,8 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
 
+	gGamemodeScript->Call("onPlayerConnect", 1, name);
+
 	//loop trough connected playera and send it to this guy
 	for (auto it : playerEntities)
 	{
@@ -131,9 +135,13 @@ void CServerNetwork::on_connect_accepted(librg_event_t *event)
 
 	// send every script/data to the client
 	for (auto it : gDataMgr->GetItems()) {
-		if (it->GetType() == TYPE_CLIENT_SCRIPT)
+
+		if (it)
 		{
-			librg_message_send_to(&ctx, VCOOP_GET_LUA_SCRIPT, event->peer, it->GetData(), it->GetSize());
+			if (it->GetType() == TYPE_CLIENT_SCRIPT)
+			{
+				librg_message_send_to(&ctx, VCOOP_GET_LUA_SCRIPT, event->peer, it->GetData(), it->GetSize());
+			}
 		}
 	}
 
@@ -186,6 +194,8 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	librg_message_send_except(&ctx, VCOOP_DISCONNECT, event->peer, &event->entity->id, sizeof(u32));
 
 	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
+
+	gGamemodeScript->Call("onPlayerDisconnect");
 }
 
 void CServerNetwork::measure(void *userptr) {
@@ -265,14 +275,10 @@ void CServerNetwork::server_thread()
 	zpl_timer_start(tick_timer, 1000);
 #endif
 
-	// Find all server & client scripts and insert them into the Data Manager
-	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\server")))
-		if (p.path().extension() == std::string(".lua"))
-			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_SERVER_SCRIPT, p.path());
+	// Auto-detect all client scripts
 	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\client")))
 		if (p.path().extension() == std::string(".lua"))
 			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_CLIENT_SCRIPT, p.path());
-
 
 	while (server_running) {
 		librg_tick(&ctx);

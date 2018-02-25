@@ -60,8 +60,6 @@ void  _declspec(naked) Patched_CAutomobile_ProcessControl()
 	_asm ret
 }
 */
-
-#define VCCOOP_VERBOSE_LOG
 void Hooked_DbgPrint(char * msg, ...)
 {
 	char buffer[256];
@@ -289,7 +287,6 @@ int __fastcall CWeapon__DoBulletImpact_Hook(CWeapon*This, DWORD _EDX, CEntity* s
 	}
 	else
 	{
-		if (This == &LocalPlayer()->m_aWeapons[LocalPlayer()->m_nWepSlot])gLog->Log("Shooting from wep in slot\n");
 		bulletSyncData bsData;
 		bsData.player = gNetwork->GetNetworkIDFromEntity(source);
 		bsData.targetEntityID = gNetwork->GetNetworkIDFromEntity(target);
@@ -313,7 +310,7 @@ void CHooks::InitHooks()
 	original_CPed__InflictDamage = (char(__thiscall*)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
 	original_CPed__SetDead = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4F6430, (PBYTE)CPed__SetDead_Hook);
 	original_ShowExceptionBox = (signed int(__cdecl*)(DWORD*, int, int))DetourFunction((PBYTE)0x677E40, (PBYTE)ShowExceptionBox_Hook);
-	original_RemoveModel = (char(__cdecl*)(int))DetourFunction((PBYTE)0x40D6E0, (PBYTE)RemoveModel_Hook);
+	//original_RemoveModel = (char(__cdecl*)(int))DetourFunction((PBYTE)0x40D6E0, (PBYTE)RemoveModel_Hook);
 	original_CPlayerPed__ProcessControl = (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
 	original_GetPad = (INT16(__cdecl*)(int))DetourFunction((PBYTE)0x4AB060, (PBYTE)GetPad_Hook);
 	original_CPed__SetIdle = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4FDFD0, (PBYTE)CPed__SetIdle_Hook);

@@ -85,14 +85,17 @@
     <ClInclude Include="vendor\lua\include\lualib.h">
       <Filter>vendor\lua</Filter>
     </ClInclude>
-    <ClInclude Include="CLua.h">
-      <Filter>Source\scripting</Filter>
-    </ClInclude>
     <ClInclude Include="CCustomData.h">
       <Filter>Source\utils\CCustomData</Filter>
     </ClInclude>
     <ClInclude Include="CCustomDataManager.h">
       <Filter>Source\utils\CCustomData</Filter>
+    </ClInclude>
+    <ClInclude Include="CLuaDumper.h">
+      <Filter>Source\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="CLuaScript.h">
+      <Filter>Source\scripting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -108,14 +111,17 @@
     <ClCompile Include="CConfiguration.cpp">
       <Filter>Source\utils\CConfiguration</Filter>
     </ClCompile>
-    <ClCompile Include="CLua.cpp">
-      <Filter>Source\scripting</Filter>
-    </ClCompile>
     <ClCompile Include="CCustomData.cpp">
       <Filter>Source\utils\CCustomData</Filter>
     </ClCompile>
     <ClCompile Include="CCustomDataManager.cpp">
       <Filter>Source\utils\CCustomData</Filter>
+    </ClCompile>
+    <ClCompile Include="CLuaDumper.cpp">
+      <Filter>Source\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="CLuaScript.cpp">
+      <Filter>Source\scripting</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

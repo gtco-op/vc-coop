@@ -32,7 +32,7 @@ void CLua::LuaThread(LPVOID lParam)
 
 	lua_State* tmp = state->GetState();
 
-	luaL_loadbuffer(tmp, state->mainScript, state->mainScriptSize, "vccoop_client_script");
+	luaL_loadbuffer(tmp, state->mainScript, state->mainScriptSize, "vccoop_lua_script");
 	lua_pcall(tmp, NULL, 0, NULL);
 
 	state->SetLuaStatus(FALSE);

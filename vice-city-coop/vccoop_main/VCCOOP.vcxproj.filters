@@ -46,6 +46,9 @@
     <Filter Include="Source\main">
       <UniqueIdentifier>{b0963210-2b99-45e7-86e4-502c745110cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\scripting\lua">
+      <UniqueIdentifier>{9fdd0ceb-74a2-411f-9927-327d32d9c620}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGame.h">
@@ -123,9 +126,6 @@
     <ClInclude Include="LogoTextureArray.h">
       <Filter>Source\misc</Filter>
     </ClInclude>
-    <ClInclude Include="CLua.h">
-      <Filter>Source\scripting</Filter>
-    </ClInclude>
     <ClInclude Include="vendor\lua\include\lauxlib.h">
       <Filter>vendor\lua</Filter>
     </ClInclude>
@@ -161,6 +161,9 @@
     </ClInclude>
     <ClInclude Include="CDebugEngine.h">
       <Filter>Source\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="CLua.h">
+      <Filter>Source\scripting\lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -206,9 +209,6 @@
     <ClCompile Include="CConfiguration.cpp">
       <Filter>Source\tools\CConfiguration</Filter>
     </ClCompile>
-    <ClCompile Include="CLua.cpp">
-      <Filter>Source\scripting</Filter>
-    </ClCompile>
     <ClCompile Include="CClientVehicle.cpp">
       <Filter>Source\network</Filter>
     </ClCompile>
@@ -229,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="CDebugEngine.cpp">
       <Filter>Source\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="CLua.cpp">
+      <Filter>Source\scripting\lua</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

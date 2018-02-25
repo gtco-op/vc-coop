@@ -3,16 +3,12 @@
 #include "vendor\librg\librg.h"
 #include "vendor\inih\INIReader.h"
 //lua
-#ifndef __cplusplus
-extern "C"
-{
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 }
-#else
-#include <lua.hpp>
-#endif
+
 
 // Standard includes
 #include <Windows.h>
@@ -20,6 +16,7 @@ extern "C"
 #include <ostream>
 #include <fstream>
 #include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -50,7 +47,8 @@ extern "C"
 #include "CCustomData.h"
 #include "CCustomDataManager.h"
 
-#include "CLua.h"
+#include "CLuaScript.h"
+#include "CLuaDumper.h"
 
 //------------------------------------------------------------------------------------------------
 
@@ -59,5 +57,8 @@ extern CLogger				*gLog;
 extern CServerNetwork		*gServerNetwork;
 
 extern CCustomDataManager	*gDataMgr;
+
+extern std::string			ServerGamemodePath;
+extern CLuaScript			*gGamemodeScript;
 
 using namespace std;

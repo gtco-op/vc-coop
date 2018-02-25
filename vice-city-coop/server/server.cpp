@@ -18,6 +18,7 @@ CLogger				*gLog;
 CServerNetwork		*gServerNetwork;
 CCustomDataManager	*gDataMgr;
 
+std::string			ServerGamemodePath;
 
 int main(int argc, char const *argv[]) {
 	bool console_active = true;
@@ -31,9 +32,12 @@ int main(int argc, char const *argv[]) {
 	gServerNetwork	= new CServerNetwork;
 
 	gConfig->PopulateValues();
-
+	
 	gLog->Log("[CCore] Server Port: %d\n", gServerNetwork->ServerPort);
 	gLog->Log("[CCore] Server Secret: %d\n", gServerNetwork->ServerSecret);
+
+	if (gConfig->IsConfigLoaded() && !gConfig->AutodetectServerGamemode())
+		gLog->Log("[CCore] Could not find a game mode. Exiting."); system("PAUSE>NUL"); console_active = false;
 
 	while (console_active)
 	{

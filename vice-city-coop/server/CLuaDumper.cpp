@@ -1,8 +1,8 @@
 #include "server.h"
 
-std::string CLua::compiledScriptOutput;
+std::string CLuaDumper::compiledScriptOutput;
 
-CLua::CLua(std::string scriptName)
+CLuaDumper::CLuaDumper(std::string scriptName)
 {
 	this->lState = luaL_newstate();	
 	if (this->lState == nullptr)
@@ -12,20 +12,17 @@ CLua::CLua(std::string scriptName)
 	lua_getglobal(this->lState, "_G");
 	luaL_loadfile(this->lState, scriptName.c_str());
 
-	if (lua_dump(this->lState, CLua::luaWriter, NULL, 0) == 0)	
+	if (lua_dump(this->lState, CLuaDumper::luaWriter, NULL, 0) == 0)	
 	{
 		this->scriptOutputSize	= compiledScriptOutput.size();
 		this->luaFinished		= true;
 	}
 	else
 	{
-		gLog->Log("[CLua][%s] An error occurred while dumping the script.\n", scriptName.c_str());
+		gLog->Log("[CLuaDumper][%s] An error occurred while dumping the script.\n", scriptName.c_str());
 	}
 }
-CLua::~CLua()
-{
-}
-int CLua::luaWriter(lua_State* L, const void* p, size_t size, void* u)
+int CLuaDumper::luaWriter(lua_State* L, const void* p, size_t size, void* u)
 {
 	return (compiledScriptOutput.append((char*)p, size)).empty();
 }	

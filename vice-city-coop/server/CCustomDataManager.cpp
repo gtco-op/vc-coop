@@ -22,20 +22,42 @@ CCustomData* CCustomDataManager::InsertScript(bool type_relative, std::string fi
 	{
 		path.append(filename);
 	}
-	
-	CCustomData* cData = nullptr;
-	CLua* gLua = new CLua(path);
-	while (!gLua->GetLuaStatus()) {}
-	
-	double dataLen = gLua->compiledScriptOutput.size() + sizeof(dataLen);
-	char* databuf = new char[gLua->compiledScriptOutput.size() + sizeof(dataLen)];
-	sprintf(databuf, "%f", dataLen);
-	memcpy(databuf + sizeof(double), gLua->compiledScriptOutput.c_str(), gLua->GetScript().second);
 
-	cData = new CCustomData(path, type, databuf, dataLen);
+	CCustomData* cData = nullptr;
+
+	double dataLen = 0;
+	char* databuf = { 0 };
+
+	if (type == TYPE_SERVER_SCRIPT)
+	{
+		std::ostringstream buf; std::ifstream input(path.c_str()); buf << input.rdbuf(); 
+		std::string buffer = buf.str();
+		if (buffer.empty())
+			return 0;
+
+		databuf = new char[buffer.size() + 1];
+		dataLen = buffer.size() + 1;
+		memcpy(databuf, buffer.c_str(), dataLen);
+
+		cData			= new CCustomData(path, type, databuf, dataLen);
+		gGamemodeScript = new CLuaScript(cData);
+	}
+	else if (type == TYPE_CLIENT_SCRIPT)
+	{
+		CLuaDumper* gLua = new CLuaDumper(path);
+		while (!gLua->GetLuaStatus()) {}
+
+		dataLen = gLua->compiledScriptOutput.size() + sizeof(dataLen);
+		databuf = new char[gLua->compiledScriptOutput.size() + sizeof(dataLen)];
+
+		sprintf(databuf, "%f", dataLen);
+		memcpy(databuf + sizeof(double), gLua->compiledScriptOutput.c_str(), gLua->GetScript().second);
+
+		gLua->compiledScriptOutput.clear();
+	}
+
 	this->InsertItem(cData);
 	
-	gLua->compiledScriptOutput.clear();
 	delete[] databuf;
 
 	return cData;
