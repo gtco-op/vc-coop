@@ -1,7 +1,8 @@
 #include "main.h"
 
-static const struct luaL_Reg printlib[] = {
+static const struct luaL_Reg vccooplib[] = {
 	{ "print", CLua::lua_Log },
+	{ "FindLocalPed", CLua::lua_FindLocalPed },
 	{ NULL, NULL }
 };
 
@@ -14,10 +15,9 @@ CLua::CLua()
 
 	luaL_openlibs(this->lState);
 	lua_getglobal(this->lState, "_G");
-	luaL_setfuncs(this->lState, printlib, 0);
+	luaL_setfuncs(this->lState, vccooplib, 0);
 	lua_pop(this->lState, 1);
 
-	lua_register(this->lState, "FindLocalPed",	CLua::lua_FindLocalPed);
 }
 CLua::~CLua()
 {
