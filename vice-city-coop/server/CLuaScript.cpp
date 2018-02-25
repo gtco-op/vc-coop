@@ -1,9 +1,8 @@
 #include "server.h"
 
-CLuaScript::CLuaScript(std::string szName) 
-	: CCustomData(szName, TYPE_SERVER_SCRIPT, 0, 0)
+CLuaScript::CLuaScript(CCustomData* ptr) 
 {
-
+	m_Data = ptr;
 }
 CLuaScript::~CLuaScript()
 {

@@ -33,6 +33,12 @@ CCustomData* CCustomDataManager::InsertScript(bool type_relative, std::string fi
 	memcpy(databuf + sizeof(double), gLua->compiledScriptOutput.c_str(), gLua->GetScript().second);
 
 	cData = new CCustomData(path, type, databuf, dataLen);
+
+	if (type == TYPE_SERVER_SCRIPT)
+	{
+		gGamemodeScript = new CLuaScript(cData);
+	}
+
 	this->InsertItem(cData);
 	
 	gLua->compiledScriptOutput.clear();

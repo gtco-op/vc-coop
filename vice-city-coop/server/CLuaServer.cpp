@@ -1,10 +1,14 @@
 #include "server.h"
 
-CLuaServer::CLuaServer()
+void CLuaServer::StartServer()
 {
 
 }
-CLuaServer::~CLuaServer()
+void CLuaServer::StartServer(CLuaScript* luaScript)
+{
+
+}
+void CLuaServer::StopServer()
 {
 
 }

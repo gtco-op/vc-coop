@@ -12,7 +12,7 @@ std::vector<librg_entity_t*>	playerEntities;
 char							playerNames[MAX_PLAYERS][25];
 std::vector<librg_entity_t*>	otherEntities;
 
-CCustomData*					gamemodeScript = nullptr;
+CLuaScript						*gGamemodeScript;
 
 CServerNetwork::CServerNetwork()
 {
@@ -267,37 +267,16 @@ void CServerNetwork::server_thread()
 	zpl_timer_start(tick_timer, 1000);
 #endif
 
-	// Find all server & client scripts and insert them into the Data Manager
-	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\server")))
-		if (p.path().extension() == std::string(".lua"))
-			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_SERVER_SCRIPT, p.path());
-		
+	// Auto-detect all client scripts
 	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\client")))
 		if (p.path().extension() == std::string(".lua"))
 			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_CLIENT_SCRIPT, p.path());
 
-	// Choose the first server script for gamemode
-	// TODO: Use script defined in server.ini
-	for (auto i : gDataMgr->GetItems()) {
-		if (i->GetType() == TYPE_SERVER_SCRIPT) {
-			gLog->Log("[CServerNetwork] Using %s script for gamemode.\n", i->GetName().c_str());
-			gamemodeScript = i;
-			break;
-		}
+	if (gGamemodeScript->GetData()->GetSize() <= 0)	{
+		gLog->Log("[CServerNetwork] Game mode script invalid.\n");
+		server_running = false;
 	}
 
-	if (gamemodeScript == nullptr)	{
-		server_running = false;
-		gLog->Log("[CServerNetwork] Unable to start server. Reason: No server script detected.\n");
-	}
-	else
-	{
-		gLuaServer = new CLuaServer;
-		if (gLuaServer == nullptr){
-			server_running = false;
-			gLog->Log("[CServerNetwork] Unable to start server. Reason: Lua server could not be started.\n");
-		}
-	}
 
 	while (server_running) {
 		librg_tick(&ctx);

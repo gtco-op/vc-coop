@@ -5,6 +5,9 @@ public:
 	CConfiguration();
 	~CConfiguration();
 
+	/* Autodetect Server Game Mode when none is defined */
+	bool AutodetectServerGamemode();
+
 	/* Populates values from config file */
 	void PopulateValues();
 
@@ -13,6 +16,7 @@ public:
 
 	/* Returns TRUE if config file loaded successfully */
 	bool IsConfigLoaded() { return configOpened; }
+
 
 private:
 	INIReader* _inih;

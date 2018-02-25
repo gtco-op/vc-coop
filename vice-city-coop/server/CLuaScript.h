@@ -1,10 +1,12 @@
 #pragma once
-class CLuaScript : public CCustomData
+class CLuaScript
 {
 public:
-	CLuaScript(std::string szName);
-
-	CLuaScript();
+	CLuaScript(CCustomData* ptr);
 	~CLuaScript();
+
+	virtual CCustomData* GetData() { return m_Data; }
+protected:
+	CCustomData* m_Data;
 };
 

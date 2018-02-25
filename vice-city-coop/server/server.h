@@ -20,6 +20,7 @@ extern "C"
 #include <ostream>
 #include <fstream>
 #include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -63,5 +64,8 @@ extern CServerNetwork		*gServerNetwork;
 extern CCustomDataManager	*gDataMgr;
 
 extern CLuaServer			*gLuaServer;
+
+extern std::string			ServerGamemode;
+extern CLuaScript			*gGamemodeScript;
 
 using namespace std;
