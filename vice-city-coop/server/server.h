@@ -65,7 +65,7 @@ extern CCustomDataManager	*gDataMgr;
 
 extern CLuaServer			*gLuaServer;
 
-extern std::string			ServerGamemode;
+extern std::string			ServerGamemodePath;
 extern CLuaScript			*gGamemodeScript;
 
 using namespace std;

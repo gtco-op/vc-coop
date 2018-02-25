@@ -276,8 +276,7 @@ void CServerNetwork::server_thread()
 		gLog->Log("[CServerNetwork] Game mode script invalid.\n");
 		server_running = false;
 	}
-
-
+	
 	while (server_running) {
 		librg_tick(&ctx);
 	}

@@ -19,7 +19,7 @@ CServerNetwork		*gServerNetwork;
 CCustomDataManager	*gDataMgr;
 CLuaServer			*gLuaServer;
 
-std::string			ServerGamemode;
+std::string			ServerGamemodePath;
 
 int main(int argc, char const *argv[]) {
 	bool console_active = true;
