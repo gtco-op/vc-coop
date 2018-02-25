@@ -93,7 +93,7 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
 
-	gGamemodeScript->CallCallback("onPlayerConnect", 1, name);
+	gGamemodeScript->Call("onPlayerConnect", 1, name);
 
 	//loop trough connected playera and send it to this guy
 	for (auto it : playerEntities)
@@ -195,7 +195,7 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 
 	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
 
-	gGamemodeScript->CallCallback("onPlayerDisconnect");
+	gGamemodeScript->Call("onPlayerDisconnect");
 }
 
 void CServerNetwork::measure(void *userptr) {
