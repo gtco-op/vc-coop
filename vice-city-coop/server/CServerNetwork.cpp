@@ -133,13 +133,19 @@ void CServerNetwork::on_connect_accepted(librg_event_t *event)
 
 	// send every script/data to the client
 	for (auto it : gDataMgr->GetItems()) {
-		if (it->GetType() == TYPE_CLIENT_SCRIPT)
+
+		if (it)
 		{
-			librg_message_send_to(&ctx, VCOOP_GET_LUA_SCRIPT, event->peer, it->GetData(), it->GetSize());
+			if (it->GetType() == TYPE_CLIENT_SCRIPT)
+			{
+				librg_message_send_to(&ctx, VCOOP_GET_LUA_SCRIPT, event->peer, it->GetData(), it->GetSize());
+			}
 		}
 	}
 
 	librg_message_send_to(&ctx, VCOOP_SPAWN_ALLOWED, event->peer, 0, 0);
+
+	gGamemodeScript->CallCallback("onPlayerConnect");
 }
 void CServerNetwork::on_creating_entity(librg_event_t *event) 
 {
@@ -188,6 +194,8 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	librg_message_send_except(&ctx, VCOOP_DISCONNECT, event->peer, &event->entity->id, sizeof(u32));
 
 	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
+
+	gGamemodeScript->CallCallback("onPlayerDisconnect");
 }
 
 void CServerNetwork::measure(void *userptr) {

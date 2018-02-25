@@ -19,8 +19,48 @@ static const struct luaL_Reg printlib[] = {
 
 CLuaScript::CLuaScript(CCustomData* ptr) 
 {
+	if (!ptr)
+		return;
+
 	m_Data = ptr;
 	
+	InitializeLua();
+
+	CallCallback("onServerStart");
+}
+void CLuaScript::CallCallback(std::string callback)
+{
+	if (!m_lState)
+	{
+		InitializeLua();
+	}
+
+	if (luaL_loadbuffer(m_lState, m_Data->GetData(), m_Data->GetSize() - 1, "vccoop_server_gamemode") || lua_pcall(m_lState, 0, 0, 0))
+	{
+		lua_close(m_lState);
+		return;
+	}
+	else
+	{
+		lua_getglobal(m_lState, callback.c_str());
+		if (!lua_isfunction(m_lState, -1))
+		{
+			lua_pop(m_lState, 1);
+			gLog->Log("[CLuaScript] Could not find %s callback.\n", callback.c_str());
+			return;
+		}
+		if (lua_pcall(m_lState, 0, 0, 0) != 0) {
+			gLog->Log("[CLuaScript] Error running callback `%s': %s\n", callback.c_str(), lua_tostring(m_lState, -1));
+			return;
+		}
+		else
+		{
+			gLog->Log("[CLuaScript] Call to %s callback successful.\n", callback.c_str());
+		}
+	}
+}
+void CLuaScript::InitializeLua()
+{
 	lua_State* lState = luaL_newstate();
 	if (lState == nullptr)
 		return;
@@ -30,8 +70,5 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 	luaL_setfuncs(lState, printlib, 0);
 	lua_pop(lState, 1);
 
-	luaL_loadbuffer(lState, m_Data->GetData(), m_Data->GetSize()-1, "vccoop_server_gamemode");
-	lua_pcall(lState, NULL, 0, NULL);
-
-	lua_close(lState);
+	m_lState = lState;
 }
