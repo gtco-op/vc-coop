@@ -42,7 +42,7 @@ void CServerNetwork::PlayerDeathEvent(librg_message_t *msg)
 	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
 	gLog->Log(msg1);
 
-	gGamemodeScript->Call("onPlayerDeath", 3, player->id, dData.killer, dData.weapon);
+	gGamemodeScript->Call("onPlayerDeath", "ddd", player->id, dData.killer, dData.weapon);
 }
 void CServerNetwork::PlayerSpawnEvent(librg_message_t *msg)
 {
@@ -95,7 +95,7 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
 
-	gGamemodeScript->Call("onPlayerConnect", 1, cData.playerId);
+	gGamemodeScript->Call("onPlayerConnect", "d", cData.playerId);
 
 	//loop trough connected playera and send it to this guy
 	for (auto it : playerEntities)
@@ -187,6 +187,8 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
 	if (tmp != playerEntities.end())	
 	{
+		gGamemodeScript->Call("onPlayerDisconnect", "d", event->entity->id);
+
 		playerEntities.erase(tmp);
 		delete event->entity->user_data;
 	}	
@@ -194,8 +196,6 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	librg_message_send_except(&ctx, VCOOP_DISCONNECT, event->peer, &event->entity->id, sizeof(u32));
 
 	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
-
-	gGamemodeScript->Call("onPlayerDisconnect");
 }
 
 void CServerNetwork::measure(void *userptr) {

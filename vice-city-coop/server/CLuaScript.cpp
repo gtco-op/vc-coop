@@ -10,7 +10,7 @@ static const struct luaL_Reg vccooplib[] = {
 CLuaScript::CLuaScript(CCustomData* ptr) 
 {
 	if (!ptr)
-		return;
+		return;	
 
 	m_Data = ptr;
 	
@@ -23,75 +23,78 @@ void CLuaScript::CreateLuaThread()
 void CLuaScript::LuaThread(LPVOID lParam)
 {
 	CLuaScript* instance = (CLuaScript*)lParam;
-	lua_State* lState	 = luaL_newstate();
 
-	if (lState == nullptr || instance == nullptr)
+	if (instance == nullptr || (instance->m_lState == nullptr))
 		return;
 
-	luaL_openlibs(lState);
-	lua_getglobal(lState, "_G");
-	luaL_setfuncs(lState, vccooplib, 0);
-	lua_pop(lState, 1);
-	
-	if (luaL_loadbuffer(lState, instance->GetData()->GetData(), instance->GetData()->GetSize() - 1, instance->GetData()->GetName().c_str()) || lua_pcall(lState, 0, 0, 0))
-	{
-		gLog->Log("[CLuaScript] Could not load script buffer when calling callback %s.\n", instance->GetCallbackName().c_str());
-		lua_close(lState);
+	lua_State* lState = instance->m_lState;
+
+	if (lua_pcall(lState, instance->GetArguments(), 0, 0) != 0) {
+		gLog->Log("[CLuaScript] Error running callback `%s': %s\n", instance->GetCallbackName().c_str(), lua_tostring(lState, -1));
 		return;
 	}
 	else
 	{
-		lua_getglobal(lState, instance->GetCallbackName().c_str());
-		if (!lua_isfunction(lState, -1))
-		{
-			lua_pop(lState, 1);
-			gLog->Log("[CLuaScript] Could not find %s callback.\n", instance->GetCallbackName().c_str());
-			return;
-		}
-		if (instance->GetArguments() == 0)
-		{
-			if (lua_pcall(lState, 0, 0, 0) != 0) {
-				gLog->Log("[CLuaScript] Error running callback `%s': %s\n", instance->GetCallbackName().c_str(), lua_tostring(lState, -1));
-				return;
-			}
-			else
-			{
 #ifdef VCCOOP_VERBOSE_LOG
-				gLog->Log("[CLuaScript] Call to %s callback successful.\n", instance->GetCallbackName().c_str());
+		gLog->Log("[CLuaScript] Call to %s callback successful.\n", instance->GetCallbackName().c_str());
 #endif
-			}
-		}
-		else
-		{
-			for (auto i : instance->m_ArgList)
-			{
-				lua_pushstring(lState, i.c_str());
-			}
-			if (lua_pcall(lState, instance->GetArguments(), 0, 0) != 0) {
-				gLog->Log("[CLuaScript] Error running callback `%s': %s\n", instance->GetCallbackName().c_str(), lua_tostring(lState, -1));
-				return;
-			}
-			else
-			{
-#ifdef VCCOOP_VERBOSE_LOG
-				gLog->Log("[CLuaScript] Call to %s callback successful.\n", instance->GetCallbackName().c_str());
-#endif
-			}
-		}
-	}
+	}	
+
+	instance->m_Args = 0;
 }
-void CLuaScript::Call(std::string callback, int args, ...)
+void CLuaScript::Call(std::string callback, char *fmt, ...)
 {
 	m_CallBackName	= callback;
-	m_Args			= args;
+	if (m_CallBackName.empty())
+		return;
 
-	va_list arguments;
-	va_start(arguments, args);
-	
-	for (int x = 0; x < m_Args; x++)
-		m_ArgList.push_back(va_arg(arguments, char*));
+	m_lState		= luaL_newstate();
+	if (m_lState == nullptr)
+		return;
 
-	va_end(arguments);
+	luaL_openlibs(m_lState);
+	lua_getglobal(m_lState, "_G");
+	luaL_setfuncs(m_lState, vccooplib, 0);
+	lua_pop(m_lState, 1);
+
+	if (luaL_loadbuffer(m_lState, GetData()->GetData(), GetData()->GetSize() - 1, GetData()->GetName().c_str()) || lua_pcall(m_lState, 0, 0, 0))
+	{
+		gLog->Log("[CLuaScript] Could not load script buffer when calling callback %s.\n", GetCallbackName().c_str());
+		lua_close(m_lState);
+		return;
+	}
+	else
+	{
+		lua_getglobal(m_lState, GetCallbackName().c_str());
+		if (!lua_isfunction(m_lState, -1))
+		{
+			lua_pop(m_lState, 1);
+			gLog->Log("[CLuaScript] Could not find `%s' callback.\n", GetCallbackName().c_str());
+			return;
+		}
+	}
+
+	va_list args;
+	va_start(args, fmt);
+	while (*fmt != '\0') {
+		if (*fmt == 'i') {
+			int i = va_arg(args, int);
+			lua_pushinteger(m_lState, i);
+			m_Args++;
+		}
+		else if (*fmt == 's') {
+			char * s = va_arg(args, char*);
+			lua_pushstring(m_lState, s);
+			m_Args++;
+		}
+		else if (*fmt == 'f') {
+			float f = va_arg(args, float);
+			lua_pushnumber(m_lState, f);
+			m_Args++;
+		}
+		++fmt;
+	}
+	va_end(args);
 
 	CreateLuaThread();
 }
