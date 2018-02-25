@@ -32,6 +32,8 @@ void CDebugEngine::AddDebugMessage(const char * message, ...)
 	vsprintf(buffer, message, args);
 	va_end(args);
 
+	gDbgLog->Log("[CDebugEngine] %s\n", buffer);
+
 	for (int i = 9; i > 0; i--)
 		sprintf(debugBuffer[i], "%s", debugBuffer[i - 1]);
 

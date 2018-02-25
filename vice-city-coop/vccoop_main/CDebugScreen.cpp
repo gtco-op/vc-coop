@@ -9,9 +9,6 @@ DeveloperConsole* CDebugScreen::gDevConsole;
 
 CDebugScreen::CDebugScreen() 
 {
-#ifdef VCCOOP_DEBUG
-	gDbgLog = new CLogger(true);
-#endif
 	debugEnabled = true;
 }
 CDebugScreen::~CDebugScreen() 

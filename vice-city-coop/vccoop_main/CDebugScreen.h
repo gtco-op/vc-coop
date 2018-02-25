@@ -325,8 +325,6 @@ public:
 #ifdef VCCOOP_DEBUG
 	static DeveloperConsole *gDevConsole;
 
-	CLogger* gDbgLog;
-
 	bool consoleToggled;
 
 	void ToggleConsoleWindow() { consoleToggled = !consoleToggled; }

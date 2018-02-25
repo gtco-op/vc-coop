@@ -102,13 +102,12 @@ extern "C" {
 #define	KEY_ONFOOT_CROUCH			16
 #define	KEY_ONFOOT_LOOKBEHIND		17
 
-
+#include "CLogger.h"
 #include "CConfiguration.h"
 #include "CClientPlayer.h"
 #include "CClientVehicle.h"
 #include "CClientPed.h"
 #include "CClientNetwork.h"
-#include "CLogger.h"
 #include "CRenderTemplate.h"
 #include "CNameTags.h"
 #include "CDebugScreen.h"
@@ -144,6 +143,7 @@ extern CChat			*gChat;
 
 #ifdef VCCOOP_DEBUG_ENGINE
 extern CDebugEngine		*gDbgEngine;
+extern CLogger			*gDbgLog;
 #endif
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);

@@ -8,6 +8,7 @@ CLogger			*gLog;
 CChat			*gChat;
 #ifdef VCCOOP_DEBUG_ENGINE
 CDebugEngine	*gDbgEngine;
+CLogger			*gDbgLog;
 #endif
 
 CCore::CCore()
@@ -20,6 +21,7 @@ CCore::CCore()
 
 #ifdef VCCOOP_DEBUG_ENGINE
 	gDbgEngine = new CDebugEngine();
+	gDbgLog = new CLogger(true);
 #endif
 	gChat = new CChat();
 	gLog = new CLogger();
