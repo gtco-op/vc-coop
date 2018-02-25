@@ -5,12 +5,12 @@ public:
 	CLuaScript(CCustomData* ptr);
 	~CLuaScript() { lua_close(m_lState); };
 
-	void InitializeLua();
 	void Call(std::string callback, int args = 0, ...);
 
 	static void LuaThread(LPVOID lParam);
 	void CreateLuaThread();
 
+	static int lua_GetPlayerName(lua_State* L);
 	static int lua_Log(lua_State* L);
 	static int lua_Sleep(lua_State* l);
 
@@ -25,4 +25,3 @@ protected:
 	std::vector<std::string> m_ArgList;
 	std::string m_CallBackName;
 };
-

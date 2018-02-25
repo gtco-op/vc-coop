@@ -41,6 +41,8 @@ void CServerNetwork::PlayerDeathEvent(librg_message_t *msg)
 	sprintf(msg1, "[CServerNetwork] Player %d is killed by entity %d with weapon %d\n", player->id, dData.killer, dData.weapon);
 	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
 	gLog->Log(msg1);
+
+	gGamemodeScript->Call("onPlayerDeath", 3, player->id, dData.killer, dData.weapon);
 }
 void CServerNetwork::PlayerSpawnEvent(librg_message_t *msg)
 {
@@ -58,7 +60,7 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 {
 	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_PED);
 	librg_entity_control_set(&ctx, entity->id, msg->peer);
-
+	
 	// crate our custom data container for ped
 	entity->user_data = new PedSyncData();
 
@@ -93,7 +95,7 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
 
-	gGamemodeScript->Call("onPlayerConnect", 1, name);
+	gGamemodeScript->Call("onPlayerConnect", 1, cData.playerId);
 
 	//loop trough connected playera and send it to this guy
 	for (auto it : playerEntities)
@@ -106,8 +108,6 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 		}
 	}
 }
-
-
 void CServerNetwork::on_connect_request(librg_event_t *event) 
 {
 	// Player Name

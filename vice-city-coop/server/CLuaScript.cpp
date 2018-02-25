@@ -3,6 +3,7 @@
 static const struct luaL_Reg vccooplib[] = {
 	{ "print", &CLuaScript::lua_Log },
 	{ "sleep", &CLuaScript::lua_Sleep },
+	{ "GetPlayerName", &CLuaScript::lua_GetPlayerName },
 { NULL, NULL }
 };
 
@@ -13,8 +14,6 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 
 	m_Data = ptr;
 	
-	InitializeLua();
-
 	Call("onServerStart");
 }
 void CLuaScript::CreateLuaThread()
@@ -96,10 +95,6 @@ void CLuaScript::Call(std::string callback, int args, ...)
 
 	CreateLuaThread();
 }
-void CLuaScript::InitializeLua()
-{
-
-}
 int CLuaScript::lua_Log(lua_State* L) {
 	int nargs = lua_gettop(L);
 
@@ -118,5 +113,20 @@ int CLuaScript::lua_Sleep(lua_State* l)
 	if (ms == 0)
 		return 0;
 	Sleep(ms);
+	return 1;
+}
+int CLuaScript::lua_GetPlayerName(lua_State* L)
+{
+	int args = lua_gettop(L);
+	if (args < 0)	{
+		return 0;
+	}
+
+	int playerID = 0;
+	playerID = lua_tointeger(L, 1);
+	
+	if(playerNames[playerID] != nullptr)
+		lua_pushstring(L, playerNames[playerID]);
+
 	return 1;
 }
