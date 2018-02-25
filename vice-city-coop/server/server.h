@@ -50,6 +50,7 @@ extern "C"
 #include "CCustomData.h"
 #include "CCustomDataManager.h"
 
+#include "CLuaScript.h"
 #include "CLuaDumper.h"
 #include "CLuaServer.h"
 
@@ -60,5 +61,7 @@ extern CLogger				*gLog;
 extern CServerNetwork		*gServerNetwork;
 
 extern CCustomDataManager	*gDataMgr;
+
+extern CLuaServer			*gLuaServer;
 
 using namespace std;

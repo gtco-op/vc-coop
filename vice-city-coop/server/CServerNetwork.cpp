@@ -282,8 +282,20 @@ void CServerNetwork::server_thread()
 		if (i->GetType() == TYPE_SERVER_SCRIPT) {
 			gLog->Log("[CServerNetwork] Using %s script for gamemode.\n", i->GetName().c_str());
 			gamemodeScript = i;
-
 			break;
+		}
+	}
+
+	if (gamemodeScript == nullptr)	{
+		server_running = false;
+		gLog->Log("[CServerNetwork] Unable to start server. Reason: No server script detected.\n");
+	}
+	else
+	{
+		gLuaServer = new CLuaServer;
+		if (gLuaServer == nullptr){
+			server_running = false;
+			gLog->Log("[CServerNetwork] Unable to start server. Reason: Lua server could not be started.\n");
 		}
 	}
 

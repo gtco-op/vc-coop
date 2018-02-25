@@ -97,6 +97,9 @@
     <ClInclude Include="CLuaServer.h">
       <Filter>Source\scripting</Filter>
     </ClInclude>
+    <ClInclude Include="CLuaScript.h">
+      <Filter>Source\scripting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
@@ -121,6 +124,9 @@
       <Filter>Source\scripting</Filter>
     </ClCompile>
     <ClCompile Include="CLuaServer.cpp">
+      <Filter>Source\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="CLuaScript.cpp">
       <Filter>Source\scripting</Filter>
     </ClCompile>
   </ItemGroup>

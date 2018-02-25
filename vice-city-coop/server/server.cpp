@@ -17,7 +17,7 @@ CConfiguration		*gConfig;
 CLogger				*gLog;
 CServerNetwork		*gServerNetwork;
 CCustomDataManager	*gDataMgr;
-
+CLuaServer			*gLuaServer;
 
 int main(int argc, char const *argv[]) {
 	bool console_active = true;

@@ -131,6 +131,7 @@
     <ClCompile Include="CCustomDataManager.cpp" />
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="CLuaDumper.cpp" />
+    <ClCompile Include="CLuaScript.cpp" />
     <ClCompile Include="CLuaServer.cpp" />
     <ClCompile Include="CServerNetwork.cpp" />
     <ClCompile Include="server.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="CCustomDataManager.h" />
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CLuaDumper.h" />
+    <ClInclude Include="CLuaScript.h" />
     <ClInclude Include="CLuaServer.h" />
     <ClInclude Include="CServerNetwork.h" />
     <ClInclude Include="server.h" />
