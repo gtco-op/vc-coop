@@ -1,19 +1,8 @@
 #include "server.h"
 
-int lua_Log(lua_State* L) {
-	int nargs = lua_gettop(L);
-
-	std::string buffer("[Gamemode] ");
-	for (int i = 1; i <= nargs; ++i) {
-		buffer.append((char*)lua_tostring(L, i));
-	}
-	buffer.append("\n");
-	gLog->Log((char*)buffer.c_str());
-	return 0;
-}
-
-static const struct luaL_Reg printlib[] = {
-	{ "print", lua_Log },
+static const struct luaL_Reg vccooplib[] = {
+	{ "print", &CLuaScript::lua_Log },
+	{ "sleep", &CLuaScript::lua_Sleep },
 { NULL, NULL }
 };
 
@@ -34,6 +23,8 @@ void CLuaScript::CallCallback(std::string callback, int args, ...)
 	{
 		InitializeLua();
 	}
+
+	m_Args = args;
 
 	if (luaL_loadbuffer(m_lState, m_Data->GetData(), m_Data->GetSize() - 1, "vccoop_server_gamemode") || lua_pcall(m_lState, 0, 0, 0))
 	{
@@ -90,8 +81,28 @@ void CLuaScript::InitializeLua()
 
 	luaL_openlibs(lState);
 	lua_getglobal(lState, "_G");
-	luaL_setfuncs(lState, printlib, 0);
+	luaL_setfuncs(lState, vccooplib, 0);
 	lua_pop(lState, 1);
 
 	m_lState = lState;
+}
+int CLuaScript::lua_Log(lua_State* L) {
+	int nargs = lua_gettop(L);
+
+	std::string buffer("[Gamemode] ");
+	for (int i = 1; i <= nargs; ++i) {
+		buffer.append((char*)lua_tostring(L, i));
+	}
+	buffer.append("\n");
+	gLog->Log((char*)buffer.c_str());
+	return 0;
+}
+int CLuaScript::lua_Sleep(lua_State* l)
+{
+	int ms = 0;
+	ms = lua_tointeger(l, 1);
+	if (ms == 0)
+		return 0;
+	Sleep(ms);
+	return 1;
 }
