@@ -50,7 +50,8 @@ extern "C"
 #include "CCustomData.h"
 #include "CCustomDataManager.h"
 
-#include "CLua.h"
+#include "CLuaDumper.h"
+#include "CLuaServer.h"
 
 //------------------------------------------------------------------------------------------------
 

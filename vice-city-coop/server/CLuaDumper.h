@@ -1,9 +1,9 @@
 #pragma once
-class CLua
+class CLuaDumper
 {
 public:
-	CLua(std::string scriptName);
-	~CLua();
+	CLuaDumper(std::string scriptName);
+	~CLuaDumper() {};
 	
 	std::string GetScriptData() { return compiledScriptOutput; }
 	lua_State*	GetLuaState() { return lState; }

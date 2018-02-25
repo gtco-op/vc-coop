@@ -60,8 +60,6 @@ void  _declspec(naked) Patched_CAutomobile_ProcessControl()
 	_asm ret
 }
 */
-
-#define VCCOOP_VERBOSE_LOG
 void Hooked_DbgPrint(char * msg, ...)
 {
 	char buffer[256];
@@ -288,7 +286,7 @@ int __fastcall CWeapon__DoBulletImpact_Hook(CWeapon*This, DWORD _EDX, CEntity* s
 		return 0;
 	}
 	else
-	{
+	{	
 		bulletSyncData bsData;
 		bsData.player = gNetwork->GetNetworkIDFromEntity(source);
 		bsData.targetEntityID = gNetwork->GetNetworkIDFromEntity(target);

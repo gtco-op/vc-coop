@@ -115,15 +115,15 @@ extern "C" {
 #include "CImGui.h"
 #include "CChat.h"
 #include "CGame.h"
-
-#include "CRender.h"
-
-#include "CDebugEngine.h"
-
-#include "CLua.h"
-
 #include "CCameraStuff.h"
 #include "CHooks.h"
+#include "CRender.h"
+
+#ifdef VCCOOP_DEBUG
+#include "CDebugEngine.h"
+#endif
+
+#include "CLua.h"
 
 #define SAFE_RELEASE(p)          { if (p) { (p)->Release(); (p)=NULL; } }
 #define LocalPlayer				 gGame->FindLocalPed

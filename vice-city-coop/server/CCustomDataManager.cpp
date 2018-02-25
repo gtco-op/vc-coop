@@ -24,7 +24,7 @@ CCustomData* CCustomDataManager::InsertScript(bool type_relative, std::string fi
 	}
 	
 	CCustomData* cData = nullptr;
-	CLua* gLua = new CLua(path);
+	CLuaDumper* gLua = new CLuaDumper(path);
 	while (!gLua->GetLuaStatus()) {}
 	
 	double dataLen = gLua->compiledScriptOutput.size() + sizeof(dataLen);

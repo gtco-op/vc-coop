@@ -12,6 +12,8 @@ std::vector<librg_entity_t*>	playerEntities;
 char							playerNames[MAX_PLAYERS][25];
 std::vector<librg_entity_t*>	otherEntities;
 
+CCustomData*					gamemodeScript = nullptr;
+
 CServerNetwork::CServerNetwork()
 {
 	ctx = { 0 };
@@ -269,10 +271,21 @@ void CServerNetwork::server_thread()
 	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\server")))
 		if (p.path().extension() == std::string(".lua"))
 			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_SERVER_SCRIPT, p.path());
+		
 	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\client")))
 		if (p.path().extension() == std::string(".lua"))
 			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_CLIENT_SCRIPT, p.path());
 
+	// Choose the first server script for gamemode
+	// TODO: Use script defined in server.ini
+	for (auto i : gDataMgr->GetItems()) {
+		if (i->GetType() == TYPE_SERVER_SCRIPT) {
+			gLog->Log("[CServerNetwork] Using %s script for gamemode.\n", i->GetName().c_str());
+			gamemodeScript = i;
+
+			break;
+		}
+	}
 
 	while (server_running) {
 		librg_tick(&ctx);
