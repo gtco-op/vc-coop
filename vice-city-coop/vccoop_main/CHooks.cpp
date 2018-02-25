@@ -78,10 +78,10 @@ void Hooked_DbgPrint(char * msg, ...)
 	if (gRender->gDebugScreen->gDevConsole != nullptr && debugEnabled)
 	{
 		gRender->gDebugScreen->gDevConsole->AddLog("%s%s", buffer, (newline ? "\n" : ""));
-		gRender->gDebugScreen->gDbgLog->Log(" %s%s", buffer, (newline ? "\n" : ""));
 	}
 #endif
 #ifdef VCCOOP_DEBUG_ENGINE
+	gDbgLog->Log(" %s%s", buffer, (newline ? "\n" : ""));
 	gDbgEngine->AddDebugMessage("[DEBUG] %s", buffer);
 #endif
 	return;
