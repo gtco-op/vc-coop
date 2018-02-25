@@ -74,27 +74,30 @@ void CLuaScript::Call(std::string callback, char *fmt, ...)
 		}
 	}
 
-	va_list args;
-	va_start(args, fmt);
-	while (*fmt != '\0') {
-		if (*fmt == 'i') {
-			int i = va_arg(args, int);
-			lua_pushinteger(m_lState, i);
-			m_Args++;
+	if (fmt != nullptr)
+	{
+		va_list args;
+		va_start(args, fmt);
+		while (*fmt != '\0') {
+			if (*fmt == 'i') {
+				int i = va_arg(args, int);
+				lua_pushinteger(m_lState, i);
+				m_Args++;
+			}
+			else if (*fmt == 's') {
+				char * s = va_arg(args, char*);
+				lua_pushstring(m_lState, s);
+				m_Args++;
+			}
+			else if (*fmt == 'f') {
+				float f = va_arg(args, float);
+				lua_pushnumber(m_lState, f);
+				m_Args++;
+			}
+			++fmt;
 		}
-		else if (*fmt == 's') {
-			char * s = va_arg(args, char*);
-			lua_pushstring(m_lState, s);
-			m_Args++;
-		}
-		else if (*fmt == 'f') {
-			float f = va_arg(args, float);
-			lua_pushnumber(m_lState, f);
-			m_Args++;
-		}
-		++fmt;
+		va_end(args);
 	}
-	va_end(args);
 
 	CreateLuaThread();
 }
