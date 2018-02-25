@@ -283,12 +283,13 @@ int __fastcall CPed__SetIdle_Hook(CPed * This, DWORD _EDX)//probably unnecessary
 int(__thiscall* original_CWeapon__DoBulletImpact)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D);
 int __fastcall CWeapon__DoBulletImpact_Hook(CWeapon*This, DWORD _EDX, CEntity* source, CEntity* target, CVector* start, CVector* end, CColPoint* colpoint, CVector2D ahead)//probably unnecessary
 {
-	if (source != LocalPlayer()) // we dont need original bullets from
+	if (source != LocalPlayer()) // we dont need original bullets from remote players because we will sync it with librg messages
 	{
 		return 0;
 	}
 	else
 	{
+		if (This == &LocalPlayer()->m_aWeapons[LocalPlayer()->m_nWepSlot])gLog->Log("Shooting from wep in slot\n");
 		bulletSyncData bsData;
 		bsData.player = gNetwork->GetNetworkIDFromEntity(source);
 		bsData.targetEntityID = gNetwork->GetNetworkIDFromEntity(target);
@@ -300,6 +301,11 @@ int __fastcall CWeapon__DoBulletImpact_Hook(CWeapon*This, DWORD _EDX, CEntity* s
 		librg_message_send_all(&gNetwork->ctx, VCOOP_BULLET_SYNC, &bsData, sizeof(bulletSyncData));
 	}
 	return original_CWeapon__DoBulletImpact(This, source, target, start, end, colpoint, ahead);
+}
+
+void CHooks::DoBulletImpact(CWeapon*This, CEntity* source, CEntity* target, CVector* start, CVector* end, CColPoint* colpoint, CVector2D ahead)
+{
+	original_CWeapon__DoBulletImpact(This, source, target, start, end, colpoint, ahead);
 }
 
 void CHooks::InitHooks()

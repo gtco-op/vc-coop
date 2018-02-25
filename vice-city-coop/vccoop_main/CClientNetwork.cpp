@@ -53,7 +53,11 @@ void CClientNetwork::BulletSyncEvent(librg_message_t* msg)
 	{
 		CEntity * hitEntity = NULL;
 		if (bsData.targetEntityID != -1)hitEntity = GetEntityFromNetworkID(bsData.targetEntityID);
-		shooterPlayer->m_aWeapons[shooterPlayer->m_nWepSlot].DoBulletImpact(shooterPlayer, hitEntity, &bsData.start, &bsData.end, &bsData.colPoint, bsData.ahead);
+		gLog->Log("Shooting bullet from player %d hitting entity %d\n", bsData.player, bsData.targetEntityID);
+		gLog->Log("Start vector: %f %f %f End vector: %f %f %f\n", bsData.start.x, bsData.start.y, bsData.start.z, bsData.end.x, bsData.end.y, bsData.end.z);
+		gLog->Log("surfacetypeA: %d | 2d vec: %f %f\n", bsData.colPoint.m_nSurfaceTypeA, bsData.ahead.x, bsData.ahead.y);
+		//shooterPlayer->m_aWeapons[shooterPlayer->m_nWepSlot].DoBulletImpact(shooterPlayer, hitEntity, &bsData.start, &bsData.end, &bsData.colPoint, bsData.ahead);
+		CHooks::DoBulletImpact(&shooterPlayer->m_aWeapons[shooterPlayer->m_nWepSlot], shooterPlayer, hitEntity, &bsData.start, &bsData.end, &bsData.colPoint, bsData.ahead);
 	}
 }
 void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
@@ -65,6 +69,7 @@ void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 }
 CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 {
+	if (id < 0)return NULL;
 	return gNetwork->networkPlayers[id]->ped;
 }
 int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
@@ -96,6 +101,7 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event)
 
 	local_player = event->entity;
 	event->entity->user_data = new CClientPlayer(event->entity->id);
+	gNetwork->networkPlayers[event->entity->id] = (CClientPlayer*)event->entity->user_data;
 
 	//Inform server about our name
 	char name[25];
