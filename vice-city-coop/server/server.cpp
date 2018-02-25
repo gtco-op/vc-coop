@@ -17,7 +17,6 @@ CConfiguration		*gConfig;
 CLogger				*gLog;
 CServerNetwork		*gServerNetwork;
 CCustomDataManager	*gDataMgr;
-CLuaServer			*gLuaServer;
 
 std::string			ServerGamemodePath;
 

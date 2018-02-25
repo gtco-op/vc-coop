@@ -53,7 +53,6 @@ extern "C"
 
 #include "CLuaScript.h"
 #include "CLuaDumper.h"
-#include "CLuaServer.h"
 
 //------------------------------------------------------------------------------------------------
 
@@ -62,8 +61,6 @@ extern CLogger				*gLog;
 extern CServerNetwork		*gServerNetwork;
 
 extern CCustomDataManager	*gDataMgr;
-
-extern CLuaServer			*gLuaServer;
 
 extern std::string			ServerGamemodePath;
 extern CLuaScript			*gGamemodeScript;

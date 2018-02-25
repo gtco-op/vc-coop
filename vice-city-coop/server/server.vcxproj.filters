@@ -94,9 +94,6 @@
     <ClInclude Include="CLuaDumper.h">
       <Filter>Source\scripting</Filter>
     </ClInclude>
-    <ClInclude Include="CLuaServer.h">
-      <Filter>Source\scripting</Filter>
-    </ClInclude>
     <ClInclude Include="CLuaScript.h">
       <Filter>Source\scripting</Filter>
     </ClInclude>
@@ -121,9 +118,6 @@
       <Filter>Source\utils\CCustomData</Filter>
     </ClCompile>
     <ClCompile Include="CLuaDumper.cpp">
-      <Filter>Source\scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="CLuaServer.cpp">
       <Filter>Source\scripting</Filter>
     </ClCompile>
     <ClCompile Include="CLuaScript.cpp">
