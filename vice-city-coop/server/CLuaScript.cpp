@@ -49,7 +49,9 @@ void CLuaScript::CallCallback(std::string callback, int args, ...)
 			}
 			else
 			{
+#ifdef VCCOOP_VERBOSE_LOG
 				gLog->Log("[CLuaScript] Call to %s callback successful.\n", callback.c_str());
+#endif
 			}
 		}
 		else
@@ -68,7 +70,9 @@ void CLuaScript::CallCallback(std::string callback, int args, ...)
 			}
 			else
 			{
+#ifdef VCCOOP_VERBOSE_LOG
 				gLog->Log("[CLuaScript] Call to %s callback successful.\n", callback.c_str());
+#endif
 			}
 		}
 	}
