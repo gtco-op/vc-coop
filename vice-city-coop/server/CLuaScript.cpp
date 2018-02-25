@@ -28,7 +28,7 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 
 	CallCallback("onServerStart");
 }
-void CLuaScript::CallCallback(std::string callback)
+void CLuaScript::CallCallback(std::string callback, int args, ...)
 {
 	if (!m_lState)
 	{
@@ -37,6 +37,7 @@ void CLuaScript::CallCallback(std::string callback)
 
 	if (luaL_loadbuffer(m_lState, m_Data->GetData(), m_Data->GetSize() - 1, "vccoop_server_gamemode") || lua_pcall(m_lState, 0, 0, 0))
 	{
+		gLog->Log("[CLuaScript] Could not load script buffer when calling callback %s.\n", callback.c_str());
 		lua_close(m_lState);
 		return;
 	}
@@ -49,13 +50,35 @@ void CLuaScript::CallCallback(std::string callback)
 			gLog->Log("[CLuaScript] Could not find %s callback.\n", callback.c_str());
 			return;
 		}
-		if (lua_pcall(m_lState, 0, 0, 0) != 0) {
-			gLog->Log("[CLuaScript] Error running callback `%s': %s\n", callback.c_str(), lua_tostring(m_lState, -1));
-			return;
+		if (args == 0)
+		{
+			if (lua_pcall(m_lState, 0, 0, 0) != 0) {
+				gLog->Log("[CLuaScript] Error running callback `%s': %s\n", callback.c_str(), lua_tostring(m_lState, -1));
+				return;
+			}
+			else
+			{
+				gLog->Log("[CLuaScript] Call to %s callback successful.\n", callback.c_str());
+			}
 		}
 		else
 		{
-			gLog->Log("[CLuaScript] Call to %s callback successful.\n", callback.c_str());
+			va_list arguments;        
+			va_start(arguments, args);           
+			for (int x = 0; x < args; x++)
+			{
+				lua_pushstring(m_lState, va_arg(arguments, char*));
+			}
+			va_end(arguments);                  
+
+			if (lua_pcall(m_lState, args, 0, 0) != 0) {
+				gLog->Log("[CLuaScript] Error running callback `%s': %s\n", callback.c_str(), lua_tostring(m_lState, -1));
+				return;
+			}
+			else
+			{
+				gLog->Log("[CLuaScript] Call to %s callback successful.\n", callback.c_str());
+			}
 		}
 	}
 }

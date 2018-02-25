@@ -93,6 +93,8 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
 
+	gGamemodeScript->CallCallback("onPlayerConnect", 1, name);
+
 	//loop trough connected playera and send it to this guy
 	for (auto it : playerEntities)
 	{
@@ -144,8 +146,6 @@ void CServerNetwork::on_connect_accepted(librg_event_t *event)
 	}
 
 	librg_message_send_to(&ctx, VCOOP_SPAWN_ALLOWED, event->peer, 0, 0);
-
-	gGamemodeScript->CallCallback("onPlayerConnect");
 }
 void CServerNetwork::on_creating_entity(librg_event_t *event) 
 {
