@@ -314,7 +314,9 @@
     <ClCompile Include="CClientVehicle.cpp" />
     <ClCompile Include="CConfiguration.cpp" />
     <ClCompile Include="CCore.cpp" />
-    <ClCompile Include="CDebugEngine.cpp" />
+    <ClCompile Include="CDebugEngine.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GTAVC|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="CDebugScreen.cpp" />
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="CHooks.cpp" />

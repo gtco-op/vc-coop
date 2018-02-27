@@ -184,6 +184,11 @@ void CRender::Draw()
 	{
 		if (Initialized)
 		{
+			if (bLoadingDone == false)
+			{
+				this->device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(0,0,0,255), 1.0f, 0);
+			}
+
 			ImGui_ImplDX9_NewFrame();
 
 #ifdef VCCOOP_DEBUG
@@ -336,6 +341,11 @@ void CRender::Draw()
 						{
 							gChat->AddChatMessage("[ERROR] Please ensure all connection settings are valid!");
 						}
+					}
+					if (ImGui::Button("Back"))
+					{
+						gLog->Log("[CRender] Back pressed, ending process.\n");
+						exit(0);
 					}
 					if (ImGui::Button("About VC:CO-OP"))
 					{

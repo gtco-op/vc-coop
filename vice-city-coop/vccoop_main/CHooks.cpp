@@ -6,6 +6,7 @@ BYTE			localPlayerCameraMode;
 BYTE			internalPlayerID			= 0;
 CVehicle *		_pVehicle;
 static bool		scriptProcessed				= false;
+bool			bLoadingDone				= false;
 
 int FindIDForPed(CPed * ped)
 {
@@ -74,6 +75,11 @@ void Hooked_DbgPrint(char * msg, ...)
 	if (!strstr(buffer, "\n")) {
 		newline = true;
 	}
+
+	if (strstr(buffer, "Finish loading blistac"))	{
+		bLoadingDone = true;
+	}
+
 #ifdef VCCOOP_DEBUG
 	if (gRender->gDebugScreen->gDevConsole != nullptr && debugEnabled)
 	{
