@@ -47,6 +47,7 @@ CCore::CCore()
 }
 CCore::~CCore()
 {
+	delete gNetwork;
 	delete gRender;
 	gLog->Log("[CCore] CCore shutting down\n");
 	delete gLog;

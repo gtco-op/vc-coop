@@ -7,13 +7,12 @@ CRichPresence::CRichPresence()
 {
 	StartThread();
 
-	gLog->Log("[CRichPresence] CRichPresence initialized");
+	gLog->Log("[CRichPresence] CRichPresence initialized\n");
 }
 CRichPresence::~CRichPresence() {
-	gLog->Log("[CRichPresence] CRichPresence shutting down");
+	gLog->Log("[CRichPresence] CRichPresence shutting down\n");
 
-	StopThread();
-	Discord_Shutdown();
+	Shutdown();
 }
 void CRichPresence::StartThread()
 {
@@ -37,6 +36,8 @@ void CRichPresence::rpThread(LPVOID lParam)
 	}
 }
 void CRichPresence::Shutdown() {
+	StopThread();
+	
 	Discord_Shutdown();
 }
 void CRichPresence::UpdateRichPresence(bool IsConnected)
