@@ -145,6 +145,7 @@
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include</IncludePath>
     <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(SolutionDir)</LibraryPath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='zDebug GTA3|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -273,8 +274,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>lua.lib;user32.lib;winmm.lib;ws2_32.lib;paths_d.lib;plugin_vc_d.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)\vendor\detours\;$(ProjectDir)\vendor\lua\;$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>discord-rpc.lib;lua.lib;user32.lib;winmm.lib;ws2_32.lib;paths_d.lib;plugin_vc_d.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\vendor\discord-rich-presence\;$(ProjectDir)\vendor\detours\;$(ProjectDir)\vendor\lua\;$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.VC_d.lib</ImportLibrary>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
@@ -325,6 +326,7 @@
     <ClCompile Include="CLua.cpp" />
     <ClCompile Include="CNameTags.cpp" />
     <ClCompile Include="CRenderTemplate.cpp" />
+    <ClCompile Include="CRichPresence.cpp" />
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='zDebug GTAVC|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -352,6 +354,7 @@
     <ClInclude Include="CNameTags.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="CRenderTemplate.h" />
+    <ClInclude Include="CRichPresence.h" />
     <ClInclude Include="hooklibrary.h" />
     <ClInclude Include="librg\enet.h" />
     <ClInclude Include="librg\librg.h" />
@@ -360,6 +363,7 @@
     <ClInclude Include="LogoTextureArray.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="CRender.h" />
+    <ClInclude Include="vendor\discord-rich-presence\discord-rpc.h" />
     <ClInclude Include="vendor\imgui\imconfig.h" />
     <ClInclude Include="vendor\imgui\imgui.h" />
     <ClInclude Include="vendor\imgui\imgui_impl_dx9.h" />

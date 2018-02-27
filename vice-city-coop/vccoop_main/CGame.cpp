@@ -11,10 +11,16 @@ CGame::CGame()
 	keyPressTime = 0;
 
 	gLog->Log("[CGame] CGame initialized.\n");
+	CRichPresence::InitRichPresence();
+	gLog->Log("[CRichPresence] The Presence is intalized.\n");
+	CRichPresence::UpdateRichPresence(false);
 }
 CGame::~CGame()
-{
+{	
+	CRichPresence::Shutdown();
+	gLog->Log("[CRichPresence] CRishPresence shutting down.\n");
 	gLog->Log("[CGame] CGame shutting down.\n");
+
 }
 
 CPed * CGame::FindLocalPed()

@@ -13,6 +13,8 @@
 //hooks
 #include "hooklibrary.h"
 
+// discord rich presence
+#include "vendor\discord-rich-presence\discord-rpc.h"
 //lua
 extern "C" {
 #include "lua.h"
@@ -117,6 +119,7 @@ extern "C" {
 #include "CCameraStuff.h"
 #include "CHooks.h"
 #include "CRender.h"
+#include "CRichPresence.h"
 
 #ifdef VCCOOP_DEBUG
 #include "CDebugEngine.h"
