@@ -107,7 +107,6 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event)
 	char name[25];
 	strcpy(name, gGame->Name.c_str());
 	librg_message_send_all(&gNetwork->ctx, VCOOP_CONNECT, &name, sizeof(name));
-	CRichPresence::UpdateRichPresence(true);
 }
 void CClientNetwork::on_connect_refused(librg_event_t *event) 
 {
@@ -283,7 +282,6 @@ void CClientNetwork::on_disconnect(librg_event_t *event)
 	StopClientThread();
 
 	gLog->Log("[CClientNetwork] Disconnected.\n");
-	CRichPresence::UpdateRichPresence(false);
 }
 void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 {

@@ -1,32 +1,52 @@
 #include "main.h"
 
+static char* APP_ID = "411105613288833034";
+HANDLE g_ThreadHandle = nullptr;
+
+CRichPresence::CRichPresence() 
+{
+	StartThread();
+
+	gLog->Log("[CRichPresence] CRichPresence initialized");
+}
 CRichPresence::~CRichPresence() {
-	gLog->Log("Shutting down Rich Presence");
+	gLog->Log("[CRichPresence] CRichPresence shutting down");
+
+	StopThread();
 	Discord_Shutdown();
 }
-CRichPresence::CRichPresence() {
-	Discord_RunCallbacks();
+void CRichPresence::StartThread()
+{
+	g_ThreadHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&rpThread, this, 0, NULL);
 }
-void CRichPresence::InitRichPresence() {
+void CRichPresence::StopThread()
+{
+	TerminateThread(g_ThreadHandle, 0);
+}
+void CRichPresence::rpThread(LPVOID lParam)
+{
+	CRichPresence* tmp = (CRichPresence*)lParam;
+	if (tmp == nullptr)
+		return;
+	
+	Discord_Initialize(APP_ID, NULL, 1, NULL);
 
-	DiscordEventHandlers handlers;
-	memset(&handlers, 0, sizeof(handlers));
-	Discord_Initialize((char *)411105613288833034, &handlers, 1, NULL);
-
+	while (1) {
+		tmp->UpdateRichPresence(gNetwork->connected);
+		Sleep(1);
+	}
 }
 void CRichPresence::Shutdown() {
 	Discord_Shutdown();
 }
-//void CRichPresence::UpdateRichPresence(char* status, char* details, char* largeimagekey, char* largeimagetext, char* smallimagekey, char* smallimagetext, int countofplayers, int maxofplayers)
-
 void CRichPresence::UpdateRichPresence(bool IsConnected)
 {	
 	DiscordRichPresence dp;
 	memset(&dp, 0, sizeof(dp));
 	dp.largeImageText = "Grand Theft CO-OP: Vice City";
 	dp.largeImageKey = "main";
-	char* details;
-	char* state;
+	char* details = new char[256];
+	char* state = new char[256];
 	if (IsConnected) {
 		sprintf(details, "In %s", gNetwork->ServerAddress);
 		dp.details = details;
@@ -37,11 +57,11 @@ void CRichPresence::UpdateRichPresence(bool IsConnected)
 		dp.smallImageText = "Connected";
 	}
 	else {
-		sprintf(details, "Surfing Masterlist");
+		sprintf(details, "Not connected");
 		dp.details = details;
 
 		sprintf(state, "NickName: %s", (char *)gGame->Name.c_str());
-		dp.smallImageText = "discon"; //red circle
+		dp.smallImageKey = "discon"; //red circle
 		dp.smallImageText = "Disconnected";
 	}
 	Discord_UpdatePresence(&dp);

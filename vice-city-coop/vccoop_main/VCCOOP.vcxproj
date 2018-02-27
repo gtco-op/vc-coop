@@ -113,8 +113,8 @@
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Release\</IntDir>
     <TargetName>vccoop</TargetName>
     <TargetExt>.asi</TargetExt>
-    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(SolutionDir)</LibraryPath>
+    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include;$(ProjectDir)\vendor\discord-rpc</IncludePath>
+    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(ProjectDir)\vendor\discord-rpc;$(SolutionDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA3|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -143,9 +143,9 @@
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Debug\</IntDir>
     <TargetName>vccoopd</TargetName>
     <TargetExt>.asi</TargetExt>
-    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(SolutionDir)</LibraryPath>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include;$(ProjectDir)\vendor\discord-rpc</IncludePath>
+    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(ProjectDir)\vendor\discord-rpc;$(SolutionDir)</LibraryPath>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='zDebug GTA3|Win32'">
     <LinkIncremental>true</LinkIncremental>

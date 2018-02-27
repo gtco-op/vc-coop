@@ -109,7 +109,10 @@ extern "C" {
 #include "CClientPlayer.h"
 #include "CClientVehicle.h"
 #include "CClientPed.h"
+
+#include "CRichPresence.h"
 #include "CClientNetwork.h"
+
 #include "CRenderTemplate.h"
 #include "CNameTags.h"
 #include "CDebugScreen.h"
@@ -119,7 +122,6 @@ extern "C" {
 #include "CCameraStuff.h"
 #include "CHooks.h"
 #include "CRender.h"
-#include "CRichPresence.h"
 
 #ifdef VCCOOP_DEBUG
 #include "CDebugEngine.h"

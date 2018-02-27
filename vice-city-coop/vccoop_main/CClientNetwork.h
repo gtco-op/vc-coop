@@ -3,7 +3,7 @@
 static char Nickname[25] = { 0 };
 static char IP[15]	= VCCOOP_DEFAULT_SERVER_ADDRESS;
 static int Port		= VCCOOP_DEFAULT_SERVER_PORT;
-class CClientNetwork
+class CClientNetwork : public CRichPresence
 {
 public:
 	CClientNetwork();

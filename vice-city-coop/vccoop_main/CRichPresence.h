@@ -4,11 +4,14 @@
 class CRichPresence {
 
 public:
-	//    Discord_Initialize(APPLICATION_ID, &handlers, 1, STEAM_APP_ID);
 	CRichPresence();
 	~CRichPresence();
-	static void InitRichPresence();
-	static void UpdateRichPresence(bool IsConnected);
-	static void Shutdown();
 
+	void UpdateRichPresence(bool IsConnected);
+	void Shutdown();
+
+	void StartThread();
+	void StopThread();
+
+	static void rpThread(LPVOID lParam);
 };
