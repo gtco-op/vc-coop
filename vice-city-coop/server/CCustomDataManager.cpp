@@ -87,3 +87,9 @@ std::string CCustomDataManager::GetCustomDataTypeString(CustomDataType type)
 	}
 	return std::string("");
 }
+void CCustomDataManager::LoadScripts()
+{
+	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\client")))
+		if (p.path().extension() == std::string(".lua"))
+			InsertScript(false, p.path().string().c_str(), TYPE_CLIENT_SCRIPT, p.path());
+}

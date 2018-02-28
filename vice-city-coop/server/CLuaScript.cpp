@@ -1,10 +1,10 @@
 #include "server.h"
 
 static const struct luaL_Reg vccooplib[] = {
-	{ "print", &CLuaScript::lua_Log },
-	{ "sleep", &CLuaScript::lua_Sleep },
-	{ "GetPlayerName", &CLuaScript::lua_GetPlayerName },
-{ NULL, NULL }
+	{ "print",			&CLuaScript::lua_Log },
+	{ "sleep",			&CLuaScript::lua_Sleep },
+	{ "GetPlayerName",	&CLuaScript::lua_GetPlayerName },
+	{ NULL, NULL }
 };
 
 CLuaScript::CLuaScript(CCustomData* ptr) 
@@ -79,12 +79,12 @@ void CLuaScript::Call(std::string callback, char *fmt, ...)
 		va_list args;
 		va_start(args, fmt);
 		while (*fmt != '\0') {
-			if (*fmt == 'i') {
+			if (*fmt == 'i' || *fmt == 'd') {
 				int i = va_arg(args, int);
 				lua_pushinteger(m_lState, i);
 				m_Args++;
 			}
-			else if (*fmt == 's') {
+			else if (*fmt == 's' || *fmt == 'c') {
 				char * s = va_arg(args, char*);
 				lua_pushstring(m_lState, s);
 				m_Args++;

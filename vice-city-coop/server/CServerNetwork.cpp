@@ -48,6 +48,8 @@ void CServerNetwork::PlayerSpawnEvent(librg_message_t *msg)
 {
 	librg_entity_t * player = librg_entity_find(msg->ctx, msg->peer);	
 	librg_message_send_except(&ctx, VCOOP_RESPAWN_AFTER_DEATH, msg->peer, &player->id, sizeof(u32));
+
+	gGamemodeScript->Call("onPlayerRespawn", "i", player->id);
 }
 void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 {
@@ -55,6 +57,8 @@ void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 	librg_data_rptr(msg->data, &msg1, sizeof(msg1));
 
 	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
+
+	gGamemodeScript->Call("onPlayerMessage", "is", librg_entity_find(msg->ctx, msg->peer)->id, msg1);
 }
 void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 {
@@ -122,6 +126,8 @@ void CServerNetwork::on_connect_request(librg_event_t *event)
 		gLog->Log("[CServerNetwork] Rejected event from network entity\n");
 		librg_event_reject(event);
 	}
+
+	gGamemodeScript->Call("onConnectRequest", "s", name);
 }
 void CServerNetwork::on_connect_accepted(librg_event_t *event) 
 {
@@ -183,12 +189,12 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 
 void CServerNetwork::on_disconnect(librg_event_t* event)
 {
+	gGamemodeScript->Call("onPlayerDisconnect", "i", event->entity->id);
+	
 	librg_entity_control_remove(event->ctx, event->entity->id);
 	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
 	if (tmp != playerEntities.end())	
 	{
-		gGamemodeScript->Call("onPlayerDisconnect", "i", event->entity->id);
-
 		playerEntities.erase(tmp);
 		delete event->entity->user_data;
 	}	
@@ -276,9 +282,7 @@ void CServerNetwork::server_thread()
 #endif
 
 	// Auto-detect all client scripts
-	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\client")))
-		if (p.path().extension() == std::string(".lua"))
-			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_CLIENT_SCRIPT, p.path());
+	gDataMgr->LoadScripts();
 
 	while (server_running) {
 		librg_tick(&ctx);

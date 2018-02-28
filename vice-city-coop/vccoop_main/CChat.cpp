@@ -44,7 +44,7 @@ void CChat::Draw()
 #endif
 
 #ifndef VCCOOP_DEBUG
-	if (!this->chatDisplay && gNetwork->client_connected)
+	if (!this->chatDisplay && gNetwork->connected)
 	{
 		this->chatDisplay = true;
 	}
@@ -53,7 +53,7 @@ void CChat::Draw()
 #ifdef VCCOOP_DEBUG
 		|| !gRender->gDebugScreen->gDevConsole->Collapsed
 #endif
-		&& gNetwork->client_connected
+		&& gNetwork->connected
 		)
 	{
 		for (int i = 0; i < 10; i++)
