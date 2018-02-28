@@ -22,7 +22,6 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-
 //common
 #include <Windows.h>
 #include <fstream>
@@ -115,17 +114,20 @@ extern "C" {
 
 #include "CRenderTemplate.h"
 #include "CNameTags.h"
-#include "CDebugScreen.h"
 #include "CImGui.h"
 #include "CChat.h"
 #include "CGame.h"
 #include "CCameraStuff.h"
 #include "CHooks.h"
-#include "CRender.h"
+
+extern CGame			*gGame;
 
 #ifdef VCCOOP_DEBUG
+#include "CDebugScreen.h"
 #include "CDebugEngine.h"
 #endif
+
+#include "CRender.h"
 
 #include "CLua.h"
 
@@ -141,7 +143,6 @@ extern HWND			orig_wnd;
 
 extern CClientNetwork	*gNetwork;
 extern CConfiguration	*gConfig;
-extern CGame			*gGame;
 extern CRender			*gRender;
 extern CLogger			*gLog;
 extern CChat			*gChat;

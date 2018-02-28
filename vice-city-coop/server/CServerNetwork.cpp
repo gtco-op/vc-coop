@@ -99,7 +99,7 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
 
-	gGamemodeScript->Call("onPlayerConnect", "i", cData.playerId);
+	gGamemodeScript->Call("onPlayerConnect", "i", entity->id);
 
 	//loop trough connected playera and send it to this guy
 	for (auto it : playerEntities)
@@ -126,8 +126,6 @@ void CServerNetwork::on_connect_request(librg_event_t *event)
 		gLog->Log("[CServerNetwork] Rejected event from network entity\n");
 		librg_event_reject(event);
 	}
-
-	gGamemodeScript->Call("onConnectRequest", "s", name);
 }
 void CServerNetwork::on_connect_accepted(librg_event_t *event) 
 {
@@ -244,11 +242,11 @@ void CServerNetwork::measure(void *userptr) {
 }
 void CServerNetwork::server_thread()
 {
-	ctx.world_size		= zplm_vec3(5000.0f, 5000.0f, 5000.0f);
-	ctx.mode			= LIBRG_MODE_SERVER;
-	ctx.tick_delay		= 32;
-	ctx.max_connections = 2000;
-	ctx.max_entities	= 2000;
+	ctx.world_size			= zplm_vec3(5000.0f, 5000.0f, 5000.0f);
+	ctx.mode				= LIBRG_MODE_SERVER;
+	ctx.tick_delay			= 32;
+	ctx.max_connections		= 2000;
+	ctx.max_entities		= 2000;
 	librg_init(&ctx);
 	
 	librg_event_add(&ctx,	LIBRG_CONNECTION_REQUEST,		on_connect_request);
