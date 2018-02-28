@@ -22,22 +22,47 @@ CPed * CGame::FindLocalPed()
 	return CWorld::Players[0].m_pPed;
 }
 
+static RpClump* LoadModel(const char *filename) {
+	RpClump *result = nullptr;
+	auto stream = RwStreamOpen(rwSTREAMFILENAME, rwSTREAMREAD, filename);
+	if (stream) {
+		if (RwStreamFindChunk(stream, rwID_CLUMP, NULL, NULL))
+			result = RpClumpStreamRead(stream);
+		else
+			gLog->Log("Unable to read model file: '%s'", filename);
+		RwStreamClose(stream, nullptr);
+	}
+	else
+		gLog->Log("Unable to open model file: '%s'", filename);
+	return result;
+}
+
+static void UnloadModel(RpClump *model) {
+	if (model)
+		RpClumpDestroy(model);
+}
+
 void CGame::Run()
 {
-	if (GetAsyncKeyState(0x2C) & 1 && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && IsWindowActive())
+	if (GetTwoKeys(0x12, 'O'))
+	{
+		keyPressTime = CTimer::m_snTimeInMilliseconds;
+
+	}
+	if (GetKey(0x2C) & 1)
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
 		gRender->TakeScreenshot();
 	}
 #ifdef VCCOOP_DEBUG
-	if (KeyPressed(223) && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && IsWindowActive())
+	if (GetKey(223))
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
 		gRender->bConsole = !gRender->bConsole;
 		ImGui::GetIO().ClearInputCharacters();
 	}
 #endif
-	if (KeyPressed('T') && CTimer::m_snTimeInMilliseconds - keyPressTime > 500 && !gChat->chatToggled && IsWindowActive())
+	if (GetKey('T') && !gChat->chatToggled && IsWindowActive())
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
 		if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow && !gRender->bEscMenu)
