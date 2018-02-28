@@ -70,8 +70,8 @@ extern "C" {
 //vccoop
 #include "config.h"
 
-#define GetKey(a)		((GetAsyncKeyState(a)&0x8000))
-#define GetTwoKeys(a,b) ((GetAsyncKeyState(a)&0x8000) && (GetAsyncKeyState(b)&0x8000))
+#define GetKey(a)		(((GetAsyncKeyState(a)&0x8000)) && IsWindowActive() && (CTimer::m_snTimeInMilliseconds - keyPressTime >= 500))
+#define GetTwoKeys(a,b) ((GetAsyncKeyState(a)&0x8000) && (GetAsyncKeyState(b)&0x8000) && IsWindowActive() && (CTimer::m_snTimeInMilliseconds - keyPressTime >= 500))
 
 //keys
 #define	KEY_INCAR_TURRETLR			0
