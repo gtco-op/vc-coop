@@ -46,7 +46,7 @@ void CRichPresence::UpdateRichPresence(bool IsConnected)
 	memset(&dp, 0, sizeof(dp));
 	dp.largeImageText = "Grand Theft CO-OP: Vice City";
 	dp.largeImageKey = "main";
-	dp.endTimestamp = time(0);
+	dp.startTimestamp = time(0);
 
 	char* details = new char[256];
 	char* state = new char[256];
