@@ -11,7 +11,8 @@ public:
 	
 	static int lua_FindLocalPed(lua_State* L);
 	static int lua_Log(lua_State* L);
-
+	static int lua_ann(lua_State* L);
+	
 	void CreateLuaThread();
 	static void	LuaThread(LPVOID lParam);
 public:

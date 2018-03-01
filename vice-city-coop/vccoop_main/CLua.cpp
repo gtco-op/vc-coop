@@ -3,6 +3,7 @@
 static const struct luaL_Reg vccooplib[] = {
 	{ "print", CLua::lua_Log },
 	{ "FindLocalPed", CLua::lua_FindLocalPed },
+	{"Announce", CLua::lua_ann},
 	{ NULL, NULL }
 };
 
@@ -63,5 +64,28 @@ int CLua::lua_FindLocalPed(lua_State* L)
 		ret = true;
 
 	lua_pushboolean(L, ret);
+	return 1;
+}
+int CLua::lua_ann(lua_State* L) {
+	int nargs = lua_gettop(L);
+	if (nargs < 2) return 0;
+	int ann_type(lua_tointeger(L, 1));
+	std::string mess(lua_tostring(L, 2));
+
+	switch (ann_type) {
+	case 0:
+		CHud::SetHelpMessage((char*)mess.c_str(), 0, 0, 0);
+		break;
+	case 2:
+		CHud::SetVehicleName((char*)mess.c_str());
+		break;
+	case 3:
+		CHud::SetZoneName((char*)mess.c_str());
+		break;
+	default:
+		gLog->Log("[SCRIPT] Error Choose a specific ID [0 to 3]");
+	}
+
+
 	return 1;
 }

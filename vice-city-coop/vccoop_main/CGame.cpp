@@ -124,7 +124,7 @@ void CGame::InitPreGamePatches()
 
 	// fix CPedStats::GetPesStatType crash
 	Call(0x530260, 0);//initialize probably
-
+	
 	// Don't load the SCM Script
 	MakeShortJmp(0x4506D6, 0x45070E);
 
