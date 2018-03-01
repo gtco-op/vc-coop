@@ -49,6 +49,12 @@
     <Filter Include="Source\scripting\lua">
       <UniqueIdentifier>{9fdd0ceb-74a2-411f-9927-327d32d9c620}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\tools\CRichPresence">
+      <UniqueIdentifier>{e02f5db0-03d5-41b8-b4c4-5f939d012fd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\discord-rich-presence">
+      <UniqueIdentifier>{3918bd69-8a75-44fc-bb5a-eb4075eaf62e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGame.h">
@@ -165,6 +171,12 @@
     <ClInclude Include="CLua.h">
       <Filter>Source\scripting\lua</Filter>
     </ClInclude>
+    <ClInclude Include="CRichPresence.h">
+      <Filter>Source\tools\CRichPresence</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\discord-rich-presence\discord-rpc.h">
+      <Filter>vendor\discord-rich-presence</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CGame.cpp">
@@ -232,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="CLua.cpp">
       <Filter>Source\scripting\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="CRichPresence.cpp">
+      <Filter>Source\tools\CRichPresence</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

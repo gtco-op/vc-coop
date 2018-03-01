@@ -8,6 +8,7 @@ CLogger			*gLog;
 CChat			*gChat;
 #ifdef VCCOOP_DEBUG_ENGINE
 CDebugEngine	*gDbgEngine;
+CLogger			*gDbgLog;
 #endif
 
 CCore::CCore()
@@ -20,15 +21,17 @@ CCore::CCore()
 
 #ifdef VCCOOP_DEBUG_ENGINE
 	gDbgEngine = new CDebugEngine();
+	gDbgLog = new CLogger(true);
 #endif
-	gChat = new CChat();
-	gLog = new CLogger();
+	
+	gChat		= new CChat();
+	gLog		= new CLogger();
 	gLog->Log("[CCore] %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);
 	gLog->Log("[CCore] Initializing classes.\n");
-	gConfig = new CConfiguration();
-	gNetwork = new CClientNetwork();
-	gGame = new CGame();
-	gRender = new CRender();
+	gConfig		= new CConfiguration();
+	gNetwork	= new CClientNetwork();
+	gGame		= new CGame();
+	gRender		= new CRender();
 	gRender->gGuiContainer.push_back(gChat);
 
 #ifdef VCCOOP_DEBUG_ENGINE
@@ -44,6 +47,7 @@ CCore::CCore()
 }
 CCore::~CCore()
 {
+	delete gNetwork;
 	delete gRender;
 	gLog->Log("[CCore] CCore shutting down\n");
 	delete gLog;

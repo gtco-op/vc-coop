@@ -13,13 +13,14 @@
 //hooks
 #include "hooklibrary.h"
 
+// discord rich presence
+#include "vendor\discord-rich-presence\discord-rpc.h"
 //lua
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 }
-
 
 //common
 #include <Windows.h>
@@ -66,12 +67,14 @@ extern "C" {
 #include "CPathFind.h"
 #include "CModelInfo.h"
 #include "CBike.h"
+#include "CHud.h"
+#include "CMessages.h"
 
 //vccoop
 #include "config.h"
 
-#define GetKey(a)		((GetAsyncKeyState(a)&0x8000))
-#define GetTwoKeys(a,b) ((GetAsyncKeyState(a)&0x8000) && (GetAsyncKeyState(b)&0x8000))
+#define GetKey(a)		(((GetAsyncKeyState(a)&0x8000)) && IsWindowActive() && (CTimer::m_snTimeInMilliseconds - keyPressTime >= 500))
+#define GetTwoKeys(a,b) ((GetAsyncKeyState(a)&0x8000) && (GetAsyncKeyState(b)&0x8000) && IsWindowActive() && (CTimer::m_snTimeInMilliseconds - keyPressTime >= 500))
 
 //keys
 #define	KEY_INCAR_TURRETLR			0
@@ -104,26 +107,31 @@ extern "C" {
 #define	KEY_ONFOOT_CROUCH			16
 #define	KEY_ONFOOT_LOOKBEHIND		17
 
-
+#include "CLogger.h"
 #include "CConfiguration.h"
 #include "CClientPlayer.h"
 #include "CClientVehicle.h"
 #include "CClientPed.h"
+
+#include "CRichPresence.h"
 #include "CClientNetwork.h"
-#include "CLogger.h"
+
 #include "CRenderTemplate.h"
 #include "CNameTags.h"
-#include "CDebugScreen.h"
 #include "CImGui.h"
 #include "CChat.h"
 #include "CGame.h"
 #include "CCameraStuff.h"
 #include "CHooks.h"
-#include "CRender.h"
+
+extern CGame			*gGame;
 
 #ifdef VCCOOP_DEBUG
+#include "CDebugScreen.h"
 #include "CDebugEngine.h"
 #endif
+
+#include "CRender.h"
 
 #include "CLua.h"
 
@@ -139,14 +147,16 @@ extern HWND			orig_wnd;
 
 extern CClientNetwork	*gNetwork;
 extern CConfiguration	*gConfig;
-extern CGame			*gGame;
 extern CRender			*gRender;
 extern CLogger			*gLog;
 extern CChat			*gChat;
 
 #ifdef VCCOOP_DEBUG_ENGINE
 extern CDebugEngine		*gDbgEngine;
+extern CLogger			*gDbgLog;
 #endif
+
+extern bool				bLoadingDone;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 

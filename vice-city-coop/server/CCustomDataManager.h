@@ -5,6 +5,8 @@ public:
 	CCustomDataManager();
 	~CCustomDataManager();
 
+	void						LoadScripts();
+
 	std::vector<CCustomData*>	GetItems() { return cItems; }
 	CCustomData*				GetItemAt(int index) { return cItems.at(index); }
 	CCustomData*				GetItemByName(std::string name);

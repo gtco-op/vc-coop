@@ -6,7 +6,6 @@ librg_address_t						CClientNetwork::addr;
 librg_ctx_t							CClientNetwork::ctx;
 librg_entity_t *					CClientNetwork::local_player;
 
-bool								CClientNetwork::client_connected;
 bool								CClientNetwork::client_running;
 bool								CClientNetwork::connected;
 
@@ -20,7 +19,6 @@ CClientNetwork::CClientNetwork()
 	local_player = nullptr;
 
 	client_running = false;
-	client_connected = false;
 	connected = false;
 
 	for (int i = 0; i < MAX_PLAYERS; i++)this->networkPlayers[i] = NULL;
@@ -125,7 +123,6 @@ void CClientNetwork::on_connect_refused(librg_event_t *event)
 void CClientNetwork::StopClientThread()
 {
 	client_running = false;
-	client_connected = false;
 	connected = false;
 }
 void CClientNetwork::ClientConnectThread()
@@ -277,7 +274,6 @@ void CClientNetwork::on_entity_remove(librg_event_t *event)
 		gNetwork->networkVehicles[event->entity->id]->StreamOut();
 	}
 }
-
 void CClientNetwork::ClientDisconnect(librg_message_t* msg)
 {
 	u32 playerid;

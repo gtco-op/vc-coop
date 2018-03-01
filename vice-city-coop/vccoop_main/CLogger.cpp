@@ -48,11 +48,11 @@ void CLogger::Log(char * format, ...)
 	buf.append(buffer);
 	Out(buf.c_str());
 
-	gChat->AddChatMessage(buf.c_str());
+	if(!debugLog)
+		gChat->AddChatMessage(buf.c_str());	printf(buf.c_str());
 
-#ifdef VCCOOP_DEBUG
-	printf(buf.c_str());
-	
+
+#ifdef VCCOOP_DEBUG_ENGINE
 	if(gRender->gDebugScreen->gDevConsole != nullptr && debugLog)
 		gRender->gDebugScreen->gDevConsole->AddLog(buf.c_str());
 #endif

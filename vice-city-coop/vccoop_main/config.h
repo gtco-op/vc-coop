@@ -43,6 +43,10 @@
 #else
 #define VCCOOP_VER						"0.2.0.a"
 #endif
+#ifndef _DEBUG
+#undef VCCOOP_DEBUG_ENGINE
+#undef VCCOOP_VERBOSE_LOG
+#endif
 
 #define DEFAULT_TIME_FORMAT				"%Y%m%d_%H%M%S"
 #define LOGGER_TIME_FORMAT				"%H:%M:%S"

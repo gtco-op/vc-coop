@@ -41,11 +41,15 @@ void CServerNetwork::PlayerDeathEvent(librg_message_t *msg)
 	sprintf(msg1, "[CServerNetwork] Player %d is killed by entity %d with weapon %d\n", player->id, dData.killer, dData.weapon);
 	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
 	gLog->Log(msg1);
+
+	gGamemodeScript->Call("onPlayerDeath", "iii", player->id, dData.killer, dData.weapon);
 }
 void CServerNetwork::PlayerSpawnEvent(librg_message_t *msg)
 {
 	librg_entity_t * player = librg_entity_find(msg->ctx, msg->peer);	
 	librg_message_send_except(&ctx, VCOOP_RESPAWN_AFTER_DEATH, msg->peer, &player->id, sizeof(u32));
+
+	gGamemodeScript->Call("onPlayerRespawn", "i", player->id);
 }
 void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 {
@@ -53,12 +57,14 @@ void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 	librg_data_rptr(msg->data, &msg1, sizeof(msg1));
 
 	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
+
+	gGamemodeScript->Call("onPlayerMessage", "is", librg_entity_find(msg->ctx, msg->peer)->id, msg1);
 }
 void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 {
 	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_PED);
 	librg_entity_control_set(&ctx, entity->id, msg->peer);
-
+	
 	// crate our custom data container for ped
 	entity->user_data = new PedSyncData();
 
@@ -93,7 +99,7 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
 
-	gGamemodeScript->Call("onPlayerConnect", 1, name);
+	gGamemodeScript->Call("onPlayerConnect", "i", entity->id);
 
 	//loop trough connected playera and send it to this guy
 	for (auto it : playerEntities)
@@ -106,8 +112,6 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 		}
 	}
 }
-
-
 void CServerNetwork::on_connect_request(librg_event_t *event) 
 {
 	// Player Name
@@ -183,6 +187,8 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 
 void CServerNetwork::on_disconnect(librg_event_t* event)
 {
+	gGamemodeScript->Call("onPlayerDisconnect", "i", event->entity->id);
+	
 	librg_entity_control_remove(event->ctx, event->entity->id);
 	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
 	if (tmp != playerEntities.end())	
@@ -194,8 +200,6 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	librg_message_send_except(&ctx, VCOOP_DISCONNECT, event->peer, &event->entity->id, sizeof(u32));
 
 	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
-
-	gGamemodeScript->Call("onPlayerDisconnect");
 }
 
 void CServerNetwork::measure(void *userptr) {
@@ -238,11 +242,11 @@ void CServerNetwork::measure(void *userptr) {
 }
 void CServerNetwork::server_thread()
 {
-	ctx.world_size		= zplm_vec3(5000.0f, 5000.0f, 5000.0f);
-	ctx.mode			= LIBRG_MODE_SERVER;
-	ctx.tick_delay		= 32;
-	ctx.max_connections = 2000;
-	ctx.max_entities	= 2000;
+	ctx.world_size			= zplm_vec3(5000.0f, 5000.0f, 5000.0f);
+	ctx.mode				= LIBRG_MODE_SERVER;
+	ctx.tick_delay			= 32;
+	ctx.max_connections		= 2000;
+	ctx.max_entities		= 2000;
 	librg_init(&ctx);
 	
 	librg_event_add(&ctx,	LIBRG_CONNECTION_REQUEST,		on_connect_request);
@@ -276,9 +280,7 @@ void CServerNetwork::server_thread()
 #endif
 
 	// Auto-detect all client scripts
-	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\client")))
-		if (p.path().extension() == std::string(".lua"))
-			gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_CLIENT_SCRIPT, p.path());
+	gDataMgr->LoadScripts();
 
 	while (server_running) {
 		librg_tick(&ctx);
