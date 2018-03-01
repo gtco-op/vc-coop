@@ -1,38 +1,51 @@
 ﻿#include "main.h"
-#include "CModelInfo.h"
-#include "CBike.h"
 
-CVehicle * CreateVehicle(unsigned int modelIndex, CVector position) 
+CClientVehicle::CClientVehicle(int nID)
 {
-	CStreaming::RequestModel(modelIndex, 22);
-	CStreaming::LoadAllRequestedModels(false);
-	if (CStreaming::ms_aInfoForModel[modelIndex].m_nLoadState == LOADSTATE_LOADED) 
+	this->model = 130;
+	this->veh = gGame->CreateVehicle(this->model, { VCCOOP_DEFAULT_SPAWN_POSITION });
+	this->streamed = true;
+	this->networkID = nID;
+
+	gLog->Log("[CClientVehicle]Network ID: %d Veh pointer: 0x%X\n\n", nID, this->veh);
+}
+
+CClientVehicle::~CClientVehicle()
+{
+	if (this->veh)
 	{
-		CVehicle *vehicle = nullptr;
-		switch (reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType) 
+		CWorld::Remove(this->veh);
+		if (this->veh)
 		{
-		case VEHICLE_HELI:
-			vehicle = new CHeli(modelIndex, 1);
-			break;
-		case VEHICLE_PLANE:
-			vehicle = new CPlane(modelIndex, 1);
-			break;
-		case VEHICLE_BIKE:
-			vehicle = new CBike(modelIndex, 1);
-			break;
-		case VEHICLE_BOAT:
-			vehicle = new CBoat(modelIndex, 1);
-			break;
-		default:
-			vehicle = new CAutomobile(modelIndex, 1);
-			break;
-		}
-		if (vehicle) 
-		{
-			vehicle->Teleport(position);
-			CWorld::Add(vehicle);
-			return vehicle;
+			this->veh->Remove();
+			CVehicle::operator delete(this->veh);
+			this->veh = NULL;
 		}
 	}
-	return nullptr;
+	this->networkID = -1;
+}
+
+void CClientVehicle::StreamIn()
+{
+	if (this->streamed)return;
+
+	this->veh = gGame->CreateVehicle(this->model, { VCCOOP_DEFAULT_SPAWN_POSITION });
+	this->streamed = true;
+}
+
+void CClientVehicle::StreamOut()
+{
+	if (this->streamed == false)return;
+	this->streamed = false;
+
+	if (this->veh)
+	{
+		CWorld::Remove(this->veh);
+		if (this->veh)
+		{
+			this->veh->Remove();
+			CVehicle::operator delete(this->veh);
+			this->veh = NULL;
+		}
+	}
 }

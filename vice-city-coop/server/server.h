@@ -35,6 +35,7 @@ extern "C" {
 #include "game_vc\CCivilianPed.h"
 #include "game_vc\CPlayerInfo.h"
 #include "game_vc\CPopulation.h"
+#include "game_vc\CMatrix.h"
 
 #define VCCOOP_DEBUG
 

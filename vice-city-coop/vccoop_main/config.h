@@ -49,6 +49,7 @@
 #define VC_TITLE						"GTA: Vice City"
 
 #define MAX_PLAYERS						500
+#define MAX_VEHICLES					1000
 
 #pragma pack(1)
 typedef struct _CAMERA_AIM
@@ -67,9 +68,7 @@ typedef struct _GTA_CONTROLSET
 	WORD wKeys1[19];
 	DWORD dwFrontPad2;
 	WORD wKeys2[19];
-	WORD wTurnLeftRightAnalog[10];
-	BYTE bytePadding1[138];
-	BYTE byteCrouchAnalog[5];
+	BYTE padding[0xC0];
 } GTA_CONTROLSET;
 
 typedef struct _PED_FLAGS
@@ -275,6 +274,13 @@ struct PlayerSyncData
 	unsigned int CurrWep;
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
+
+	int vehicleID;
+	int vehicleSeat;
+	CVector vehiclePos;
+	CVector vehicleAt;
+	CVector vehicleRight;
+	CVector vehicleUp;
 
 	PED_FLAGS m_nPedFlags;
 

@@ -22,13 +22,6 @@ public:
 	void EnableHUD();
 	void DisableHUD();
 
-	void SetPlayerCameraPosition(float fX, float fY, float fZ, float fRotationX, float fRotationY, float fRotationZ);
-	void CameraLookAtPoint(float fX, float fY, float fZ, int iType);
-	void SetCameraBehindPlayer();
-	void RestoreCamera();
-
-	CVector GetCameraPos();
-
 	int remotePlayers = 1;
 	CPed * remotePlayerPeds[MAX_PLAYERS];
 	GTA_CONTROLSET remotePlayerKeys[MAX_PLAYERS];
@@ -36,11 +29,11 @@ public:
 	int remotePlayerCameraMode[MAX_PLAYERS];
 	CPed *FindLocalPed();
 
-	void WaitUntilTheModelIsLoaded(int model);
-
 	bool debugEngineOutput = false;
 
 	static int keyPressTime;
+
+	CVehicle * CreateVehicle(unsigned int modelIndex, CVector position);
 
 private:
 	void InitPreGamePatches(); 

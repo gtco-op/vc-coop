@@ -64,6 +64,8 @@ extern "C" {
 #include "extensions\ScriptCommands.h"
 #include "CMenuManager.h"
 #include "CPathFind.h"
+#include "CModelInfo.h"
+#include "CBike.h"
 
 //vccoop
 #include "config.h"

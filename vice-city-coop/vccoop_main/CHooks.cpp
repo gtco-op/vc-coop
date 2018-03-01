@@ -15,6 +15,16 @@ int FindIDForPed(CPed * ped)
 	}
 	return -1;
 }
+
+int CHooks::FindFreeIDForPed()
+{
+	for (int i = 1; i < MAX_PLAYERS; i++)
+	{
+		if (gGame->remotePlayerPeds[i] == NULL)return i;
+	}
+	return -1;
+}
+
 /*
 void  _declspec(naked) Patched_CAutomobile_ProcessControl()
 {
@@ -266,6 +276,11 @@ INT16 __cdecl GetPad_Hook(int pad)
 	return original_GetPad(CWorld::PlayerInFocus);
 }
 
+CPad * CHooks::GetPad(int pad)
+{
+	return reinterpret_cast<CPad*>(original_GetPad(pad));
+}
+
 int(__thiscall* original_CPed__SetIdle)(CPed*);
 int __fastcall CPed__SetIdle_Hook(CPed * This, DWORD _EDX)//probably unnecessary
 {
@@ -313,7 +328,7 @@ void CHooks::InitHooks()
 	//original_RemoveModel = (char(__cdecl*)(int))DetourFunction((PBYTE)0x40D6E0, (PBYTE)RemoveModel_Hook);
 	original_CPlayerPed__ProcessControl = (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
 	original_GetPad = (INT16(__cdecl*)(int))DetourFunction((PBYTE)0x4AB060, (PBYTE)GetPad_Hook);
-	original_CPed__SetIdle = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4FDFD0, (PBYTE)CPed__SetIdle_Hook);
+	//original_CPed__SetIdle = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4FDFD0, (PBYTE)CPed__SetIdle_Hook);
 	original_CWeapon__DoBulletImpact = (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
 
 #ifdef VCCOOP_DEBUG_ENGINE

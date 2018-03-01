@@ -23,10 +23,8 @@ CClientNetwork::CClientNetwork()
 	client_connected = false;
 	connected = false;
 
-	for (int i = 0; i < MAX_PLAYERS; i++)
-	{
-		this->networkPlayers[i] = NULL;
-	}
+	for (int i = 0; i < MAX_PLAYERS; i++)this->networkPlayers[i] = NULL;
+	for (int i = 0; i < MAX_VEHICLES; i++)this->networkVehicles[i] = NULL;
 }
 CClientNetwork::~CClientNetwork()
 {
@@ -56,7 +54,6 @@ void CClientNetwork::BulletSyncEvent(librg_message_t* msg)
 		gLog->Log("Shooting bullet from player %d hitting entity %d\n", bsData.player, bsData.targetEntityID);
 		gLog->Log("Start vector: %f %f %f End vector: %f %f %f\n", bsData.start.x, bsData.start.y, bsData.start.z, bsData.end.x, bsData.end.y, bsData.end.z);
 		gLog->Log("surfacetypeA: %d | 2d vec: %f %f\n", bsData.colPoint.m_nSurfaceTypeA, bsData.ahead.x, bsData.ahead.y);
-		//shooterPlayer->m_aWeapons[shooterPlayer->m_nWepSlot].DoBulletImpact(shooterPlayer, hitEntity, &bsData.start, &bsData.end, &bsData.colPoint, bsData.ahead);
 		CHooks::DoBulletImpact(&shooterPlayer->m_aWeapons[shooterPlayer->m_nWepSlot], shooterPlayer, hitEntity, &bsData.start, &bsData.end, &bsData.colPoint, bsData.ahead);
 	}
 }
@@ -70,6 +67,10 @@ void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 {
 	if (id < 0)return NULL;
+	if (id >= MAX_PLAYERS || !gNetwork->networkPlayers[id]->ped)
+	{
+		return gNetwork->networkVehicles[id]->veh;
+	}
 	return gNetwork->networkPlayers[id]->ped;
 }
 int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
@@ -80,6 +81,14 @@ int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 		if (gNetwork->networkPlayers[i]->ped == ent)
 		{
 			return gNetwork->networkPlayers[i]->networkID;
+		}
+	}
+	for (int i = 0; i < MAX_VEHICLES; i++)
+	{
+		if (!gNetwork->networkVehicles[i])continue;
+		if (gNetwork->networkVehicles[i]->veh == ent)
+		{
+			return gNetwork->networkVehicles[i]->networkID;
 		}
 	}
 	return -1;
@@ -136,7 +145,7 @@ void CClientNetwork::ClientConnect(librg_message_t* msg)
 	connectData cData;
 	librg_data_rptr(msg->data, &cData, sizeof(connectData));
 
-	CClientPlayer * player = new CClientPlayer(cData.playerId, 1);
+	CClientPlayer * player = new CClientPlayer(cData.playerId, CHooks::FindFreeIDForPed());
 	sprintf(player->szName, cData.name);
 	gNetwork->networkPlayers[cData.playerId] = player;
 
@@ -149,11 +158,11 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 
 	if (event->entity->type == VCOOP_PLAYER || event->entity->type == VCOOP_PED)
 	{
-		PlayerSyncData spd;
-		librg_data_rptr(event->data, &spd, sizeof(PlayerSyncData));
-
 		if (event->entity->type == VCOOP_PLAYER) 
 		{
+			PlayerSyncData spd;
+			librg_data_rptr(event->data, &spd, sizeof(PlayerSyncData));
+
 			if (!gNetwork->networkPlayers[event->entity->id]) return;
 			if (!event->entity->user_data) event->entity->user_data = gNetwork->networkPlayers[event->entity->id];
 
@@ -167,7 +176,14 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
-		//not done yet
+		if (!event->entity->user_data)
+		{
+			gLog->Log("Creating vehicle: %d", event->entity->id);
+			gNetwork->networkVehicles[event->entity->id] = new CClientVehicle(event->entity->id);
+			event->entity->user_data = gNetwork->networkVehicles[event->entity->id];
+		}
+		gLog->Log("Streaming vehicle: %d", event->entity->id);
+		gNetwork->networkVehicles[event->entity->id]->StreamIn();
 	}
 	gLog->Log("[CClientNetwork] Network entity %d initialized\n", event->entity->id); 
 }
@@ -199,10 +215,9 @@ void CClientNetwork::on_entity_update(librg_event_t *event)
 
 		pedestrian->SyncPed(spd);
 	}
-	else if (event->entity->type == VCOOP_VEHICLE)
+	else if (event->entity->type == VCOOP_VEHICLE)//unoccupied only
 	{
-		auto veh = (CVehicle *)event->entity->user_data;
-		veh->Teleport(*(CVector *)&event->entity->position);
+
 	}
 }
 void CClientNetwork::on_client_stream(librg_event_t *event) 
@@ -235,15 +250,9 @@ void CClientNetwork::on_client_stream(librg_event_t *event)
 
 		librg_data_wptr(event->data, &spd, sizeof(PedSyncData));
 	}
-	else if (event->entity->type == VCOOP_VEHICLE)
+	else if (event->entity->type == VCOOP_VEHICLE)//Unoccupied
 	{
-		//not done yet
-		CVehicle *veh = (CVehicle *)event->entity->user_data;
-		event->entity->position = *(zplm_vec3_t *)&veh->GetPosition();
-
-		//SPlayerData spd;
-		//spd.Health = veh->m_fHealth;
-		//librg_data_wptr(event->data, &spd, sizeof(SPlayerData));
+		
 	}
 }
 void CClientNetwork::on_entity_remove(librg_event_t *event) 
@@ -261,6 +270,11 @@ void CClientNetwork::on_entity_remove(librg_event_t *event)
 	{
 		auto pedestrian = (CClientPed *)event->entity->user_data;
 		delete pedestrian;
+	}
+	else if (event->entity->type = VCOOP_VEHICLE)
+	{
+		gLog->Log("Vehicle %d streamed out\n", event->entity->id);
+		gNetwork->networkVehicles[event->entity->id]->StreamOut();
 	}
 }
 

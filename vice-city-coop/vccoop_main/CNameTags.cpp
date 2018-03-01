@@ -29,7 +29,7 @@ void CNameTags::Draw()
 				char text[600]; 
 				if (ped->IsPlayer())
 				{
-					sprintf(text, "%s(%d)", gNetwork->networkPlayers[i]->szName, i, ped->m_aWeapons[ped->m_nWepSlot].m_nTotalAmmo, ped->m_aWeapons[ped->m_nWepSlot].m_nAmmoInClip);
+					sprintf(text, "%s(%d)", gNetwork->networkPlayers[i]->szName, i);
 					 
 					SIZE size = gRender->MeasureText(text);
 

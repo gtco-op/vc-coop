@@ -73,8 +73,8 @@ void CGame::InitPreGamePatches()
 	// Patch to allow multiple instances of the game
 	SYSTEMTIME time; 
 	GetSystemTime(&time); 
-	char StreamName[15]; 
-	sprintf_s(StreamName, "CdStream%02d%02d%02d", time.wHour, time.wMinute, time.wSecond); 
+	char StreamName[60]; 
+	sprintf_s(StreamName, "CdStream%02d%02d%02d", time.wHour, time.wMinute, time.wMilliseconds); 
 	auto Pointer = (DWORD *)0x408968; 
 	
 	DWORD Protect; 
@@ -191,6 +191,10 @@ void CGame::InitPreGamePatches()
 	//Disable white splash on big building loading
 	MakeRet(0x4A68A0);
 
+	//Dont pause the game on big building loading
+	MakeNop(0x40DFE4, 5);
+	MakeNop(0x40E242, 5);
+
 	//nop CVisibilityPlugins::SetClumpAlpha in CPed::ProcessControl
 	MakeNop(0x5057EF, 5);
 
@@ -261,8 +265,10 @@ void CGame::InitPreGamePatches()
 	// flhreference patch
 	MemWrite<BYTE>(0x628E00, 5);
 
-	//probably disable sliding in CPed::UpdatePosition
-	MemCpy((void*)0x50A4BE, "\x69\x1E\xE8", 3);
+	//Fix crash on colliding PED with vehicle
+	MemWrite<BYTE>(0x50A4BE, 0x69);
+	MemWrite<BYTE>(0x50A4BE, 0x1E); 
+	MemWrite<BYTE>(0x50A4BE, 0xE8);
 
 	//disable CPop::RemovePedIfPoolGetsFUll
 	MakeRet(0x53D560);
@@ -297,6 +303,8 @@ void CGame::InitPreGamePatches()
 	//CPed::Refresh patch
 	MakeNop(0x50D96A, 5);
 
+	
+
 	/*
 	// nop CVehicle:SetDriver switch
 	MakeNop(0x5B8A4B2, 2);                   
@@ -312,7 +320,7 @@ void CGame::InitPreGamePatches()
 	//disable random melee thing
 	MakeNop(0x5D2E88, 6);
 
-	//disable CPlayerInfo::MakePlayerSafe causes crash
+	//disable CPlayerInfo::MakePlayerSafe | causes crash
 	//MakeRet(0x4BBC10, 8);
 
 	// Disable ValidateVersion
@@ -324,6 +332,10 @@ void CGame::InitPreGamePatches()
 
 	//Stop time passing on death
 	MakeNop(0x42BD69, 15); 
+
+	// Stop the loading of ambient traffic models and textures
+	// by skipping CStreaming::StreamVehiclesAndPeds() and CStreaming::StreamZoneModels()
+	MemWrite<BYTE>(0x40EF27, 0xEB);
 
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
@@ -347,6 +359,65 @@ void CGame::DisableMouseInput()
 	MakeNop(0x4AB6F0, 5);
 }
 
+CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
+{
+	if (CStreaming::ms_aInfoForModel[modelIndex].m_nLoadState != LOADSTATE_LOADED)
+	{
+		gLog->Log("Vehicle Model was not loaded so loading it");
+		CStreaming::RequestModel(modelIndex, eStreamingFlags::GAME_REQUEST);
+		CStreaming::LoadAllRequestedModels(false);
+		gLog->Log("Vehicle model is probably loaded");
+	}
+	if (CStreaming::ms_aInfoForModel[modelIndex].m_nLoadState == LOADSTATE_LOADED)
+	{
+		CVehicle *vehicle;
+		gLog->Log("Vehicle type: %d", reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
+		switch (reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType)
+		{
+		case VEHICLE_HELI:
+			vehicle = new CHeli(modelIndex, 2);
+			break;
+		case VEHICLE_PLANE:
+			vehicle = new CPlane(modelIndex, 2);
+			break;
+		case VEHICLE_BIKE:
+			vehicle = new CBike(modelIndex, 2);
+			break;
+		case VEHICLE_BOAT:
+			vehicle = new CBoat(modelIndex, 2);
+			break;
+		default://0
+			vehicle = new CAutomobile(modelIndex, 2);
+			break;
+		}
+		if (!vehicle)gLog->Log("CreateVehicle: something went wrong");
+		if (vehicle)
+		{
+			gLog->Log("CreateVehicle: everything was fine probably");
+			vehicle->Teleport(position);
+			vehicle->m_nState = 4;
+			vehicle->m_nLockStatus = 1;//CARLOCK_UNLOCKED
+
+			*(BYTE *)(vehicle + 80) = *(BYTE *)(vehicle + 80) & 7 | 0x20;
+			*(BYTE *)(vehicle + 505) = *(BYTE *)(vehicle + 505) & 0xF7 | 8;
+			*(BYTE *)(vehicle + 342) = 0;
+			*(BYTE *)(vehicle + 343) = 0;
+			*(BYTE *)(vehicle + 341) = 0;
+			*(DWORD *)(vehicle + 348) = 0x41100000;
+			*(BYTE *)(vehicle + 352) = (signed int)*(float *)(vehicle + 348);
+			*(BYTE *)(vehicle + 339) = 0;
+			*(BYTE *)(vehicle + 340) = *(BYTE *)(vehicle + 339);
+			*(BYTE *)(vehicle + 505) &= 0xEFu;//only this fixed vehicle spawn but the others are necessary too imho
+			*(BYTE *)(vehicle + 507) = *(BYTE *)(vehicle + 507) & 0xFB | 4;
+
+			CWorld::Add(vehicle);
+			return vehicle;
+		}
+	}
+	gLog->Log("CreateVehicle: model was not loaded!");
+	return nullptr;
+}
+CVehicle * veh = NULL;
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	//SetMenu(wnd, NULL);
@@ -392,32 +463,12 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			if (vkey == 'Z')
 			{
-				//CClientPlayer * player = new CClientPlayer(0, gGame->remotePlayers);
-				//gGame->remotePlayerPeds[gGame->remotePlayers] = player->ped;
-				//gGame->remotePlayers++;
-				CVector pos =LocalPlayer()->GetPosition();
-
-				bool res = false;
-
-				//FindLocalPed()->Teleport(pos);
-
-				for (int i = 0; i < 30; i++)
-				{
-					int xrand = Random(0, 200) - 100;
-					int yrand = Random(0, 200) - 100;
-
-					int path = ThePaths.FindNodeClosestToCoors({ pos.x + xrand, pos.y + yrand, pos.z }, 1, 10000.0f, 1, 0, 0, 0);
-					CPathNode node = ThePaths.nodes[path];
-
-					CVector spawnPos = { (float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, CWorld::FindGroundZFor3DCoord((float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, (float)node.m_wPosZ*0.125f, &res) + 1.0f };
-
-					CPed * ped = new CCivilianPed(ePedType::PEDTYPE_CIVMALE, 7);
-					CWorld::Add(ped);
-					ped->Teleport(spawnPos);
-					ped->SetWanderPath(Random(0, 9650));
-				}
-
-				//gLog->Log("node %d: %f %f %f\n", path, (long double)array1[path]*0.125f, (long double)array2[path] * 0.125f, (long double)array3[path] * 0.125f);
+				//CVector pos = LocalPlayer()->GetPosition();
+				//CStreaming::RequestModel(130, eStreamingFlags::MISSION_REQUEST);
+				//CStreaming::LoadAllRequestedModels(false);
+				//Command<eScriptCommands::COMMAND_CREATE_CAR>(130, pos.x, pos.y, pos.z);
+				//veh = gGame->CreateVehicle(130, pos);
+				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_VEHICLE, NULL, 0);
 			}
 			if (vkey == VK_ESCAPE)
 			{

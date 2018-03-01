@@ -2,6 +2,7 @@
 
 CClientPlayer::CClientPlayer(int nID, int gID)
 {
+	if (gID == -1)return;
 	this->ped = NULL;
 	CPlayerPed::SetupPlayerPed(gID);
 	CWorld::Players[gID].m_pPed->m_nPedStatus = 2;
@@ -105,6 +106,7 @@ CClientPlayer::~CClientPlayer()
 		}
 	}
 
+	gGame->remotePlayerPeds[this->gameID] = NULL;
 	this->gameID = -1;
 	this->networkID = -1;
 }
@@ -165,7 +167,21 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 	}
 
 	gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
+
 	gGame->remotePlayerLookFrontX[this->gameID] = spd.playerLook;
+
+	if (spd.vehicleID != -1)
+	{
+		CVehicle * veh = (CVehicle*)gNetwork->GetEntityFromNetworkID(spd.vehicleID);
+		if (veh)
+		{
+			if(!ped->m_bInVehicle || ped->m_pVehicle != veh)ped->WarpPedIntoCar(veh);
+			veh->Teleport(spd.vehiclePos);
+			veh->m_placement.at = spd.vehicleAt;
+			veh->m_placement.right = spd.vehicleRight;
+			veh->m_placement.up = spd.vehicleUp;
+		}
+	}
 
 	ped->m_nPedFlags.bIsStanding = spd.m_nPedFlags.bIsStanding;
 	ped->m_nPedFlags.bWasStanding = spd.m_nPedFlags.bWasStanding;
@@ -294,6 +310,15 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.iModelIndex = ped->m_nModelIndex;
 	spd.Rotation = ped->m_fRotationCur;
 
+	if (ped->m_bInVehicle)
+	{
+		spd.vehicleID = gNetwork->GetNetworkIDFromEntity(ped->m_pVehicle);
+		spd.vehiclePos = ped->m_pVehicle->GetPosition();
+		spd.vehicleAt = ped->m_pVehicle->m_placement.at;
+		spd.vehicleRight = ped->m_pVehicle->m_placement.right;
+		spd.vehicleUp = ped->m_pVehicle->m_placement.up;
+	}
+
 	spd.m_nPedFlags.bIsStanding = ped->m_nPedFlags.bIsStanding;
 	spd.m_nPedFlags.bWasStanding = ped->m_nPedFlags.bWasStanding;
 	spd.m_nPedFlags.b03 = ped->m_nPedFlags.b03;
@@ -415,10 +440,9 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.WepModelIndex = ped->m_dwWepModelID;
 	spd.Ammo = 0;
 
-
 	spd.iInteriorID = 0;
 
-	spd.playerKeys = *(GTA_CONTROLSET*)CPad::GetPad(0);
+	spd.playerKeys = *(GTA_CONTROLSET*)CPad::GetPad(this->gameID);
 
 	if (this->ped->m_aWeapons[this->ped->m_nWepSlot].m_nAmmoInClip < 1 && this->ped->m_nWepSlot > 0)//dont send fire key if there is no ammo in the clip
 	{

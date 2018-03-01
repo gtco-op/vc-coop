@@ -49,4 +49,5 @@ public:
 	static void BulletSyncEvent(librg_message_t* msg);
 
 	CClientPlayer *networkPlayers[MAX_PLAYERS];
+	CClientVehicle *networkVehicles[MAX_VEHICLES];
 };

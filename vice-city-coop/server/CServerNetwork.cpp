@@ -71,7 +71,7 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 void CServerNetwork::VehCreateEvent(librg_message_t *msg)
 {
 	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_VEHICLE);
-	librg_entity_control_set(&ctx, entity->id, msg->peer);
+	//librg_entity_control_set(&ctx, entity->id, msg->peer);
 	
 	// spawn a vehicle at player's position
 	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
