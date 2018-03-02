@@ -184,11 +184,6 @@ void CRender::Draw()
 	{
 		if (Initialized)
 		{
-			if (bLoadingDone == false)
-			{
-				this->device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(0,0,0,255), 1.0f, 0);
-			}
-
 			ImGui_ImplDX9_NewFrame();
 
 #ifdef VCCOOP_DEBUG
