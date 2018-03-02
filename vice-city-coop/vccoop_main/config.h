@@ -279,17 +279,23 @@ struct PlayerSyncData
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
 
+	PED_FLAGS m_nPedFlags;
+
+	GTA_CONTROLSET playerKeys;
+	CAMERA_AIM playerLook;
+};
+
+struct VehicleSyncData
+{
+	int driver;
+	float Health;
 	int vehicleID;
 	int vehicleSeat;
 	CVector vehiclePos;
 	CVector vehicleAt;
 	CVector vehicleRight;
 	CVector vehicleUp;
-
-	PED_FLAGS m_nPedFlags;
-
-	GTA_CONTROLSET playerKeys;
-	CAMERA_AIM playerLook;
+	CVector speed;
 };
 
 //CWeapon*This, DWORD _EDX, CEntity* source, CEntity* target, CVector* start, CVector* end, CColPoint* colpoint, CVector2D ahead

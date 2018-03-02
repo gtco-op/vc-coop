@@ -170,19 +170,6 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	gGame->remotePlayerLookFrontX[this->gameID] = spd.playerLook;
 
-	if (spd.vehicleID != -1)
-	{
-		CVehicle * veh = (CVehicle*)gNetwork->GetEntityFromNetworkID(spd.vehicleID);
-		if (veh)
-		{
-			if(!ped->m_bInVehicle || ped->m_pVehicle != veh)ped->WarpPedIntoCar(veh);
-			veh->Teleport(spd.vehiclePos);
-			veh->m_placement.at = spd.vehicleAt;
-			veh->m_placement.right = spd.vehicleRight;
-			veh->m_placement.up = spd.vehicleUp;
-		}
-	}
-
 	ped->m_nPedFlags.bIsStanding = spd.m_nPedFlags.bIsStanding;
 	ped->m_nPedFlags.bWasStanding = spd.m_nPedFlags.bWasStanding;
 	ped->m_nPedFlags.b03 = spd.m_nPedFlags.b03;
@@ -309,15 +296,6 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.Armour = ped->m_fArmour;
 	spd.iModelIndex = ped->m_nModelIndex;
 	spd.Rotation = ped->m_fRotationCur;
-
-	if (ped->m_bInVehicle)
-	{
-		spd.vehicleID = gNetwork->GetNetworkIDFromEntity(ped->m_pVehicle);
-		spd.vehiclePos = ped->m_pVehicle->GetPosition();
-		spd.vehicleAt = ped->m_pVehicle->m_placement.at;
-		spd.vehicleRight = ped->m_pVehicle->m_placement.right;
-		spd.vehicleUp = ped->m_pVehicle->m_placement.up;
-	}
 
 	spd.m_nPedFlags.bIsStanding = ped->m_nPedFlags.bIsStanding;
 	spd.m_nPedFlags.bWasStanding = ped->m_nPedFlags.bWasStanding;

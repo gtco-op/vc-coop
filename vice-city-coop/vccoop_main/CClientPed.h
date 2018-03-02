@@ -11,5 +11,5 @@ public:
 	~CClientPed();
 
 	void SyncPed(PedSyncData spd);
-	PedSyncData CClientPed::BuildSyncData();
+	PedSyncData BuildSyncData();
 };

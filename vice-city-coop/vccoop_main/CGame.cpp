@@ -7,6 +7,10 @@ HWND			orig_wnd;
 
 CGame::CGame()
 {
+	for (int i = 1; i < MAX_PLAYERS; i++)
+	{
+		this->remotePlayerPeds[i] = NULL;
+	}
 	this->InitPreGamePatches();
 	keyPressTime = 0;
 
@@ -191,7 +195,7 @@ void CGame::InitPreGamePatches()
 	//Pedpool inc
 	MemWrite<s32>(0x4C02C8, 1000);
 	//vehicle pool inc
-	MemCpy((void*)0x4C02E4, "\x6A\x00\x68\x3E\x80\x00\x00", 7);//i hope its 1000 now
+	MemCpy((void*)0x4C02E4, "\x6A\x00\x68\x3E\x80\x00\x00", 7);//its 1000 i tested it
 
 	//Nop ped spawns
 	MakeNop(0x53E5C6, 5); //3peds
@@ -328,8 +332,6 @@ void CGame::InitPreGamePatches()
 	//CPed::Refresh patch
 	MakeNop(0x50D96A, 5);
 
-	
-
 	/*
 	// nop CVehicle:SetDriver switch
 	MakeNop(0x5B8A4B2, 2);                   
@@ -386,13 +388,13 @@ void CGame::DisableMouseInput()
 
 CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 {
-	if (CStreaming::ms_aInfoForModel[modelIndex].m_nLoadState != LOADSTATE_LOADED)
+	/*if (CStreaming::ms_aInfoForModel[modelIndex].m_nLoadState != LOADSTATE_LOADED)
 	{
 		gLog->Log("Vehicle Model was not loaded so loading it");
 		CStreaming::RequestModel(modelIndex, eStreamingFlags::GAME_REQUEST);
 		CStreaming::LoadAllRequestedModels(false);
 		gLog->Log("Vehicle model is probably loaded");
-	}
+	}*/
 	if (CStreaming::ms_aInfoForModel[modelIndex].m_nLoadState == LOADSTATE_LOADED)
 	{
 		CVehicle *vehicle;
@@ -415,26 +417,11 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 			vehicle = new CAutomobile(modelIndex, 2);
 			break;
 		}
-		if (!vehicle)gLog->Log("CreateVehicle: something went wrong");
 		if (vehicle)
 		{
-			gLog->Log("CreateVehicle: everything was fine probably");
 			vehicle->Teleport(position);
-			vehicle->m_nState = 4;
-			vehicle->m_nLockStatus = 1;//CARLOCK_UNLOCKED
-
-			*(BYTE *)(vehicle + 80) = *(BYTE *)(vehicle + 80) & 7 | 0x20;
-			*(BYTE *)(vehicle + 505) = *(BYTE *)(vehicle + 505) & 0xF7 | 8;
-			*(BYTE *)(vehicle + 342) = 0;
-			*(BYTE *)(vehicle + 343) = 0;
-			*(BYTE *)(vehicle + 341) = 0;
-			*(DWORD *)(vehicle + 348) = 0x41100000;
-			*(BYTE *)(vehicle + 352) = (signed int)*(float *)(vehicle + 348);
-			*(BYTE *)(vehicle + 339) = 0;
-			*(BYTE *)(vehicle + 340) = *(BYTE *)(vehicle + 339);
-			*(BYTE *)(vehicle + 505) &= 0xEFu;//only this fixed vehicle spawn but the others are necessary too imho
-			*(BYTE *)(vehicle + 507) = *(BYTE *)(vehicle + 507) & 0xFB | 4;
-
+			vehicle->m_nState &= 0b00000;
+			vehicle->m_nState |= 0b00100;
 			CWorld::Add(vehicle);
 			return vehicle;
 		}
@@ -442,7 +429,7 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 	gLog->Log("CreateVehicle: model was not loaded!");
 	return nullptr;
 }
-CVehicle * veh = NULL;
+
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	//SetMenu(wnd, NULL);

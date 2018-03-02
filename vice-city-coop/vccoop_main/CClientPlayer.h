@@ -15,7 +15,7 @@ public:
 	~CClientPlayer();
 
 	void SyncPlayer(PlayerSyncData spd);
-	PlayerSyncData CClientPlayer::BuildSyncData();
+	PlayerSyncData BuildSyncData();
 
 	void Respawn();
 	void StreamIn();

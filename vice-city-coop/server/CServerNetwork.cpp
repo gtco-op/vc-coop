@@ -77,8 +77,12 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 void CServerNetwork::VehCreateEvent(librg_message_t *msg)
 {
 	librg_entity_t* entity = librg_entity_create(&ctx, VCOOP_VEHICLE);
-	//librg_entity_control_set(&ctx, entity->id, msg->peer);
+	librg_entity_control_set(&ctx, entity->id, msg->peer);
 	
+	entity->user_data = new VehicleSyncData();
+	((VehicleSyncData*)entity->user_data)->driver = -1;
+	((VehicleSyncData*)entity->user_data)->vehicleID = -1;
+
 	// spawn a vehicle at player's position
 	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
 
@@ -161,6 +165,10 @@ void CServerNetwork::on_creating_entity(librg_event_t *event)
 	{
 		librg_data_wptr(event->data, event->entity->user_data, sizeof(PedSyncData));
 	}
+	else if (event->entity->type == VCOOP_VEHICLE)
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(VehicleSyncData));
+	}
 }
 void CServerNetwork::on_entity_update(librg_event_t *event) 
 {
@@ -172,6 +180,10 @@ void CServerNetwork::on_entity_update(librg_event_t *event)
 	{
 		librg_data_wptr(event->data, event->entity->user_data, sizeof(PedSyncData));
 	}
+	else if (event->entity->type == VCOOP_VEHICLE)
+	{
+		librg_data_wptr(event->data, event->entity->user_data, sizeof(VehicleSyncData));
+	}
 }
 void CServerNetwork::on_stream_update(librg_event_t *event) 
 {
@@ -182,6 +194,10 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 	else if (event->entity->type == VCOOP_PED)
 	{
 		librg_data_rptr(event->data, event->entity->user_data, sizeof(PedSyncData));
+	}
+	else if (event->entity->type == VCOOP_VEHICLE)
+	{
+		librg_data_rptr(event->data, event->entity->user_data, sizeof(VehicleSyncData));
 	}
 }
 

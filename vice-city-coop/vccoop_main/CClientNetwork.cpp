@@ -65,7 +65,7 @@ void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 {
 	if (id < 0)return NULL;
-	if (id >= MAX_PLAYERS || !gNetwork->networkPlayers[id]->ped)
+	if (id >= MAX_PLAYERS || !gNetwork->networkPlayers[id])
 	{
 		return gNetwork->networkVehicles[id]->veh;
 	}
@@ -173,6 +173,8 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
+		VehicleSyncData spd;
+		librg_data_rptr(event->data, &spd, sizeof(VehicleSyncData));
 		if (!event->entity->user_data)
 		{
 			gLog->Log("Creating vehicle: %d", event->entity->id);
@@ -212,9 +214,17 @@ void CClientNetwork::on_entity_update(librg_event_t *event)
 
 		pedestrian->SyncPed(spd);
 	}
-	else if (event->entity->type == VCOOP_VEHICLE)//unoccupied only
+	else if (event->entity->type == VCOOP_VEHICLE)
 	{
+		VehicleSyncData spd;
+		librg_data_rptr(event->data, &spd, sizeof(VehicleSyncData));
 
+		auto vehicle = (CClientVehicle *)event->entity->user_data;
+		auto veh = vehicle->veh;
+
+		veh->Teleport(*(CVector *)&event->entity->position);
+
+		vehicle->SyncVehicle(spd);
 	}
 }
 void CClientNetwork::on_client_stream(librg_event_t *event) 
@@ -249,7 +259,18 @@ void CClientNetwork::on_client_stream(librg_event_t *event)
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)//Unoccupied
 	{
-		
+		VehicleSyncData spd;
+
+		auto vehicle = (CClientVehicle *)event->entity->user_data;
+		auto veh = vehicle->veh;
+
+		//if (veh != LocalPlayer()->m_pVehicle)return;
+
+		event->entity->position = *(zplm_vec3_t *)&veh->GetPosition();
+
+		spd = vehicle->BuildSyncData();
+
+		librg_data_wptr(event->data, &spd, sizeof(VehicleSyncData));
 	}
 }
 void CClientNetwork::on_entity_remove(librg_event_t *event) 
@@ -367,6 +388,9 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 
 	addr.host = szAddress;
 	addr.port = iPort;
+
+	gNetwork->ServerAddress = szAddress;
+	gNetwork->ServerPort = iPort;
 
 	gLog->Log("[CClientNetwork] Attempting to connect to %s:%d\n", addr.host, addr.port);
 	librg_network_start(&ctx, addr);

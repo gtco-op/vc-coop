@@ -221,6 +221,12 @@ void Hook_CRunningScript__Process()
 		CStreaming::RequestModel(276, eStreamingFlags::MISSION_REQUEST);
 		CStreaming::RequestModel(285, eStreamingFlags::MISSION_REQUEST);
 		CStreaming::RequestModel(288, eStreamingFlags::MISSION_REQUEST);
+
+		for (int i = 130; i < 236; i++)
+		{
+			CStreaming::RequestModel(i, eStreamingFlags::MISSION_REQUEST);
+		}
+
 		CStreaming::LoadAllRequestedModels(0);
 	}
 }
@@ -234,6 +240,31 @@ char __cdecl RemoveModel_Hook(int model)
 		return 0;
 	}
 	return original_RemoveModel(model);
+}
+
+char(__thiscall* original_CAutomobile__ProcessControl)(CVehicle*);
+char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
+{
+	if (This->m_pDriver && This->m_pDriver != LocalPlayer())
+	{
+		int currentPlayerID = FindIDForPed((CPed*)This->m_pDriver);
+		if (currentPlayerID == -1)return 0;
+
+		//gLog->Log("[CAutomobile::ProcessControl()] Processing for %d\n", currentPlayerID);
+		CWorld::PlayerInFocus = currentPlayerID;
+
+		// set remote player's keys
+		*(GTA_CONTROLSET*)CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
+
+		// call the internal CPlayerPed[]::Process
+		original_CAutomobile__ProcessControl(This);
+
+		// restore the local player's keys and the internal ID.
+		CWorld::PlayerInFocus = 0;
+		return 0;
+	}
+
+	return original_CAutomobile__ProcessControl(This);
 }
 
 char(__thiscall* original_CPlayerPed__ProcessControl)(CPlayerPed*);
@@ -333,6 +364,7 @@ void CHooks::InitHooks()
 	original_ShowExceptionBox = (signed int(__cdecl*)(DWORD*, int, int))DetourFunction((PBYTE)0x677E40, (PBYTE)ShowExceptionBox_Hook);
 	//original_RemoveModel = (char(__cdecl*)(int))DetourFunction((PBYTE)0x40D6E0, (PBYTE)RemoveModel_Hook);
 	original_CPlayerPed__ProcessControl = (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
+	original_CAutomobile__ProcessControl = (char(__thiscall*)(CVehicle*))DetourFunction((PBYTE)0x593030, (PBYTE)CAutomobile__ProcessControl_Hook);
 	original_GetPad = (INT16(__cdecl*)(int))DetourFunction((PBYTE)0x4AB060, (PBYTE)GetPad_Hook);
 	//original_CPed__SetIdle = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4FDFD0, (PBYTE)CPed__SetIdle_Hook);
 	original_CWeapon__DoBulletImpact = (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
