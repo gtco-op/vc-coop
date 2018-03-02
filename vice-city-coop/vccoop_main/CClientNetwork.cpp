@@ -198,7 +198,7 @@ void CClientNetwork::on_entity_update(librg_event_t *event)
 		auto player = (CClientPlayer *)event->entity->user_data;
 		auto ped = player->ped;
 
-		ped->Teleport(*(CVector *)&event->entity->position);
+		if(!spd.isInVehicle)ped->Teleport(*(CVector *)&event->entity->position);
 
 		player->SyncPlayer(spd);
 	}

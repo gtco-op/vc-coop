@@ -418,6 +418,8 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.WepModelIndex = ped->m_dwWepModelID;
 	spd.Ammo = 0;
 
+	spd.isInVehicle = ped->m_bInVehicle;
+
 	spd.iInteriorID = 0;
 
 	spd.playerKeys = *(GTA_CONTROLSET*)CPad::GetPad(this->gameID);

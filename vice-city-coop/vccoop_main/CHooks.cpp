@@ -245,6 +245,7 @@ char __cdecl RemoveModel_Hook(int model)
 char(__thiscall* original_CAutomobile__ProcessControl)(CVehicle*);
 char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
 {
+	//gLog->Log("[CAutomobile::ProcessControl()] Processing for 0x%X 0x%X\n", This, This->m_pDriver);
 	if (This->m_pDriver && This->m_pDriver != LocalPlayer())
 	{
 		int currentPlayerID = FindIDForPed((CPed*)This->m_pDriver);
@@ -263,7 +264,6 @@ char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
 		CWorld::PlayerInFocus = 0;
 		return 0;
 	}
-
 	return original_CAutomobile__ProcessControl(This);
 }
 

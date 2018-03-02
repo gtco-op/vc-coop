@@ -275,6 +275,8 @@ struct PlayerSyncData
 	int iInteriorID;
 	int iCurrentAnimID;
 
+	bool isInVehicle;
+
 	unsigned int CurrWep;
 	unsigned int WepModelIndex;
 	unsigned int Ammo;
@@ -295,7 +297,8 @@ struct VehicleSyncData
 	CVector vehicleAt;
 	CVector vehicleRight;
 	CVector vehicleUp;
-	CVector speed;
+	CVector moveSpeed;
+	CVector turnSpeed;
 };
 
 //CWeapon*This, DWORD _EDX, CEntity* source, CEntity* target, CVector* start, CVector* end, CColPoint* colpoint, CVector2D ahead

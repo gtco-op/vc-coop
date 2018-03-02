@@ -67,11 +67,20 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 	{
 		if (ped && (!ped->m_bInVehicle || ped->m_pVehicle != veh))
 		{
-			//gLog->Log("ped wasn't in the car so warped in");
+			gLog->Log("ped wasn't in the car so warped in");
+			ped->SetObjective(eObjective::OBJECTIVE_ENTER_CAR_AS_DRIVER, (void*)veh);
 			ped->WarpPedIntoCar(veh); 
+			veh->SetDriver(ped);
+			veh->m_pDriver = ped;
+			ped->m_bInVehicle = true;
+			ped->m_pVehicle = veh;
 		}
+		if(!veh->m_nVehicleFlags.bIsEngineOn)veh->m_nVehicleFlags.bIsEngineOn = true;
 		//gLog->Log("teleporting vehicle");
-		//veh->Teleport(spd.vehiclePos);
+
+		float fDif = DistanceBetweenPoints(veh->GetPosition(), spd.vehiclePos);
+		if(fDif > 0.1)veh->Teleport(spd.vehiclePos);
+
 		//gLog->Log("Setting matrix");
 		veh->m_placement.at = spd.vehicleAt;
 		veh->m_placement.right = spd.vehicleRight;
@@ -79,8 +88,11 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 
 		veh->m_fHealth = spd.Health;
 
-		veh->m_vecMoveSpeed = spd.speed;
+		veh->m_vecMoveSpeed = spd.moveSpeed;
 		veh->ApplyMoveSpeed();
+
+		veh->m_vecTurnSpeed = spd.turnSpeed;
+		veh->ApplyTurnSpeed();
 		//gLog->Log("Vehicle sync done");
 	}
 }
@@ -95,7 +107,8 @@ VehicleSyncData CClientVehicle::BuildSyncData()
 	spd.vehicleAt = this->veh->m_placement.at;
 	spd.vehicleRight = this->veh->m_placement.right;
 	spd.vehicleUp = this->veh->m_placement.up;
-	spd.speed = this->veh->m_vecMoveSpeed;
+	spd.moveSpeed = this->veh->m_vecMoveSpeed;
+	spd.turnSpeed = this->veh->m_vecTurnSpeed;
 
 	if(this->veh->m_pDriver)spd.driver = gNetwork->GetNetworkIDFromEntity(this->veh->m_pDriver);
 	else spd.driver = -1;

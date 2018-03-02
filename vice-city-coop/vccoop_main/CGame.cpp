@@ -422,6 +422,7 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 			vehicle->Teleport(position);
 			vehicle->m_nState &= 0b00000;
 			vehicle->m_nState |= 0b00100;
+
 			CWorld::Add(vehicle);
 			return vehicle;
 		}
