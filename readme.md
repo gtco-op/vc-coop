@@ -20,5 +20,7 @@ Gamelaster</br>
 NicusorN5</br>
 LemonHaze</br>
 Vektor</br>
+
+Special thanks to [librg](https://github.com/librg/librg) developers.
 ## Want to talk to me?
 Join VC:CO-OP Discord Server: https://discord.gg/u2u6U6G
