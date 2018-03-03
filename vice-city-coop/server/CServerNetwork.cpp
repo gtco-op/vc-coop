@@ -272,12 +272,11 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 					if (entity2->type == VCOOP_PLAYER)
 					{
 						librg_entity_control_set(event->ctx, event->entity->id, entity2->client_peer);
-						return;
+						break;
 					}
 				}
 				librg_entity_destroy(event->ctx, entity->id);
 			}
-			return;
 		}
 	}
 
