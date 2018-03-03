@@ -22,8 +22,9 @@ public:
 	static bool client_connected;
 	static bool connected;	
 
-	static CEntity*		GetEntityFromNetworkID(int id);
-	static int			GetNetworkIDFromEntity(CEntity* ent);
+	static CEntity*			GetEntityFromNetworkID(int id);
+	static CClientEntity*	GetNetworkEntityFromNetworkID(int id);
+	static int				GetNetworkIDFromEntity(CEntity* ent);
 
 	static void SetReadyToSpawn(bool bReady);
 
@@ -49,6 +50,5 @@ public:
 	static void ClientConnect(librg_message_t* msg);
 	static void BulletSyncEvent(librg_message_t* msg);
 
-	CClientPlayer *networkPlayers[MAX_PLAYERS];
-	CClientVehicle *networkVehicles[MAX_VEHICLES];
+	std::vector<CClientEntity*> networkEntities;
 };

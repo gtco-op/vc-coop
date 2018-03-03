@@ -177,6 +177,9 @@
     <ClInclude Include="vendor\discord-rich-presence\discord-rpc.h">
       <Filter>vendor\discord-rich-presence</Filter>
     </ClInclude>
+    <ClInclude Include="CClientEntity.h">
+      <Filter>Source\network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CGame.cpp">

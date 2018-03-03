@@ -22,6 +22,8 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 
 	gGame->remotePlayerPeds[gID] = this->ped;
 	gGame->remotePlayers++;
+
+	this->type = VCOOP_PLAYER;
 }
 
 void CClientPlayer::StreamIn()
@@ -436,4 +438,9 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	this->syncData = spd;
 
 	return spd;
+}
+
+CEntity * CClientPlayer::GetEntity()
+{
+	return this->ped;
 }

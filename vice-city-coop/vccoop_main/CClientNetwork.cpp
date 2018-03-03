@@ -20,9 +20,6 @@ CClientNetwork::CClientNetwork()
 
 	client_running = false;
 	connected = false;
-
-	for (int i = 0; i < MAX_PLAYERS; i++)this->networkPlayers[i] = NULL;
-	for (int i = 0; i < MAX_VEHICLES; i++)this->networkVehicles[i] = NULL;
 }
 CClientNetwork::~CClientNetwork()
 {
@@ -34,9 +31,12 @@ void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
 	u32 playerid;
 	librg_data_rptr(msg->data, &playerid, sizeof(u32));
 
-	gNetwork->networkPlayers[playerid]->Respawn();
+	CClientPlayer * player = (CClientPlayer*)GetNetworkEntityFromNetworkID(playerid);
+	if (!player)return;
 
-	gLog->Log("Respawning %s\n", gNetwork->networkPlayers[playerid]->szName);
+	player->Respawn();
+
+	gLog->Log("Respawning %s\n", player->szName);
 }
 
 void CClientNetwork::BulletSyncEvent(librg_message_t* msg)
@@ -49,9 +49,9 @@ void CClientNetwork::BulletSyncEvent(librg_message_t* msg)
 	{
 		CEntity * hitEntity = NULL;
 		if (bsData.targetEntityID != -1)hitEntity = GetEntityFromNetworkID(bsData.targetEntityID);
-		gLog->Log("Shooting bullet from player %d hitting entity %d\n", bsData.player, bsData.targetEntityID);
-		gLog->Log("Start vector: %f %f %f End vector: %f %f %f\n", bsData.start.x, bsData.start.y, bsData.start.z, bsData.end.x, bsData.end.y, bsData.end.z);
-		gLog->Log("surfacetypeA: %d | 2d vec: %f %f\n", bsData.colPoint.m_nSurfaceTypeA, bsData.ahead.x, bsData.ahead.y);
+		//gLog->Log("Shooting bullet from player %d hitting entity %d\n", bsData.player, bsData.targetEntityID);
+		//gLog->Log("Start vector: %f %f %f End vector: %f %f %f\n", bsData.start.x, bsData.start.y, bsData.start.z, bsData.end.x, bsData.end.y, bsData.end.z);
+		//gLog->Log("surfacetypeA: %d | 2d vec: %f %f\n", bsData.colPoint.m_nSurfaceTypeA, bsData.ahead.x, bsData.ahead.y);
 		CHooks::DoBulletImpact(&shooterPlayer->m_aWeapons[shooterPlayer->m_nWepSlot], shooterPlayer, hitEntity, &bsData.start, &bsData.end, &bsData.colPoint, bsData.ahead);
 	}
 }
@@ -62,35 +62,50 @@ void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 
 	gChat->AddChatMessage(str);
 }
+
 CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 {
 	if (id < 0)return NULL;
-	if (id >= MAX_PLAYERS || !gNetwork->networkPlayers[id])
+
+	for (std::vector<CClientEntity*>::iterator it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
 	{
-		return gNetwork->networkVehicles[id]->veh;
-	}
-	return gNetwork->networkPlayers[id]->ped;
-}
-int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
-{
-	for (int i = 0; i < MAX_PLAYERS; i++)
-	{
-		if (!gNetwork->networkPlayers[i])continue;
-		if (gNetwork->networkPlayers[i]->ped == ent)
+		CClientEntity * networkEntity = *it;
+		if (networkEntity->networkID == id)
 		{
-			return gNetwork->networkPlayers[i]->networkID;
+			return networkEntity->GetEntity();
 		}
 	}
-	for (int i = 0; i < MAX_VEHICLES; i++)
+	return NULL;
+}
+
+CClientEntity* CClientNetwork::GetNetworkEntityFromNetworkID(int id)
+{
+	if (id < 0)return NULL;
+
+	for (std::vector<CClientEntity*>::iterator it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
 	{
-		if (!gNetwork->networkVehicles[i])continue;
-		if (gNetwork->networkVehicles[i]->veh == ent)
+		CClientEntity * networkEntity = *it;
+		if (networkEntity->networkID == id)
 		{
-			return gNetwork->networkVehicles[i]->networkID;
+			return networkEntity;
+		}
+	}
+	return NULL;
+}
+
+int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
+{
+	for (std::vector<CClientEntity*>::iterator it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+	{
+		CClientEntity * networkEntity = *it;
+		if (networkEntity->GetEntity() == ent)
+		{
+			return networkEntity->networkID;
 		}
 	}
 	return -1;
 }
+
 void CClientNetwork::on_connect_request(librg_event_t *event) {
 	gNetwork->SetReadyToSpawn(FALSE);
 	
@@ -108,7 +123,7 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event)
 
 	local_player = event->entity;
 	event->entity->user_data = new CClientPlayer(event->entity->id);
-	gNetwork->networkPlayers[event->entity->id] = (CClientPlayer*)event->entity->user_data;
+	gNetwork->networkEntities.push_back((CClientPlayer*)event->entity->user_data);
 
 	//Inform server about our name
 	char name[25];
@@ -139,53 +154,66 @@ void CClientNetwork::ClientConnectThread()
 
 void CClientNetwork::ClientConnect(librg_message_t* msg)
 {
+	gLog->Log("connecting\n");
 	connectData cData;
 	librg_data_rptr(msg->data, &cData, sizeof(connectData));
 
 	CClientPlayer * player = new CClientPlayer(cData.playerId, CHooks::FindFreeIDForPed());
 	sprintf(player->szName, cData.name);
-	gNetwork->networkPlayers[cData.playerId] = player;
+	gNetwork->networkEntities.push_back(player);
 
-	gLog->Log("%s connected\n", gNetwork->networkPlayers[cData.playerId]->szName);
+	gLog->Log("%s connected\n", player->szName);
 }
 
 void CClientNetwork::on_entity_create(librg_event_t *event) 
 {
+	gLog->Log("creating entity\n");
 	zplm_vec3_t position = event->entity->position;
 
-	if (event->entity->type == VCOOP_PLAYER || event->entity->type == VCOOP_PED)
+	if (event->entity->type == VCOOP_PLAYER) 
 	{
-		if (event->entity->type == VCOOP_PLAYER) 
-		{
-			PlayerSyncData spd;
-			librg_data_rptr(event->data, &spd, sizeof(PlayerSyncData));
+		PlayerSyncData spd;
+		librg_data_rptr(event->data, &spd, sizeof(PlayerSyncData));
 
-			if (!gNetwork->networkPlayers[event->entity->id]) return;
-			if (!event->entity->user_data) event->entity->user_data = gNetwork->networkPlayers[event->entity->id];
+		CClientPlayer * player = (CClientPlayer*)gNetwork->GetNetworkEntityFromNetworkID(event->entity->id);
 
-			gNetwork->networkPlayers[event->entity->id]->StreamIn();
-			gLog->Log("%s streamed in\n", gNetwork->networkPlayers[event->entity->id]->szName);
-		}
-		else if (event->entity->type == VCOOP_PED) 
+		if (!player)
 		{
-			event->entity->user_data = new CClientPed(event->entity->id);
+			gLog->Log("Processing remote entity");
+			return;
 		}
+		if (!event->entity->user_data) event->entity->user_data = player;
+
+		player->StreamIn();
+		gLog->Log("%s streamed in\n", player->szName);
+	}
+	else if (event->entity->type == VCOOP_PED) 
+	{
+		event->entity->user_data = new CClientPed(event->entity->id);
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
 		VehicleSyncData spd;
 		librg_data_rptr(event->data, &spd, sizeof(VehicleSyncData));
-		if (!event->entity->user_data)
+
+		CClientVehicle * vehicle = (CClientVehicle*)gNetwork->GetNetworkEntityFromNetworkID(event->entity->id);
+		if (!vehicle)
 		{
 			gLog->Log("Creating vehicle: %d", event->entity->id);
-			gNetwork->networkVehicles[event->entity->id] = new CClientVehicle(event->entity->id);
-			event->entity->user_data = gNetwork->networkVehicles[event->entity->id];
+
+			vehicle = new CClientVehicle(event->entity->id);
+			gNetwork->networkEntities.push_back(vehicle);
+			event->entity->user_data = vehicle;
 		}
-		gLog->Log("Streaming vehicle: %d", event->entity->id);
-		gNetwork->networkVehicles[event->entity->id]->StreamIn();
+		else
+		{
+			gLog->Log("Streaming vehicle: %d", event->entity->id);
+			vehicle->StreamIn();
+		}
 	}
 	gLog->Log("[CClientNetwork] Network entity %d initialized\n", event->entity->id); 
 }
+
 void CClientNetwork::on_entity_update(librg_event_t *event) 
 {
 	if (!event->entity->user_data)return; //dont do shit if its not initialized yet
@@ -201,6 +229,7 @@ void CClientNetwork::on_entity_update(librg_event_t *event)
 		if(!spd.isInVehicle)ped->Teleport(*(CVector *)&event->entity->position);
 
 		player->SyncPlayer(spd);
+
 	}
 	else if(event->entity->type == VCOOP_PED)
 	{
@@ -241,6 +270,8 @@ void CClientNetwork::on_client_stream(librg_event_t *event)
 		spd = player->BuildSyncData();
 
 		librg_data_wptr(event->data, &spd, sizeof(PlayerSyncData));
+
+		gLog->Log("Streaming myself");
 	}
 	else if(event->entity->type == VCOOP_PED)
 	{
@@ -281,39 +312,50 @@ void CClientNetwork::on_entity_remove(librg_event_t *event)
 		if (player)
 		{
 			player->StreamOut();
-			gLog->Log("%s streamed out\n", gNetwork->networkPlayers[event->entity->id]->szName);
+			gLog->Log("%s streamed out\n", player->szName);
 		}
 	}
 	else if (event->entity->type == VCOOP_PED)
 	{
 		auto pedestrian = (CClientPed *)event->entity->user_data;
-		delete pedestrian;
+		delete pedestrian;//inform server about the deletion, so server will decide what to do with this entity
 	}
 	else if (event->entity->type = VCOOP_VEHICLE)
 	{
-		gLog->Log("Vehicle %d streamed out\n", event->entity->id);
-		gNetwork->networkVehicles[event->entity->id]->StreamOut();
+		auto vehicle = (CClientVehicle*)event->entity->user_data;
+		if(vehicle)	
+		{
+			vehicle->StreamOut();
+			gLog->Log("Vehicle %d streamed out\n", event->entity->id);
+		}
 	}
 }
+
 void CClientNetwork::ClientDisconnect(librg_message_t* msg)
 {
 	u32 playerid;
 	librg_data_rptr(msg->data, &playerid, sizeof(u32));
 	librg_entity_t * entity = librg_entity_fetch(msg->ctx, playerid);
+	
+	CClientPlayer * player = (CClientPlayer *)entity->user_data;
+
+	gLog->Log("[CClientNetwork] %s has disconnected.\n", player->szName);
+
+	for (std::vector<CClientEntity*>::iterator it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+	{
+		if(player == *it)gNetwork->networkEntities.erase(it);
+	}
+
+	delete player;
 	entity->user_data = NULL;
-
-	delete gNetwork->networkPlayers[playerid];
-	gNetwork->networkPlayers[playerid] = NULL;
-
-	gLog->Log("[CClientNetwork] %s has disconnected.\n", gNetwork->networkPlayers[playerid]->szName);
 }
 
 void CClientNetwork::on_disconnect(librg_event_t *event) 
 {
 	StopClientThread();
-
 	gLog->Log("[CClientNetwork] Disconnected.\n");
 }
+
 void CClientNetwork::ClientReceiveScript(librg_message_t* msg)
 {
 	// read all of the data..

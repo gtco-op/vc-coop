@@ -109,6 +109,7 @@ extern "C" {
 
 #include "CLogger.h"
 #include "CConfiguration.h"
+#include "CClientEntity.h"
 #include "CClientPlayer.h"
 #include "CClientVehicle.h"
 #include "CClientPed.h"

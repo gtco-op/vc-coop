@@ -1,6 +1,6 @@
 #pragma once
 
-class CClientPed
+class CClientPed : public CClientEntity
 {
 public:
 	int networkID;
@@ -12,4 +12,6 @@ public:
 
 	void SyncPed(PedSyncData spd);
 	PedSyncData BuildSyncData();
+
+	CEntity * GetEntity();
 };

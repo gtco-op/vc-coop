@@ -1,5 +1,5 @@
 #pragma once
-class CClientVehicle
+class CClientVehicle : public CClientEntity
 {
 public:
 	CVehicle *veh;
@@ -17,4 +17,6 @@ public:
 
 	void SyncVehicle(VehicleSyncData spd);
 	VehicleSyncData BuildSyncData();
+
+	CEntity * GetEntity();
 };

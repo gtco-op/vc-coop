@@ -1,6 +1,6 @@
 #pragma once
 
-class CClientPlayer
+class CClientPlayer : public CClientEntity
 {
 public:
 	char szName[25];
@@ -20,4 +20,6 @@ public:
 	void Respawn();
 	void StreamIn();
 	void StreamOut();
+
+	CEntity * GetEntity();
 };

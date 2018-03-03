@@ -6,6 +6,7 @@ CClientVehicle::CClientVehicle(int nID)
 	this->veh = gGame->CreateVehicle(this->model, { VCCOOP_DEFAULT_SPAWN_POSITION });
 	this->streamed = true;
 	this->networkID = nID;
+	this->type = VCOOP_VEHICLE;
 
 	gLog->Log("[CClientVehicle]Network ID: %d Veh pointer: 0x%X\n\n", nID, this->veh);
 }
@@ -114,4 +115,9 @@ VehicleSyncData CClientVehicle::BuildSyncData()
 	else spd.driver = -1;
 
 	return spd;
+}
+
+CEntity * CClientVehicle::GetEntity()
+{
+	return this->veh;
 }

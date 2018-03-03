@@ -4,6 +4,8 @@ CClientPed::CClientPed(int nID)
 {
 	this->ped = NULL;
 
+	this->type = VCOOP_PED;
+
 	CVector pos =LocalPlayer()->GetPosition();
 
 	bool res = false;
@@ -24,6 +26,11 @@ CClientPed::CClientPed(int nID)
 	this->networkID = nID;
 
 	gLog->Log("[CClientPed]Network ID: %d Ped pointer: 0x%X\n\n", nID, this->ped);
+}
+
+CEntity * CClientPed::GetEntity()
+{
+	return this->ped;
 }
 
 CClientPed::~CClientPed()

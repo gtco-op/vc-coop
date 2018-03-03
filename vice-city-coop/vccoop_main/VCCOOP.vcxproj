@@ -338,6 +338,7 @@
   <ItemGroup>
     <ClInclude Include="CCameraStuff.h" />
     <ClInclude Include="CChat.h" />
+    <ClInclude Include="CClientEntity.h" />
     <ClInclude Include="CClientNetwork.h" />
     <ClInclude Include="CClientPed.h" />
     <ClInclude Include="CClientPlayer.h" />
