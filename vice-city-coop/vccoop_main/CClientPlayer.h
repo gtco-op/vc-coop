@@ -4,7 +4,6 @@ class CClientPlayer : public CClientEntity
 {
 public:
 	char szName[25];
-	int networkID;
 	int gameID;
 	CPed * ped;
 	PlayerSyncData syncData;

@@ -4,7 +4,6 @@ class CClientVehicle : public CClientEntity
 public:
 	CVehicle *veh;
 	bool streamed;
-	int networkID;
 	int model;
 	VehicleSyncData syncData;
 

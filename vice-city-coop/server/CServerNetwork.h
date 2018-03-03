@@ -33,6 +33,7 @@ public:
 	static void on_entity_update(librg_event_t *event);
 	static void on_disconnect(librg_event_t* event);
 	static void on_stream_update(librg_event_t *event);
+	static void on_entity_remove(librg_event_t *event);
 
 	//------------------------------------------------------------------------------------------------
 

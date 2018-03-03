@@ -4,9 +4,9 @@ CNameTags::~CNameTags() {}
 
 void CNameTags::Draw()
 { 
-	for (std::vector<CClientEntity*>::iterator it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
 	{
-		CClientEntity * networkEntity = *it;
+		CClientEntity * networkEntity = (*it);
 		if (networkEntity->type == VCOOP_PLAYER)
 		{
 			CClientPlayer * player = (CClientPlayer*)networkEntity;

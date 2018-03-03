@@ -10,8 +10,8 @@ CClientPed::CClientPed(int nID)
 
 	bool res = false;
 
-	int xrand = Random(0, 200) - 100;
-	int yrand = Random(0, 200) - 100;
+	int xrand = Random(0, 450) - 225;
+	int yrand = Random(0, 450) - 225;
 
 	int path = ThePaths.FindNodeClosestToCoors({ pos.x + xrand, pos.y + yrand, pos.z }, 1, 10000.0f, 1, 0, 0, 0);
 	CPathNode node = ThePaths.nodes[path];

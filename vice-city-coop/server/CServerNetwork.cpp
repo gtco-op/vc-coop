@@ -155,6 +155,7 @@ void CServerNetwork::on_connect_accepted(librg_event_t *event)
 
 	librg_message_send_to(&ctx, VCOOP_SPAWN_ALLOWED, event->peer, 0, 0);
 }
+
 void CServerNetwork::on_creating_entity(librg_event_t *event) 
 {
 	if (event->entity->type == VCOOP_PLAYER) 
@@ -170,7 +171,8 @@ void CServerNetwork::on_creating_entity(librg_event_t *event)
 		librg_data_wptr(event->data, event->entity->user_data, sizeof(VehicleSyncData));
 	}
 }
-void CServerNetwork::on_entity_update(librg_event_t *event) 
+
+void CServerNetwork::on_entity_update(librg_event_t *event)
 {
 	if (event->entity->type == VCOOP_PLAYER)
 	{
@@ -183,8 +185,43 @@ void CServerNetwork::on_entity_update(librg_event_t *event)
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
 		librg_data_wptr(event->data, event->entity->user_data, sizeof(VehicleSyncData));
+		if (reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver == -1)
+		{
+			librg_peer_t * peer = librg_entity_control_get(event->ctx, event->entity->id);
+			if (!peer)librg_entity_control_set(event->ctx, event->entity->id, event->peer);
+		}
 	}
 }
+
+void CServerNetwork::on_entity_remove(librg_event_t *event) //entity streamed out for entity
+{
+	if (event->entity->type == VCOOP_PED)
+	{
+		librg_peer_t * owner = librg_entity_control_get(event->ctx, event->entity->id);
+		if (event->peer == owner)
+		{
+			gLog->Log("Destroying ped or looking for a new owner\n");
+			librg_entity_id *entities;
+			usize amount = librg_entity_query(event->ctx, event->entity->id, &entities);
+
+			for (int i = 0; i < amount; i++)
+			{
+				librg_entity_t *entity = librg_entity_fetch(event->ctx, entities[i]);
+				if (entity->type == VCOOP_PLAYER)
+				{
+					librg_entity_control_set(event->ctx, event->entity->id, entity->client_peer); 
+					return;
+				}
+			}
+			librg_entity_destroy(event->ctx, event->entity->id);
+		}
+	}
+	else if (event->entity->type == VCOOP_VEHICLE)
+	{
+		if(librg_entity_control_get(event->ctx, event->entity->id) == event->peer)librg_entity_control_remove(event->ctx, event->entity->id);
+	}
+}
+
 void CServerNetwork::on_stream_update(librg_event_t *event) 
 {
 	if (event->entity->type == VCOOP_PLAYER)
@@ -198,6 +235,14 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
 		librg_data_rptr(event->data, event->entity->user_data, sizeof(VehicleSyncData));
+
+		u32 playerid = reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver;
+		if (playerid != -1)
+		{
+			librg_peer_t * owner = librg_entity_control_get(event->ctx, event->entity->id);
+			librg_peer_t * driver = librg_entity_fetch(event->ctx, playerid)->client_peer;
+			if (owner != driver)librg_entity_control_set(event->ctx, event->entity->id, driver);
+		}
 	}
 }
 
@@ -205,7 +250,39 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 {
 	gGamemodeScript->Call("onPlayerDisconnect", "i", event->entity->id);
 	
+	librg_entity_id *entities;
+	usize amount = librg_entity_query(event->ctx, event->entity->id, &entities);
+
+	for (int i = 0; i < amount; i++)
+	{
+		librg_entity_t *entity = librg_entity_fetch(event->ctx, entities[i]);
+		if (entity->type == VCOOP_PED)
+		{
+			librg_peer_t * owner = librg_entity_control_get(event->ctx, entity->id);
+
+			if (event->entity->client_peer == owner)
+			{
+				gLog->Log("Destroying ped or looking for a new owner\n");
+				librg_entity_id *entities2;
+				usize amount2 = librg_entity_query(event->ctx, entity->id, &entities2);
+
+				for (int z = 0; z < amount; z++)
+				{
+					librg_entity_t *entity2 = librg_entity_fetch(event->ctx, entities2[z]);
+					if (entity2->type == VCOOP_PLAYER)
+					{
+						librg_entity_control_set(event->ctx, event->entity->id, entity2->client_peer);
+						return;
+					}
+				}
+				librg_entity_destroy(event->ctx, entity->id);
+			}
+			return;
+		}
+	}
+
 	librg_entity_control_remove(event->ctx, event->entity->id);
+
 	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
 	if (tmp != playerEntities.end())	
 	{
@@ -271,6 +348,7 @@ void CServerNetwork::server_thread()
 
 	librg_event_add(&ctx,	LIBRG_ENTITY_CREATE,			on_creating_entity);
 	librg_event_add(&ctx,	LIBRG_ENTITY_UPDATE,			on_entity_update);
+	librg_event_add(&ctx,	LIBRG_ENTITY_REMOVE,			on_entity_remove);
 
 	librg_network_add(&ctx, VCOOP_CREATE_PED,				PedCreateEvent);
 	librg_network_add(&ctx, VCOOP_CREATE_VEHICLE,			VehCreateEvent);

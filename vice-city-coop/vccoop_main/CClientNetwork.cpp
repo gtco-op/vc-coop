@@ -67,12 +67,11 @@ CEntity* CClientNetwork::GetEntityFromNetworkID(int id)
 {
 	if (id < 0)return NULL;
 
-	for (std::vector<CClientEntity*>::iterator it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
 	{
-		CClientEntity * networkEntity = *it;
-		if (networkEntity->networkID == id)
+		if ((*it)->networkID == id)
 		{
-			return networkEntity->GetEntity();
+			return (*it)->GetEntity();
 		}
 	}
 	return NULL;
@@ -82,12 +81,11 @@ CClientEntity* CClientNetwork::GetNetworkEntityFromNetworkID(int id)
 {
 	if (id < 0)return NULL;
 
-	for (std::vector<CClientEntity*>::iterator it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
 	{
-		CClientEntity * networkEntity = *it;
-		if (networkEntity->networkID == id)
+		if ((*it)->networkID == id)
 		{
-			return networkEntity;
+			return (*it);
 		}
 	}
 	return NULL;
@@ -95,18 +93,18 @@ CClientEntity* CClientNetwork::GetNetworkEntityFromNetworkID(int id)
 
 int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 {
-	for (std::vector<CClientEntity*>::iterator it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
 	{
-		CClientEntity * networkEntity = *it;
-		if (networkEntity->GetEntity() == ent)
+		if ((*it)->GetEntity() == ent)
 		{
-			return networkEntity->networkID;
+			return (*it)->networkID;
 		}
 	}
 	return -1;
 }
 
-void CClientNetwork::on_connect_request(librg_event_t *event) {
+void CClientNetwork::on_connect_request(librg_event_t *event) 
+{
 	gNetwork->SetReadyToSpawn(FALSE);
 	
 	char name[25];
@@ -117,6 +115,7 @@ void CClientNetwork::on_connect_request(librg_event_t *event) {
 	librg_data_wptr(event->data, (void*)&name, sizeof(name));
 	librg_data_wu32(event->data, VCCOOP_DEFAULT_SERVER_SECRET);
 }
+
 void CClientNetwork::on_connect_accepted(librg_event_t *event) 
 {
 	gLog->Log("[CClientNetwork] Connection Accepted\n");
@@ -179,9 +178,10 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 
 		if (!player)
 		{
-			gLog->Log("Processing remote entity");
+			gLog->Log("remote entity doesn't exists");
 			return;
 		}
+
 		if (!event->entity->user_data) event->entity->user_data = player;
 
 		player->StreamIn();
@@ -189,7 +189,11 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 	}
 	else if (event->entity->type == VCOOP_PED) 
 	{
+		PedSyncData spd;
+		librg_data_rptr(event->data, &spd, sizeof(PedSyncData));
+
 		event->entity->user_data = new CClientPed(event->entity->id);
+		gNetwork->networkEntities.push_back((CClientPed*)event->entity->user_data);
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
@@ -258,8 +262,10 @@ void CClientNetwork::on_entity_update(librg_event_t *event)
 }
 void CClientNetwork::on_client_stream(librg_event_t *event) 
 {
+	if (!event->entity->user_data)return;
+
 	if (event->entity->type == VCOOP_PLAYER)
-	{
+	{ 
 		PlayerSyncData spd;
 
 		auto player = (CClientPlayer *)event->entity->user_data;
@@ -270,8 +276,6 @@ void CClientNetwork::on_client_stream(librg_event_t *event)
 		spd = player->BuildSyncData();
 
 		librg_data_wptr(event->data, &spd, sizeof(PlayerSyncData));
-
-		gLog->Log("Streaming myself");
 	}
 	else if(event->entity->type == VCOOP_PED)
 	{
@@ -318,7 +322,17 @@ void CClientNetwork::on_entity_remove(librg_event_t *event)
 	else if (event->entity->type == VCOOP_PED)
 	{
 		auto pedestrian = (CClientPed *)event->entity->user_data;
-		delete pedestrian;//inform server about the deletion, so server will decide what to do with this entity
+		for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+		{
+			if (pedestrian == (*it))
+			{
+				gNetwork->networkEntities.erase(it);
+				break;
+			}
+		}
+		delete pedestrian;
+		pedestrian = NULL;
+		event->entity->user_data = NULL;
 	}
 	else if (event->entity->type = VCOOP_VEHICLE)
 	{
@@ -341,9 +355,13 @@ void CClientNetwork::ClientDisconnect(librg_message_t* msg)
 
 	gLog->Log("[CClientNetwork] %s has disconnected.\n", player->szName);
 
-	for (std::vector<CClientEntity*>::iterator it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
 	{
-		if(player == *it)gNetwork->networkEntities.erase(it);
+		if (player == (*it))
+		{
+			gNetwork->networkEntities.erase(it);
+			break;
+		}
 	}
 
 	delete player;

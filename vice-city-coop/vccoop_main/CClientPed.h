@@ -3,7 +3,6 @@
 class CClientPed : public CClientEntity
 {
 public:
-	int networkID;
 	CPed * ped;
 	PedSyncData syncData;
 
