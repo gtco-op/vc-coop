@@ -68,7 +68,7 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 	{
 		if (ped && (!ped->m_bInVehicle || ped->m_pVehicle != veh))
 		{
-			gLog->Log("ped wasn't in the car so warped in");
+			gLog->Log("[CClientVehicle] Ped wasn't in the car so warped in\n");
 			ped->SetObjective(eObjective::OBJECTIVE_ENTER_CAR_AS_DRIVER, (void*)veh);
 			ped->WarpPedIntoCar(veh); 
 			veh->SetDriver(ped);
