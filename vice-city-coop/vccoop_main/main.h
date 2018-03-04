@@ -38,7 +38,7 @@ extern "C" {
 #include "detours.h"
 
 //plugin sdk
-#include "plugin.h"
+#include "plugin_vc.h"
 #include "RenderWare.h"
 #include "d3dx9.h"
 #include "vendor\rw\rwd3d9.h"
@@ -69,6 +69,10 @@ extern "C" {
 #include "CBike.h"
 #include "CHud.h"
 #include "CMessages.h"
+#include "CPlayerPed.h"
+#include "CPools.h"
+#include "CPool.h"
+#include "CEntity.h"
 
 //vccoop
 #include "config.h"

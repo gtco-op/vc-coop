@@ -8,6 +8,22 @@ CVehicle *		_pVehicle;
 static bool		scriptProcessed				= false;
 bool			bLoadingDone				= false;
 
+template<class A, class B = A>
+void CHooks::InitPool(CPool<A, B> *pool, int nSize)
+{
+	pool->m_pObjects = static_cast<B*>(operator new(sizeof(B) * nSize));
+	pool->m_byteMap = static_cast<tPoolObjectFlags*>(operator new(nSize));
+
+	pool->m_nSize = nSize;
+	pool->m_nFirstFree = -1;
+
+	for (int i = 0; i < nSize; ++i) 
+	{
+		pool->m_byteMap[i].bEmpty = true;
+		pool->m_byteMap[i].nId = 0;
+	}
+}
+
 int FindIDForPed(CPed * ped)
 {
 	for (int i = 0; i < MAX_PLAYERS; i++)
@@ -163,8 +179,8 @@ void Hook_CRunningScript__Process()
 		CPools::ms_pPedPool->Clear();
 		CPools::ms_pVehiclePool->Clear();
 
-		CPools::ms_pPedPool->Init(1000, NULL, NULL);
-		CPools::ms_pVehiclePool->Init(1000, NULL, NULL);
+		CHooks::InitPool(CPools::ms_pPedPool, 1000);
+		CHooks::InitPool(CPools::ms_pVehiclePool, 1000);
 
 		// Change player model ID
 		MemWrite<u8>(0x5384FA + 1, 7); //Not important if we set a new one after spawn
@@ -255,7 +271,7 @@ char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
 		CWorld::PlayerInFocus = currentPlayerID;
 
 		// set remote player's keys
-		*(GTA_CONTROLSET*)CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
+		*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
 
 		// call the internal CPlayerPed[]::Process
 		original_CAutomobile__ProcessControl(This);
@@ -280,7 +296,7 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 		CWorld::PlayerInFocus = currentPlayerID;
 
 		// set remote player's keys
-		*(GTA_CONTROLSET*)CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
+		*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
 
 		// save the internal cammode.
 		localPlayerCameraMode = (BYTE)TheCamera.Cams[TheCamera.ActiveCam].Mode;
@@ -307,15 +323,21 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 	return original_CPlayerPed__ProcessControl(This);
 }
 
-INT16(__cdecl* original_GetPad)(int);
-INT16 __cdecl GetPad_Hook(int pad)
+CPad*(__cdecl* original_GetPad)(int);
+CPad* __cdecl GetPad_Hook(int pad)
 {
 	return original_GetPad(CWorld::PlayerInFocus);
 }
 
-CPad * CHooks::GetPad(int pad)
+CPad * CHooks::GetPad(int padnumber)
 {
-	return reinterpret_cast<CPad*>(original_GetPad(pad));
+	int oldfocus = CWorld::PlayerInFocus;
+
+	CWorld::PlayerInFocus = padnumber;
+	CPad * pad = original_GetPad(0);
+	CWorld::PlayerInFocus = oldfocus;
+
+	return pad;
 }
 
 int(__thiscall* original_CPed__SetIdle)(CPed*);
@@ -365,12 +387,12 @@ void CHooks::InitHooks()
 	//original_RemoveModel = (char(__cdecl*)(int))DetourFunction((PBYTE)0x40D6E0, (PBYTE)RemoveModel_Hook);
 	original_CPlayerPed__ProcessControl = (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
 	original_CAutomobile__ProcessControl = (char(__thiscall*)(CVehicle*))DetourFunction((PBYTE)0x593030, (PBYTE)CAutomobile__ProcessControl_Hook);
-	original_GetPad = (INT16(__cdecl*)(int))DetourFunction((PBYTE)0x4AB060, (PBYTE)GetPad_Hook);
+	original_GetPad = (CPad*(__cdecl*)(int))DetourFunction((PBYTE)0x4AB060, (PBYTE)GetPad_Hook);
 	//original_CPed__SetIdle = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4FDFD0, (PBYTE)CPed__SetIdle_Hook);
 	original_CWeapon__DoBulletImpact = (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
 
 #ifdef VCCOOP_DEBUG_ENGINE
-	patch::RedirectFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
+	patch::ReplaceFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x6F2434, Hooked_DbgPrint);//the original is needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);//the original is needed
 	debugEnabled = true;

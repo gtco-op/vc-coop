@@ -283,7 +283,14 @@ struct PlayerSyncData
 
 	PED_FLAGS m_nPedFlags;
 
-	GTA_CONTROLSET playerKeys;
+	CControllerState newPlayerKeys;
+	CControllerState oldPlayerKeys;
+
+	short WORD_EA;
+	short Mode;
+	short ShakeDur;
+	short DisablePlayerControls;
+
 	CAMERA_AIM playerLook;
 };
 

@@ -422,7 +422,7 @@ void CClientNetwork::SetReadyToSpawn(bool bReady)
 		gGame->DisableHUD();
 	}
 }
-void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
+void CClientNetwork::AttemptConnect(char* szAddress, int iPort) 
 {
 	client_running = true;
 	ctx.mode = LIBRG_MODE_CLIENT;

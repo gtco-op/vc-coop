@@ -327,7 +327,7 @@ void CRender::Draw()
 						if (strlen(gGame->Name.c_str()) >= 3)
 						{
 							gNetwork->AttemptConnect("127.0.0.1", VCCOOP_DEFAULT_SERVER_PORT);
-
+							
 							gRender->bConnecting = true;
 							gRender->bGUI = false;
 							gRender->bAboutWindow = false;

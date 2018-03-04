@@ -92,12 +92,28 @@ void CGame::SetCoordBlip(CVector coord, uint unk, eBlipDisplay blipDisplay)
 	Call(0x4c3c80, eBlipType::BLIP_COORD, coord, unk, blipDisplay);
 }
 
+CPlayerPed* CWorld_Players;
+
+void RedirectAllPointers(int startaddr, int endaddr, MemoryPointer with, MemoryPointer dest)
+{
+	for (int i = startaddr; i < endaddr; i++)
+	{
+		MemoryPointer at = ReadRelativeOffset(i);
+		if (at == with)
+		{
+			patch::SetPointer(i, dest);
+		}
+	}
+}
+
 void CGame::InitPreGamePatches()
 {
 	DWORD flOldProtect;
 	VirtualProtect((LPVOID)0x401000, 0x27CE00u, PAGE_EXECUTE_READWRITE, &flOldProtect);
 
-	CHooks::InitHooks();
+	CWorld_Players = (CPlayerPed*)malloc(0x170 * MAX_PLAYERS);
+	
+	RedirectAllPointers(0x401000, 0x67DD05, 0xA10AFB, CWorld_Players);
 
 	// Patch to allow multiple instances of the game
 	SYSTEMTIME time; 
@@ -363,6 +379,12 @@ void CGame::InitPreGamePatches()
 	// Stop the loading of ambient traffic models and textures
 	// by skipping CStreaming::StreamVehiclesAndPeds() and CStreaming::StreamZoneModels()
 	MemWrite<BYTE>(0x40EF27, 0xEB);
+
+	//Set streaming memory to 128MB its 64 by default
+	MemWrite<int>(0x410799+6,134217728);
+
+	//Init hooks (no shit sherlock)
+	CHooks::InitHooks();
 
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }

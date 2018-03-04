@@ -401,6 +401,7 @@ namespace Hook
 		}
 	}
 
+
 	// TODO: std::forward-less
 	template <class Ret = void, class... Args>
 	inline Ret Call(MemoryPointer p, Args... a)

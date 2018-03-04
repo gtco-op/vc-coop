@@ -168,7 +168,19 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 		if (ped->m_dwWepModelID != -1)ped->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
 	}
 
-	gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
+	//gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
+	CPad * pad = &gGame->remotePlayerKeys[this->gameID];
+
+	pad->NewState = spd.newPlayerKeys;
+	pad->OldState = spd.oldPlayerKeys;
+
+	//below: important
+	pad->WORD_EA = 0;
+	pad->Mode = 0;
+	pad->ShakeDur = 0;
+	pad->DisablePlayerControls = 0;
+
+	gGame->remotePlayerKeys[this->gameID] = *pad;
 
 	gGame->remotePlayerLookFrontX[this->gameID] = spd.playerLook;
 
@@ -423,8 +435,21 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.isInVehicle = ped->m_bInVehicle;
 
 	spd.iInteriorID = 0;
+	
+	CPad * pad = CHooks::GetPad(this->gameID);
 
-	spd.playerKeys = *(GTA_CONTROLSET*)CPad::GetPad(this->gameID);
+	spd.oldPlayerKeys	= pad->OldState;
+	spd.newPlayerKeys	= pad->NewState;
+	spd.tempJoyState	= pad->PCTempJoyState;
+	spd.tempKeyState	= pad->PCTempKeyState;
+	spd.tempMouseState	= pad->PCTempMouseState;
+
+	spd.WORD_EA					= pad->WORD_EA;
+	spd.Mode					= pad->Mode;
+	spd.ShakeDur				= pad->ShakeDur;
+	spd.DisablePlayerControls	= pad->DisablePlayerControls;
+
+	/*spd.playerKeys = *(GTA_CONTROLSET*)CPad::GetPad(this->gameID);
 
 	if (this->ped->m_aWeapons[this->ped->m_nWepSlot].m_nAmmoInClip < 1 && this->ped->m_nWepSlot > 0)//dont send fire key if there is no ammo in the clip
 	{
@@ -432,7 +457,8 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 		spd.playerKeys.wKeys1[KEY_INCAR_FIRE] = 0;
 		spd.playerKeys.wKeys2[KEY_ONFOOT_FIRE] = 0;
 		spd.playerKeys.wKeys2[KEY_INCAR_FIRE] = 0;
-	}
+	}*/
+
 	spd.playerLook = *(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front;
 	
 	this->syncData = spd;

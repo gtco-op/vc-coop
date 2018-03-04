@@ -24,7 +24,7 @@ extern "C" {
 #include <experimental/filesystem>
 
 // Plugin-SDK
-#include "plugin.h"
+/*#include "plugin_vc.h"
 #include "game_vc\common.h"
 #include "game_vc\eWeaponFire.h"
 #include "game_vc\CSprite.h"
@@ -35,7 +35,12 @@ extern "C" {
 #include "game_vc\CCivilianPed.h"
 #include "game_vc\CPlayerInfo.h"
 #include "game_vc\CPopulation.h"
-#include "game_vc\CMatrix.h"
+#include "game_vc\CMatrix.h"*/
+#include "game_vc\CPad.h"
+#include "game_vc\CVector.h"
+#include "game_vc\CVector2D.h"
+#include "game_vc\CPathNode.h"
+#include "game_vc\CColPoint.h"
 
 #define VCCOOP_DEBUG
 
