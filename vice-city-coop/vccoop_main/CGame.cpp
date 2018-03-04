@@ -18,7 +18,6 @@ CGame::CGame()
 }
 CGame::~CGame()
 {	
-	gLog->Log("[CGame] CGame shutting down.\n");
 }
 
 CPed * CGame::FindLocalPed()
@@ -72,6 +71,18 @@ void CGame::Run()
 		if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow && !gRender->bEscMenu)
 			gChat->ToggleChat(true); ImGui::GetIO().ClearInputCharacters(); 
 	}
+}
+void CGame::Exit()
+{
+	delete gNetwork;
+	delete gRender;
+
+	gLog->Log("[CGame] CGame shutting down.\n");
+	delete gLog;
+
+	
+
+	exit(0);
 }
 bool CGame::IsWindowActive()
 {

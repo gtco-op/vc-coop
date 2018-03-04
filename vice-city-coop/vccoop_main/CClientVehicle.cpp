@@ -8,7 +8,7 @@ CClientVehicle::CClientVehicle(int nID)
 	this->networkID = nID;
 	this->type = VCOOP_VEHICLE;
 
-	gLog->Log("[CClientVehicle]Network ID: %d Veh pointer: 0x%X\n\n", nID, this->veh);
+	gLog->Log("[CClientVehicle] Network ID: %d Veh pointer: 0x%X\n", nID, this->veh);
 }
 
 CClientVehicle::~CClientVehicle()

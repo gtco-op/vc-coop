@@ -16,6 +16,7 @@ CRichPresence::~CRichPresence() {
 }
 void CRichPresence::StartThread()
 {
+	this->threadActive = true;
 	g_ThreadHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&rpThread, this, 0, NULL);
 }
 void CRichPresence::StopThread()
@@ -30,10 +31,12 @@ void CRichPresence::rpThread(LPVOID lParam)
 	
 	Discord_Initialize(APP_ID, NULL, 1, NULL);
 
-	while (1) {
+	while (tmp->threadActive) {
 		tmp->UpdateRichPresence(gNetwork->connected);
 		Sleep(1);
 	}
+
+	tmp->Shutdown();
 }
 void CRichPresence::Shutdown() {
 	StopThread();

@@ -36,7 +36,7 @@ void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
 
 	player->Respawn();
 
-	gLog->Log("Respawning %s\n", player->szName);
+	gLog->Log("[CClientNetwork] Respawning %s\n", player->szName);
 }
 
 void CClientNetwork::BulletSyncEvent(librg_message_t* msg)
@@ -153,7 +153,7 @@ void CClientNetwork::ClientConnectThread()
 
 void CClientNetwork::ClientConnect(librg_message_t* msg)
 {
-	gLog->Log("connecting\n");
+	gLog->Log("[CClientNetwork] Connecting\n");
 	connectData cData;
 	librg_data_rptr(msg->data, &cData, sizeof(connectData));
 
@@ -161,7 +161,7 @@ void CClientNetwork::ClientConnect(librg_message_t* msg)
 	sprintf(player->szName, cData.name);
 	gNetwork->networkEntities.push_back(player);
 
-	gLog->Log("%s connected\n", player->szName);
+	gLog->Log("[CClientNetwork] %s connected\n", player->szName);
 }
 
 void CClientNetwork::on_entity_create(librg_event_t *event) 
@@ -178,14 +178,14 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 
 		if (!player)
 		{
-			gLog->Log("remote entity doesn't exists");
+			gLog->Log("[CClientNetwork] Remote entity doesn't exists\n");
 			return;
 		}
 
 		if (!event->entity->user_data) event->entity->user_data = player;
 
 		player->StreamIn();
-		gLog->Log("%s streamed in\n", player->szName);
+		gLog->Log("[CClientNetwork] %s streamed in\n", player->szName);
 	}
 	else if (event->entity->type == VCOOP_PED) 
 	{
@@ -203,7 +203,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 		CClientVehicle * vehicle = (CClientVehicle*)gNetwork->GetNetworkEntityFromNetworkID(event->entity->id);
 		if (!vehicle)
 		{
-			gLog->Log("Creating vehicle: %d", event->entity->id);
+			gLog->Log("[CClientNetwork] Creating vehicle: %d\n", event->entity->id);
 
 			vehicle = new CClientVehicle(event->entity->id);
 			gNetwork->networkEntities.push_back(vehicle);
@@ -211,7 +211,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 		}
 		else
 		{
-			gLog->Log("Streaming vehicle: %d", event->entity->id);
+			gLog->Log("[CClientNetwork] Streaming vehicle: %d\n", event->entity->id);
 			vehicle->StreamIn();
 		}
 	}
