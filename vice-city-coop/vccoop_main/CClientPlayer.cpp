@@ -440,9 +440,6 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 
 	spd.oldPlayerKeys	= pad->OldState;
 	spd.newPlayerKeys	= pad->NewState;
-	spd.tempJoyState	= pad->PCTempJoyState;
-	spd.tempKeyState	= pad->PCTempKeyState;
-	spd.tempMouseState	= pad->PCTempMouseState;
 
 	spd.WORD_EA					= pad->WORD_EA;
 	spd.Mode					= pad->Mode;
