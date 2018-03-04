@@ -54,6 +54,7 @@
 
 #define MAX_PLAYERS						500
 #define MAX_VEHICLES					1000
+#define MAX_PEDS						1000
 
 #pragma pack(1)
 typedef struct _CAMERA_AIM

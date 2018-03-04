@@ -118,7 +118,7 @@ void CChat::ProcessChatInput()
 		if (strstr(this->chatInputBuffer, "/quit") || strstr(this->chatInputBuffer, "/exit") || strstr(this->chatInputBuffer, "!quit") || strstr(this->chatInputBuffer, "!exit"))
 		{
 			gLog->Log("[CChat] Shutting down\n");
-			ExitProcess(-1);
+			gGame->Exit();
 		}
 		else if (strstr(this->chatInputBuffer, "/campos"))
 		{

@@ -73,6 +73,8 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 
 	otherEntities.push_back(entity);
 	gLog->Log("[CServerNetwork] Ped created. (%d)\n", entity->id);
+
+	gGamemodeScript->Call("onPedCreated", "i", librg_entity_find(msg->ctx, msg->peer)->id);
 }
 void CServerNetwork::VehCreateEvent(librg_message_t *msg)
 {
@@ -87,6 +89,8 @@ void CServerNetwork::VehCreateEvent(librg_message_t *msg)
 	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
 
 	gLog->Log("[CServerNetwork] Vehicle created. (%d)\n", entity->id);
+
+	gGamemodeScript->Call("onVehCreated", "i", librg_entity_find(msg->ctx, msg->peer)->id);
 }
 void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 {
@@ -174,6 +178,8 @@ void CServerNetwork::on_creating_entity(librg_event_t *event)
 
 void CServerNetwork::on_entity_update(librg_event_t *event)
 {
+	gGamemodeScript->Call("onEntityUpdate", "ii", event->entity->id, event->entity->type);
+
 	if (event->entity->type == VCOOP_PLAYER)
 	{
 		librg_data_wptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
@@ -195,6 +201,8 @@ void CServerNetwork::on_entity_update(librg_event_t *event)
 
 void CServerNetwork::on_entity_remove(librg_event_t *event) //entity streamed out for entity
 {
+	gGamemodeScript->Call("onEntityRemove", "ii", librg_entity_find(&ctx, event->peer)->id, event->entity->type);
+
 	if (event->entity->type == VCOOP_PED)
 	{
 		librg_peer_t * owner = librg_entity_control_get(event->ctx, event->entity->id);
@@ -224,6 +232,8 @@ void CServerNetwork::on_entity_remove(librg_event_t *event) //entity streamed ou
 
 void CServerNetwork::on_stream_update(librg_event_t *event) 
 {
+	gGamemodeScript->Call("onStreamUpdate", "ii", event->entity->id, event->entity->type);
+
 	if (event->entity->type == VCOOP_PLAYER)
 	{
 		librg_data_rptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
@@ -262,7 +272,7 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 
 			if (event->entity->client_peer == owner)
 			{
-				gLog->Log("Destroying ped or looking for a new owner\n");
+				gLog->Log("[CServerNetwork] Destroying ped or looking for a new owner\n");
 				librg_entity_id *entities2;
 				usize amount2 = librg_entity_query(event->ctx, entity->id, &entities2);
 
@@ -338,7 +348,7 @@ void CServerNetwork::server_thread()
 	ctx.mode				= LIBRG_MODE_SERVER;
 	ctx.tick_delay			= 32;
 	ctx.max_connections		= 2000;
-	ctx.max_entities		= 2000;
+	ctx.max_entities		= (MAX_PLAYERS + MAX_VEHICLES + MAX_PEDS);
 	librg_init(&ctx);
 	
 	librg_event_add(&ctx,	LIBRG_CONNECTION_REQUEST,		on_connect_request);
@@ -357,13 +367,13 @@ void CServerNetwork::server_thread()
 	librg_network_add(&ctx, VCOOP_CONNECT,					HandShakeIsDone);
 	librg_network_add(&ctx, VCOOP_BULLET_SYNC,				BulletSyncEvent);
 
-	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE, on_stream_update);
+	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE,	on_stream_update);
 
 	gLog->Log("[CServerNetwork] Server thread initialized\n");
 
 	librg_address_t addr = { ServerPort };
 	librg_network_start(&ctx, addr);
-	gLog->Log("[CServerNetwork] Server starting on port %d\n", addr.port);
+	gLog->Log("[CServerNetwork] Server started on port %d\n", addr.port);
 
 #ifndef VCCOOP_VERBOSE_LOG	
 	zpl_timer_t *tick_timer = zpl_timer_add(ctx.timers);

@@ -18,6 +18,7 @@ public:
 	bool IsWindowActive();
 
 	void Run();
+	void Exit();
 
 	void EnableHUD();
 	void DisableHUD();

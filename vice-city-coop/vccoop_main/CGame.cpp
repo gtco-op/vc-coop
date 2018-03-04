@@ -18,7 +18,6 @@ CGame::CGame()
 }
 CGame::~CGame()
 {	
-	gLog->Log("[CGame] CGame shutting down.\n");
 }
 
 CPed * CGame::FindLocalPed()
@@ -48,6 +47,8 @@ static void UnloadModel(RpClump *model) {
 
 void CGame::Run()
 {
+	
+
 	if (GetTwoKeys(0x12, 'O'))
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
@@ -72,6 +73,15 @@ void CGame::Run()
 		if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow && !gRender->bEscMenu)
 			gChat->ToggleChat(true); ImGui::GetIO().ClearInputCharacters(); 
 	}
+}
+void CGame::Exit()
+{
+	delete gNetwork;
+	delete gRender;
+
+	gLog->Log("[CGame] CGame shutting down.\n");
+	delete gLog;
+	exit(0);
 }
 bool CGame::IsWindowActive()
 {
@@ -420,7 +430,7 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 	if (CStreaming::ms_aInfoForModel[modelIndex].m_nLoadState == LOADSTATE_LOADED)
 	{
 		CVehicle *vehicle;
-		gLog->Log("Vehicle type: %d", reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
+		gLog->Log("[CGame] Vehicle type: %d\n", reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
 		switch (reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType)
 		{
 		case VEHICLE_HELI:
@@ -449,7 +459,7 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 			return vehicle;
 		}
 	}
-	gLog->Log("CreateVehicle: model was not loaded!");
+	gLog->Log("[CGame] CreateVehicle: model was not loaded!\n");
 	return nullptr;
 }
 
@@ -491,6 +501,9 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		case WM_SYSKEYDOWN:
 		case WM_KEYDOWN:
 		{
+			if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard)
+				break;
+
 			int vkey = (int)wparam;
 			if (vkey == 'P' && gNetwork->connected)
 			{
