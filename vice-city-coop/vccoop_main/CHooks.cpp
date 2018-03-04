@@ -163,8 +163,8 @@ void Hook_CRunningScript__Process()
 		CPools::ms_pPedPool->Clear();
 		CPools::ms_pVehiclePool->Clear();
 
-		CPools::ms_pPedPool->Init(1000, NULL, NULL);
-		CPools::ms_pVehiclePool->Init(1000, NULL, NULL);
+		CPools::ms_pPedPool->Init(MAX_PEDS, NULL, NULL);
+		CPools::ms_pVehiclePool->Init(MAX_VEHICLES, NULL, NULL);
 
 		// Change player model ID
 		MemWrite<u8>(0x5384FA + 1, 7); //Not important if we set a new one after spawn
