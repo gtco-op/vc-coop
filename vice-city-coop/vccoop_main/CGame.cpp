@@ -83,6 +83,98 @@ void CGame::Exit()
 	delete gLog;
 	exit(0);
 }
+/*
+int CheckModel(int iModelID)
+{
+	if (iModelID < 0) {
+		DWORD * dwUnknown = (DWORD *)0x7D1DE0;
+		return dwUnknown[-7 * iModelID];
+	}
+	return iModelID;
+}
+
+//-----------------------------------------------------------
+
+void CGame::RequestModel(int iModelID)
+{
+	DWORD dwModelID = CheckModel(iModelID);
+	DWORD dwFlags = 0x16;
+	DWORD dwFunc = FUNC_RequestModel;
+	_asm
+	{
+		push dwFlags
+		push dwModelID
+		call dwFunc
+		add esp, 8
+	}
+}
+
+//-----------------------------------------------------------
+
+void CGame::LoadRequestedModels()
+{
+	DWORD dwFunc = FUNC_LoadRequestedModels;
+	_asm
+	{
+		push 0
+		call dwFunc
+		add esp, 4
+	}
+}
+
+//------------------------------------------------------------
+
+BOOL CGame::IsModelLoaded(int iModelID)
+{
+	DWORD dwModelID = CheckModel(iModelID);
+	BYTE * byteModelInfo = (BYTE *)VAR_ModelInfo;
+	if (byteModelInfo[20 * dwModelID] == 1) {
+		return TRUE;
+	}
+	else {
+		return FALSE;
+	}
+}
+*/
+
+bool IsModelLoaded(int modelid)
+{
+	if (CStreaming::ms_aInfoForModel[20 * modelid].m_nLoadState != LOADSTATE_LOADED)
+	{
+		return false;
+	}
+	return true;
+}
+
+void CGame::CustomModelLoad(int id)
+{
+	int modelid = id;
+	DWORD * dwModelIndexes = (DWORD *)0x7D1DE0;
+	if (modelid < 0)modelid = dwModelIndexes[modelid * -7];
+
+	if (!IsModelLoaded(id))
+	{
+		CStreaming::RequestModel(modelid, 22);
+		CStreaming::LoadAllRequestedModels(false);
+		while (!IsModelLoaded(id))Sleep(1);
+	}
+}
+/*
+void CGame::CustomModelLoad(int id)
+{
+	if (CStreaming::ms_aInfoForModel[id].m_nLoadState == LOADSTATE_NOT_LOADED)
+	{
+		CStreaming::RequestModel(id, eStreamingFlags::MISSION_REQUEST);
+		CStreaming::LoadAllRequestedModels(false);
+		if (CStreaming::ms_aInfoForModel[id].m_nLoadState == LOADSTATE_LOADED && !CStreaming::ms_aInfoForModel[id].m_nFlags & 1)
+		{
+			CStreaming::SetModelIsDeletable(id);
+			Call(0x40ADF0, id); //SetModelTxdIsDeletable
+		}
+	}
+}
+*/
+
 bool CGame::IsWindowActive()
 {
 	return (GetActiveWindow() == orig_wnd ? true : false);
@@ -143,13 +235,13 @@ void CGame::InitPreGamePatches()
 	//Set game state to loaded 
 	MemWrite<u32>(0x9B5F08, 5);
 	  
-	//Set bStartGame to 1
-	MemWrite<u8>(0x869641, 1);
+	//Set bDrawMenu to 0
+	MemWrite<u8>(0x869642, 0);
 
 	//Set bMenuVisible = 0
 	MemWrite<u8>(0x869668, 0);
 
-	//Set bGameLoaded = 1
+	//Set bGameStarted = 1
 	MemWrite<u8>(0x86969C, 1);
 
 	// fix CPedStats::GetPesStatType crash
@@ -240,9 +332,10 @@ void CGame::InitPreGamePatches()
 	//Disable CPopulation::Removeped
 	MakeRet(0x53B160);
 
+	
 	//A Cworld crash fix
 	MakeNop(0x531D40, 8);
-
+	
 	//Disable white splash on big building loading
 	MakeRet(0x4A68A0);
 
@@ -358,18 +451,6 @@ void CGame::InitPreGamePatches()
 	//CPed::Refresh patch
 	MakeNop(0x50D96A, 5);
 
-	/*
-	// nop CVehicle:SetDriver switch
-	MakeNop(0x5B8A4B2, 2);                   
-	// ^ probably stopping the game from giving hp/arm/weps
-	MakeNop(0x5B8A50, 2);
-	MakeNop(0x5B8A5A, 2);
-	MakeNop(0x5B8A5C, 4);
-	MakeNop(0x5B8A68, 4);
-	MakeNop(0x5B8A6C, 2);
-	MemWrite<BYTE>(0x5B893A, 0x9FE9);
-	MemWrite<BYTE>(0x5B893C, 0x90000000);*/
-
 	//disable random melee thing
 	MakeNop(0x5D2E88, 6);
 
@@ -392,6 +473,9 @@ void CGame::InitPreGamePatches()
 
 	//Set streaming memory to 128MB its 64 by default
 	MemWrite<int>(0x410799+6,134217728);
+
+	//Disable CPlayerInfo::Process
+	MakeRet(0x4BCA90);
 
 	//Init hooks (no shit sherlock)
 	CHooks::InitHooks();
@@ -420,44 +504,36 @@ void CGame::DisableMouseInput()
 
 CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 {
-	/*if (CStreaming::ms_aInfoForModel[modelIndex].m_nLoadState != LOADSTATE_LOADED)
-	{
-		gLog->Log("Vehicle Model was not loaded so loading it");
-		CStreaming::RequestModel(modelIndex, eStreamingFlags::GAME_REQUEST);
-		CStreaming::LoadAllRequestedModels(false);
-		gLog->Log("Vehicle model is probably loaded");
-	}*/
-	if (CStreaming::ms_aInfoForModel[modelIndex].m_nLoadState == LOADSTATE_LOADED)
-	{
-		CVehicle *vehicle;
-		gLog->Log("[CGame] Vehicle type: %d\n", reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
-		switch (reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType)
-		{
-		case VEHICLE_HELI:
-			vehicle = new CHeli(modelIndex, 2);
-			break;
-		case VEHICLE_PLANE:
-			vehicle = new CPlane(modelIndex, 2);
-			break;
-		case VEHICLE_BIKE:
-			vehicle = new CBike(modelIndex, 2);
-			break;
-		case VEHICLE_BOAT:
-			vehicle = new CBoat(modelIndex, 2);
-			break;
-		default://0
-			vehicle = new CAutomobile(modelIndex, 2);
-			break;
-		}
-		if (vehicle)
-		{
-			vehicle->Teleport(position);
-			vehicle->m_nState &= 0b00000;
-			vehicle->m_nState |= 0b00100;
+	this->CustomModelLoad(modelIndex);
 
-			CWorld::Add(vehicle);
-			return vehicle;
-		}
+	CVehicle *vehicle;
+	gLog->Log("[CGame] Vehicle type: %d\n", reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
+	switch (reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType)
+	{
+	case VEHICLE_HELI:
+		vehicle = new CHeli(modelIndex, 2);
+		break;
+	case VEHICLE_PLANE:
+		vehicle = new CPlane(modelIndex, 2);
+		break;
+	case VEHICLE_BIKE:
+		vehicle = new CBike(modelIndex, 2);
+		break;
+	case VEHICLE_BOAT:
+		vehicle = new CBoat(modelIndex, 2);
+		break;
+	default://0
+		vehicle = new CAutomobile(modelIndex, 2);
+		break;
+	}
+	if (vehicle)
+	{
+		vehicle->Teleport(position);
+		vehicle->m_nState &= 0b00000;
+		vehicle->m_nState |= 0b00100;
+
+		CWorld::Add(vehicle);
+		return vehicle;
 	}
 	gLog->Log("[CGame] CreateVehicle: model was not loaded!\n");
 	return nullptr;

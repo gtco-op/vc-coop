@@ -8,7 +8,7 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	CWorld::Players[gID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[gID].m_pPed;
 	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
-	CStreaming::RequestModel(7, 0);
+	//CStreaming::RequestModel(7, 0);
 	this->ped->SetModelIndex(7);
 
 	CWorld::Players[gID].m_bNeverGetsTired = true;
@@ -36,7 +36,7 @@ void CClientPlayer::StreamIn()
 	CWorld::Players[this->gameID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[this->gameID].m_pPed;
 	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
-	CStreaming::RequestModel(7, 0);
+	//CStreaming::RequestModel(7, 0);
 	this->ped->SetModelIndex(7);
 
 	gGame->remotePlayerPeds[this->gameID] = this->ped;
@@ -77,7 +77,7 @@ void CClientPlayer::Respawn()
 	CWorld::Players[this->gameID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[this->gameID].m_pPed;
 	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
-	CStreaming::RequestModel(7, 0);
+	//CStreaming::RequestModel(7, 0);
 	this->ped->SetModelIndex(7);
 	this->ped->m_fHealth = 100.0f;
 
@@ -126,14 +126,8 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	if (spd.WepModelIndex > 0 && spd.CurrWep > 0)
 	{
-		/*if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)
-		{
-			gLog->Log("Weapon model %d was not loaded so loading int rn", spd.WepModelIndex);
-			CStreaming::RequestModel(spd.WepModelIndex, 0x16); //for weapons its 1 as i see in the weapon cheats sources
-			CStreaming::LoadAllRequestedModels(false);
-		}
-		*/
-		//gGame->WaitUntilTheModelIsLoaded(spd.WepModelIndex);
+		gGame->CustomModelLoad(spd.WepModelIndex);
+
 		switch ((eWeaponType)spd.CurrWep)
 		{
 			case eWeaponType::WEAPONTYPE_CHAINSAW:
@@ -154,14 +148,14 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 				ped->SetAmmo((eWeaponType)spd.CurrWep, 1);
 				break;
 			}
-			default: 
+			default:
 			{
 				ped->GiveWeapon((eWeaponType)spd.CurrWep, 1000, true);
 				ped->SetAmmo((eWeaponType)spd.CurrWep, 1000);
 				break;
 			}
 		}
-		if(ped->m_dwWepModelID != spd.WepModelIndex)ped->SetCurrentWeapon((eWeaponType)spd.CurrWep);
+		if (ped->m_dwWepModelID != spd.WepModelIndex)ped->SetCurrentWeapon((eWeaponType)spd.CurrWep);
 	}
 	else
 	{
@@ -446,15 +440,12 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.ShakeDur				= pad->ShakeDur;
 	spd.DisablePlayerControls	= pad->DisablePlayerControls;
 
-	/*spd.playerKeys = *(GTA_CONTROLSET*)CPad::GetPad(this->gameID);
-
-	if (this->ped->m_aWeapons[this->ped->m_nWepSlot].m_nAmmoInClip < 1 && this->ped->m_nWepSlot > 0)//dont send fire key if there is no ammo in the clip
+	if (this->ped->m_aWeapons[this->ped->m_nWepSlot].m_nAmmoInClip < 1 && this->ped->m_nWepSlot > 0)
 	{
-		spd.playerKeys.wKeys1[KEY_ONFOOT_FIRE] = 0;
-		spd.playerKeys.wKeys1[KEY_INCAR_FIRE] = 0;
-		spd.playerKeys.wKeys2[KEY_ONFOOT_FIRE] = 0;
-		spd.playerKeys.wKeys2[KEY_INCAR_FIRE] = 0;
-	}*/
+		//dont send fire key if there is no ammo in the clip
+		spd.newPlayerKeys.ButtonCircle = 0;
+		spd.oldPlayerKeys.ButtonCircle = 0;
+	}
 
 	spd.playerLook = *(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front;
 	

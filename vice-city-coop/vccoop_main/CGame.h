@@ -23,6 +23,8 @@ public:
 	void EnableHUD();
 	void DisableHUD();
 
+	void CustomModelLoad(int id);
+
 	int remotePlayers = 1;
 	CPed * remotePlayerPeds[MAX_PLAYERS];
 	CPad remotePlayerKeys[MAX_PLAYERS];

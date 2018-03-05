@@ -209,41 +209,43 @@ void Hook_CRunningScript__Process()
 
 		// First tick processed
 		scriptProcessed = true;
+/*
+		eStreamingFlags loadingType = eStreamingFlags::GAME_REQUEST;
 
-		CStreaming::RequestModel(269, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(270, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(275, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(278, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(284, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(280, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(286, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(290, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(294, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(268, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(270, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(291, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(275, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(279, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(283, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(280, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(286, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(287, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(259, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(264, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(272, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(274, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(277, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(281, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(276, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(285, eStreamingFlags::MISSION_REQUEST);
-		CStreaming::RequestModel(288, eStreamingFlags::MISSION_REQUEST);
+		CStreaming::RequestModel(269, loadingType);
+		CStreaming::RequestModel(270, loadingType);
+		CStreaming::RequestModel(275, loadingType);
+		CStreaming::RequestModel(278, loadingType);
+		CStreaming::RequestModel(284, loadingType);
+		CStreaming::RequestModel(280, loadingType);
+		CStreaming::RequestModel(286, loadingType);
+		CStreaming::RequestModel(290, loadingType);
+		CStreaming::RequestModel(294, loadingType);
+		CStreaming::RequestModel(268, loadingType);
+		CStreaming::RequestModel(270, loadingType);
+		CStreaming::RequestModel(291, loadingType);
+		CStreaming::RequestModel(275, loadingType);
+		CStreaming::RequestModel(279, loadingType);
+		CStreaming::RequestModel(283, loadingType);
+		CStreaming::RequestModel(280, loadingType);
+		CStreaming::RequestModel(286, loadingType);
+		CStreaming::RequestModel(287, loadingType);
+		CStreaming::RequestModel(259, loadingType);
+		CStreaming::RequestModel(264, loadingType);
+		CStreaming::RequestModel(272, loadingType);
+		CStreaming::RequestModel(274, loadingType);
+		CStreaming::RequestModel(277, loadingType);
+		CStreaming::RequestModel(281, loadingType);
+		CStreaming::RequestModel(276, loadingType);
+		CStreaming::RequestModel(285, loadingType);
+		CStreaming::RequestModel(288, loadingType);
 
 		for (int i = 130; i < 236; i++)
 		{
-			CStreaming::RequestModel(i, eStreamingFlags::MISSION_REQUEST);
+			CStreaming::RequestModel(i, loadingType);
 		}
 
-		CStreaming::LoadAllRequestedModels(0);
+		CStreaming::LoadAllRequestedModels(0);*/
 	}
 }
 
@@ -331,13 +333,7 @@ CPad* __cdecl GetPad_Hook(int pad)
 
 CPad * CHooks::GetPad(int padnumber)
 {
-	int oldfocus = CWorld::PlayerInFocus;
-
-	CWorld::PlayerInFocus = padnumber;
-	CPad * pad = original_GetPad(0);
-	CWorld::PlayerInFocus = oldfocus;
-
-	return pad;
+	return original_GetPad(padnumber);
 }
 
 int(__thiscall* original_CPed__SetIdle)(CPed*);
