@@ -249,9 +249,12 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 		u32 playerid = reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver;
 		if (playerid != -1)
 		{
-			librg_peer_t * owner = librg_entity_control_get(event->ctx, event->entity->id);
-			librg_peer_t * driver = librg_entity_fetch(event->ctx, playerid)->client_peer;
-			if (owner != driver)librg_entity_control_set(event->ctx, event->entity->id, driver);
+			if (librg_entity_fetch(event->ctx, playerid)->client_peer != nullptr)
+			{
+				librg_peer_t * owner = librg_entity_control_get(event->ctx, event->entity->id);
+				librg_peer_t * driver = librg_entity_fetch(event->ctx, playerid)->client_peer;
+				if (owner != driver)librg_entity_control_set(event->ctx, event->entity->id, driver);
+			}
 		}
 	}
 }

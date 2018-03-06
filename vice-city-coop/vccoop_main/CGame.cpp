@@ -139,7 +139,7 @@ BOOL CGame::IsModelLoaded(int iModelID)
 
 bool IsModelLoaded(int modelid)
 {
-	if (CStreaming::ms_aInfoForModel[20 * modelid].m_nLoadState != LOADSTATE_LOADED)
+	if (CStreaming::ms_aInfoForModel[modelid].m_nLoadState != LOADSTATE_LOADED)
 	{
 		return false;
 	}
