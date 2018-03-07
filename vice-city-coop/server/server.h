@@ -1,14 +1,17 @@
 #pragma once
-// Dependencies
-#include "vendor\librg\librg.h"
-#include "vendor\inih\INIReader.h"
-//lua
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
 
+// librg
+#include "vendor\librg\librg.h"
+
+// inih
+#include "vendor\inih\INIReader.h"
+
+// Lua
+extern "C" {
+	#include "lua.h"
+	#include "lualib.h"
+	#include "lauxlib.h"
+}
 
 // Standard includes
 #include <Windows.h>
@@ -21,6 +24,7 @@ extern "C" {
 #include <sstream>
 #include <vector>
 #include <ctime>
+#include <filesystem>
 #include <experimental/filesystem>
 
 // Plugin-SDK
@@ -41,8 +45,6 @@ extern "C" {
 #include "game_vc\CVector2D.h"
 #include "game_vc\CPathNode.h"
 #include "game_vc\CColPoint.h"
-
-#define VCCOOP_DEBUG
 
 // VCCOOP
 #include "..\vccoop_main\config.h"

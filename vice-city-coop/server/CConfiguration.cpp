@@ -1,4 +1,5 @@
 #include "server.h"
+#include <filesystem>
 
 CConfiguration::CConfiguration()
 {
@@ -11,11 +12,80 @@ CConfiguration::CConfiguration()
 	this->_inih = new INIReader(this->configFilename);
 	if (this->GetReader()->ParseError() < 0) {
 		gLog->Log("[CConfiguration] %s could not be loaded.\n", this->configFilename.c_str());
-	}
-	else {
+		this->configOpened = false;
+	} else {
 		gLog->Log("[CConfiguration] %s loaded successfully.\n", this->configFilename.c_str());
 		this->configOpened = true;
 	}
+
+	char* szPath = new char[MAX_PATH];
+	memset(szPath, 0, MAX_PATH);
+	strcpy(szPath, GetExecutablePath().append("\\Logs").c_str());
+	
+	std::experimental::filesystem::path szDir = szPath;
+	if (!std::experimental::filesystem::create_directory(szDir))
+		this->foldersPresent = false;
+	else
+		this->foldersPresent = true;
+
+	memset(szPath, 0, MAX_PATH);
+	strcpy(szPath, GetExecutablePath().append("\\Scripts").c_str());
+	szDir = szPath;
+	if(!std::experimental::filesystem::create_directory(szDir))
+		this->foldersPresent = false;
+	else
+		this->foldersPresent = true;
+
+	memset(szPath, 0, MAX_PATH);
+	strcpy(szPath, GetExecutablePath().append("\\Scripts\\Client").c_str());
+	szDir = szPath;
+	if(!std::experimental::filesystem::create_directory(szDir))
+		this->foldersPresent = false;
+	else
+		this->foldersPresent = true;
+
+	memset(szPath, 0, MAX_PATH);
+	strcpy(szPath, GetExecutablePath().append("\\Scripts\\Server").c_str());
+	szDir = szPath;
+	if(!std::experimental::filesystem::create_directory(szDir))
+		this->foldersPresent = false;
+	else
+		this->foldersPresent = true;
+
+	if (std::experimental::filesystem::status_known(std::experimental::filesystem::file_status{}) ? 
+		std::experimental::filesystem::exists(std::experimental::filesystem::file_status{}) : 
+		std::experimental::filesystem::exists(szDir))	{
+		this->foldersPresent = true;
+	} 
+
+	memset(szPath, 0, MAX_PATH);
+	strcpy(szPath, GetExecutablePath().append("\\Scripts\\Client").c_str());
+	szDir = szPath;
+	if (std::experimental::filesystem::status_known(std::experimental::filesystem::file_status{}) ?
+		std::experimental::filesystem::exists(std::experimental::filesystem::file_status{}) :
+		std::experimental::filesystem::exists(szDir)) {
+		this->foldersPresent = true;
+	}
+
+	memset(szPath, 0, MAX_PATH);
+	strcpy(szPath, GetExecutablePath().append("\\Scripts").c_str());
+	szDir = szPath;
+	if (std::experimental::filesystem::status_known(std::experimental::filesystem::file_status{}) ?
+		std::experimental::filesystem::exists(std::experimental::filesystem::file_status{}) :
+		std::experimental::filesystem::exists(szDir)) {
+		this->foldersPresent = true;
+	}
+
+	memset(szPath, 0, MAX_PATH);
+	strcpy(szPath, GetExecutablePath().append("\\Logs").c_str());
+	szDir = szPath;
+	if (std::experimental::filesystem::status_known(std::experimental::filesystem::file_status{}) ?
+		std::experimental::filesystem::exists(std::experimental::filesystem::file_status{}) :
+		std::experimental::filesystem::exists(szDir)) {
+		this->foldersPresent = true;
+	}
+
+	delete[] szPath;
 }
 void CConfiguration::PopulateValues()
 {
@@ -23,8 +93,6 @@ void CConfiguration::PopulateValues()
 	/* Default values specified in config.h */
 	gServerNetwork->ServerPort = gConfig->GetReader()->GetInteger("Server", "Port", VCCOOP_DEFAULT_SERVER_PORT);
 	gServerNetwork->ServerSecret = gConfig->GetReader()->GetInteger("Server", "Secret", VCCOOP_DEFAULT_SERVER_SECRET);
-
-	gLog->Log("[CConfiguration] Settings loaded from configuration file.\n");
 }
 std::string CConfiguration::sections(INIReader &reader)
 {
@@ -40,7 +108,9 @@ bool CConfiguration::AutodetectServerGamemode()
 
 	ServerGamemodePath = gConfig->GetReader()->Get("Server", "Gamemode", "");
 	if (ServerGamemodePath.empty()) {
-		gLog->Log("[CConfiguration] No user-defined server game mode defined. Auto-detecting.\n");
+#ifdef VCCOOP_VERBOSE_LOG
+		gLog->Log("[CConfiguration][WARNING] No user-defined server game mode defined. Auto-detecting.\n");
+#endif
 
 		for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\server")))
 		{
@@ -58,25 +128,30 @@ bool CConfiguration::AutodetectServerGamemode()
 		}
 		if (!res)
 		{
-			gLog->Log("[CConfiguration] Could not auto-detect server game mode.\n");
+			gLog->Log("[CConfiguration][ERROR] Could not auto-detect server game mode.\n");
 		}
 	}
 	else
 	{
 		ifstream tmp(ServerGamemodePath);
 		if (!tmp) {
-			gLog->Log("[CConfiguration] Could not open user-defined server game mode. Auto-detecting.\n");
+			gLog->Log("[CConfiguration][ERROR] Could not open user-defined server game mode. Auto-detecting.\n");
 
 			for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\server")))
 			{
 				if (p.path().extension() == std::string(".lua"))
 				{
 					CCustomData* temp = gDataMgr->InsertScript(false, p.path().string().c_str(), TYPE_SERVER_SCRIPT, p.path());
+					
 					{
-						gLog->Log("[CConfiguration] Using %s script for gamemode.\n", temp->GetName().c_str());
-
 						ServerGamemodePath = temp->GetName();
-						gLog->Log("[CConfiguration] Attempt to detect server game mode returned successfully.\n");
+
+						if(!ServerGamemodePath.empty())
+							gLog->Log("[CConfiguration] Loaded gamemode successfully.\n");
+						else {
+							gLog->Log("[CConfiguration] Unable to load user-defined gamemode.\n");
+							return false;
+						}
 						return true;
 					}
 				}
@@ -88,7 +163,7 @@ bool CConfiguration::AutodetectServerGamemode()
 			CCustomData* temp = gDataMgr->InsertScript(false, ServerGamemodePath, TYPE_SERVER_SCRIPT);
 			if (!temp)
 			{
-				gLog->Log("[CConfiguration] Could not create CCustomData object for server game mode.\n");
+				gLog->Log("[CConfiguration][ERROR] Could not create CCustomData object for server game mode.\n");
 				res = false;
 			}
 			else {
@@ -96,6 +171,8 @@ bool CConfiguration::AutodetectServerGamemode()
 			}
 		}
 	}
+#ifdef VCCOOP_VERBOSE_LOG
 	gLog->Log("[CConfiguration] Attempt to detect server game mode returned %s\n", (res?"successfully.":"unsuccessfully."));
+#endif
 	return res;
 }

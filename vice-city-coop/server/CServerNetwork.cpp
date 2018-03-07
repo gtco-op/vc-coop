@@ -372,11 +372,11 @@ void CServerNetwork::server_thread()
 
 	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE,	on_stream_update);
 
-	gLog->Log("[CServerNetwork] Server thread initialized\n");
+	gLog->Log("[CServerNetwork][INFO] Server thread initialized\n");
 
 	librg_address_t addr = { ServerPort };
 	librg_network_start(&ctx, addr);
-	gLog->Log("[CServerNetwork] Server started on port %d\n", addr.port);
+	gLog->Log("[CServerNetwork][INFO] Server started on port %d\n", addr.port);
 
 #ifndef VCCOOP_VERBOSE_LOG	
 	zpl_timer_t *tick_timer = zpl_timer_add(ctx.timers);

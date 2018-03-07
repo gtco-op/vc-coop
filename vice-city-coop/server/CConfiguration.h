@@ -17,11 +17,15 @@ public:
 	/* Returns TRUE if config file loaded successfully */
 	bool IsConfigLoaded() { return configOpened; }
 
+	/* Returns TRUE if log & script folders are present */
+	bool IsDirsValid() { return foldersPresent; }
 
 private:
 	INIReader* _inih;
 	
 	bool configOpened;
+
+	bool foldersPresent;
 	
 	std::string configFilename;
 
