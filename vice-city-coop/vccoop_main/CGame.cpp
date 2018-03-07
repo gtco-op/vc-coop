@@ -1,5 +1,7 @@
 #include "main.h"
 
+bool			CGame::bLoadingDone = false;
+
 int				CGame::keyPressTime;
 
 WNDPROC			orig_wndproc;
@@ -19,12 +21,18 @@ CGame::CGame()
 CGame::~CGame()
 {	
 }
+void CGame::HasGameLoaded()
+{
+	if (bLoadingDone == true)
+		return;
 
+	bLoadingDone = true;
+	gLog->Log("[CGame] Game finished loading.\n");
+}
 CPed * CGame::FindLocalPed()
 {
 	return CWorld::Players[0].m_pPed;
 }
-
 static RpClump* LoadModel(const char *filename) {
 	RpClump *result = nullptr;
 	auto stream = RwStreamOpen(rwSTREAMFILENAME, rwSTREAMREAD, filename);

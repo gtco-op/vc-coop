@@ -113,6 +113,7 @@ extern "C" {
 
 #include "CLogger.h"
 #include "CConfiguration.h"
+#include "CHooks.h"
 #include "CClientEntity.h"
 #include "CClientPlayer.h"
 #include "CClientVehicle.h"
@@ -127,7 +128,6 @@ extern "C" {
 #include "CChat.h"
 #include "CGame.h"
 #include "CCameraStuff.h"
-#include "CHooks.h"
 
 extern CGame			*gGame;
 
@@ -160,8 +160,6 @@ extern CChat			*gChat;
 extern CDebugEngine		*gDbgEngine;
 extern CLogger			*gDbgLog;
 #endif
-
-extern bool				bLoadingDone;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 

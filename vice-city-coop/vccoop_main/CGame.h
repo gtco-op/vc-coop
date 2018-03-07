@@ -20,6 +20,8 @@ public:
 	void Run();
 	void Exit();
 
+	static void HasGameLoaded();
+
 	void EnableHUD();
 	void DisableHUD();
 
@@ -33,6 +35,8 @@ public:
 	CPed *FindLocalPed();
 
 	bool debugEngineOutput = false;
+	
+	static bool bLoadingDone;
 
 	static int keyPressTime;
 

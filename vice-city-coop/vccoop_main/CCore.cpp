@@ -20,14 +20,13 @@ CCore::CCore()
 	srand((int)time(NULL));
 
 #ifdef VCCOOP_DEBUG_ENGINE
-	gDbgEngine = new CDebugEngine();
-	gDbgLog = new CLogger(true);
+	gDbgEngine	= new CDebugEngine();
+	gDbgLog		= new CLogger(true);
 #endif
 	
 	gChat		= new CChat();
 	gLog		= new CLogger();
-	gLog->Log("[CCore] %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);
-	gLog->Log("[CCore] Initializing classes.\n");
+	gLog->Log("[CCore] " VCCOOP_NAME " " VCCOOP_VER " loaded.\n[CCore] Initializing classes.\n");
 	gConfig		= new CConfiguration();
 	gNetwork	= new CClientNetwork();
 	gGame		= new CGame();
@@ -40,6 +39,7 @@ CCore::CCore()
 
 	gLog->Log("[CCore] Main method finished.\n");
 
+	Events::gameProcessEvent.Add(CGame::HasGameLoaded, PRIORITY_BEFORE);
 	Events::gameProcessEvent += [] {
 		gGame->Run();
 		gRender->Run();
@@ -47,4 +47,5 @@ CCore::CCore()
 }
 CCore::~CCore()
 {
+	gLog->Log("[CCore] CCore shutting down.\n");
 }

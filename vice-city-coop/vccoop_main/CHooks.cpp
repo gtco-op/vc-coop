@@ -6,7 +6,6 @@ BYTE			localPlayerCameraMode;
 BYTE			internalPlayerID			= 0;
 CVehicle *		_pVehicle;
 static bool		scriptProcessed				= false;
-bool			bLoadingDone				= false;
 
 template<class A, class B = A>
 void CHooks::InitPool(CPool<A, B> *pool, int nSize)
@@ -101,11 +100,7 @@ void Hooked_DbgPrint(char * msg, ...)
 	if (!strstr(buffer, "\n")) {
 		newline = true;
 	}
-
-	if (strstr(buffer, "Finish loading blistac"))	{
-		bLoadingDone = true;
-	}
-
+	
 #ifdef VCCOOP_DEBUG
 	if (gRender->gDebugScreen->gDevConsole != nullptr && debugEnabled)
 	{
