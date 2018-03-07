@@ -30,12 +30,14 @@ void CLuaScript::LuaThread(LPVOID lParam)
 	lua_State* lState = instance->m_lState;
 
 	if (lua_pcall(lState, instance->GetArguments(), 0, 0) != 0) {
+#ifdef VCCOOP_LUA_VERBOSE_LOG
 		gLog->Log("[CLuaScript] Error running callback `%s': %s\n", instance->GetCallbackName().c_str(), lua_tostring(lState, -1));
+#endif
 		return;
 	}
 	else
 	{
-#ifdef VCCOOP_VERBOSE_LOG
+#ifdef VCCOOP_LUA_VERBOSE_LOG
 		gLog->Log("[CLuaScript] Call to %s callback successful.\n", instance->GetCallbackName().c_str());
 #endif
 	}	
@@ -59,7 +61,9 @@ void CLuaScript::Call(std::string callback, char *fmt, ...)
 
 	if (luaL_loadbuffer(m_lState, GetData()->GetData(), GetData()->GetSize() - 1, GetData()->GetName().c_str()) || lua_pcall(m_lState, 0, 0, 0))
 	{
+#ifdef VCCOOP_LUA_VERBOSE_LOG
 		gLog->Log("[CLuaScript] Could not load script buffer when calling callback %s.\n", GetCallbackName().c_str());
+#endif
 		lua_close(m_lState);
 		return;
 	}
@@ -69,7 +73,9 @@ void CLuaScript::Call(std::string callback, char *fmt, ...)
 		if (!lua_isfunction(m_lState, -1))
 		{
 			lua_pop(m_lState, 1);
+#ifdef VCCOOP_LUA_VERBOSE_LOG
 			gLog->Log("[CLuaScript] Could not find `%s' callback.\n", GetCallbackName().c_str());
+#endif
 			return;
 		}
 	}

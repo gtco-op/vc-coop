@@ -3,6 +3,9 @@
 // Define this for verbose log output
 #define VCCOOP_VERBOSE_LOG
 
+// Define this for verbose lua output (in server)
+//#define VCCOOP_LUA_VERBOSE_LOG
+
 // Temporary spawn position
 #define VCCOOP_DEFAULT_SPAWN_POSITION	531.629761f, 606.497253f, 10.901563f
 
