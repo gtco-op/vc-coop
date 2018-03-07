@@ -20,12 +20,19 @@ public:
 	/* Returns TRUE if config has been loaded successfully */
 	bool IsConfigLoaded() { return configOpened; }
 
+	/* Returns TRUE if there are no errors with the configuration.
+	   This includes whether the vccoop directory has been created or
+	   the config was unreadable or otherwise unable to be populated. */
+	bool IsDataDirValid() { return !configError; }
+
 public:
 	CConfiguration();
 	~CConfiguration();
 
 private:
 	INIReader* _inih;
+
+	bool configError;
 	
 	bool configOpened;
 

@@ -132,8 +132,12 @@ void CRender::InitFont()
 
 		// Populate GUI variables with retrieved config values
 		gConfig->PopulateValues(IP, Port, Nickname);
-
-		Initialized = true;
+		if (gConfig->IsDataDirValid() && gConfig->IsConfigLoaded())		{
+			MessageBoxA(orig_wnd, "An error occurred when populating the game configuration.\nTry running Vice City with elevated permissions.", VCCOOP_NAME " " VCCOOP_VER, MB_OK | MB_ICONERROR);
+			gLog->Log("[CConfiguration] An error occurred when populating the game configuration. Try running Vice City with elevated permissions.\n");
+			gGame->Exit();
+		}
+		gRender->Initialized = true;
 	}
 }
 

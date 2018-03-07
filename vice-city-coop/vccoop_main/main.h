@@ -33,6 +33,7 @@ extern "C" {
 #include <vector>
 #include <map>
 #include <utility>
+#include <experimental/filesystem>
 
 //detours
 #include "detours.h"

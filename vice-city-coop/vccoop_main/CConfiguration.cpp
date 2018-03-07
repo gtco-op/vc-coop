@@ -20,15 +20,24 @@ CConfiguration::CConfiguration()
 			fputs(buffer, f);
 			fclose(f);
 			gLog->Log("[CConfiguration] Created default config file.\n");
-		}
-		else {
+			this->configError = false;
+		} else {
 			gLog->Log("[CConfiguration] Failed to create default config file.\n");
+			this->configError = true;
 		}
-
 	}
 	else {
 		gLog->Log("[CConfiguration] %s loaded successfully.\n", this->configFilename.c_str());
 		this->configOpened = true;
+	}
+
+	std::string path(GetExecutablePath().append("\\vccoop"));
+	if (std::experimental::filesystem::create_directory(path.c_str()))	{
+		gLog->Log("[CConfiguration] Created directory: '%s'\n", path.c_str());
+		this->configError = true;
+	} else {
+		gLog->Log("[CConfiguration] Could not create directory: '%s'\n", path.c_str());
+		this->configError = false;
 	}
 }
 CConfiguration::~CConfiguration()
