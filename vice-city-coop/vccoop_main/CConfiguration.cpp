@@ -31,14 +31,22 @@ CConfiguration::CConfiguration()
 		this->configOpened = true;
 	}
 
+	char* szPath = new char[MAX_PATH];
+	memset(szPath, 0, MAX_PATH);
+	strcpy(szPath, GetExecutablePath().append("\\vccoop").c_str());
+	std::experimental::filesystem::path szDir = szPath;
+
 	std::string path(GetExecutablePath().append("\\vccoop"));
-	if (std::experimental::filesystem::create_directory(path.c_str()))	{
-		gLog->Log("[CConfiguration] Created directory: '%s'\n", path.c_str());
-		this->configError = true;
-	} else {
-		gLog->Log("[CConfiguration] Could not create directory: '%s'\n", path.c_str());
+	if (std::experimental::filesystem::create_directory(path.c_str())) {
 		this->configError = false;
 	}
+	if (std::experimental::filesystem::status_known(std::experimental::filesystem::file_status{}) ?
+		std::experimental::filesystem::exists(std::experimental::filesystem::file_status{}) :
+		std::experimental::filesystem::exists(szPath)) {
+		this->configError= false;
+	}
+
+	delete[] szPath;
 }
 CConfiguration::~CConfiguration()
 {
