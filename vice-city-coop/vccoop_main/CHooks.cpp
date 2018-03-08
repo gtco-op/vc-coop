@@ -386,6 +386,7 @@ void CHooks::InitHooks()
 	patch::ReplaceFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x6F2434, Hooked_DbgPrint);//the original is needed
 	RedirectAllCalls(0x401000, 0x67DD05, 0x4A69D0, Hooked_LoadingScreen);//the original is needed
+	patch::ReplaceFunction(0x648AC0, Hooked_DbgPrint);
 	debugEnabled = true;
 #endif
 
