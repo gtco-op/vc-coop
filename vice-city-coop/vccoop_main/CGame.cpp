@@ -483,7 +483,7 @@ void CGame::InitPreGamePatches()
 	MemWrite<int>(0x410799+6,134217728);
 
 	//Disable CPlayerInfo::Process
-	MakeRet(0x4BCA90);
+	//MakeRet(0x4BCA90);
 
 	//Init hooks (no shit sherlock)
 	CHooks::InitHooks();
