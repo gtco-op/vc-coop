@@ -300,6 +300,7 @@ struct PlayerSyncData
 
 struct VehicleSyncData
 {
+	int modelID;
 	int driver;
 	float Health;
 	int vehicleID;

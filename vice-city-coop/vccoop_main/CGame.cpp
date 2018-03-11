@@ -58,8 +58,6 @@ static void UnloadModel(RpClump *model) {
 
 void CGame::Run()
 {
-	
-
 	if (GetTwoKeys(0x12, 'O'))
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
@@ -488,6 +486,9 @@ void CGame::InitPreGamePatches()
 	//Disable CPlayerInfo::Process
 	//MakeRet(0x4BCA90);
 
+	// Disable CRubbish::Init() (crashfix)
+	MakeRet(0x00568550);
+
 	//Init hooks (no shit sherlock)
 	CHooks::InitHooks();
 
@@ -539,14 +540,11 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 	}
 	if (vehicle)
 	{
-		vehicle->m_nLockStatus = 1;
-		vehicle->m_nState = (unsigned char)0x4;
-		vehicle->m_placement.pos = position;
+		vehicle->m_nLockStatus		= 1;
+		vehicle->m_nState			= (unsigned char)0x4;
+		vehicle->m_placement.pos	= position;
+		
 		CWorld::Add(vehicle);
-		int ID = CPools::GetVehicleRef(vehicle);
-		gLog->Log("ID: %d\n", ID);
-
-		allVehicles.push_back(vehicle);
 
 		return vehicle;
 	}

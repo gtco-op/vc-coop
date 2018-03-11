@@ -249,6 +249,9 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 		u32 playerid = reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver;
 		if (playerid != -1)
 		{
+			if (librg_entity_fetch(event->ctx, playerid) == nullptr)
+				return;
+
 			if (librg_entity_fetch(event->ctx, playerid)->client_peer != nullptr)
 			{
 				librg_peer_t * owner = librg_entity_control_get(event->ctx, event->entity->id);
@@ -389,6 +392,10 @@ void CServerNetwork::server_thread()
 	gDataMgr->LoadScripts();
 
 	while (server_running) {
+		if (!gGamemodeScript->GetServerStartStatus())		{
+			gGamemodeScript->Call("onServerStart");
+			gGamemodeScript->SetServerStartStatus(TRUE);
+		}
 		librg_tick(&ctx);
 	}
 

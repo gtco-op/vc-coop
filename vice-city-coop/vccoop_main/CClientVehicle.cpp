@@ -1,14 +1,14 @@
 ﻿#include "main.h"
 
-CClientVehicle::CClientVehicle(int nID)
+CClientVehicle::CClientVehicle(int nID, int modelID)
 {
-	this->model = 130;
+	this->model = modelID;
 	this->veh = gGame->CreateVehicle(this->model, { VCCOOP_DEFAULT_SPAWN_POSITION });
 	this->streamed = true;
 	this->networkID = nID;
 	this->type = VCOOP_VEHICLE;
 
-	gLog->Log("[CClientVehicle] Network ID: %d Veh pointer: 0x%X\n", nID, this->veh);
+	gLog->Log("[CClientVehicle] Network ID: %d Veh pointer: 0x%X ModelID: %d\n", nID, this->veh, modelID);
 }
 
 CClientVehicle::~CClientVehicle()
@@ -63,7 +63,6 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 		if (veh->m_pDriver && veh->m_pDriver != LocalPlayer())ped->SetExitCar(veh, 0);
 	}
 
-	//gLog->Log("remote ped is in vehicle %d 0x%X", spd.vehicleID, veh);
 	if (veh)
 	{
 		if (ped && (!ped->m_bInVehicle || ped->m_pVehicle != veh))
@@ -77,12 +76,14 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 			ped->m_pVehicle = veh;
 		}
 		if(!veh->m_nVehicleFlags.bIsEngineOn)veh->m_nVehicleFlags.bIsEngineOn = true;
-		//gLog->Log("teleporting vehicle");
 
 		float fDif = DistanceBetweenPoints(veh->GetPosition(), spd.vehiclePos);
-		if(fDif > 0.1)veh->Teleport(spd.vehiclePos);
+		if (fDif > 0.1) {
+			veh->m_placement.pos.x = spd.vehiclePos.x;
+			veh->m_placement.pos.y = spd.vehiclePos.y;
+			veh->m_placement.pos.z = spd.vehiclePos.z;
+		}
 
-		//gLog->Log("Setting matrix");
 		veh->m_placement.at = spd.vehicleAt;
 		veh->m_placement.right = spd.vehicleRight;
 		veh->m_placement.up = spd.vehicleUp;
@@ -94,7 +95,6 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 
 		veh->m_vecTurnSpeed = spd.turnSpeed;
 		veh->ApplyTurnSpeed();
-		//gLog->Log("Vehicle sync done");
 	}
 }
 

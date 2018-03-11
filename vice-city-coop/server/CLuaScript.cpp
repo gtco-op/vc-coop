@@ -4,6 +4,7 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "print",			&CLuaScript::lua_Log },
 	{ "sleep",			&CLuaScript::lua_Sleep },
 	{ "GetPlayerName",	&CLuaScript::lua_GetPlayerName },
+	{ "AddVehicle",		&CLuaScript::lua_AddVehicle },
 	{ NULL, NULL }
 };
 
@@ -13,8 +14,34 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 		return;	
 
 	m_Data = ptr;
+}
+int CLuaScript::lua_AddVehicle(lua_State* L)
+{
+	int nargs = lua_gettop(L);
+
+	CVector position;
+	float x, y, z;
+	int modelID;
+
+	modelID		= lua_tointeger(L, 1);
+	x			= lua_tonumber(L, 2);
+	y			= lua_tonumber(L, 3);
+	z			= lua_tonumber(L, 4);
+	position	= CVector(x, y, z);
+
+	librg_entity_t* entity = librg_entity_create(&gServerNetwork->ctx, VCOOP_VEHICLE);
+	entity->user_data = new VehicleSyncData();
+	((VehicleSyncData*)entity->user_data)->driver = -1;
+	((VehicleSyncData*)entity->user_data)->vehicleID = -1;
+	((VehicleSyncData*)entity->user_data)->modelID = modelID;
+
+	entity->position.x = position.x;
+	entity->position.y = position.y;
+	entity->position.z = position.z;
+
+	gLog->Log("[VehCreate] Created vehicle with ID: %d\n", entity->id);
 	
-	Call("onServerStart");
+	return 0;
 }
 void CLuaScript::CreateLuaThread()
 {

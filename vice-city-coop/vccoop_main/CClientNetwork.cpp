@@ -32,7 +32,7 @@ void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
 	librg_data_rptr(msg->data, &playerid, sizeof(u32));
 
 	CClientPlayer * player = (CClientPlayer*)GetNetworkEntityFromNetworkID(playerid);
-	if (!player)return;
+	if (!player) return;
 
 	player->Respawn();
 
@@ -205,7 +205,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 		{
 			gLog->Log("[CClientNetwork] Creating vehicle: %d\n", event->entity->id);
 
-			vehicle = new CClientVehicle(event->entity->id);
+			vehicle = new CClientVehicle(event->entity->id, spd.modelID);
 			gNetwork->networkEntities.push_back(vehicle);
 			event->entity->user_data = vehicle;
 		}

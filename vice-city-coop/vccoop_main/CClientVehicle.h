@@ -7,7 +7,7 @@ public:
 	int model;
 	VehicleSyncData syncData;
 
-	CClientVehicle(int nID);
+	CClientVehicle(int nID, int modelID);
 	~CClientVehicle();
 
 	void Respawn();
