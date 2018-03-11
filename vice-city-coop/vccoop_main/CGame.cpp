@@ -7,6 +7,9 @@ int				CGame::keyPressTime;
 WNDPROC			orig_wndproc;
 HWND			orig_wnd;
 
+
+std::vector<CVehicle*> allVehicles;
+
 CGame::CGame()
 {
 	for (int i = 1; i < MAX_PLAYERS; i++)
@@ -514,7 +517,7 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 {
 	this->CustomModelLoad(modelIndex);
 
-	CVehicle *vehicle;
+	CVehicle *vehicle = nullptr;
 	gLog->Log("[CGame] Vehicle type: %d\n", reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
 	switch (reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType)
 	{
@@ -536,11 +539,15 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 	}
 	if (vehicle)
 	{
-		vehicle->Teleport(position);
-		vehicle->m_nState &= 0b00000;
-		vehicle->m_nState |= 0b00100;
-
+		vehicle->m_nLockStatus = 1;
+		vehicle->m_nState = (unsigned char)0x4;
+		vehicle->m_placement.pos = position;
 		CWorld::Add(vehicle);
+		int ID = CPools::GetVehicleRef(vehicle);
+		gLog->Log("ID: %d\n", ID);
+
+		allVehicles.push_back(vehicle);
+
 		return vehicle;
 	}
 	gLog->Log("[CGame] CreateVehicle: model was not loaded!\n");
@@ -549,10 +556,8 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	//SetMenu(wnd, NULL);
 	switch (umsg)
 	{
-
 		case WM_DESTROY:
 		case WM_CLOSE:
 			ExitProcess(-1);
@@ -589,17 +594,13 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 				break;
 
 			int vkey = (int)wparam;
+
 			if (vkey == 'P' && gNetwork->connected)
 			{
 				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
 			}
 			if (vkey == 'Z')
 			{
-				//CVector pos = LocalPlayer()->GetPosition();
-				//CStreaming::RequestModel(130, eStreamingFlags::MISSION_REQUEST);
-				//CStreaming::LoadAllRequestedModels(false);
-				//Command<eScriptCommands::COMMAND_CREATE_CAR>(130, pos.x, pos.y, pos.z);
-				//veh = gGame->CreateVehicle(130, pos);
 				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_VEHICLE, NULL, 0);
 			}
 			if (vkey == VK_ESCAPE)
