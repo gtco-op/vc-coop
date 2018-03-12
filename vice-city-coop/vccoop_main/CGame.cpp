@@ -159,7 +159,7 @@ void CGame::CustomModelLoad(int id)
 {
 	int modelid = id;
 	DWORD * dwModelIndexes = (DWORD *)0x7D1DE0;
-	if (modelid < 0)modelid = dwModelIndexes[modelid * -7];
+	if (modelid < 0) modelid = dwModelIndexes[modelid * -7];
 
 	if (!IsModelLoaded(id))
 	{
@@ -487,7 +487,8 @@ void CGame::InitPreGamePatches()
 	//MakeRet(0x4BCA90);
 
 	// Disable CRubbish::Init() (crashfix)
-	MakeRet(0x00568550);
+	MakeRet(0x568550);
+
 
 	//Init hooks (no shit sherlock)
 	CHooks::InitHooks();
@@ -516,6 +517,9 @@ void CGame::DisableMouseInput()
 
 CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 {
+	if (modelIndex <= 0)
+		return nullptr;
+
 	this->CustomModelLoad(modelIndex);
 
 	CVehicle *vehicle = nullptr;
