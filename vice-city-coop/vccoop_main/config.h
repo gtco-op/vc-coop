@@ -382,6 +382,12 @@ enum {
 	VCOOP_VEHICLE,
 };
 
+extern int pedModelIDs[195];
+extern int vehModelIDs[104];
+
+#define IS_VALID_PED_ID(id) (std::find(std::begin(pedModelIDs), std::end(pedModelIDs), id) != std::end(pedModelIDs))
+#define IS_VALID_VEH_ID(id) (std::find(std::begin(vehModelIDs), std::end(vehModelIDs), id) != std::end(vehModelIDs))
+
 extern std::vector<librg_entity_t*>	playerEntities;
 extern char							playerNames[MAX_PLAYERS][25];
 extern std::vector<librg_entity_t*>	otherEntities;
