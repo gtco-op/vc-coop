@@ -37,8 +37,6 @@ int CLuaScript::lua_GetRandomModel(lua_State* L)
 int CLuaScript::lua_AddPed(lua_State* L)
 {
 	int nargs = lua_gettop(L);
-	if (nargs > 4)
-		return 0;
 
 	CVector position;
 	float x, y, z;
