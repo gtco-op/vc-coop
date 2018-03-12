@@ -3,7 +3,7 @@ class CGame
 {
 public:
 	CGame();
-	~CGame();
+	~CGame() {}
 	
 	std::string Name;
 

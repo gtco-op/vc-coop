@@ -7,9 +7,6 @@ int				CGame::keyPressTime;
 WNDPROC			orig_wndproc;
 HWND			orig_wnd;
 
-
-std::vector<CVehicle*> allVehicles;
-
 CGame::CGame()
 {
 	for (int i = 1; i < MAX_PLAYERS; i++)
@@ -21,9 +18,7 @@ CGame::CGame()
 
 	gLog->Log("[CGame] CGame initialized.\n");
 }
-CGame::~CGame()
-{	
-}
+
 void CGame::HasGameLoaded()
 {
 	if (bLoadingDone == true)
@@ -61,7 +56,6 @@ void CGame::Run()
 	if (GetTwoKeys(0x12, 'O'))
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
-
 	}
 	if (GetKey(0x2C) & 1)
 	{
@@ -200,7 +194,7 @@ void CGame::EnableHUD()
 
 void CGame::SetCoordBlip(CVector coord, uint unk, eBlipDisplay blipDisplay)
 {
-	Call(0x4c3c80, eBlipType::BLIP_COORD, coord, unk, blipDisplay);
+	Call(0x4C3C80, eBlipType::BLIP_COORD, coord, unk, blipDisplay);
 }
 
 CPlayerPed* CWorld_Players;
