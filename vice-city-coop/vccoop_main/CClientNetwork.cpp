@@ -258,7 +258,9 @@ void CClientNetwork::on_entity_update(librg_event_t *event)
 		auto vehicle = (CClientVehicle *)event->entity->user_data;
 		auto veh = vehicle->veh;
 
-		veh->Teleport(*(CVector *)&event->entity->position);
+		veh->m_placement.pos.x = event->entity->position.x;
+		veh->m_placement.pos.y = event->entity->position.y;
+		veh->m_placement.pos.z = event->entity->position.z;
 
 		vehicle->SyncVehicle(spd);
 	}
