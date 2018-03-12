@@ -6,7 +6,7 @@ public:
 	CPed * ped;
 	PedSyncData syncData;
 
-	CClientPed(int nID);
+	CClientPed(int nID, int modelID, bool wander);
 	~CClientPed();
 
 	void SyncPed(PedSyncData spd);

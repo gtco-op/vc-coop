@@ -1,6 +1,6 @@
 #include "main.h"
 
-CClientPed::CClientPed(int nID)
+CClientPed::CClientPed(int nID, int modelID, bool wander = true)
 {
 	this->ped = NULL;
 
@@ -18,10 +18,12 @@ CClientPed::CClientPed(int nID)
 
 	CVector spawnPos = { (float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, CWorld::FindGroundZFor3DCoord((float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, (float)node.m_wPosZ*0.125f, &res) + 1.0f };
 
-	this->ped = new CCivilianPed(ePedType::PEDTYPE_CIVMALE, 7);
+	this->ped = new CCivilianPed(ePedType::PEDTYPE_CIVMALE, modelID);
 	CWorld::Add(this->ped);
-	this->ped->Teleport(spawnPos);
-	this->ped->SetWanderPath(Random(0, 9650));
+	this->ped->m_placement.pos = spawnPos;
+
+	if(wander)
+		this->ped->SetWanderPath(Random(0, 9650));
 
 	this->networkID = nID;
 
@@ -52,7 +54,8 @@ void CClientPed::SyncPed(PedSyncData spd)
 {
 	this->syncData = spd;
 
-	ped->m_nModelIndex = spd.iModelIndex;
+	//ped->m_nModelIndex = spd.iModelIndex;
+	ped->SetModelIndex(spd.iModelIndex);
 	ped->m_fHealth = spd.Health;
 	ped->m_fRotationCur = spd.Rotation;
 	ped->m_fArmour = spd.Armour;

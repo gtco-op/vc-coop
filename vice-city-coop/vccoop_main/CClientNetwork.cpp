@@ -195,7 +195,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 		PedSyncData spd;
 		librg_data_rptr(event->data, &spd, sizeof(PedSyncData));
 
-		event->entity->user_data = new CClientPed(event->entity->id);
+		event->entity->user_data = new CClientPed(event->entity->id, spd.iModelIndex, spd.Wander);
 		gNetwork->networkEntities.push_back((CClientPed*)event->entity->user_data);
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
@@ -233,7 +233,7 @@ void CClientNetwork::on_entity_update(librg_event_t *event)
 		auto player = (CClientPlayer *)event->entity->user_data;
 		auto ped = player->ped;
 
-		if(!spd.isInVehicle)ped->Teleport(*(CVector *)&event->entity->position);
+		if(!spd.isInVehicle) ped->m_placement.pos = (*(CVector *)&event->entity->position);
 
 		player->SyncPlayer(spd);
 
@@ -246,7 +246,7 @@ void CClientNetwork::on_entity_update(librg_event_t *event)
 		auto pedestrian = (CClientPed *)event->entity->user_data;
 		auto ped = pedestrian->ped;
 
-		ped->Teleport(*(CVector *)&event->entity->position);
+		ped->m_placement.pos = (*(CVector *)&event->entity->position);
 
 		pedestrian->SyncPed(spd);
 	}

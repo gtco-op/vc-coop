@@ -7,7 +7,7 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	CPlayerPed::SetupPlayerPed(gID);
 	CWorld::Players[gID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[gID].m_pPed;
-	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+	this->ped->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 	//CStreaming::RequestModel(7, 0);
 	this->ped->SetModelIndex(7);
 
@@ -35,7 +35,7 @@ void CClientPlayer::StreamIn()
 	CPlayerPed::SetupPlayerPed(this->gameID);
 	CWorld::Players[this->gameID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[this->gameID].m_pPed;
-	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+	this->ped->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 	//CStreaming::RequestModel(7, 0);
 	this->ped->SetModelIndex(7);
 
@@ -76,7 +76,7 @@ void CClientPlayer::Respawn()
 	CPlayerPed::SetupPlayerPed(this->gameID);
 	CWorld::Players[this->gameID].m_pPed->m_nPedStatus = 2;
 	this->ped = CWorld::Players[this->gameID].m_pPed;
-	this->ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+	this->ped->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 	//CStreaming::RequestModel(7, 0);
 	this->ped->SetModelIndex(7);
 	this->ped->m_fHealth = 100.0f;

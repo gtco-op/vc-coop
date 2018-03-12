@@ -153,7 +153,8 @@ void CGame::CustomModelLoad(int id)
 {
 	int modelid = id;
 	DWORD * dwModelIndexes = (DWORD *)0x7D1DE0;
-	if (modelid < 0) modelid = dwModelIndexes[modelid * -7];
+
+	if (dwModelIndexes && modelid < 0) modelid = dwModelIndexes[modelid * -7];
 
 	if (!IsModelLoaded(id))
 	{
@@ -549,7 +550,6 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 	gLog->Log("[CGame] CreateVehicle: model was not loaded!\n");
 	return nullptr;
 }
-
 LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	switch (umsg)
@@ -622,7 +622,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			}
 			else if (vkey == VK_F9 && !gNetwork->connected)
 			{
-				LocalPlayer()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+				LocalPlayer()->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 				gLog->Log("[CGame] Teleporting to X: %.f Y: %.f Z: %.f\n", VCCOOP_DEFAULT_SPAWN_POSITION);
 			}
 			else if (vkey == VK_F10 && !gNetwork->connected) // crashfix

@@ -163,7 +163,7 @@ void Hooked_SpawnPedAfterDeath()
 	CTimer::Update();
 	gLog->Log("game tried to spawn me\n");
 	CPed * ped = LocalPlayer();
-	ped->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+	ped->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 	librg_message_send_all(&gNetwork->ctx, VCOOP_RESPAWN_AFTER_DEATH, NULL, 0);
 }
 
@@ -185,7 +185,7 @@ void Hook_CRunningScript__Process()
 		gGame->remotePlayerPeds[0] = LocalPlayer();
 
 		// Set player position
-		LocalPlayer()->Teleport({ VCCOOP_DEFAULT_SPAWN_POSITION });
+		LocalPlayer()->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 
 		// CStreaming::LoadScene
 		CVector scenePosition(VCCOOP_DEFAULT_SPAWN_POSITION);
