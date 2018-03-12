@@ -23,6 +23,9 @@ CClientNetwork::CClientNetwork()
 }
 CClientNetwork::~CClientNetwork()
 {
+	this->StopThread();
+	gLog->Log("[CClientNetwork] CRichPresence shutting down\n");
+
 	gLog->Log("[CClientNetwork] CClientNetwork shutting down\n");
 	this->StopClientThread();
 }
