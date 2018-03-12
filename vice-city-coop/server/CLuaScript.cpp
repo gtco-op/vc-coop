@@ -24,6 +24,11 @@ int CLuaScript::lua_AddVehicle(lua_State* L)
 	int modelID;
 
 	modelID		= lua_tointeger(L, 1);
+	if (!IS_VALID_VEH_ID(modelID))	{
+		gLog->Log("[CLuaScript] %d is an invalid vehicle model ID!\n", modelID);
+		return 0;
+	}
+
 	x			= lua_tonumber(L, 2);
 	y			= lua_tonumber(L, 3);
 	z			= lua_tonumber(L, 4);
