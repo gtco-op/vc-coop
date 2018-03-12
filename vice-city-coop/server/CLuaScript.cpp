@@ -3,8 +3,15 @@
 static const struct luaL_Reg vccooplib[] = {
 	{ "print",			&CLuaScript::lua_Log },
 	{ "sleep",			&CLuaScript::lua_Sleep },
+
+	{ "Print",			&CLuaScript::lua_Log },
+	{ "Sleep",			&CLuaScript::lua_Sleep },
+
+	{ "GetRandomModel",	&CLuaScript::lua_GetRandomModel },
 	{ "GetPlayerName",	&CLuaScript::lua_GetPlayerName },
+
 	{ "AddVehicle",		&CLuaScript::lua_AddVehicle },
+	{ "AddPed",			&CLuaScript::lua_AddPed },
 	{ NULL, NULL }
 };
 
@@ -15,16 +22,83 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 
 	m_Data = ptr;
 }
+int CLuaScript::lua_GetRandomModel(lua_State* L)
+{
+	if (lua_gettop(L) == 1)	{
+		lua_pushnumber(L, CModelIDs::GetRandomModel(false));
+	}
+	else if (lua_gettop(L) != 0)
+		return 0;
+	else {
+		lua_pushnumber(L, CModelIDs::GetRandomModel());
+	}
+	return 1;
+}
+int CLuaScript::lua_AddPed(lua_State* L)
+{
+	int nargs = lua_gettop(L);
+	if (nargs > 4)
+		return 0;
+
+	CVector position;
+	float x, y, z;
+	int modelID;
+	bool wander = true;
+
+	if (nargs == 3)
+	{
+		// only x,y,z was passed, so randomize the model
+		x = lua_tonumber(L, 1);
+		y = lua_tonumber(L, 2);
+		z = lua_tonumber(L, 3);
+
+		srand(time(NULL));
+		modelID = CModelIDs::GetRandomModel();
+	}
+	else
+	{
+		modelID = lua_tointeger(L, 1);
+		if (!CModelIDs::IsValidPedModel(modelID)) {
+			gLog->Log("[CLuaScript] %d is an invalid ped model ID!\n", modelID);
+			return 0;
+		}
+		x = lua_tonumber(L, 2);
+		y = lua_tonumber(L, 3);
+		z = lua_tonumber(L, 4);
+
+		if (nargs == 5)
+			wander = false;
+	}
+
+	position = CVector(x, y, z);
+
+	librg_entity_t* entity = librg_entity_create(&gServerNetwork->ctx, VCOOP_PED);
+	entity->user_data = new PedSyncData();
+	((PedSyncData*)entity->user_data)->iModelIndex	= modelID;
+	((PedSyncData*)entity->user_data)->Wander		= wander;
+
+	entity->position.x = position.x;
+	entity->position.y = position.y;
+	entity->position.z = position.z;
+
+	gLog->Log("[PedCreate] Created ped with ID: %d\n", entity->id);
+
+	lua_pushnumber(L, entity->id);
+
+	return 1;
+}
 int CLuaScript::lua_AddVehicle(lua_State* L)
 {
 	int nargs = lua_gettop(L);
+	if (nargs < 4 || nargs > 4)
+		return 0;
 
 	CVector position;
 	float x, y, z;
 	int modelID;
 
 	modelID		= lua_tointeger(L, 1);
-	if (!IS_VALID_VEH_ID(modelID))	{
+	if (!CModelIDs::IsValidVehicleModel(modelID))	{
 		gLog->Log("[CLuaScript] %d is an invalid vehicle model ID!\n", modelID);
 		return 0;
 	}
@@ -46,7 +120,9 @@ int CLuaScript::lua_AddVehicle(lua_State* L)
 
 	gLog->Log("[VehCreate] Created vehicle with ID: %d\n", entity->id);
 	
-	return 0;
+	lua_pushnumber(L, entity->id);
+
+	return 1;
 }
 void CLuaScript::CreateLuaThread()
 {

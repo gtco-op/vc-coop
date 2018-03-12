@@ -10,8 +10,12 @@ public:
 	static void LuaThread(LPVOID lParam);
 	void CreateLuaThread();
 
+	static int lua_AddPed(lua_State* L);
 	static int lua_AddVehicle(lua_State* L);
+
+	static int lua_GetRandomModel(lua_State* L);
 	static int lua_GetPlayerName(lua_State* L);
+
 	static int lua_Log(lua_State* L);
 	static int lua_Sleep(lua_State* l);
 
