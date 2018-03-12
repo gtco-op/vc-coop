@@ -55,6 +55,9 @@
     <Filter Include="vendor\discord-rich-presence">
       <UniqueIdentifier>{3918bd69-8a75-44fc-bb5a-eb4075eaf62e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\misc\CModelIDs">
+      <UniqueIdentifier>{e09ed312-0a85-49c7-8f1a-d8a82e1329a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGame.h">
@@ -180,6 +183,9 @@
     <ClInclude Include="CClientEntity.h">
       <Filter>Source\network</Filter>
     </ClInclude>
+    <ClInclude Include="CModelIDs.h">
+      <Filter>Source\misc\CModelIDs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CGame.cpp">
@@ -250,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="CRichPresence.cpp">
       <Filter>Source\tools\CRichPresence</Filter>
+    </ClCompile>
+    <ClCompile Include="CModelIDs.cpp">
+      <Filter>Source\misc\CModelIDs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

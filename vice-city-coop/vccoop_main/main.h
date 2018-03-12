@@ -114,6 +114,9 @@ extern "C" {
 
 #include "CLogger.h"
 #include "CConfiguration.h"
+
+#include "CModelIDs.h"
+
 #include "CHooks.h"
 #include "CClientEntity.h"
 #include "CClientPlayer.h"

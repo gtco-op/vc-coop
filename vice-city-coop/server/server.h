@@ -48,7 +48,9 @@ extern "C" {
 
 // VCCOOP
 #include "..\vccoop_main\config.h"
+#include "..\vccoop_main\CModelIDs.h"
 #include "CConfiguration.h"
+
 #include "CLogger.h"
 #include "CServerNetwork.h"
 

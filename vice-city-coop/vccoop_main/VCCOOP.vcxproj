@@ -324,6 +324,7 @@
     <ClCompile Include="CImGui.cpp" />
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="CLua.cpp" />
+    <ClCompile Include="CModelIDs.cpp" />
     <ClCompile Include="CNameTags.cpp" />
     <ClCompile Include="CRenderTemplate.cpp" />
     <ClCompile Include="CRichPresence.cpp" />
@@ -352,6 +353,7 @@
     <ClInclude Include="CImGui.h" />
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CLua.h" />
+    <ClInclude Include="CModelIDs.h" />
     <ClInclude Include="CNameTags.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="CRenderTemplate.h" />

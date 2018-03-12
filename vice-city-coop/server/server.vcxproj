@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\vccoop_main\CModelIDs.cpp" />
     <ClCompile Include="CConfiguration.cpp" />
     <ClCompile Include="CCustomData.cpp" />
     <ClCompile Include="CCustomDataManager.cpp" />
@@ -138,6 +139,7 @@
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\vccoop_main\CModelIDs.h" />
     <ClInclude Include="..\vccoop_main\config.h" />
     <ClInclude Include="CConfiguration.h" />
     <ClInclude Include="CCustomData.h" />

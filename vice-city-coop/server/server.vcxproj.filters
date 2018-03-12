@@ -38,6 +38,9 @@
     <Filter Include="Source\utils\CCustomData">
       <UniqueIdentifier>{79579ec4-184f-45de-a4b1-be41ac9c3c8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\utils\CModelIDs">
+      <UniqueIdentifier>{9bf9c3d4-8793-4781-87f1-30b9678e1e9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CServerNetwork.h">
@@ -97,6 +100,9 @@
     <ClInclude Include="CLuaScript.h">
       <Filter>Source\scripting</Filter>
     </ClInclude>
+    <ClInclude Include="..\vccoop_main\CModelIDs.h">
+      <Filter>Source\utils\CModelIDs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
@@ -122,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="CLuaScript.cpp">
       <Filter>Source\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vccoop_main\CModelIDs.cpp">
+      <Filter>Source\utils\CModelIDs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
