@@ -25,12 +25,12 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 int CLuaScript::lua_GetRandomModel(lua_State* L)
 {
 	if (lua_gettop(L) == 1)	{
-		lua_pushnumber(L, CModelIDs::GetRandomModel(false));
+		lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_VEH));
 	}
 	else if (lua_gettop(L) != 0)
 		return 0;
 	else {
-		lua_pushnumber(L, CModelIDs::GetRandomModel());
+		lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_PED));
 	}
 	return 1;
 }
