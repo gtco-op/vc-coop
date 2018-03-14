@@ -1,5 +1,12 @@
 #pragma once
 
+#if defined( _MSC_VER )
+#pragma warning (disable : 4244)
+#pragma warning (disable : 4348)
+#pragma warning (disable : 4060)
+#pragma warning (disable : 4018)
+#endif
+
 // librg
 #include "vendor\librg\librg.h"
 

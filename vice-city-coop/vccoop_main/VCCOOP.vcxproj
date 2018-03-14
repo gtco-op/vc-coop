@@ -206,7 +206,7 @@
       <AdditionalDependencies>lua.lib;winmm.lib;ws2_32.lib;paths.lib;plugin_vc.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)\vendor\detours\;$(ProjectDir)\vendor\lua\;$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.VC.lib</ImportLibrary>
-      <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/LTCG /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
@@ -280,6 +280,7 @@
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>XCOPY /Y /J /C $(OutDir)vccoopd.asi $(GTA_VC_DIR)</Command>
