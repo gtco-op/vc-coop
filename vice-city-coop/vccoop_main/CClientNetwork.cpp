@@ -131,6 +131,9 @@ void CClientNetwork::on_connect_accepted(librg_event_t *event)
 	char name[25];
 	strcpy(name, gGame->Name.c_str());
 	librg_message_send_all(&gNetwork->ctx, VCOOP_CONNECT, &name, sizeof(name));
+
+	// Run our 'OnConnected' internal callback
+	gGame->OnConnected();
 }
 void CClientNetwork::on_connect_refused(librg_event_t *event) 
 {
@@ -165,8 +168,6 @@ void CClientNetwork::ClientConnect(librg_message_t* msg)
 	gNetwork->networkEntities.push_back(player);
 
 	gLog->Log("[CClientNetwork] %s connected\n", player->szName);
-
-	gGame->OnConnected();
 }
 
 void CClientNetwork::on_entity_create(librg_event_t *event) 
