@@ -35,14 +35,16 @@ static RpClump* LoadModel(const char *filename) {
 	RpClump *result = nullptr;
 	auto stream = RwStreamOpen(rwSTREAMFILENAME, rwSTREAMREAD, filename);
 	if (stream) {
-		if (RwStreamFindChunk(stream, rwID_CLUMP, NULL, NULL))
+		if (RwStreamFindChunk(stream, rwID_CLUMP, NULL, NULL)) {
 			result = RpClumpStreamRead(stream);
+			gLog->Log("Loaded model '%s'!\n", filename);
+		}
 		else
-			gLog->Log("Unable to read model file: '%s'", filename);
+			gLog->Log("Unable to read model file: '%s'\n", filename);
 		RwStreamClose(stream, nullptr);
 	}
 	else
-		gLog->Log("Unable to open model file: '%s'", filename);
+		gLog->Log("Unable to open model file: '%s'\n", filename);
 	return result;
 }
 
@@ -51,6 +53,27 @@ static void UnloadModel(RpClump *model) {
 		RpClumpDestroy(model);
 }
 
+CObject* CGame::SpawnModel(int modelid, CVector position, RpClump* clump = nullptr)
+{
+	CObject* object				= new CObject(modelid, false);
+	
+	object->m_nType				= eObjectType::OBJECT_MISSION;
+	object->m_placement.pos		= position + CVector(2.0f, 2.0f, 2.0f);
+	object->m_fAttachForce		= 0.0f;
+
+	object->m_placement.UpdateRW();
+	object->UpdateRwFrame();
+	
+	CWorld::Add(object);
+
+	return object;
+}
+void CGame::OnConnected()
+{
+#ifdef VCCOOP_VERBOSE_LOG
+	gLog->Log("[CGame] OnConnected called!\n");
+#endif
+}
 void CGame::Run()
 {
 	if (GetTwoKeys(0x12, 'O'))
@@ -483,7 +506,6 @@ void CGame::InitPreGamePatches()
 
 	// Disable CRubbish::Init() (crashfix)
 	MakeRet(0x568550);
-
 
 	//Init hooks (no shit sherlock)
 	CHooks::InitHooks();

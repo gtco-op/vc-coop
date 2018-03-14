@@ -18,6 +18,7 @@ public:
 	bool IsWindowActive();
 
 	void Run();
+	void OnConnected();
 	void Exit();
 
 	static void HasGameLoaded();
@@ -25,6 +26,7 @@ public:
 	void EnableHUD();
 	void DisableHUD();
 
+	CObject* SpawnModel(int modelid, CVector position, RpClump* clump);
 	void CustomModelLoad(int id);
 
 	int remotePlayers = 1;

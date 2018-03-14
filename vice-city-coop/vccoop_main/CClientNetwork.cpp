@@ -165,6 +165,8 @@ void CClientNetwork::ClientConnect(librg_message_t* msg)
 	gNetwork->networkEntities.push_back(player);
 
 	gLog->Log("[CClientNetwork] %s connected\n", player->szName);
+
+	gGame->OnConnected();
 }
 
 void CClientNetwork::on_entity_create(librg_event_t *event) 
