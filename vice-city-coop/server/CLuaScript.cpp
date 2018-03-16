@@ -11,6 +11,10 @@ static const struct luaL_Reg vccooplib[] = {
 
 	{ "GetRandomModel",		&CLuaScript::lua_GetRandomModel },
 	{ "GetPlayerName",		&CLuaScript::lua_GetPlayerName },
+	
+	{ "GetPlayerPos",		&CLuaScript::lua_GetPlayerPos },
+
+	{ "GetPlayerHealth",	&CLuaScript::lua_GetPlayerHealth },
 
 	{ "AddObject",			&CLuaScript::lua_AddObject },
 	{ "AddVehicle",			&CLuaScript::lua_AddVehicle },
@@ -24,6 +28,33 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 		return;	
 
 	m_Data = ptr;
+}
+
+int CLuaScript::lua_GetPlayerHealth(lua_State* L)
+{
+	if (lua_gettop(L) == 1)	{
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && entity->type == VCOOP_PLAYER) {
+			lua_pushnumber(L, ((*(PlayerSyncData*)entity->user_data).Health));
+			return 1;
+		}
+	}
+	return 0;
+}
+int CLuaScript::lua_GetPlayerPos(lua_State* L)
+{
+	if (lua_gettop(L) == 1)	{
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+
+		if (entity && entity->type == VCOOP_PLAYER)		{
+			lua_pushnumber(L, entity->position.x);
+			lua_pushnumber(L, entity->position.y);
+			lua_pushnumber(L, entity->position.z);			
+			return 3;
+		}
+		return 0;
+	}
+	return 0;
 }
 int CLuaScript::lua_GetRandomModel(lua_State* L)
 {
