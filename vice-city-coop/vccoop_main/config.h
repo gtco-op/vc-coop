@@ -56,6 +56,7 @@
 #define VC_TITLE						"GTA: Vice City"
 
 #define MAX_PLAYERS						500
+#define MAX_OBJECTS						1000
 #define MAX_VEHICLES					1000
 #define MAX_PEDS						1000
 
@@ -315,6 +316,13 @@ struct VehicleSyncData
 	CVector turnSpeed;
 };
 
+struct ObjectSyncData
+{
+	int modelID;
+	int objectID;
+	CVector vehiclePos;
+};
+
 //CWeapon*This, DWORD _EDX, CEntity* source, CEntity* target, CVector* start, CVector* end, CColPoint* colpoint, CVector2D ahead
 
 struct bulletSyncData
@@ -360,6 +368,7 @@ enum eBlipDisplay {
 enum {
 	VCOOP_CREATE_PED = LIBRG_EVENT_LAST,
 	VCOOP_CREATE_VEHICLE,
+	VCOOP_CREATE_OBJECT,
 
 	VCOOP_SEND_MESSAGE,
 	VCOOP_RECEIVE_MESSAGE,
@@ -380,6 +389,7 @@ enum {
 
 enum {
 	VCOOP_PLAYER,
+	VCOOP_OBJECT,
 	VCOOP_PED,
 	VCOOP_VEHICLE,
 };
