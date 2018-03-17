@@ -1,6 +1,6 @@
 #include "main.h"
 
-CClientPed::CClientPed(int nID, int modelID, bool wander = true)
+CClientPed::CClientPed(int nID)
 {
 	this->ped = NULL;
 
@@ -18,16 +18,14 @@ CClientPed::CClientPed(int nID, int modelID, bool wander = true)
 
 	CVector spawnPos = { (float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, CWorld::FindGroundZFor3DCoord((float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, (float)node.m_wPosZ*0.125f, &res) + 1.0f };
 
-	this->ped = new CCivilianPed(ePedType::PEDTYPE_CIVMALE, modelID);
+	this->ped = new CCivilianPed(ePedType::PEDTYPE_CIVMALE, 7);
 	CWorld::Add(this->ped);
 	this->ped->m_placement.pos = spawnPos;
-
-	if(wander)
-		this->ped->SetWanderPath(Random(0, 9650));
+	this->ped->SetWanderPath(Random(0, 9650));
 
 	this->networkID = nID;
 
-	gLog->Log("[CClientPed]Network ID: %d Ped pointer: 0x%X\n\n", nID, this->ped);
+	gLog->Log("[CClientPed] Network ID: %d Ped pointer: 0x%X\n", nID, this->ped);
 }
 
 CEntity * CClientPed::GetEntity()
@@ -54,8 +52,7 @@ void CClientPed::SyncPed(PedSyncData spd)
 {
 	this->syncData = spd;
 
-	//ped->m_nModelIndex = spd.iModelIndex;
-	ped->SetModelIndex(spd.iModelIndex);
+	ped->m_nModelIndex = spd.iModelIndex;
 	ped->m_fHealth = spd.Health;
 	ped->m_fRotationCur = spd.Rotation;
 	ped->m_fArmour = spd.Armour;

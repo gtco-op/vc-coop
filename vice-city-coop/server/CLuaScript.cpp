@@ -202,6 +202,10 @@ int CLuaScript::lua_AddPed(lua_State* L)
 
 	gLog->Log("[PedCreate] Created ped with ID: %d\n", entity->id);
 
+	if (entity)	{
+		otherEntities.push_back(entity);
+	}
+
 	lua_pushnumber(L, entity->id);
 
 	return 1;
