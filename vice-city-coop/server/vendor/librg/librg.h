@@ -122,7 +122,13 @@
 #define LIBRG_DATA_STREAMS_AMOUNT   4
 
 #define librg_global        zpl_global
+
+#if defined(_MSC_VER)
 #define librg_inline        zpl_inline
+#else
+#define librg_inline
+#endif
+
 #define librg_internal      zpl_internal
 
 #define librg_assert        ZPL_ASSERT

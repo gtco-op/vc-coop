@@ -1,5 +1,4 @@
 #include "server.h"
-#include <filesystem>
 
 CConfiguration::CConfiguration()
 {
@@ -20,7 +19,11 @@ CConfiguration::CConfiguration()
 
 	char* szPath = new char[MAX_PATH];
 	memset(szPath, 0, MAX_PATH);
+#if defined(_MSC_VER)
 	strcpy(szPath, GetExecutablePath().append("\\Logs").c_str());
+#else
+	strcpy(szPath, "./Logs");
+#endif
 	
 	std::experimental::filesystem::path szDir = szPath;
 	if (!std::experimental::filesystem::create_directory(szDir))
@@ -29,7 +32,12 @@ CConfiguration::CConfiguration()
 		this->foldersPresent = true;
 
 	memset(szPath, 0, MAX_PATH);
+#if defined(_MSC_VER)
 	strcpy(szPath, GetExecutablePath().append("\\Scripts").c_str());
+#else
+	szPath = new char[MAX_PATH];
+	strcpy(szPath, "./Scripts");
+#endif
 	szDir = szPath;
 	if(!std::experimental::filesystem::create_directory(szDir))
 		this->foldersPresent = false;
@@ -37,7 +45,11 @@ CConfiguration::CConfiguration()
 		this->foldersPresent = true;
 
 	memset(szPath, 0, MAX_PATH);
+#if defined(_MSC_VER)
 	strcpy(szPath, GetExecutablePath().append("\\Scripts\\Client").c_str());
+#else
+	strcpy(szPath, "./Scripts/Client");
+#endif
 	szDir = szPath;
 	if(!std::experimental::filesystem::create_directory(szDir))
 		this->foldersPresent = false;
@@ -45,7 +57,11 @@ CConfiguration::CConfiguration()
 		this->foldersPresent = true;
 
 	memset(szPath, 0, MAX_PATH);
+#if defined(_MSC_VER)
 	strcpy(szPath, GetExecutablePath().append("\\Scripts\\Server").c_str());
+#else
+	strcpy(szPath, "./Scripts/Server");
+#endif
 	szDir = szPath;
 	if(!std::experimental::filesystem::create_directory(szDir))
 		this->foldersPresent = false;
@@ -57,9 +73,13 @@ CConfiguration::CConfiguration()
 		std::experimental::filesystem::exists(szDir))	{
 		this->foldersPresent = true;
 	} 
-
+	
 	memset(szPath, 0, MAX_PATH);
+#if defined(_MSC_VER)
 	strcpy(szPath, GetExecutablePath().append("\\Scripts\\Client").c_str());
+#else
+	strcpy(szPath, "./Scripts/Client");
+#endif
 	szDir = szPath;
 	if (std::experimental::filesystem::status_known(std::experimental::filesystem::file_status{}) ?
 		std::experimental::filesystem::exists(std::experimental::filesystem::file_status{}) :
@@ -68,7 +88,11 @@ CConfiguration::CConfiguration()
 	}
 
 	memset(szPath, 0, MAX_PATH);
+#if defined(_MSC_VER)
 	strcpy(szPath, GetExecutablePath().append("\\Scripts").c_str());
+#else
+	strcpy(szPath, "./Scripts");
+#endif
 	szDir = szPath;
 	if (std::experimental::filesystem::status_known(std::experimental::filesystem::file_status{}) ?
 		std::experimental::filesystem::exists(std::experimental::filesystem::file_status{}) :
@@ -77,7 +101,11 @@ CConfiguration::CConfiguration()
 	}
 
 	memset(szPath, 0, MAX_PATH);
+#if defined(_MSC_VER)
 	strcpy(szPath, GetExecutablePath().append("\\Logs").c_str());
+#else
+	strcpy(szPath, "./Logs");
+#endif
 	szDir = szPath;
 	if (std::experimental::filesystem::status_known(std::experimental::filesystem::file_status{}) ?
 		std::experimental::filesystem::exists(std::experimental::filesystem::file_status{}) :
@@ -112,7 +140,12 @@ bool CConfiguration::AutodetectServerGamemode()
 		gLog->Log("[CConfiguration][WARNING] No user-defined server game mode defined. Auto-detecting.\n");
 #endif
 
-		for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\server")))
+
+#if defined(_MSC_VER)
+		for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\Scripts\\Server")))
+#else
+		for (auto& p : std::experimental::filesystem::recursive_directory_iterator("./Scripts/Server/"))
+#endif
 		{
 			if (p.path().extension() == std::string(".lua"))
 			{
@@ -137,7 +170,11 @@ bool CConfiguration::AutodetectServerGamemode()
 		if (!tmp) {
 			gLog->Log("[CConfiguration][ERROR] Could not open user-defined server game mode. Auto-detecting.\n");
 
-			for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\server")))
+#if defined(_MSC_VER)
+			for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\Scripts\\Server")))
+#else
+			for (auto& p : std::experimental::filesystem::recursive_directory_iterator("./Scripts/Server/"))
+#endif
 			{
 				if (p.path().extension() == std::string(".lua"))
 				{

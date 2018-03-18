@@ -142,6 +142,8 @@ extern CGame			*gGame;
 
 #include "CRender.h"
 
+#include "CCustomData.h"
+
 #include "CLua.h"
 
 #define SAFE_RELEASE(p)          { if (p) { (p)->Release(); (p)=NULL; } }

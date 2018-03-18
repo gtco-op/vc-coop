@@ -18,7 +18,6 @@ public:
 	//------------------------------------------------------------------------------------------------
 
 	static void ClientSendMessage(librg_message_t* msg);
-	static void ObjectCreateEvent(librg_message_t* msg);
 	static void PedCreateEvent(librg_message_t* msg);
 	static void VehCreateEvent(librg_message_t* msg);
 	static void PlayerDeathEvent(librg_message_t* msg);
@@ -39,6 +38,10 @@ public:
 	//------------------------------------------------------------------------------------------------
 
 	static void measure(void *userptr);
+#if defined(_MSC_VER)
 	static void server_thread();
+#else 
+	static void *server_thread(void* p);
+#endif
 };
 

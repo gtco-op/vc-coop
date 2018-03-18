@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo "Building lua and server.."
+make clean && cd vendor/lua/src/ && make linux && cd ../../.. && make
+echo "Finished."

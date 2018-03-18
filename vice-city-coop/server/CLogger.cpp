@@ -44,19 +44,24 @@ void CLogger::Log(char * format, ...)
 	buf.append(buffer);
 	Out(buf.c_str());
 
-#ifdef VCCOOP_DEBUG
+#if defined(VCCOOP_DEBUG) || !defined(_MSC_VER)
 	printf(buf.c_str());
 #endif
 }
 std::string GetExecutablePath()
 {
 	char buffer[MAX_PATH];
+	
+	// TODO: Find replacement
+#if defined(_MSC_VER)
 	GetModuleFileName(NULL, buffer, MAX_PATH);
+#endif
+
 	std::string::size_type pos = std::string(buffer).find_last_of("\\/");
 	return std::string(buffer).substr(0, pos);
 }
 std::string time_stamp(char* TimeFormat)
-{
+{ 
 	auto now = std::time(nullptr);
 	char cstr[256]{};
 	return std::strftime(cstr, sizeof(cstr), TimeFormat, std::localtime(&now)) ? cstr : "";
@@ -64,7 +69,11 @@ std::string time_stamp(char* TimeFormat)
 std::string path_to_session_log_file()
 {
 	std::string exePath = GetExecutablePath();
+#if defined(_MSC_VER)
 	exePath.append("\\Logs\\");
+#else
+	exePath.append("./Logs/");
+#endif
 
 	static const std::string log_dir = exePath;
 	static const std::string log_file_name = "VCCOOPServer_log.txt";

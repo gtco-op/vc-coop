@@ -56,7 +56,6 @@
 #define VC_TITLE						"GTA: Vice City"
 
 #define MAX_PLAYERS						500
-#define MAX_OBJECTS						1000
 #define MAX_VEHICLES					1000
 #define MAX_PEDS						1000
 

@@ -1,24 +1,17 @@
 #include "server.h"
 
 static const struct luaL_Reg vccooplib[] = {
-	{ "print",				&CLuaScript::lua_Log },
-	{ "sleep",				&CLuaScript::lua_Sleep },
+	{ "print",			&CLuaScript::lua_Log },
+	{ "sleep",			&CLuaScript::lua_Sleep },
 
-	{ "Print",				&CLuaScript::lua_Log },
-	{ "Sleep",				&CLuaScript::lua_Sleep },
+	{ "Print",			&CLuaScript::lua_Log },
+	{ "Sleep",			&CLuaScript::lua_Sleep },
 
-	{ "SendGlobalMessage",	&CLuaScript::lua_SendGlobalMessage },
+	{ "GetRandomModel",	&CLuaScript::lua_GetRandomModel },
+	{ "GetPlayerName",	&CLuaScript::lua_GetPlayerName },
 
-	{ "GetRandomModel",		&CLuaScript::lua_GetRandomModel },
-	{ "GetPlayerName",		&CLuaScript::lua_GetPlayerName },
-	
-	{ "GetPlayerPos",		&CLuaScript::lua_GetPlayerPos },
-
-	{ "GetPlayerHealth",	&CLuaScript::lua_GetPlayerHealth },
-
-	{ "AddObject",			&CLuaScript::lua_AddObject },
-	{ "AddVehicle",			&CLuaScript::lua_AddVehicle },
-	{ "AddPed",				&CLuaScript::lua_AddPed },
+	{ "AddVehicle",		&CLuaScript::lua_AddVehicle },
+	{ "AddPed",			&CLuaScript::lua_AddPed },
 	{ NULL, NULL }
 };
 
@@ -29,130 +22,16 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 
 	m_Data = ptr;
 }
-
-int CLuaScript::lua_GetPlayerHealth(lua_State* L)
-{
-	if (lua_gettop(L) == 1)	{
-		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
-		if (entity && entity->type == VCOOP_PLAYER) {
-			lua_pushnumber(L, ((*(PlayerSyncData*)entity->user_data).Health));
-			return 1;
-		}
-	}
-	return 0;
-}
-int CLuaScript::lua_GetPlayerPos(lua_State* L)
-{
-	if (lua_gettop(L) == 1)	{
-		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
-
-		if (entity && entity->type == VCOOP_PLAYER)		{
-			lua_pushnumber(L, entity->position.x);
-			lua_pushnumber(L, entity->position.y);
-			lua_pushnumber(L, entity->position.z);			
-			return 3;
-		}
-		return 0;
-	}
-	return 0;
-}
 int CLuaScript::lua_GetRandomModel(lua_State* L)
 {
-	if (lua_gettop(L) == 1)
-	{
-		if (strstr(lua_tostring(L, 1), "vehicle"))		{
-			lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_VEH));
-			return 1;
-		}
-		else if (strstr(lua_tostring(L, 1), "object")) {
-			lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_OBJ));
-			return 1;
-		}
-		else return 0;
+	if (lua_gettop(L) == 1)	{
+		lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_VEH));
 	}
-	else
-	{
+	else if (lua_gettop(L) != 0)
+		return 0;
+	else {
 		lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_PED));
-		return 1;
 	}
-	return 0;
-}
-int CLuaScript::lua_SendGlobalMessage(lua_State* L)
-{
-	int nargs = lua_gettop(L);
-	if (nargs < 1 || nargs == 0)
-		return 0;
-
-	char buffer[256];
-	sprintf(buffer, "[Server] %s", lua_tolstring(L, 1, NULL));
-	librg_message_send_all(&gServerNetwork->ctx, VCOOP_RECEIVE_MESSAGE, buffer, sizeof(buffer));
-	return 0;
-}
-int CLuaScript::lua_AddObject(lua_State* L)
-{
-	int nargs = lua_gettop(L), objectID = -1;
-	if (nargs < 4 || nargs > 4)
-		return 0;
-
-	CVector position;
-	float x, y, z;
-
-	objectID = lua_tointeger(L, 1);
-	if (!CModelIDs::IsValidObjectModel(objectID)) {
-		gLog->Log("[CLuaScript] %d is an invalid object model ID!\n", objectID);
-		return 0;
-	}
-
-	x = lua_tonumber(L, 2);
-	y = lua_tonumber(L, 3);
-	z = lua_tonumber(L, 4);
-	position = CVector(x, y, z);
-
-	librg_entity_t* entity = librg_entity_create(&gServerNetwork->ctx, VCOOP_OBJECT);
-	entity->user_data									= new ObjectSyncData();
-	((ObjectSyncData*)entity->user_data)->objectID		= entity->id;
-	((ObjectSyncData*)entity->user_data)->modelID		= objectID;
-	entity->position									= *(zplm_vec3_t*)&position;
-
-	gLog->Log("[ObjCreate] Created object with ID: %d\n", entity->id);
-	lua_pushnumber(L, entity->id);
-	return 1;
-}
-int CLuaScript::lua_AddVehicle(lua_State* L)
-{
-	int nargs = lua_gettop(L);
-	if (nargs < 4 || nargs > 4)
-		return 0;
-
-	CVector position;
-	float x, y, z;
-	int modelID;
-
-	modelID = lua_tointeger(L, 1);
-	if (!CModelIDs::IsValidVehicleModel(modelID)) {
-		gLog->Log("[CLuaScript] %d is an invalid vehicle model ID!\n", modelID);
-		return 0;
-	}
-
-	x = lua_tonumber(L, 2);
-	y = lua_tonumber(L, 3);
-	z = lua_tonumber(L, 4);
-	position = CVector(x, y, z);
-
-	librg_entity_t* entity = librg_entity_create(&gServerNetwork->ctx, VCOOP_VEHICLE);
-	entity->user_data = new VehicleSyncData();
-	((VehicleSyncData*)entity->user_data)->driver = -1;
-	((VehicleSyncData*)entity->user_data)->vehicleID = -1;
-	((VehicleSyncData*)entity->user_data)->modelID = modelID;
-
-	entity->position.x = position.x;
-	entity->position.y = position.y;
-	entity->position.z = position.z;
-
-	gLog->Log("[VehCreate] Created vehicle with ID: %d\n", entity->id);
-
-	lua_pushnumber(L, entity->id);
-
 	return 1;
 }
 int CLuaScript::lua_AddPed(lua_State* L)
@@ -202,24 +81,71 @@ int CLuaScript::lua_AddPed(lua_State* L)
 
 	gLog->Log("[PedCreate] Created ped with ID: %d\n", entity->id);
 
-	if (entity)	{
-		otherEntities.push_back(entity);
-	}
-
 	lua_pushnumber(L, entity->id);
 
 	return 1;
 }
+int CLuaScript::lua_AddVehicle(lua_State* L)
+{
+	int nargs = lua_gettop(L);
+	if (nargs < 4 || nargs > 4)
+		return 0;
+
+	CVector position;
+	float x, y, z;
+	int modelID;
+
+	modelID		= lua_tointeger(L, 1);
+	if (!CModelIDs::IsValidVehicleModel(modelID))	{
+		gLog->Log("[CLuaScript] %d is an invalid vehicle model ID!\n", modelID);
+		return 0;
+	}
+
+	x			= lua_tonumber(L, 2);
+	y			= lua_tonumber(L, 3);
+	z			= lua_tonumber(L, 4);
+	position	= CVector(x, y, z);
+
+	librg_entity_t* entity = librg_entity_create(&gServerNetwork->ctx, VCOOP_VEHICLE);
+	entity->user_data = new VehicleSyncData();
+	((VehicleSyncData*)entity->user_data)->driver = -1;
+	((VehicleSyncData*)entity->user_data)->vehicleID = -1;
+	((VehicleSyncData*)entity->user_data)->modelID = modelID;
+
+	entity->position.x = position.x;
+	entity->position.y = position.y;
+	entity->position.z = position.z;
+
+	gLog->Log("[VehCreate] Created vehicle with ID: %d\n", entity->id);
+	
+	lua_pushnumber(L, entity->id);
+
+	return 1;
+}
+
 void CLuaScript::CreateLuaThread()
 {
+#if defined (_MSC_VER)
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&LuaThread, this, 0, NULL);
+#else
+	pthread_create(NULL, NULL, LuaThread, NULL);
+#endif
 }
+
+#if defined (_MSC_VER)
 void CLuaScript::LuaThread(LPVOID lParam)
+#else
+void *CLuaScript::LuaThread(void* lParam)
+#endif
 {
 	CLuaScript* instance = (CLuaScript*)lParam;
 
 	if (instance == nullptr || (instance->m_lState == nullptr))
+#if !defined (_MSC_VER)
+		return nullptr;
+#else
 		return;
+#endif
 
 	lua_State* lState = instance->m_lState;
 
@@ -227,7 +153,11 @@ void CLuaScript::LuaThread(LPVOID lParam)
 #ifdef VCCOOP_LUA_VERBOSE_LOG
 		gLog->Log("[CLuaScript] Error running callback `%s': %s\n", instance->GetCallbackName().c_str(), lua_tostring(lState, -1));
 #endif
+#if !defined (_MSC_VER)
+		return nullptr;
+#else
 		return;
+#endif
 	}
 	else
 	{
@@ -316,9 +246,15 @@ int CLuaScript::lua_Sleep(lua_State* l)
 {
 	int ms = 0;
 	ms = lua_tointeger(l, 1);
-	if (ms == 0)
+	if (ms == 0) 
 		return 0;
+
+#if defined(_MSC_VER)
 	Sleep(ms);
+#else
+	usleep(ms);
+#endif
+
 	return 1;
 }
 int CLuaScript::lua_GetPlayerName(lua_State* L)

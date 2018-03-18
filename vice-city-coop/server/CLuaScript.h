@@ -7,18 +7,15 @@ public:
 	~CLuaScript() { lua_close(m_lState); };
 
 	void Call(std::string callback, char *fmt = { 0 }, ...);
-	static void LuaThread(LPVOID lParam);
+#if defined(_MSC_VER)
+	static void LuaThread(LPVOID lParam); 
+#else
+	static void *LuaThread(LPVOID lParam);
+#endif
 	void CreateLuaThread();
 
-	static int lua_AddObject(lua_State* L);
-	static int lua_AddVehicle(lua_State* L);
 	static int lua_AddPed(lua_State* L);
-
-	static int lua_SendGlobalMessage(lua_State* L);
-	
-	static int lua_GetPlayerPos(lua_State* L);
-
-	static int lua_GetPlayerHealth(lua_State* L);
+	static int lua_AddVehicle(lua_State* L);
 
 	static int lua_GetRandomModel(lua_State* L);
 	static int lua_GetPlayerName(lua_State* L);

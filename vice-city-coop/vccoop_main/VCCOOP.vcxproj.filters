@@ -58,6 +58,9 @@
     <Filter Include="Source\misc\CModelIDs">
       <UniqueIdentifier>{e09ed312-0a85-49c7-8f1a-d8a82e1329a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\misc\CCustomData">
+      <UniqueIdentifier>{59de24c3-d68e-45c1-bcbd-21b216aee584}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGame.h">
@@ -186,6 +189,9 @@
     <ClInclude Include="CModelIDs.h">
       <Filter>Source\misc\CModelIDs</Filter>
     </ClInclude>
+    <ClInclude Include="CCustomData.h">
+      <Filter>Source\misc\CCustomData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CGame.cpp">
@@ -259,6 +265,9 @@
     </ClCompile>
     <ClCompile Include="CModelIDs.cpp">
       <Filter>Source\misc\CModelIDs</Filter>
+    </ClCompile>
+    <ClCompile Include="CCustomData.cpp">
+      <Filter>Source\misc\CCustomData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

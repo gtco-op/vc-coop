@@ -12,10 +12,17 @@ CCustomData* CCustomDataManager::InsertScript(bool type_relative, std::string fi
 		path = GetExecutablePath();
 
 		if (type == TYPE_CLIENT_SCRIPT)
-			path.append("\\scripts\\client\\");
+#if defined(_MSC_VER)
+			path.append("\\Scripts\\Client\\");
+#else
+			path.append("./Scripts/Client/");
+#endif
 		else if (type == TYPE_SERVER_SCRIPT)
-			path.append("\\scripts\\server\\");
-
+#if defined(_MSC_VER)
+			path.append("\\Scripts\\Server\\");
+#else
+			path.append("./Scripts/Server/");
+#endif
 		path.append(filename);
 	}
 	else
@@ -89,7 +96,11 @@ std::string CCustomDataManager::GetCustomDataTypeString(CustomDataType type)
 }
 void CCustomDataManager::LoadScripts()
 {
-	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\scripts\\client")))
+#if defined(_MSC_VER)
+	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(GetExecutablePath().append("\\Scripts\\Client")))
+#else
+	for (auto& p : std::experimental::filesystem::recursive_directory_iterator("./Scripts/Client/"))
+#endif
 		if (p.path().extension() == std::string(".lua"))
 			InsertScript(false, p.path().string().c_str(), TYPE_CLIENT_SCRIPT, p.path());
 }
