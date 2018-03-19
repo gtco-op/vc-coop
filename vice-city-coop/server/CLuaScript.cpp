@@ -128,7 +128,8 @@ void CLuaScript::CreateLuaThread()
 #if defined (_MSC_VER)
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&LuaThread, this, 0, NULL);
 #else
-	pthread_create(NULL, NULL, LuaThread, NULL);
+	pthread_t threadId;
+	pthread_create(&threadId, NULL, &CLuaScript::LuaThread, this);
 #endif
 }
 

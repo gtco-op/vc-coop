@@ -404,10 +404,10 @@ void *CServerNetwork::server_thread(void* p)
 	gDataMgr->LoadScripts();
 
 	while (server_running) {
-		/*if (!gGamemodeScript->GetServerStartStatus())		{
+		if (!gGamemodeScript->GetServerStartStatus())		{
 			gGamemodeScript->Call("onServerStart");
 			gGamemodeScript->SetServerStartStatus(true);
-		}*/
+		}
 		librg_tick(&ctx);
 	}
 

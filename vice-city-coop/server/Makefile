@@ -1,5 +1,5 @@
 CC = g++
-CC_FLAGS = -std=gnu++17 -w -Wall -Wextra -pedantic-errors 
+CC_FLAGS = -g -std=gnu++17 -w -Wall -Wextra -pedantic-errors 
 
 EXEC = vccoop_server_linux
 SOURCES = $(wildcard *.cpp)
