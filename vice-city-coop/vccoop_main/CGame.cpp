@@ -608,7 +608,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		case WM_SYSKEYDOWN:
 		case WM_KEYDOWN:
 		{
-			if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard)
+			if (!gRender->bEscMenu && (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard))
 				break;
 
 			int vkey = (int)wparam;
