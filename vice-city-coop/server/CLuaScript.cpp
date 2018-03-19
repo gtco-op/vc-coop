@@ -130,7 +130,6 @@ int CLuaScript::lua_AddPed(lua_State* L)
 		y = lua_tonumber(L, 2);
 		z = lua_tonumber(L, 3);
 
-		srand(time(NULL));
 		modelID = CModelIDs::GetRandomModel();
 	}
 	else
