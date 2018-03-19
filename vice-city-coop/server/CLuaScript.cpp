@@ -1,17 +1,19 @@
 #include "server.h"
 
 static const struct luaL_Reg vccooplib[] = {
-	{ "print",			&CLuaScript::lua_Log },
-	{ "sleep",			&CLuaScript::lua_Sleep },
+	{ "print",				&CLuaScript::lua_Log },
+	{ "sleep",				&CLuaScript::lua_Sleep },
 
-	{ "Print",			&CLuaScript::lua_Log },
-	{ "Sleep",			&CLuaScript::lua_Sleep },
+	{ "Print",				&CLuaScript::lua_Log },
+	{ "Sleep",				&CLuaScript::lua_Sleep },
 
-	{ "GetRandomModel",	&CLuaScript::lua_GetRandomModel },
-	{ "GetPlayerName",	&CLuaScript::lua_GetPlayerName },
+	{ "SendGlobalMessage",	&CLuaScript::lua_SendGlobalMessage },
 
-	{ "AddVehicle",		&CLuaScript::lua_AddVehicle },
-	{ "AddPed",			&CLuaScript::lua_AddPed },
+	{ "GetRandomModel",		&CLuaScript::lua_GetRandomModel },
+	{ "GetPlayerName",		&CLuaScript::lua_GetPlayerName },
+
+	{ "AddVehicle",			&CLuaScript::lua_AddVehicle },
+	{ "AddPed",				&CLuaScript::lua_AddPed },
 	{ NULL, NULL }
 };
 
@@ -21,6 +23,17 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 		return;	
 
 	m_Data = ptr;
+}
+int CLuaScript::lua_SendGlobalMessage(lua_State* L)
+{
+	int nargs = lua_gettop(L);
+	if (nargs < 1 || nargs == 0)
+		return 0;
+	
+	char buffer[256];
+	sprintf(buffer, "[Server] %s", lua_tolstring(L, 1, NULL));
+	librg_message_send_all(&gServerNetwork->ctx, VCOOP_RECEIVE_MESSAGE, buffer, sizeof(buffer));
+	return 0;
 }
 int CLuaScript::lua_GetRandomModel(lua_State* L)
 {
