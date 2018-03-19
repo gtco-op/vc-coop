@@ -7,6 +7,20 @@ BYTE			internalPlayerID			= 0;
 CVehicle *		_pVehicle;
 static bool		scriptProcessed				= false;
 
+void LoadMissionScript()
+{
+	// Load the SCM Script (restore)..
+	MemCpy(0x4506D6, "\xE8\x55\xD9\x03\x00", 5);
+
+	// Restore the CRunningScript::Process() hook..
+	MemCpy((void*)0x450245, "\xE8\x26\xFB\xFF\xFF", 5);
+
+	// Call CTheScripts::Init(void)
+	Call(0x450330);
+	// Call CTheScripts::Init(int)
+	Call(0x450270, 0);
+}
+
 template<class A, class B = A>
 void CHooks::InitPool(CPool<A, B> *pool, int nSize)
 {
@@ -201,7 +215,7 @@ void Hook_CRunningScript__Process()
 		gRender->ToggleGUI();
 
 		gGame->DisableHUD();
-
+		
 		// First tick processed
 		scriptProcessed = true;
 /*

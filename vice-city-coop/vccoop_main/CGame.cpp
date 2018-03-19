@@ -68,12 +68,19 @@ CObject* CGame::SpawnModel(int modelid, CVector position, RpClump* clump = nullp
 
 	return object;
 }
+extern void LoadMissionScript();
+
 void CGame::OnConnected()
 {
 #ifdef VCCOOP_VERBOSE_LOG
 	gLog->Log("[CGame] OnConnected called!\n");
 #endif
 }
+void CGame::StartMissionScript()
+{
+	LoadMissionScript();
+}
+
 void CGame::Run()
 {
 	if (GetTwoKeys(0x12, 'O'))

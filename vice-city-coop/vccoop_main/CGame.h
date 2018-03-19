@@ -21,6 +21,8 @@ public:
 	void OnConnected();
 	void Exit();
 
+	void StartMissionScript();
+
 	static void HasGameLoaded();
 
 	void EnableHUD();
@@ -39,6 +41,8 @@ public:
 	bool debugEngineOutput = false;
 	
 	static bool bLoadingDone;
+	
+	bool bMissionScriptStarted = false;
 
 	static int keyPressTime;
 

@@ -430,6 +430,14 @@ void CClientNetwork::SetReadyToSpawn(bool bReady)
 		gGame->DisableHUD();
 	}
 }
+void CClientNetwork::ClientStartMissionScript(librg_message_t* msg)
+{
+	if (!gGame->bMissionScriptStarted)
+	{
+		gGame->StartMissionScript();
+		gGame->bMissionScriptStarted = true;
+	}
+}
 void CClientNetwork::AttemptConnect(char* szAddress, int iPort) 
 {
 	client_running = true;
@@ -446,13 +454,14 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 
 	librg_event_add(&ctx, LIBRG_CLIENT_STREAMER_UPDATE, on_client_stream);
 
-	librg_network_add(&ctx, VCOOP_RECEIVE_MESSAGE, ClientReceiveMessage);
-	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH, PlayerSpawnEvent);
-	librg_network_add(&ctx, VCOOP_GET_LUA_SCRIPT, ClientReceiveScript);
-	librg_network_add(&ctx, VCOOP_DISCONNECT, ClientDisconnect);
-	librg_network_add(&ctx, VCOOP_CONNECT, ClientConnect);
-	librg_network_add(&ctx, VCOOP_SPAWN_ALLOWED, ClientSpawnAllowed);
-	librg_network_add(&ctx, VCOOP_BULLET_SYNC, BulletSyncEvent);
+	librg_network_add(&ctx, VCOOP_START_MISSION_SCRIPT, ClientStartMissionScript);
+	librg_network_add(&ctx, VCOOP_RECEIVE_MESSAGE,		ClientReceiveMessage);
+	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH,	PlayerSpawnEvent);
+	librg_network_add(&ctx, VCOOP_GET_LUA_SCRIPT,		ClientReceiveScript);
+	librg_network_add(&ctx, VCOOP_DISCONNECT,			ClientDisconnect);
+	librg_network_add(&ctx, VCOOP_CONNECT,				ClientConnect);
+	librg_network_add(&ctx, VCOOP_SPAWN_ALLOWED,		ClientSpawnAllowed);
+	librg_network_add(&ctx, VCOOP_BULLET_SYNC,			BulletSyncEvent);
 
 	addr.host = szAddress;
 	addr.port = iPort;
