@@ -20,6 +20,7 @@ public:
 	static void ClientSendMessage(librg_message_t* msg);
 	static void PedCreateEvent(librg_message_t* msg);
 	static void VehCreateEvent(librg_message_t* msg);
+	static void ObjectCreateEvent(librg_message_t *msg);
 	static void PlayerDeathEvent(librg_message_t* msg);
 	static void PlayerSpawnEvent(librg_message_t* msg);
 	static void BulletSyncEvent(librg_message_t* msg);
