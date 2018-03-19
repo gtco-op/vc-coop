@@ -14,13 +14,17 @@ public:
 #endif
 	void CreateLuaThread();
 
+	static int lua_AddObject(lua_State* L);
 	static int lua_AddPed(lua_State* L);
 	static int lua_AddVehicle(lua_State* L);
 
 	static int lua_SendGlobalMessage(lua_State* L);
 
-	static int lua_GetRandomModel(lua_State* L);
+	static int lua_GetPlayerPos(lua_State* L);
+	static int lua_GetPlayerHealth(lua_State* L);
 	static int lua_GetPlayerName(lua_State* L);
+
+	static int lua_GetRandomModel(lua_State* L);
 
 	static int lua_Log(lua_State* L);
 	static int lua_Sleep(lua_State* l);

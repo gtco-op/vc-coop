@@ -4,16 +4,19 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "print",				&CLuaScript::lua_Log },
 	{ "sleep",				&CLuaScript::lua_Sleep },
 
-	{ "Print",				&CLuaScript::lua_Log },
-	{ "Sleep",				&CLuaScript::lua_Sleep },
-
 	{ "SendGlobalMessage",	&CLuaScript::lua_SendGlobalMessage },
+
+	{ "GetPlayerPos",		&CLuaScript::lua_GetPlayerPos },
+
+	{ "GetPlayerHealth",	&CLuaScript::lua_GetPlayerHealth },
 
 	{ "GetRandomModel",		&CLuaScript::lua_GetRandomModel },
 	{ "GetPlayerName",		&CLuaScript::lua_GetPlayerName },
 
+	{ "AddObject",			&CLuaScript::lua_AddObject },
 	{ "AddVehicle",			&CLuaScript::lua_AddVehicle },
 	{ "AddPed",				&CLuaScript::lua_AddPed },
+
 	{ NULL, NULL }
 };
 
@@ -37,14 +40,78 @@ int CLuaScript::lua_SendGlobalMessage(lua_State* L)
 }
 int CLuaScript::lua_GetRandomModel(lua_State* L)
 {
-	if (lua_gettop(L) == 1)	{
-		lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_VEH));
+	if (lua_gettop(L) == 1)
+	{
+		if (strstr(lua_tostring(L, 1), "vehicle")) {
+			lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_VEH));
+			return 1;
+		}
+		else if (strstr(lua_tostring(L, 1), "object")) {
+			lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_OBJ));
+			return 1;
+		}
 	}
-	else if (lua_gettop(L) != 0)
-		return 0;
-	else {
+	else
+	{
 		lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_PED));
+		return 1;
 	}
+	return 0;
+}
+int CLuaScript::lua_GetPlayerHealth(lua_State* L)
+{
+	if (lua_gettop(L) == 1) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && entity->type == VCOOP_PLAYER) {
+			lua_pushnumber(L, ((*(PlayerSyncData*)entity->user_data).Health));
+			return 1;
+		}
+	}
+	return 0;
+}
+int CLuaScript::lua_GetPlayerPos(lua_State* L)
+{
+	if (lua_gettop(L) == 1) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+
+		if (entity && entity->type == VCOOP_PLAYER) {
+			lua_pushnumber(L, entity->position.x);
+			lua_pushnumber(L, entity->position.y);
+			lua_pushnumber(L, entity->position.z);
+			return 3;
+		}
+		return 0;
+	}
+	return 0;
+}
+int CLuaScript::lua_AddObject(lua_State* L)
+{
+	int nargs = lua_gettop(L), objectID = -1;
+	if (nargs < 4 || nargs > 4)
+		return 0;
+
+	CVector position;
+	float x, y, z;
+
+	objectID = lua_tointeger(L, 1);
+	if (!CModelIDs::IsValidObjectModel(objectID)) {
+		gLog->Log("[CLuaScript] %d is an invalid object model ID!\n", objectID);
+		return 0;
+	}
+
+	x = lua_tonumber(L, 2);
+	y = lua_tonumber(L, 3);
+	z = lua_tonumber(L, 4);
+	position = CVector(x, y, z);
+
+	librg_entity_t* entity = librg_entity_create(&gServerNetwork->ctx, VCOOP_OBJECT);
+	entity->user_data = new ObjectSyncData();
+	((ObjectSyncData*)entity->user_data)->objectID = entity->id;
+	((ObjectSyncData*)entity->user_data)->modelID = objectID;
+	entity->position = *(zplm_vec3_t*)&position;
+
+	gLog->Log("[ObjCreate] Created object with ID: %d\n", entity->id);
+	lua_pushnumber(L, entity->id);
 	return 1;
 }
 int CLuaScript::lua_AddPed(lua_State* L)
