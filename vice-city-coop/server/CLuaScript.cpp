@@ -46,9 +46,10 @@ int CLuaScript::lua_SetEntityPos(lua_State* L)
 {
 	if (lua_gettop(L) == 4) {
 		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		float X = lua_tonumber(L, 2), Y = lua_tonumber(L, 3), Z = lua_tonumber(L, 4);
 		if (entity && (entity->type == VCOOP_PLAYER || entity->type == VCOOP_VEHICLE || entity->type == VCOOP_PED || entity->type == VCOOP_OBJECT))		{
-			float X = lua_tonumber(L, 2), Y = lua_tonumber(L, 3), Z = lua_tonumber(L, 4);
-
+			if (librg_entity_control_get(&gServerNetwork->ctx, lua_tonumber(L, 1)) != nullptr)
+				librg_entity_control_remove(&gServerNetwork->ctx, entity->id);
 			entity->position.x = X;
 			entity->position.y = Y;
 			entity->position.z = Z;
