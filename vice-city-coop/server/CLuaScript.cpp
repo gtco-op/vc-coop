@@ -6,7 +6,8 @@ static const struct luaL_Reg vccooplib[] = {
 
 	{ "SendGlobalMessage",	&CLuaScript::lua_SendGlobalMessage },
 
-	{ "GetPlayerPos",		&CLuaScript::lua_GetPlayerPos },
+	{ "GetEntityPos",		&CLuaScript::lua_GetEntityPos },
+	{ "SetEntityPos",		&CLuaScript::lua_SetEntityPos },
 
 	{ "GetPlayerHealth",	&CLuaScript::lua_GetPlayerHealth },
 
@@ -26,6 +27,35 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 		return;	
 
 	m_Data = ptr;
+}
+int CLuaScript::lua_GetEntityPos(lua_State* L)
+{
+	if (lua_gettop(L) == 1) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && (entity->type == VCOOP_PLAYER || entity->type == VCOOP_VEHICLE || entity->type == VCOOP_PED || entity->type == VCOOP_OBJECT)) {
+			lua_pushnumber(L, entity->position.x);
+			lua_pushnumber(L, entity->position.y);
+			lua_pushnumber(L, entity->position.z);
+			return 3;
+		}
+		return 0;
+	}
+	return 0;
+}
+int CLuaScript::lua_SetEntityPos(lua_State* L)
+{
+	if (lua_gettop(L) == 4) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && (entity->type == VCOOP_PLAYER || entity->type == VCOOP_VEHICLE || entity->type == VCOOP_PED || entity->type == VCOOP_OBJECT))		{
+			float X = lua_tonumber(L, 2), Y = lua_tonumber(L, 3), Z = lua_tonumber(L, 4);
+
+			entity->position.x = X;
+			entity->position.y = Y;
+			entity->position.z = Z;
+		}
+		return 0;
+	}
+	return 0;
 }
 int CLuaScript::lua_SendGlobalMessage(lua_State* L)
 {
@@ -66,21 +96,6 @@ int CLuaScript::lua_GetPlayerHealth(lua_State* L)
 			lua_pushnumber(L, ((*(PlayerSyncData*)entity->user_data).Health));
 			return 1;
 		}
-	}
-	return 0;
-}
-int CLuaScript::lua_GetPlayerPos(lua_State* L)
-{
-	if (lua_gettop(L) == 1) {
-		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
-
-		if (entity && entity->type == VCOOP_PLAYER) {
-			lua_pushnumber(L, entity->position.x);
-			lua_pushnumber(L, entity->position.y);
-			lua_pushnumber(L, entity->position.z);
-			return 3;
-		}
-		return 0;
 	}
 	return 0;
 }
