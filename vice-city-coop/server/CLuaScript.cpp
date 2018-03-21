@@ -6,6 +6,8 @@ static const struct luaL_Reg vccooplib[] = {
 
 	{ "SendGlobalMessage",	&CLuaScript::lua_SendGlobalMessage },
 
+	{ "GetEntityType",		&CLuaScript::lua_GetEntityType },
+
 	{ "GetEntityPos",		&CLuaScript::lua_GetEntityPos },
 	{ "SetEntityPos",		&CLuaScript::lua_SetEntityPos },
 
@@ -27,6 +29,74 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 		return;	
 
 	m_Data = ptr;
+}
+int CLuaScript::lua_GetEntityType(lua_State *L)
+{
+	if (lua_gettop(L) == 1)
+	{
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && (entity->type == VCOOP_PLAYER || entity->type == VCOOP_VEHICLE || entity->type == VCOOP_PED || entity->type == VCOOP_OBJECT))		{
+			switch (entity->type)			{
+			case VCOOP_PLAYER:
+				lua_pushnumber(L, 1);
+				if (librg_entity_control_get(&gServerNetwork->ctx, entity->id))				{
+					librg_entity_t* control_entity = librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id));
+					if (control_entity)					{
+						lua_pushnumber(L, control_entity->id);
+					} else	{
+						lua_pushnumber(L, -1);
+					}
+					return 2;
+				}
+				else return 1;
+				break;
+			case VCOOP_PED:
+				lua_pushnumber(L, 2);
+				if (librg_entity_control_get(&gServerNetwork->ctx, entity->id)) {
+					librg_entity_t* control_entity = librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id));
+					if (control_entity) {
+						lua_pushnumber(L, control_entity->id);
+					}
+					else {
+						lua_pushnumber(L, -1);
+					}
+					return 2;
+				}
+				else return 1;
+				break;
+			case VCOOP_VEHICLE:
+				lua_pushnumber(L, 3);
+				if (librg_entity_control_get(&gServerNetwork->ctx, entity->id)) {
+					librg_entity_t* control_entity = librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id));
+					if (control_entity) {
+						lua_pushnumber(L, control_entity->id);
+					}
+					else {
+						lua_pushnumber(L, -1);
+					}
+					return 2;
+				}
+				else return 1;
+				break;
+			case VCOOP_OBJECT:
+				lua_pushnumber(L, 4);
+				if (librg_entity_control_get(&gServerNetwork->ctx, entity->id)) {
+					librg_entity_t* control_entity = librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id));
+					if (control_entity) {
+						lua_pushnumber(L, control_entity->id);
+					}
+					else {
+						lua_pushnumber(L, -1);
+					}
+					return 2;
+				}
+				else return 1;
+				break;
+			}
+		}
+		else return 0;
+	}
+	else return 0;
 }
 int CLuaScript::lua_GetEntityPos(lua_State* L)
 {
