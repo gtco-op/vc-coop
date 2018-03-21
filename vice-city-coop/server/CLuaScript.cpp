@@ -38,55 +38,55 @@ int CLuaScript::lua_GetEntityType(lua_State *L)
 		if (entity && (entity->type == VCOOP_PLAYER || entity->type == VCOOP_VEHICLE || entity->type == VCOOP_PED || entity->type == VCOOP_OBJECT))		{
 			switch (entity->type)			{
 			case VCOOP_PLAYER:
-				lua_pushnumber(L, 1);
+				lua_pushinteger(L, 1);
 				if (librg_entity_control_get(&gServerNetwork->ctx, entity->id))				{
 					librg_entity_t* control_entity = librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id));
 					if (control_entity)					{
-						lua_pushnumber(L, control_entity->id);
+						lua_pushinteger(L, control_entity->id);
 					} else	{
-						lua_pushnumber(L, -1);
+						lua_pushinteger(L, -1);
 					}
 					return 2;
 				}
 				else return 1;
 				break;
 			case VCOOP_PED:
-				lua_pushnumber(L, 2);
+				lua_pushinteger(L, 2);
 				if (librg_entity_control_get(&gServerNetwork->ctx, entity->id)) {
 					librg_entity_t* control_entity = librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id));
 					if (control_entity) {
-						lua_pushnumber(L, control_entity->id);
+						lua_pushinteger(L, control_entity->id);
 					}
 					else {
-						lua_pushnumber(L, -1);
+						lua_pushinteger(L, -1);
 					}
 					return 2;
 				}
 				else return 1;
 				break;
 			case VCOOP_VEHICLE:
-				lua_pushnumber(L, 3);
+				lua_pushinteger(L, 3);
 				if (librg_entity_control_get(&gServerNetwork->ctx, entity->id)) {
 					librg_entity_t* control_entity = librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id));
 					if (control_entity) {
-						lua_pushnumber(L, control_entity->id);
+						lua_pushinteger(L, control_entity->id);
 					}
 					else {
-						lua_pushnumber(L, -1);
+						lua_pushinteger(L, -1);
 					}
 					return 2;
 				}
 				else return 1;
 				break;
 			case VCOOP_OBJECT:
-				lua_pushnumber(L, 4);
+				lua_pushinteger(L, 4);
 				if (librg_entity_control_get(&gServerNetwork->ctx, entity->id)) {
 					librg_entity_t* control_entity = librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id));
 					if (control_entity) {
-						lua_pushnumber(L, control_entity->id);
+						lua_pushinteger(L, control_entity->id);
 					}
 					else {
-						lua_pushnumber(L, -1);
+						lua_pushinteger(L, -1);
 					}
 					return 2;
 				}
