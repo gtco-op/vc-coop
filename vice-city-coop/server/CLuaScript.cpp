@@ -1,25 +1,28 @@
 #include "server.h"
 
 static const struct luaL_Reg vccooplib[] = {
-	{ "print",				&CLuaScript::lua_Log },
-	{ "sleep",				&CLuaScript::lua_Sleep },
+	{ "print",					&CLuaScript::lua_Log },
+	{ "sleep",					&CLuaScript::lua_Sleep },
 
-	{ "SendGlobalMessage",	&CLuaScript::lua_SendGlobalMessage },
+	{ "SendGlobalMessage",		&CLuaScript::lua_SendGlobalMessage },
 
-	{ "GetEntityType",		&CLuaScript::lua_GetEntityType },
+	{ "GetEntityType",			&CLuaScript::lua_GetEntityType },
 
-	{ "GetEntityPos",		&CLuaScript::lua_GetEntityPos },
-	{ "SetEntityPos",		&CLuaScript::lua_SetEntityPos },
+	{ "GetEntityPos",			&CLuaScript::lua_GetEntityPos },
+	{ "SetEntityPos",			&CLuaScript::lua_SetEntityPos },
 
-	{ "GetPlayerHealth",	&CLuaScript::lua_GetPlayerHealth },
-	{ "SetPlayerHealth",	&CLuaScript::lua_SetPlayerHealth },
+	{ "GetEntityOrientation",	&CLuaScript::lua_GetEntityOrientation },
+	{ "SetEntityOrientation",	&CLuaScript::lua_SetEntityOrientation },
 
-	{ "GetRandomModel",		&CLuaScript::lua_GetRandomModel },
-	{ "GetPlayerName",		&CLuaScript::lua_GetPlayerName },
+	{ "GetPlayerHealth",		&CLuaScript::lua_GetPlayerHealth },
+	{ "SetPlayerHealth",		&CLuaScript::lua_SetPlayerHealth },
 
-	{ "AddObject",			&CLuaScript::lua_AddObject },
-	{ "AddVehicle",			&CLuaScript::lua_AddVehicle },
-	{ "AddPed",				&CLuaScript::lua_AddPed },
+	{ "GetRandomModel",			&CLuaScript::lua_GetRandomModel },
+	{ "GetPlayerName",			&CLuaScript::lua_GetPlayerName },
+
+	{ "AddObject",				&CLuaScript::lua_AddObject },
+	{ "AddVehicle",				&CLuaScript::lua_AddVehicle },
+	{ "AddPed",					&CLuaScript::lua_AddPed },
 
 	{ NULL, NULL }
 };
