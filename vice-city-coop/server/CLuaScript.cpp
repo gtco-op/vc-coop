@@ -12,6 +12,7 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "SetEntityPos",		&CLuaScript::lua_SetEntityPos },
 
 	{ "GetPlayerHealth",	&CLuaScript::lua_GetPlayerHealth },
+	{ "SetPlayerHealth",	&CLuaScript::lua_SetPlayerHealth },
 
 	{ "GetRandomModel",		&CLuaScript::lua_GetRandomModel },
 	{ "GetPlayerName",		&CLuaScript::lua_GetPlayerName },
@@ -166,6 +167,21 @@ int CLuaScript::lua_GetPlayerHealth(lua_State* L)
 		if (entity && entity->type == VCOOP_PLAYER) {
 			lua_pushnumber(L, ((*(PlayerSyncData*)entity->user_data).Health));
 			return 1;
+		}
+	}
+	return 0;
+}
+int CLuaScript::lua_SetPlayerHealth(lua_State* L)
+{
+	if (lua_gettop(L) == 2)	{
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tointeger(L, 1));
+		if (entity && entity->type == VCOOP_PLAYER)		{
+			float health = lua_tonumber(L, 2);
+			PlayerSyncData* spd = (PlayerSyncData*)entity->user_data;
+			if (spd)			{
+				librg_peer_t* peer = librg_entity_control_get(&gServerNetwork->ctx, entity->id);
+				spd->Health = health;
+			}
 		}
 	}
 	return 0;

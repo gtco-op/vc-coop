@@ -28,6 +28,8 @@ public:
 	static int lua_GetPlayerHealth(lua_State* L);
 	static int lua_GetPlayerName(lua_State* L);
 
+	static int lua_SetPlayerHealth(lua_State* L);
+
 	static int lua_GetRandomModel(lua_State* L);
 
 	static int lua_Log(lua_State* L);
