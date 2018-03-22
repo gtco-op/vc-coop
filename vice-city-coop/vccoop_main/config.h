@@ -365,7 +365,9 @@ public:
 	signed short m_bRadioTrackSkip;
 };
 #pragma pack(pop)
+#endif
 
+#if defined(VCCOOP_SERVER)
 enum ePedAction : unsigned int
 {
 	None = 0,

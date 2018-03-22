@@ -142,27 +142,33 @@ int CLuaScript::lua_GetEntityOrientation(lua_State* L)
 					librg_entity_control_remove(&gServerNetwork->ctx, entity->id);
 
 			switch (entity->type) {
-			case VCOOP_PLAYER:
-				PlayerSyncData spd = *(PlayerSyncData*)entity->user_data;
+				case VCOOP_PLAYER: 
+				{
+					PlayerSyncData spd = *(PlayerSyncData*)entity->user_data;
 
-				lua_pushnumber(L, spd.OrientX);
-				lua_pushnumber(L, spd.OrientY);
-				lua_pushnumber(L, spd.OrientZ);
-				break;
-			case VCOOP_PED:
-				PedSyncData spd = *(PedSyncData*)entity->user_data;
+					lua_pushnumber(L, spd.OrientX);
+					lua_pushnumber(L, spd.OrientY);
+					lua_pushnumber(L, spd.OrientZ);
+					break;
+				}
+				case VCOOP_PED: 
+				{
+					PedSyncData spd = *(PedSyncData*)entity->user_data;
 
-				lua_pushnumber(L, spd.OrientX);
-				lua_pushnumber(L, spd.OrientY);
-				lua_pushnumber(L, spd.OrientZ);
-				break;
-			case VCOOP_VEHICLE:
-				VehicleSyncData spd = *(VehicleSyncData*)entity->user_data;
+					lua_pushnumber(L, spd.OrientX);
+					lua_pushnumber(L, spd.OrientY);
+					lua_pushnumber(L, spd.OrientZ);
+					break;
+				}
+				case VCOOP_VEHICLE:
+				{
+					VehicleSyncData spd = *(VehicleSyncData*)entity->user_data;
 
-				lua_pushnumber(L, spd.OrientX);
-				lua_pushnumber(L, spd.OrientY);
-				lua_pushnumber(L, spd.OrientZ);
-				break;
+					lua_pushnumber(L, spd.OrientX);
+					lua_pushnumber(L, spd.OrientY);
+					lua_pushnumber(L, spd.OrientZ);
+					break;
+				}
 			}
 			return 3;
 		}
@@ -184,27 +190,33 @@ int CLuaScript::lua_SetEntityOrientation(lua_State* L)
 					Z = lua_tonumber(L, 4);
 
 			switch (entity->type) {
-			case VCOOP_PLAYER:
-				PlayerSyncData spd = *(PlayerSyncData*)entity->user_data;
+				case VCOOP_PLAYER:
+				{
+					PlayerSyncData spd = *(PlayerSyncData*)entity->user_data;
 
-				spd.OrientX = X;
-				spd.OrientY = Y;
-				spd.OrientZ = Z;
-				break;
-			case VCOOP_PED:
-				PedSyncData spd = *(PedSyncData*)entity->user_data;
+					spd.OrientX = X;
+					spd.OrientY = Y;
+					spd.OrientZ = Z;
+					break;
+				}
+				case VCOOP_PED: 
+				{
+					PedSyncData spd = *(PedSyncData*)entity->user_data;
 
-				spd.OrientX = X;
-				spd.OrientY = Y;
-				spd.OrientZ = Z;
-				break;
-			case VCOOP_VEHICLE:
-				VehicleSyncData spd = *(VehicleSyncData*)entity->user_data;
+					spd.OrientX = X;
+					spd.OrientY = Y;
+					spd.OrientZ = Z;
+					break;
+				}
+				case VCOOP_VEHICLE:
+				{
+					VehicleSyncData spd = *(VehicleSyncData*)entity->user_data;
 
-				spd.OrientX = X;
-				spd.OrientY = Y;
-				spd.OrientZ = Z;
-				break;
+					spd.OrientX = X;
+					spd.OrientY = Y;
+					spd.OrientZ = Z;
+					break;
+				}
 			}
 		}
 	}
@@ -294,7 +306,7 @@ int CLuaScript::lua_AddObject(lua_State* L)
 	entity->position = *(zplm_vec3_t*)&position;
 
 	gLog->Log("[ObjCreate] Created object with ID: %d\n", entity->id);
-	lua_pushnumber(L, entity->id);
+	lua_pushinteger(L, entity->id);
 	return 1;
 }
 int CLuaScript::lua_AddPed(lua_State* L)
@@ -343,7 +355,7 @@ int CLuaScript::lua_AddPed(lua_State* L)
 
 	gLog->Log("[PedCreate] Created ped with ID: %d\n", entity->id);
 
-	lua_pushnumber(L, entity->id);
+	lua_pushinteger(L, entity->id);
 
 	return 1;
 }
@@ -380,7 +392,7 @@ int CLuaScript::lua_AddVehicle(lua_State* L)
 
 	gLog->Log("[VehCreate] Created vehicle with ID: %d\n", entity->id);
 	
-	lua_pushnumber(L, entity->id);
+	lua_pushinteger(L, entity->id);
 
 	return 1;
 }
