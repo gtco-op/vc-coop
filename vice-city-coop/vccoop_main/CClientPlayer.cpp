@@ -5,7 +5,7 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 	if (gID == -1)return;
 	this->ped = NULL;
 	CPlayerPed::SetupPlayerPed(gID);
-	CWorld::Players[gID].m_pPed->m_nPedStatus = 2;
+	CWorld::Players[gID].m_pPed->m_nPedStatus = 1;
 	this->ped = CWorld::Players[gID].m_pPed;
 	this->ped->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 	//CStreaming::RequestModel(7, 0);

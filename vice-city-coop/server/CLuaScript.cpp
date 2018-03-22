@@ -348,6 +348,7 @@ int CLuaScript::lua_AddPed(lua_State* L)
 	entity->user_data = new PedSyncData();
 	((PedSyncData*)entity->user_data)->iModelIndex	= modelID;
 	((PedSyncData*)entity->user_data)->Wander		= wander;
+	((PedSyncData*)entity->user_data)->Health = 100.f;
 
 	entity->position.x = position.x;
 	entity->position.y = position.y;

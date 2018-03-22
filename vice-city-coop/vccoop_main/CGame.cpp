@@ -181,8 +181,13 @@ bool IsModelLoaded(int modelid)
 
 void CGame::CustomModelLoad(int id)
 {
-	while (!IsModelLoaded(id)) {
-		CStreaming::RequestModel(id, 22);
+	if (id == NULL)
+		return;
+
+	int modelid = id;
+
+	while (!IsModelLoaded(modelid)) {
+		CStreaming::RequestModel(modelid, 22);
 		Sleep(1);
 	}
 }
@@ -538,6 +543,8 @@ CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
 		return nullptr;
 
 	this->CustomModelLoad(modelIndex);
+	if (!IsModelLoaded(modelIndex))
+		return CreateVehicle(modelIndex, position);
 
 	CVehicle *vehicle = nullptr;
 	gLog->Log("[CGame] Vehicle type: %d\n", reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);

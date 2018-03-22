@@ -19,7 +19,12 @@ CClientPed::CClientPed(int nID)
 	CVector spawnPos = { (float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, CWorld::FindGroundZFor3DCoord((float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, (float)node.m_wPosZ*0.125f, &res) + 1.0f };
 
 	this->ped = new CCivilianPed(ePedType::PEDTYPE_CIVMALE, 7);
+	this->ped->m_nPedFlags.bClearObjective = true;
+	this->ped->m_nPedFlags.bIsPedDieAnimPlaying = false;
+	this->ped->m_fHealth = 100.f;
+	this->ped->ClearAll();
 	CWorld::Add(this->ped);
+	this->ped->SetMoveState(eMoveState::STATE_DO_NOTHING);
 	this->ped->m_placement.pos = spawnPos;
 	this->ped->SetWanderPath(Random(0, 9650));
 
