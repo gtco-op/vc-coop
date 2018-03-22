@@ -181,16 +181,9 @@ bool IsModelLoaded(int modelid)
 
 void CGame::CustomModelLoad(int id)
 {
-	int modelid = id;
-	DWORD * dwModelIndexes = (DWORD *)0x7D1DE0;
-
-	if (dwModelIndexes && modelid < 0) modelid = dwModelIndexes[modelid * -7];
-
-	if (!IsModelLoaded(id))
-	{
-		CStreaming::RequestModel(modelid, 22);
-		CStreaming::LoadAllRequestedModels(false);
-		while (!IsModelLoaded(id))Sleep(1);
+	while (!IsModelLoaded(id)) {
+		CStreaming::RequestModel(id, 22);
+		Sleep(1);
 	}
 }
 /*
