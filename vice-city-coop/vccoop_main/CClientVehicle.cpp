@@ -84,6 +84,8 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 			veh->m_placement.pos.z = spd.vehiclePos.z;
 		}
 
+		veh->m_placement.SetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
+
 		veh->m_placement.at = spd.vehicleAt;
 		veh->m_placement.right = spd.vehicleRight;
 		veh->m_placement.up = spd.vehicleUp;
@@ -110,6 +112,8 @@ VehicleSyncData CClientVehicle::BuildSyncData()
 	spd.vehicleUp = this->veh->m_placement.up;
 	spd.moveSpeed = this->veh->m_vecMoveSpeed;
 	spd.turnSpeed = this->veh->m_vecTurnSpeed;
+
+	this->veh->m_placement.GetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
 	if(this->veh->m_pDriver)spd.driver = gNetwork->GetNetworkIDFromEntity(this->veh->m_pDriver);
 	else spd.driver = -1;

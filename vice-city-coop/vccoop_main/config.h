@@ -603,6 +603,10 @@ struct PedSyncData
 	float Armour;
 	float Rotation;
 
+	float OrientX;
+	float OrientY;
+	float OrientZ;
+
 	bool Wander;
 
 	int iModelIndex;
@@ -675,6 +679,10 @@ struct PlayerSyncData
 	float Armour;
 	float Rotation;
 
+	float OrientX;
+	float OrientY;
+	float OrientZ;
+
 	int iModelIndex;
 	int iInteriorID;
 	int iCurrentAnimID;
@@ -705,6 +713,11 @@ struct VehicleSyncData
 	float Health;
 	int vehicleID;
 	int vehicleSeat;
+
+	float OrientX;
+	float OrientY;
+	float OrientZ;
+
 	CVector vehiclePos;
 	CVector vehicleAt;
 	CVector vehicleRight;

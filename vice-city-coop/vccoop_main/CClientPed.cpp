@@ -57,6 +57,8 @@ void CClientPed::SyncPed(PedSyncData spd)
 	ped->m_fRotationCur = spd.Rotation;
 	ped->m_fArmour = spd.Armour;
 
+	ped->m_placement.SetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
+
 	ped->m_fRotationDest = spd.m_fRotationDest;
 	ped->m_fLookDirection = spd.m_fLookDirection;
 	ped->m_vecAnimMoveDelta = spd.m_vecAnimMoveDelta;
@@ -124,6 +126,8 @@ PedSyncData CClientPed::BuildSyncData()
 	spd.Armour = ped->m_fArmour;
 	spd.iModelIndex = ped->m_nModelIndex;
 	spd.Rotation = ped->m_fRotationCur;
+
+	ped->m_placement.GetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
 	//Move sync
 	spd.m_fRotationDest = ped->m_fRotationDest;

@@ -124,6 +124,8 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 	ped->m_fRotationDest = spd.Rotation;
 	ped->m_fArmour = spd.Armour;
 
+	ped->m_placement.SetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
+
 	if (spd.WepModelIndex > 0 && spd.CurrWep > 0)
 	{
 		gGame->CustomModelLoad(spd.WepModelIndex);
@@ -299,11 +301,14 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 PlayerSyncData CClientPlayer::BuildSyncData()
 {
 	PlayerSyncData spd;
+
 	spd.Health = ped->m_fHealth;
 	spd.iCurrentAnimID = ped->m_dwAnimGroupId;
 	spd.Armour = ped->m_fArmour;
 	spd.iModelIndex = ped->m_nModelIndex;
 	spd.Rotation = ped->m_fRotationCur;
+
+	ped->m_placement.GetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
 	spd.m_nPedFlags.bIsStanding = ped->m_nPedFlags.bIsStanding;
 	spd.m_nPedFlags.bWasStanding = ped->m_nPedFlags.bWasStanding;
