@@ -534,12 +534,12 @@ struct PedSyncData
 	float m_dwAnimGroupId;
 	CVector m_vecMoveSpeed;
 
-	int m_dwAction;
+	ePedAction m_dwAction;
 	int m_dwActionTimer;
 	float m_dwActionX;
 	float m_dwActionY;
 
-	int m_dwObjective;
+	eObjective m_dwObjective;
 	int m_dwObjectiveTimer;
 
 	CVector m_vecObjective;

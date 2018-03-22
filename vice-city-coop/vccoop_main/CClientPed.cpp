@@ -66,8 +66,8 @@ void CClientPed::SyncPed(PedSyncData spd)
 	//Action sync
 	ped->m_dwAction = spd.m_dwAction;
 	ped->m_dwActionTimer = spd.m_dwActionTimer;
-	ped->m_fActionX = spd.m_fActionX;
-	ped->m_fActionY = spd.m_fActionY;
+	ped->m_ActionPos.x = spd.m_fActionX;
+	ped->m_ActionPos.y = spd.m_fActionY;
 
 	//Objective sync
 	ped->m_dwObjective = spd.m_dwObjective;
@@ -111,8 +111,8 @@ void CClientPed::SyncPed(PedSyncData spd)
 	//Event sync
 	ped->m_dwEventType = spd.m_dwEventType;
 	ped->m_fAngleToEvent = spd.m_fAngleToEvent;
-	ped->m_fEventOrThreatX = spd.m_fEventOrThreatX;
-	ped->m_fEventOrThreatY = spd.m_fEventOrThreatY;
+	ped->m_EventOrThreatPos.x = spd.m_fEventOrThreatX;
+	ped->m_EventOrThreatPos.y = spd.m_fEventOrThreatY;
 }
 
 PedSyncData CClientPed::BuildSyncData()
@@ -135,8 +135,8 @@ PedSyncData CClientPed::BuildSyncData()
 	//Action sync
 	spd.m_dwAction = ped->m_dwAction;
 	spd.m_dwActionTimer = ped->m_dwActionTimer;
-	spd.m_fActionX = ped->m_fActionX;
-	spd.m_fActionY = ped->m_fActionY;
+	spd.m_fActionX = ped->m_ActionPos.x;
+	spd.m_fActionY = ped->m_ActionPos.y;
 
 	//Objective sync
 	spd.m_dwObjective = ped->m_dwObjective;
@@ -182,8 +182,8 @@ PedSyncData CClientPed::BuildSyncData()
 	//Event sync
 	spd.m_dwEventType = ped->m_dwEventType;
 	spd.m_fAngleToEvent = ped->m_fAngleToEvent;
-	spd.m_fEventOrThreatX = ped->m_fEventOrThreatX;
-	spd.m_fEventOrThreatY = ped->m_fEventOrThreatY;
+	spd.m_fEventOrThreatX = ped->m_EventOrThreatPos.x;
+	spd.m_fEventOrThreatY = ped->m_EventOrThreatPos.y;
 
 	this->syncData = spd;
 
