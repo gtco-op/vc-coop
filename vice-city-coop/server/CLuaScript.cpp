@@ -129,6 +129,84 @@ int CLuaScript::lua_SetEntityPos(lua_State* L)
 	}
 	return 0;
 }
+int CLuaScript::lua_GetEntityOrientation(lua_State* L)
+{
+	if (lua_gettop(L) == 1)	{
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && ((entity->type == VCOOP_PLAYER || entity->type == VCOOP_VEHICLE || entity->type == VCOOP_PED))) {
+			if (librg_entity_control_get(&gServerNetwork->ctx, entity->id))
+				if (librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id)))
+					librg_entity_control_remove(&gServerNetwork->ctx, entity->id);
+
+			switch (entity->type) {
+			case VCOOP_PLAYER:
+				PlayerSyncData spd = *(PlayerSyncData*)entity->user_data;
+
+				lua_pushnumber(L, spd.OrientX);
+				lua_pushnumber(L, spd.OrientY);
+				lua_pushnumber(L, spd.OrientZ);
+				break;
+			case VCOOP_PED:
+				PedSyncData spd = *(PedSyncData*)entity->user_data;
+
+				lua_pushnumber(L, spd.OrientX);
+				lua_pushnumber(L, spd.OrientY);
+				lua_pushnumber(L, spd.OrientZ);
+				break;
+			case VCOOP_VEHICLE:
+				VehicleSyncData spd = *(VehicleSyncData*)entity->user_data;
+
+				lua_pushnumber(L, spd.OrientX);
+				lua_pushnumber(L, spd.OrientY);
+				lua_pushnumber(L, spd.OrientZ);
+				break;
+			}
+			return 3;
+		}
+		else return 0;
+	}
+	else return 0;
+}
+int CLuaScript::lua_SetEntityOrientation(lua_State* L)
+{
+	if (lua_gettop(L) == 4) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && ((entity->type == VCOOP_PLAYER || entity->type == VCOOP_VEHICLE || entity->type == VCOOP_PED))) {
+			if (librg_entity_control_get(&gServerNetwork->ctx, entity->id))
+				if (librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id)))
+					librg_entity_control_remove(&gServerNetwork->ctx, entity->id);
+
+			float	X = lua_tonumber(L, 2), 
+					Y = lua_tonumber(L, 3), 
+					Z = lua_tonumber(L, 4);
+
+			switch (entity->type) {
+			case VCOOP_PLAYER:
+				PlayerSyncData spd = *(PlayerSyncData*)entity->user_data;
+
+				spd.OrientX = X;
+				spd.OrientY = Y;
+				spd.OrientZ = Z;
+				break;
+			case VCOOP_PED:
+				PedSyncData spd = *(PedSyncData*)entity->user_data;
+
+				spd.OrientX = X;
+				spd.OrientY = Y;
+				spd.OrientZ = Z;
+				break;
+			case VCOOP_VEHICLE:
+				VehicleSyncData spd = *(VehicleSyncData*)entity->user_data;
+
+				spd.OrientX = X;
+				spd.OrientY = Y;
+				spd.OrientZ = Z;
+				break;
+			}
+		}
+	}
+	return 0;
+}
 int CLuaScript::lua_SendGlobalMessage(lua_State* L)
 {
 	int nargs = lua_gettop(L);

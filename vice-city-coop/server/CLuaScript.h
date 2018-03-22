@@ -25,6 +25,9 @@ public:
 	static int lua_GetEntityPos(lua_State* L);
 	static int lua_SetEntityPos(lua_State* L);
 
+	static int lua_GetEntityOrientation(lua_State* L);
+	static int lua_SetEntityOrientation(lua_State* L);
+
 	static int lua_GetPlayerHealth(lua_State* L);
 	static int lua_GetPlayerName(lua_State* L);
 
