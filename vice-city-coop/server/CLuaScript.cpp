@@ -288,7 +288,7 @@ int CLuaScript::lua_SendGlobalMessage(lua_State* L)
 		return 0;
 	
 	char buffer[256];
-	sprintf(buffer, "[Server] %s", lua_tolstring(L, 1, NULL));
+	sprintf(buffer, "%s", lua_tolstring(L, 1, NULL));
 	librg_message_send_all(&gServerNetwork->ctx, VCOOP_RECEIVE_MESSAGE, buffer, sizeof(buffer));
 	return 0;
 }
