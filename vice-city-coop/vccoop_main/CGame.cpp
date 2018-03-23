@@ -618,10 +618,13 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 		case WM_SYSKEYDOWN:
 		case WM_KEYDOWN:
 		{
+			int vkey = (int)wparam; 
+
+			if (gChat->chatToggled && vkey == VK_RETURN)
+				return ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam);
+
 			if (!gRender->bEscMenu && (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard))
 				break;
-
-			int vkey = (int)wparam;
 
 			if (vkey == 'P' && gNetwork->connected)
 			{
