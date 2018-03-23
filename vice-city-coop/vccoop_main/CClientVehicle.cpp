@@ -1,13 +1,16 @@
 ﻿#include "main.h"
 
-CClientVehicle::CClientVehicle(int nID, int modelID, CVector position)
+CClientVehicle::CClientVehicle(int nID, int modelID, CVector position, int PrimaryColor, int SecondaryColor)
 {
-	this->model = modelID;
-	this->veh = gGame->CreateVehicle(this->model, position);
-	this->streamed = true;
-	this->networkID = nID;
-	this->type = VCOOP_VEHICLE;
+	this->type						= VCOOP_VEHICLE;
+	this->model						= modelID;
+	this->streamed					= true;
+	this->networkID					= nID;
 
+	this->veh						= gGame->CreateVehicle(this->model, position);
+	this->veh->m_nPrimaryColor		= PrimaryColor;
+	this->veh->m_nSecondaryColor	= SecondaryColor;
+	
 	gLog->Log("[CClientVehicle] Network ID: %d Veh pointer: 0x%X ModelID: %d\n", nID, this->veh, modelID);
 }
 
