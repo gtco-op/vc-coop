@@ -25,7 +25,7 @@
 #define VCCOOP_DEFAULT_SERVER_CONFIG	"server.ini"
 
 // Default client config filename
-#define VCCOOP_DEFAULT_CLIENT_CONFIG	"client.ini"
+#define VCCOOP_DEFAULT_CLIENT_CONFIG	".//vccoop//client.ini"
 
 // VCCOOP Window Title
 #define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
