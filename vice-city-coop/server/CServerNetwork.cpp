@@ -206,8 +206,6 @@ void CServerNetwork::on_creating_entity(librg_event_t *event)
 
 void CServerNetwork::on_entity_update(librg_event_t *event)
 {
-	gGamemodeScript->Call("onEntityUpdate", "ii", event->entity->id, event->entity->type);
-
 	if (event->entity->type == VCOOP_PLAYER)
 	{
 		librg_data_wptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
@@ -268,8 +266,6 @@ void CServerNetwork::on_entity_remove(librg_event_t *event) //entity streamed ou
 
 void CServerNetwork::on_stream_update(librg_event_t *event) 
 {
-	gGamemodeScript->Call("onStreamUpdate", "ii", event->entity->id, event->entity->type);
-
 	if (event->entity->type == VCOOP_PLAYER)
 	{
 		librg_data_rptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
