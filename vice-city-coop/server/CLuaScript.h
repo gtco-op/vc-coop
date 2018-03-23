@@ -20,6 +20,8 @@ public:
 
 	static int lua_SendGlobalMessage(lua_State* L);
 
+	static int lua_IsEntityValid(lua_State* L);
+
 	static int lua_GetEntityType(lua_State* L);
 
 	static int lua_GetEntityPos(lua_State* L);

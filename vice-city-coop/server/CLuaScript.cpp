@@ -6,6 +6,8 @@ static const struct luaL_Reg vccooplib[] = {
 
 	{ "SendGlobalMessage",		&CLuaScript::lua_SendGlobalMessage },
 
+	{ "IsEntityValid",			&CLuaScript::lua_IsEntityValid },
+
 	{ "GetEntityType",			&CLuaScript::lua_GetEntityType },
 
 	{ "GetEntityPos",			&CLuaScript::lua_GetEntityPos },
@@ -38,6 +40,21 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 
 	m_Data = ptr;
 }
+int CLuaScript::lua_IsEntityValid(lua_State* L)
+{
+	if (lua_gettop(L) == 1)	{
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tointeger(L, 1));
+		if (entity) {
+			lua_pushboolean(L, true);
+		}
+		else		{
+			lua_pushboolean(L, false);
+		}
+		return 1;
+	}
+	else return 0;
+}
+
 int CLuaScript::lua_GetEntityControlPeer(lua_State* L)
 {
 	if (lua_gettop(L) == 1)	{
