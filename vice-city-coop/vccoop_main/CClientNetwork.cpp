@@ -354,22 +354,21 @@ void CClientNetwork::ClientDisconnect(librg_message_t* msg)
 	u32 playerid;
 	librg_data_rptr(msg->data, &playerid, sizeof(u32));
 	librg_entity_t * entity = librg_entity_fetch(msg->ctx, playerid);
-	
-	CClientPlayer * player = (CClientPlayer *)entity->user_data;
-
-	gLog->Log("[CClientNetwork] %s has disconnected.\n", player->szName);
-
-	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+	if (entity)
 	{
-		if (player == (*it))
-		{
-			gNetwork->networkEntities.erase(it);
-			break;
-		}
-	}
+		CClientPlayer * player = (CClientPlayer *)entity->user_data;
+		gLog->Log("[CClientNetwork] %s has disconnected.\n", player->szName);
 
-	delete player;
-	entity->user_data = NULL;
+		for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)		{
+			if (player == (*it))			{
+				gNetwork->networkEntities.erase(it);
+				break;
+			}
+		}
+		delete player;
+		entity->user_data = NULL;
+	}
+	// else, a player was kicked...
 }
 
 void CClientNetwork::on_disconnect(librg_event_t *event) 

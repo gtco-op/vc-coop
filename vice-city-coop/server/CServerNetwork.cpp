@@ -120,6 +120,14 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 	librg_data_rptr(msg->data, (void*)&name, 25);
 	librg_entity_t * entity = librg_entity_find(msg->ctx, msg->peer);
 	strcpy(playerNames[entity->id], name);
+
+	for (int i = 0; i < MAX_PLAYERS; i++)	{
+		if (strstr(playerNames[i], name) && librg_entity_fetch(&gServerNetwork->ctx, i) != nullptr && i != entity->id)		{
+			gLog->Log("Name already used!\n");
+			gGamemodeScript->Call("onPlayerDisconnect", "iss", entity->id, "Name already used", name);
+			librg_network_kick(&gServerNetwork->ctx, entity->client_peer);
+		}
+	}
 	
 	//inform everyone we are connected
 	connectData cData;
@@ -300,8 +308,6 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 
 void CServerNetwork::on_disconnect(librg_event_t* event)
 {
-	gGamemodeScript->Call("onPlayerDisconnect", "i", event->entity->id);
-	
 	librg_entity_id *entities;
 	usize amount = librg_entity_query(event->ctx, event->entity->id, &entities);
 
@@ -337,6 +343,7 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
 	if (tmp != playerEntities.end())	
 	{
+		gGamemodeScript->Call("onPlayerDisconnect", "is", event->entity->id, "Quit");
 		playerEntities.erase(tmp);
 		delete event->entity->user_data;
 	}	
