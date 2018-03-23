@@ -27,40 +27,35 @@
 // Default client config filename
 #define VCCOOP_DEFAULT_CLIENT_CONFIG	".//vccoop//client.ini"
 
-// VCCOOP Window Title
-#ifdef VCCOOP_DEBUG
-	#define VCCOOP_WINDOW_TITLE				"Vice City CO-OP [Debug]"
-#else
-	#define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
-#endif
-
 //print game's internal debug messages
 #define VCCOOP_DEBUG_ENGINE
 
 //------------------------------------------------------------------------------------------
+#ifndef VCCOOP_SERVER 
+	#define VCCOOP_NAME									"VC CO-OP"
+	#define VCCOOP_VER									"0.02"
 
-#ifndef VCCOOP_SERVER
-	#define VCCOOP_NAME						"VC CO-OP"
+	#ifdef VCCOOP_DEBUG
+		#define VCCOOP_WINDOW_TITLE						"Vice City CO-OP [Debug] " VCCOOP_VER
+	#else
+		#define VCCOOP_WINDOW_TITLE						"Vice City CO-OP " VCCOOP_VER
+	#endif
 #else
+	#define VCCOOP_VER									"0.02a"
 	#ifdef _MSC_VER
 			#ifdef VCCOOP_DEBUG
-				#define VCCOOP_NAME						"VC CO-OP Windows Debug Server"
+				#define VCCOOP_NAME						"VC CO-OP Debug Server"
 			#else
-				#define VCCOOP_NAME						"VC CO-OP Windows Server"
+				#define VCCOOP_NAME						"VC CO-OP Server"
 			#endif
+			#define VCCOOP_SERVER_WINDOW_TITLE			VCCOOP_NAME " " VCCOOP_VER
 	#else
 			#ifdef VCCOOP_DEBUG
-				#define VCCOOP_NAME						"VC CO-OP Linux Debug Server"
+				#define VCCOOP_NAME						"VC CO-OP Debug Server"
 			#else
-				#define VCCOOP_NAME						"VC CO-OP Linux Server"
+				#define VCCOOP_NAME						"VC CO-OP Server"
 			#endif	
 	#endif
-#endif
-
-#ifndef VCCOOP_SERVER
-	#define VCCOOP_VER						"0.02"
-#else
-	#define VCCOOP_VER						"0.2.0.a"
 #endif
 
 #define DEFAULT_TIME_FORMAT				"%Y%m%d_%H%M%S"

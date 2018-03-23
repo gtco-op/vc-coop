@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
 	std::string input;
 	
 #if defined(_MSC_VER)
-	SetConsoleTitle(TEXT("Vice City CO-OP " VCCOOP_VER " Server"));
+	SetConsoleTitle(TEXT(VCCOOP_SERVER_WINDOW_TITLE));
 #endif
 	
 	gLog			= new CLogger;
