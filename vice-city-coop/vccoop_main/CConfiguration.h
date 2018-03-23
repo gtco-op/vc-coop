@@ -10,6 +10,9 @@ public:
 
 	/* Client Nickname */
 	char Nickname[25];
+
+	/* Chat Timestamp Display */
+	bool DisplayChatTimestamp;
 	
 	/* Populates values from INI file */
 	void PopulateValues(char IP[15], int& Port, char Name[25]);

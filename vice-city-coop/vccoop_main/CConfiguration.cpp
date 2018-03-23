@@ -16,7 +16,7 @@ CConfiguration::CConfiguration()
 		FILE* f = fopen(VCCOOP_DEFAULT_CLIENT_CONFIG, "w");
 		if (f)		{
 			char buffer[256];
-			sprintf(buffer, "[Client]\nNickname=" VCCOOP_DEFAULT_NICKNAME "\n[Server]\nServerAddress=" VCCOOP_DEFAULT_SERVER_ADDRESS "\nServerPort=%d", VCCOOP_DEFAULT_SERVER_PORT);
+			sprintf(buffer, "[Client]\nNickname=" VCCOOP_DEFAULT_NICKNAME "\nChatTimestamp=false\n[Server]\nServerAddress=" VCCOOP_DEFAULT_SERVER_ADDRESS "\nServerPort=%d", VCCOOP_DEFAULT_SERVER_PORT);
 			fputs(buffer, f);
 			fclose(f);
 			gLog->Log("[CConfiguration] Created default config file.\n");
@@ -67,9 +67,12 @@ void CConfiguration::PopulateValues(char srvIP[15], int& srvPort, char cliName[2
 	std::string name = this->GetReader()->Get("Client", "Nickname", VCCOOP_DEFAULT_NICKNAME);
 	strcpy(this->Nickname, name.c_str());
 
+	bool chattimestamp = this->GetReader()->GetBoolean("Client", "ChatTimestamp", false);
+		
 	strcpy(srvIP, this->ServerAddress);
 	srvPort = this->ServerPort;
 	strcpy(cliName, this->Nickname);
+	this->DisplayChatTimestamp = chattimestamp;
 	
 	gLog->Log("[CConfiguration] Settings loaded from configuration file.\n");
 
