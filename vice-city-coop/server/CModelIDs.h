@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAX_OBJ_MODEL_ID 288
-#define MAX_PED_MODEL_ID 195
+#define MAX_PED_MODEL_ID 174
 #define MAX_VEH_MODEL_ID 104
 
 enum eModelType {

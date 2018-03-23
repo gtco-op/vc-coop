@@ -201,7 +201,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 		PedSyncData spd;
 		librg_data_rptr(event->data, &spd, sizeof(PedSyncData));
 
-		event->entity->user_data = new CClientPed(event->entity->id);
+		event->entity->user_data = new CClientPed(event->entity->id, spd.iModelIndex);
 		gNetwork->networkEntities.push_back((CClientPed*)event->entity->user_data);
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
