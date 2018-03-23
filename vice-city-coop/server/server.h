@@ -73,6 +73,12 @@ extern "C" {
 	#undef VCCOOP_VERBOSE_LOG
 #endif
 
+#ifndef _DEBUG
+	#undef VCCOOP_DEBUG_ENGINE
+	#undef VCCOOP_VERBOSE_LOG
+#endif 
+
+
 #include "CModelIDs.h"
 #include "CConfiguration.h"
 

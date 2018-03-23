@@ -84,6 +84,11 @@ extern "C" {
 	#undef VCCOOP_VERBOSE_LOG
 #endif
 
+#ifndef _DEBUG
+	#undef VCCOOP_DEBUG_ENGINE
+	#undef VCCOOP_VERBOSE_LOG
+#endif 
+
 #define GetKey(a)		(((GetAsyncKeyState(a)&0x8000)) && IsWindowActive() && (CTimer::m_snTimeInMilliseconds - keyPressTime >= 500))
 #define GetTwoKeys(a,b) ((GetAsyncKeyState(a)&0x8000) && (GetAsyncKeyState(b)&0x8000) && IsWindowActive() && (CTimer::m_snTimeInMilliseconds - keyPressTime >= 500))
 

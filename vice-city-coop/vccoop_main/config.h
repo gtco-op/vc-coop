@@ -36,20 +36,20 @@
 //------------------------------------------------------------------------------------------
 
 #ifndef VCCOOP_SERVER
-#define VCCOOP_NAME						"VC CO-OP"
+	#define VCCOOP_NAME						"VC CO-OP"
 #else
-#define VCCOOP_NAME						"VC CO-OP Server"
+#ifdef _MSC_VER
+	#define VCCOOP_NAME						"VC CO-OP Windows Server"
+#else
+	#define VCCOOP_NAME						"VC CO-OP Linux Server"
+	#endif
 #endif
 
 #ifndef VCCOOP_SERVER
-#define VCCOOP_VER						"0.02"
+	#define VCCOOP_VER						"0.02"
 #else
 #define VCCOOP_VER						"0.2.0.a"
 #endif
-#ifndef _DEBUG
-#undef VCCOOP_DEBUG_ENGINE
-#undef VCCOOP_VERBOSE_LOG
-#endif 
 
 #define DEFAULT_TIME_FORMAT				"%Y%m%d_%H%M%S"
 #define LOGGER_TIME_FORMAT				"%H:%M:%S"
