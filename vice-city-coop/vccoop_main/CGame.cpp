@@ -248,6 +248,7 @@ void CGame::InitPreGamePatches()
 	
 	RedirectAllPointers(0x401000, 0x67DD05, 0xA10AFB, CWorld_Players);
 
+#ifdef VCOOP_DEBUG
 	// Patch to allow multiple instances of the game
 	SYSTEMTIME time; 
 	GetSystemTime(&time); 
@@ -259,6 +260,7 @@ void CGame::InitPreGamePatches()
 	VirtualProtect(Pointer, 4, PAGE_READWRITE, &Protect); 
 	*Pointer = (DWORD)StreamName; 
 	VirtualProtect(Pointer, 4, Protect, &Protect);
+#endif
 
 	//disable gamestate initialize
 	MakeNop(0x601B3B, 10);
