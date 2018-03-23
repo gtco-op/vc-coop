@@ -1,7 +1,7 @@
 #pragma once
 
 // Define this for verbose log output
-#define VCCOOP_VERBOSE_LOG
+//#define VCCOOP_VERBOSE_LOG
 
 // Define this for verbose lua output (in server)
 //#define VCCOOP_LUA_VERBOSE_LOG
