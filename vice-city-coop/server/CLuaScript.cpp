@@ -137,10 +137,6 @@ int CLuaScript::lua_GetEntityOrientation(lua_State* L)
 	if (lua_gettop(L) == 1)	{
 		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
 		if (entity && ((entity->type == VCOOP_PLAYER || entity->type == VCOOP_VEHICLE || entity->type == VCOOP_PED))) {
-			if (librg_entity_control_get(&gServerNetwork->ctx, entity->id))
-				if (librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, entity->id)))
-					librg_entity_control_remove(&gServerNetwork->ctx, entity->id);
-
 			switch (entity->type) {
 				case VCOOP_PLAYER: 
 				{
