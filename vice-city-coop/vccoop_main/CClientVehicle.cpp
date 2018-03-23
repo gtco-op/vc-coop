@@ -1,9 +1,9 @@
 ﻿#include "main.h"
 
-CClientVehicle::CClientVehicle(int nID, int modelID)
+CClientVehicle::CClientVehicle(int nID, int modelID, CVector position)
 {
 	this->model = modelID;
-	this->veh = gGame->CreateVehicle(this->model, { VCCOOP_DEFAULT_SPAWN_POSITION });
+	this->veh = gGame->CreateVehicle(this->model, position);
 	this->streamed = true;
 	this->networkID = nID;
 	this->type = VCOOP_VEHICLE;
