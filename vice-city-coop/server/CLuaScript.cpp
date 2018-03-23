@@ -277,17 +277,17 @@ int CLuaScript::lua_GetRandomModel(lua_State* L)
 	if (lua_gettop(L) == 1)
 	{
 		if (strstr(lua_tostring(L, 1), "vehicle")) {
-			lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_VEH));
+			lua_pushinteger(L, CModelIDs::GetRandomModel(MODEL_VEH));
 			return 1;
 		}
 		else if (strstr(lua_tostring(L, 1), "object")) {
-			lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_OBJ));
+			lua_pushinteger(L, CModelIDs::GetRandomModel(MODEL_OBJ));
 			return 1;
 		}
 	}
 	else
 	{
-		lua_pushnumber(L, CModelIDs::GetRandomModel(MODEL_PED));
+		lua_pushinteger(L, CModelIDs::GetRandomModel(MODEL_PED));
 		return 1;
 	}
 	return 0;
