@@ -14,10 +14,9 @@ public:
 #endif
 	void CreateLuaThread();
 
-	static int lua_AddObject(lua_State* L);
-	static int lua_AddPed(lua_State* L);
-	static int lua_AddVehicle(lua_State* L);
-
+	static int lua_Log(lua_State* L);
+	static int lua_Sleep(lua_State* l);
+	
 	static int lua_SendGlobalMessage(lua_State* L);
 
 	static int lua_IsEntityValid(lua_State* L);
@@ -35,14 +34,17 @@ public:
 	static int lua_SetEntityOrientation(lua_State* L);
 
 	static int lua_GetPlayerHealth(lua_State* L);
-	static int lua_GetPlayerName(lua_State* L);
-
 	static int lua_SetPlayerHealth(lua_State* L);
 
+	static int lua_GetVehicleHealth(lua_State* L);
+	static int lua_SetVehicleHealth(lua_State* L);
+	
 	static int lua_GetRandomModel(lua_State* L);
-
-	static int lua_Log(lua_State* L);
-	static int lua_Sleep(lua_State* l);
+	static int lua_GetPlayerName(lua_State* L);
+	
+	static int lua_AddObject(lua_State* L);
+	static int lua_AddVehicle(lua_State* L);
+	static int lua_AddPed(lua_State* L);
 
 	virtual std::string GetCallbackName()			{ return m_CallBackName; }
 	virtual int GetArguments()						{ return m_Args; }

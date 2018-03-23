@@ -23,6 +23,9 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "GetPlayerHealth",		&CLuaScript::lua_GetPlayerHealth },
 	{ "SetPlayerHealth",		&CLuaScript::lua_SetPlayerHealth },
 
+	{ "GetVehicleHealth",		&CLuaScript::lua_GetVehicleHealth },
+	{ "SetVehicleHealth",		&CLuaScript::lua_SetVehicleHealth },
+
 	{ "GetRandomModel",			&CLuaScript::lua_GetRandomModel },
 	{ "GetPlayerName",			&CLuaScript::lua_GetPlayerName },
 
@@ -329,6 +332,35 @@ int CLuaScript::lua_SetPlayerHealth(lua_State* L)
 			PlayerSyncData* spd = (PlayerSyncData*)entity->user_data;
 			if (spd)			{
 				librg_peer_t* peer = librg_entity_control_get(&gServerNetwork->ctx, entity->id);
+				spd->Health = health;
+			}
+		}
+	}
+	return 0;
+}
+int CLuaScript::lua_GetVehicleHealth(lua_State* L)
+{
+	if (lua_gettop(L) == 1) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && entity->type == VCOOP_VEHICLE) {
+			lua_pushnumber(L, ((*(VehicleSyncData*)entity->user_data).Health));
+			return 1;
+		}
+	}
+	return 0;
+}
+int CLuaScript::lua_SetVehicleHealth(lua_State* L)
+{
+	if (lua_gettop(L) == 2) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tointeger(L, 1));
+		if (entity && entity->type == VCOOP_VEHICLE) {
+			VehicleSyncData* spd = (VehicleSyncData*)entity->user_data;
+			if (spd) {
+				librg_peer_t* peer = librg_entity_control_get(&gServerNetwork->ctx, entity->id);
+				if (peer)				{
+					librg_entity_control_remove(&gServerNetwork->ctx, entity->id);
+				}
+				float health = lua_tonumber(L, 2);
 				spd->Health = health;
 			}
 		}
