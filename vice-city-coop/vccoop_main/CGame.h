@@ -46,7 +46,7 @@ public:
 
 	static int keyPressTime;
 
-	CVehicle * CreateVehicle(unsigned int modelIndex, CVector position);
+	CVehicle * CreateVehicle(int modelIndex, CVector position);
 
 private:
 	void InitPreGamePatches(); 

@@ -86,6 +86,7 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 
 		veh->m_placement.SetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
+		veh->m_nModelIndex = spd.modelID;
 		veh->m_placement.at = spd.vehicleAt;
 		veh->m_placement.right = spd.vehicleRight;
 		veh->m_placement.up = spd.vehicleUp;
@@ -105,6 +106,7 @@ VehicleSyncData CClientVehicle::BuildSyncData()
 	VehicleSyncData spd;
 
 	spd.vehicleID = gNetwork->GetNetworkIDFromEntity(this->veh);
+	spd.modelID = this->veh->m_nModelIndex;
 	spd.Health = this->veh->m_fHealth;
 	spd.vehiclePos = this->veh->GetPosition();
 	spd.vehicleAt = this->veh->m_placement.at;

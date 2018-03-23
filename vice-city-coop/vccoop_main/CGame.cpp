@@ -185,7 +185,6 @@ void CGame::CustomModelLoad(int id)
 		return;
 
 	int modelid = id;
-
 	while (!IsModelLoaded(modelid)) {
 		CStreaming::RequestModel(modelid, 22);
 		Sleep(1);
@@ -537,7 +536,7 @@ void CGame::DisableMouseInput()
 	MakeNop(0x4AB6F0, 5);
 }
 
-CVehicle * CGame::CreateVehicle(unsigned int modelIndex, CVector position)
+CVehicle * CGame::CreateVehicle(int modelIndex, CVector position)
 {
 	if (modelIndex <= 0)
 		return nullptr;
