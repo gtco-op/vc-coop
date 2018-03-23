@@ -371,7 +371,7 @@ void CServerNetwork::measure(void *userptr) {
 	lastdl = ctx->network.host->totalReceivedData;
 	lastup = ctx->network.host->totalSentData;
 
-#ifndef VCCOOP_VERBOSE_LOG
+#ifndef VCCOOP_DEBUG
 	std::string buf("[");
 	buf.append(time_stamp(LOGGER_TIME_FORMAT));
 	buf.append("][" VCCOOP_NAME "][CServerNetwork]");
