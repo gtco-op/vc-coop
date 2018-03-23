@@ -394,7 +394,10 @@ int CLuaScript::lua_AddObject(lua_State* L)
 	entity->position = *(zplm_vec3_t*)&position;
 
 	gLog->Log("[ObjCreate] Created object with ID: %d\n", entity->id);
+	
 	lua_pushinteger(L, entity->id);
+	otherEntities.push_back(entity);
+
 	return 1;
 }
 int CLuaScript::lua_AddPed(lua_State* L)
@@ -445,6 +448,7 @@ int CLuaScript::lua_AddPed(lua_State* L)
 	gLog->Log("[PedCreate] Created ped with ID: %d\n", entity->id);
 
 	lua_pushinteger(L, entity->id);
+	otherEntities.push_back(entity);
 
 	return 1;
 }
@@ -480,6 +484,7 @@ int CLuaScript::lua_AddVehicle(lua_State* L)
 	gLog->Log("[VehCreate] Created vehicle with ID: %d\n", entity->id);
 	
 	lua_pushinteger(L, entity->id);
+	otherEntities.push_back(entity);
 
 	return 1;
 }
