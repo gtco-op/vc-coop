@@ -716,6 +716,9 @@ struct VehicleSyncData
 	int vehicleID;
 	int vehicleSeat;
 
+	unsigned char nPrimaryColor;
+	unsigned char nSecondaryColor;
+
 	float OrientX;
 	float OrientY;
 	float OrientZ;

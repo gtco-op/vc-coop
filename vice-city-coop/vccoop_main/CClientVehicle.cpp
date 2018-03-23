@@ -86,6 +86,8 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 
 		veh->m_placement.SetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
+		veh->m_nPrimaryColor = spd.nPrimaryColor;
+		veh->m_nSecondaryColor = spd.nSecondaryColor;
 		veh->m_nModelIndex = spd.modelID;
 		veh->m_placement.at = spd.vehicleAt;
 		veh->m_placement.right = spd.vehicleRight;
@@ -114,6 +116,9 @@ VehicleSyncData CClientVehicle::BuildSyncData()
 	spd.vehicleUp = this->veh->m_placement.up;
 	spd.moveSpeed = this->veh->m_vecMoveSpeed;
 	spd.turnSpeed = this->veh->m_vecTurnSpeed;
+
+	spd.nPrimaryColor = this->veh->m_nPrimaryColor;
+	spd.nSecondaryColor = this->veh->m_nSecondaryColor;
 
 	this->veh->m_placement.GetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
