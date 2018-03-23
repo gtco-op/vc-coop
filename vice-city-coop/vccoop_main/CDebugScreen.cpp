@@ -5,7 +5,6 @@ char   vccoop_string[600];
 
 #ifdef VCCOOP_DEBUG
 DeveloperConsole* CDebugScreen::gDevConsole;
-#endif
 
 CDebugScreen::CDebugScreen() 
 {
@@ -34,3 +33,4 @@ void CDebugScreen::Draw()
 	textSize = gRender->MeasureText(vccoop_string);
 	gRender->RenderText(vccoop_string, { (LONG)screen::GetScreenWidth() - textSize.cx - 5, (LONG)screen::GetScreenHeight() -textSize.cy - 5 }, 0xFFFFFFFF);
 }
+#endif
