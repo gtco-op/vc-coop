@@ -402,29 +402,27 @@ int CLuaScript::lua_AddPed(lua_State* L)
 int CLuaScript::lua_AddVehicle(lua_State* L)
 {
 	int nargs = lua_gettop(L);
-	if (nargs < 4 || nargs > 4)
+	if (nargs < 4 || nargs > 6)
 		return 0;
 
-	CVector position;
-	float x, y, z;
-	int modelID;
+	int modelID			= lua_tointeger(L, 1);
+	CVector position	= CVector(lua_tonumber(L, 2), lua_tonumber(L, 3), lua_tonumber(L, 4));
 
-	modelID		= lua_tointeger(L, 1);
 	if (!CModelIDs::IsValidVehicleModel(modelID))	{
 		gLog->Log("[CLuaScript] %d is an invalid vehicle model ID!\n", modelID);
 		return 0;
 	}
 
-	x			= lua_tonumber(L, 2);
-	y			= lua_tonumber(L, 3);
-	z			= lua_tonumber(L, 4);
-	position	= CVector(x, y, z);
+	librg_entity_t* entity								= librg_entity_create(&gServerNetwork->ctx, VCOOP_VEHICLE);
+	entity->user_data									= new VehicleSyncData();
+	((VehicleSyncData*)entity->user_data)->driver		= -1;
+	((VehicleSyncData*)entity->user_data)->vehicleID	= -1;
+	((VehicleSyncData*)entity->user_data)->modelID		= modelID;
 
-	librg_entity_t* entity = librg_entity_create(&gServerNetwork->ctx, VCOOP_VEHICLE);
-	entity->user_data = new VehicleSyncData();
-	((VehicleSyncData*)entity->user_data)->driver = -1;
-	((VehicleSyncData*)entity->user_data)->vehicleID = -1;
-	((VehicleSyncData*)entity->user_data)->modelID = modelID;
+	if (nargs == 6)	{
+		((VehicleSyncData*)entity->user_data)->nPrimaryColor	= lua_tonumber(L, 5);
+		((VehicleSyncData*)entity->user_data)->nSecondaryColor	= lua_tonumber(L, 6);
+	}
 
 	entity->position.x = position.x;
 	entity->position.y = position.y;
