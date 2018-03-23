@@ -14,6 +14,10 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "GetEntityOrientation",	&CLuaScript::lua_GetEntityOrientation },
 	{ "SetEntityOrientation",	&CLuaScript::lua_SetEntityOrientation },
 
+	{ "GetEntityControlPeer",	&CLuaScript::lua_GetEntityControlPeer },
+	{ "SetEntityControlPeer",	&CLuaScript::lua_SetEntityControlPeer },
+	{ "RemoveEntityControl",	&CLuaScript::lua_RemoveEntityControl },
+
 	{ "GetPlayerHealth",		&CLuaScript::lua_GetPlayerHealth },
 	{ "SetPlayerHealth",		&CLuaScript::lua_SetPlayerHealth },
 
@@ -33,6 +37,44 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 		return;	
 
 	m_Data = ptr;
+}
+int CLuaScript::lua_GetEntityControlPeer(lua_State* L)
+{
+	if (lua_gettop(L) == 1)	{
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity) {
+			librg_peer_t* controlPeer = librg_entity_control_get(&gServerNetwork->ctx, entity->id);
+			librg_entity_t* controlEntity = librg_entity_find(&gServerNetwork->ctx, controlPeer);
+			if (controlEntity) {
+				lua_pushnumber(L, controlEntity->id);
+				return 1;
+			}
+			else return 0;
+		}
+		else return 0;
+	}
+	else return 0;
+}
+int CLuaScript::lua_SetEntityControlPeer(lua_State* L)
+{
+	if (lua_gettop(L) == 2)	{
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		librg_entity_t* controlEntity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 2));
+		if (entity && controlEntity)		{
+			librg_entity_control_set(&gServerNetwork->ctx, entity->id, controlEntity->client_peer);
+		}
+	}
+	return 0;
+}
+int CLuaScript::lua_RemoveEntityControl(lua_State* L)
+{
+	if (lua_gettop(L) == 1)	{
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity) {
+			librg_entity_control_remove(&gServerNetwork->ctx, entity->id);
+		}
+	}
+	return 0;
 }
 int CLuaScript::lua_GetEntityType(lua_State *L)
 {
@@ -97,6 +139,7 @@ int CLuaScript::lua_GetEntityType(lua_State *L)
 				else return 1;
 				break;
 			}
+			return 0;
 		}
 		else return 0;
 	}

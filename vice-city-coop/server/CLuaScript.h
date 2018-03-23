@@ -25,6 +25,10 @@ public:
 	static int lua_GetEntityPos(lua_State* L);
 	static int lua_SetEntityPos(lua_State* L);
 
+	static int lua_GetEntityControlPeer(lua_State* L);
+	static int lua_SetEntityControlPeer(lua_State* L);
+	static int lua_RemoveEntityControl(lua_State* L);
+
 	static int lua_GetEntityOrientation(lua_State* L);
 	static int lua_SetEntityOrientation(lua_State* L);
 
