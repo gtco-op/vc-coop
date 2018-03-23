@@ -78,10 +78,10 @@ extern "C" {
 //vccoop
 #include "config.h"
 
-#ifndef VCCOOP_VERBOSE_LOG
-#ifdef VCCOOP_DEBUG
-#define VCCOOP_VERBOSE_LOG
-#endif
+#if !defined(VCCOOP_VERBOSE_LOG) && defined(VCCOOP_DEBUG)
+	#define VCCOOP_VERBOSE_LOG
+#else
+	#undef VCCOOP_VERBOSE_LOG
 #endif
 
 #define GetKey(a)		(((GetAsyncKeyState(a)&0x8000)) && IsWindowActive() && (CTimer::m_snTimeInMilliseconds - keyPressTime >= 500))

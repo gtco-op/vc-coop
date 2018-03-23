@@ -66,6 +66,13 @@ extern "C" {
 
 // VCCOOP
 #include "../vccoop_main/config.h"
+
+#if !defined(VCCOOP_VERBOSE_LOG) && defined(VCCOOP_DEBUG)
+	#define VCCOOP_VERBOSE_LOG
+#else
+	#undef VCCOOP_VERBOSE_LOG
+#endif
+
 #include "CModelIDs.h"
 #include "CConfiguration.h"
 
