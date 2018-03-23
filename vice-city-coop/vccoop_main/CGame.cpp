@@ -75,6 +75,8 @@ void CGame::OnConnected()
 #ifdef VCCOOP_VERBOSE_LOG
 	gLog->Log("[CGame] OnConnected called!\n");
 #endif
+
+	gChat->AddChatMessage("[" VCCOOP_NAME "] " "Connected to %s:%d as %s successfully.", gNetwork->ServerAddress, gNetwork->ServerPort, gGame->Name.c_str());
 }
 void CGame::StartMissionScript()
 {
