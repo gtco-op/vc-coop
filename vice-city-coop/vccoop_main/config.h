@@ -601,7 +601,7 @@ typedef struct _PED_FLAGS
 
 struct PedSyncData 
 {
-	float Health;
+	float Health = 100.f;
 	float Armour;
 	float Rotation;
 
@@ -677,7 +677,7 @@ struct PedSyncData
 
 struct PlayerSyncData 
 {
-	float Health;
+	float Health = 100.f;
 	float Armour;
 	float Rotation;
 
@@ -712,7 +712,7 @@ struct VehicleSyncData
 {
 	int modelID;
 	int driver;
-	float Health;
+	float Health = 100.f;
 	int vehicleID;
 	int vehicleSeat;
 
