@@ -211,7 +211,7 @@ void CClientNetwork::on_entity_create(librg_event_t *event)
 		{
 			gLog->Log("[CClientNetwork] Creating vehicle: %d\n", event->entity->id);
 
-			vehicle = new CClientVehicle(event->entity->id, spd.modelID, spd.vehiclePos);
+			vehicle = new CClientVehicle(event->entity->id, spd.modelID, spd.vehiclePos, spd.nPrimaryColor, spd.nSecondaryColor);
 			gNetwork->networkEntities.push_back(vehicle);
 			event->entity->user_data = vehicle;
 		}
