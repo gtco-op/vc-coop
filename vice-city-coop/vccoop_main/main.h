@@ -84,7 +84,7 @@ extern "C" {
 	#undef VCCOOP_VERBOSE_LOG
 #endif
 
-#ifndef _DEBUG
+#if !defined(_DEBUG) || !defined(VCCOOP_DEBUG)
 	#undef VCCOOP_DEBUG_ENGINE
 	#undef VCCOOP_VERBOSE_LOG
 #endif 

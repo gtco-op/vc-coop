@@ -28,7 +28,11 @@
 #define VCCOOP_DEFAULT_CLIENT_CONFIG	".//vccoop//client.ini"
 
 // VCCOOP Window Title
-#define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
+#ifdef VCCOOP_DEBUG
+	#define VCCOOP_WINDOW_TITLE				"Vice City CO-OP [Debug]"
+#else
+	#define VCCOOP_WINDOW_TITLE				"Vice City CO-OP"
+#endif
 
 //print game's internal debug messages
 #define VCCOOP_DEBUG_ENGINE
