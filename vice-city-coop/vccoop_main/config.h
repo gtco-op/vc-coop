@@ -719,6 +719,14 @@ struct VehicleSyncData
 {
 	int modelID;
 	int driver;
+	
+	int passengers[8];
+	unsigned char NumPassengers;
+	unsigned char NumGettingIn;
+	unsigned char GettingInFlags;
+	unsigned char GettingOutFlags;
+	unsigned char MaxPassengers;
+
 	float Health = 100.f;
 	int vehicleID;
 	int vehicleSeat;

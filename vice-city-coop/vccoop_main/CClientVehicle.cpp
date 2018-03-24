@@ -56,14 +56,28 @@ void CClientVehicle::StreamOut()
 
 void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 {
-	if (spd.vehicleID == -1)return;
-	CVehicle * veh = (CVehicle*)gNetwork->GetEntityFromNetworkID(spd.vehicleID);
-	CPed * ped = NULL;
+	if (spd.vehicleID == -1)
+		return;
+
+	CVehicle* veh		= (CVehicle*)gNetwork->GetEntityFromNetworkID(spd.vehicleID);
+	CPed*	  ped		= nullptr;
 	
-	if(spd.driver)ped = (CPed*)gNetwork->GetEntityFromNetworkID(spd.driver);
+	if (spd.driver >= 0)
+	{
+		ped = (CPed*)gNetwork->GetEntityFromNetworkID(spd.driver);
+
+		if (ped && veh)		{
+			ped->WarpPedIntoCar(veh);
+			veh->SetDriver(ped);
+			veh->m_pDriver = ped;
+			ped->m_bInVehicle = true;
+			ped->m_pVehicle = veh;
+		}
+	}
 	else
 	{
-		if (veh->m_pDriver && veh->m_pDriver != LocalPlayer())ped->SetExitCar(veh, 0);
+		if (veh->m_pDriver && veh->m_pDriver != LocalPlayer())
+			ped->SetExitCar(veh, 0);
 	}
 
 	if (veh)
@@ -77,8 +91,12 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 			veh->m_pDriver = ped;
 			ped->m_bInVehicle = true;
 			ped->m_pVehicle = veh;
+
+			gLog->Log("Set and warped driver..\n");
 		}
-		if(!veh->m_nVehicleFlags.bIsEngineOn)veh->m_nVehicleFlags.bIsEngineOn = true;
+
+		if(!veh->m_nVehicleFlags.bIsEngineOn)
+			veh->m_nVehicleFlags.bIsEngineOn = true;
 
 		float fDif = DistanceBetweenPoints(veh->GetPosition(), spd.vehiclePos);
 		if (fDif > 0.1) {
@@ -89,19 +107,33 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 
 		veh->m_placement.SetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
-		veh->m_nPrimaryColor = spd.nPrimaryColor;
-		veh->m_nSecondaryColor = spd.nSecondaryColor;
-		veh->m_nModelIndex = spd.modelID;
-		veh->m_placement.at = spd.vehicleAt;
-		veh->m_placement.right = spd.vehicleRight;
-		veh->m_placement.up = spd.vehicleUp;
+		veh->m_fHealth				= spd.Health;
+		veh->m_nModelIndex			= spd.modelID;
+		veh->m_nPrimaryColor		= spd.nPrimaryColor;
+		veh->m_nSecondaryColor		= spd.nSecondaryColor;
+		
+		veh->m_placement.at			= spd.vehicleAt;
+		veh->m_placement.right		= spd.vehicleRight;
+		veh->m_placement.up			= spd.vehicleUp;
+	
+		for (int i = 0; i < 8; i++) {
+			if (spd.passengers[i] >= 0)			{
+				CPed* ptr = (CPed*)gNetwork->GetEntityFromNetworkID(spd.passengers[i]);
 
-		veh->m_fHealth = spd.Health;
+				if (ptr)
+					veh->m_passengers[i] = (CPed*)gNetwork->GetEntityFromNetworkID(spd.passengers[i]); gLog->Log("Set passenger[%d] to %d\n", i, spd.passengers[i]);
+			}
+		}
 
-		veh->m_vecMoveSpeed = spd.moveSpeed;
+		veh->m_nNumPassengers		= spd.NumPassengers;
+		veh->m_nNumGettingIn		= spd.NumGettingIn;
+		veh->m_nGettingInFlags		= spd.GettingInFlags;
+		veh->m_nMaxPassengers		= spd.MaxPassengers;
+		
+		veh->m_vecMoveSpeed			= spd.moveSpeed;
 		veh->ApplyMoveSpeed();
 
-		veh->m_vecTurnSpeed = spd.turnSpeed;
+		veh->m_vecTurnSpeed			= spd.turnSpeed;
 		veh->ApplyTurnSpeed();
 	}
 }
@@ -123,10 +155,26 @@ VehicleSyncData CClientVehicle::BuildSyncData()
 	spd.nPrimaryColor = this->veh->m_nPrimaryColor;
 	spd.nSecondaryColor = this->veh->m_nSecondaryColor;
 
+	/*for (int i = 0; i < 8; i++)	{
+		if (this->veh->m_passengers[i])		{
+			int passengerID = gNetwork->GetNetworkIDFromEntity(this->veh->m_passengers[i]);
+			if (passengerID != -1)			{
+				spd.passengers[i] = passengerID;
+			}
+		}
+	}*/
+	spd.NumPassengers		= this->veh->m_nNumPassengers;
+	spd.NumGettingIn		= this->veh->m_nNumGettingIn;
+	spd.GettingInFlags		= this->veh->m_nGettingInFlags;
+	spd.GettingOutFlags		= this->veh->m_nGettingOutFlags;
+	spd.MaxPassengers		= this->veh->m_nMaxPassengers;
+	
 	this->veh->m_placement.GetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
-	if(this->veh->m_pDriver)spd.driver = gNetwork->GetNetworkIDFromEntity(this->veh->m_pDriver);
-	else spd.driver = -1;
+	if(this->veh->m_pDriver)
+		spd.driver = gNetwork->GetNetworkIDFromEntity(this->veh->m_pDriver);
+	else 
+		spd.driver = -1;
 
 	return spd;
 }
