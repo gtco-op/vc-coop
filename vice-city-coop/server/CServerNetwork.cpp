@@ -137,8 +137,6 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
 
-	//librg_message_send_to(msg->ctx, VCOOP_START_MISSION_SCRIPT, entity->client_peer, 0, 0);
-
 	gGamemodeScript->Call("onPlayerConnect", "i", entity->id);
 
 	//loop trough connected playera and send it to this guy

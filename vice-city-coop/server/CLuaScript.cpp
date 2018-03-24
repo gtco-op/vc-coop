@@ -5,7 +5,7 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "sleep",					&CLuaScript::lua_Sleep },
 
 	{ "SendGlobalMessage",		&CLuaScript::lua_SendGlobalMessage },
-
+	
 	{ "IsEntityValid",			&CLuaScript::lua_IsEntityValid },
 
 	{ "GetEntityType",			&CLuaScript::lua_GetEntityType },
@@ -28,6 +28,8 @@ static const struct luaL_Reg vccooplib[] = {
 
 	{ "GetRandomModel",			&CLuaScript::lua_GetRandomModel },
 	{ "GetPlayerName",			&CLuaScript::lua_GetPlayerName },
+
+	{ "StartMissionScript",		&CLuaScript::lua_StartMissionScript },
 
 	{ "AddObject",				&CLuaScript::lua_AddObject },
 	{ "AddVehicle",				&CLuaScript::lua_AddVehicle },
@@ -364,6 +366,17 @@ int CLuaScript::lua_SetVehicleHealth(lua_State* L)
 				spd->Health = health;
 			}
 		}
+	}
+	return 0;
+}
+int CLuaScript::lua_StartMissionScript(lua_State* L)
+{
+	if (lua_gettop(L) == 0)	{
+		librg_message_send_all(&gServerNetwork->ctx, VCOOP_START_MISSION_SCRIPT, 0, 0);
+	}
+	else if (lua_gettop(L) == 1)	{
+		if(librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1))->client_peer)
+			librg_message_send_to(&gServerNetwork->ctx, VCOOP_START_MISSION_SCRIPT, librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1))->client_peer, 0, 0);
 	}
 	return 0;
 }
