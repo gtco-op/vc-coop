@@ -40,6 +40,8 @@ public:
 	static int lua_SetVehicleHealth(lua_State* L);
 	
 	static int lua_GetRandomModel(lua_State* L);
+	static int lua_GetRandomVehicleColor(lua_State* L);
+
 	static int lua_GetPlayerName(lua_State* L);
 	
 	static int lua_StartMissionScript(lua_State* L);

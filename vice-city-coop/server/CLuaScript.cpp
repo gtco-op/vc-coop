@@ -27,6 +27,8 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "SetVehicleHealth",		&CLuaScript::lua_SetVehicleHealth },
 
 	{ "GetRandomModel",			&CLuaScript::lua_GetRandomModel },
+	{ "GetRandomVehicleColor",	&CLuaScript::lua_GetRandomVehicleColor },
+
 	{ "GetPlayerName",			&CLuaScript::lua_GetPlayerName },
 
 	{ "StartMissionScript",		&CLuaScript::lua_StartMissionScript },
@@ -313,6 +315,11 @@ int CLuaScript::lua_GetRandomModel(lua_State* L)
 		return 1;
 	}
 	return 0;
+}
+int CLuaScript::lua_GetRandomVehicleColor(lua_State* L)
+{
+	lua_pushinteger(L, CModelIDs::GetRandomVehicleColor());
+	return 1;
 }
 int CLuaScript::lua_GetPlayerHealth(lua_State* L)
 {
