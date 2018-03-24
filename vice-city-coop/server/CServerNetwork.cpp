@@ -318,6 +318,10 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	librg_entity_id *entities;
 	usize amount = librg_entity_query(event->ctx, event->entity->id, &entities);
 
+	if (event->entity->type == VCOOP_PLAYER) {
+		strcpy(playerNames[event->entity->id], "");
+	}
+
 	for (int i = 0; i < amount; i++)
 	{
 		librg_entity_t *entity = librg_entity_fetch(event->ctx, entities[i]);
