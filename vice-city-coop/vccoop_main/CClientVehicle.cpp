@@ -76,8 +76,8 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 	}
 	else
 	{
-		if (veh->m_pDriver && veh->m_pDriver != LocalPlayer())
-			ped->SetExitCar(veh, 0);
+		//if (veh->m_pDriver && veh->m_pDriver != LocalPlayer())
+		//	ped->SetExitCar(veh, 0);
 	}
 
 	if (veh)
