@@ -250,7 +250,7 @@ void CGame::InitPreGamePatches()
 	
 	RedirectAllPointers(0x401000, 0x67DD05, 0xA10AFB, CWorld_Players);
 
-#ifdef VCOOP_DEBUG
+#ifdef VCCOOP_DEBUG
 	// Patch to allow multiple instances of the game
 	SYSTEMTIME time; 
 	GetSystemTime(&time); 
