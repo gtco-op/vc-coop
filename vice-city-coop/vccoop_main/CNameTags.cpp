@@ -4,6 +4,10 @@ CNameTags::~CNameTags() {}
 
 void CNameTags::Draw()
 { 
+	int size = gNetwork->networkEntities.size();
+	if (size <= 0)
+		return;
+
 	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
 	{
 		CClientEntity * networkEntity = (*it);
