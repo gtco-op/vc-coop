@@ -236,6 +236,9 @@ void CServerNetwork::on_entity_update(librg_event_t *event)
 		}
 		else
 		{
+			if (librg_entity_fetch(event->ctx, reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver) == nullptr)
+				return;
+
 			librg_peer_t* currPeer = librg_entity_control_get(event->ctx, event->entity->id);
 			librg_peer_t* peer = librg_entity_fetch(event->ctx, reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver)->client_peer;			
 
