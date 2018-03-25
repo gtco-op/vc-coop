@@ -123,7 +123,7 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	for (int i = 0; i < MAX_PLAYERS; i++)	{
 		if (strstr(playerNames[i], name) && librg_entity_fetch(&gServerNetwork->ctx, i) != nullptr && i != entity->id)		{
-			gLog->Log("Name already used!\n");
+			gLog->Log("Name already used! %s\n", playerNames[i]);
 			gGamemodeScript->Call("onPlayerDisconnect", "iss", entity->id, "Name already used", name);
 			librg_network_kick(&gServerNetwork->ctx, entity->client_peer);
 		}
@@ -223,7 +223,13 @@ void CServerNetwork::on_entity_update(librg_event_t *event)
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
 		librg_data_wptr(event->data, event->entity->user_data, sizeof(VehicleSyncData));
-		if (reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver == -1)
+
+		if (reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver == 0)
+		{
+			librg_peer_t * peer = librg_entity_control_get(event->ctx, event->entity->id);
+			librg_entity_control_remove(event->ctx, event->entity->id);
+		}
+		else if (reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver == -1)
 		{
 			librg_peer_t * peer = librg_entity_control_get(event->ctx, event->entity->id);
 			if (!peer) librg_entity_control_set(event->ctx, event->entity->id, event->peer);
@@ -232,6 +238,9 @@ void CServerNetwork::on_entity_update(librg_event_t *event)
 		{
 			librg_peer_t* currPeer = librg_entity_control_get(event->ctx, event->entity->id);
 			librg_peer_t* peer = librg_entity_fetch(event->ctx, reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver)->client_peer;			
+
+			gLog->Log("ENTITY UPDATE ID: %d\n", reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver);
+
 			if (peer != currPeer)			{
 				librg_entity_control_remove(event->ctx, event->entity->id);
 				librg_entity_control_set(event->ctx, event->entity->id, librg_entity_fetch(event->ctx, reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver)->client_peer);
@@ -271,14 +280,13 @@ void CServerNetwork::on_entity_remove(librg_event_t *event) //entity streamed ou
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{
-		if(librg_entity_control_get(event->ctx, event->entity->id) == event->peer)librg_entity_control_remove(event->ctx, event->entity->id);
+		if(librg_entity_control_get(event->ctx, event->entity->id) == event->peer) librg_entity_control_remove(event->ctx, event->entity->id);
 	}
 	else if (event->entity->type == VCOOP_OBJECT)
 	{
-		if (librg_entity_control_get(event->ctx, event->entity->id) == event->peer)librg_entity_control_remove(event->ctx, event->entity->id);
+		if (librg_entity_control_get(event->ctx, event->entity->id) == event->peer) librg_entity_control_remove(event->ctx, event->entity->id);
 	}
 }
-
 void CServerNetwork::on_stream_update(librg_event_t *event) 
 {
 	if (event->entity->type == VCOOP_PLAYER)
@@ -298,16 +306,57 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 		librg_data_rptr(event->data, event->entity->user_data, sizeof(VehicleSyncData));
 
 		u32 playerid = reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver;
+		if (librg_entity_find(event->ctx, librg_entity_control_get(event->ctx, event->entity->id))->id != playerid)		{
+			CVector ped_pos;
+			zplm_vec3_t player_pos;
+			int currentPedID = 0, currentPlayerID = 0, closestPlayerID = -1, totalPlayersChecked = 0;
+			double closestDistance = 0, currentDistance = 0;
+
+			VehicleSyncData* spd = reinterpret_cast<VehicleSyncData*>(event->entity->user_data);
+			for (auto player : playerEntities) {
+				if (player && player->type == VCOOP_PLAYER) {
+					ped_pos = spd->vehiclePos;
+					player_pos = player->position;
+
+					currentPlayerID = player->id;
+					currentDistance = hypot(hypot(ped_pos.x - player_pos.x, ped_pos.y - player_pos.y), ped_pos.z - player_pos.z);
+
+					if ((closestDistance == 0 && totalPlayersChecked == 0)) {
+						closestDistance = currentDistance;
+						closestPlayerID = currentPlayerID;
+					}
+					else if (closestDistance > currentDistance) {
+						closestDistance = currentDistance;
+						closestPlayerID = currentPlayerID;
+					}
+					totalPlayersChecked++;
+				}
+			}
+			if (closestPlayerID != -1 && totalPlayersChecked != 0) {
+				librg_peer_t* controlPeer = librg_entity_control_get(&gServerNetwork->ctx, event->entity->id);
+				librg_peer_t* newControlPeer = librg_entity_control_get(&gServerNetwork->ctx, closestPlayerID);
+
+				if (controlPeer != newControlPeer)				{
+					librg_entity_control_set(&gServerNetwork->ctx, event->entity->id, newControlPeer);
+				}
+			}
+
+			gLog->Log("Closest for V#%d is P%d with %f\n", event->entity->id, closestPlayerID, closestDistance);
+		}
+
 		if (playerid != -1)
 		{
 			if (librg_entity_fetch(event->ctx, playerid) == nullptr)
 				return;
 
+
 			if (librg_entity_fetch(event->ctx, playerid)->client_peer != nullptr)
 			{
 				librg_peer_t * owner = librg_entity_control_get(event->ctx, event->entity->id);
 				librg_peer_t * driver = librg_entity_fetch(event->ctx, playerid)->client_peer;
-				if (owner != driver)librg_entity_control_set(event->ctx, event->entity->id, driver);
+
+				if (playerid != librg_entity_find(event->ctx, owner)->id)
+					librg_entity_control_set(event->ctx, event->entity->id, librg_entity_fetch(event->ctx, playerid)->client_peer);
 			}
 		}
 	}

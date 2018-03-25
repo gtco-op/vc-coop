@@ -117,6 +117,17 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 {
 	this->syncData = spd;
 
+	if (spd.isInVehicle) {
+		if (gNetwork->GetEntityFromNetworkID(spd.vehicleID)) {
+			ped->SetEnterCar(reinterpret_cast<CVehicle*>(gNetwork->GetEntityFromNetworkID(spd.vehicleID)), 0);
+		}
+	}
+	if (spd.objective == OBJECTIVE_LEAVE_CAR) {
+		ped->SetExitCar(reinterpret_cast<CVehicle*>(gNetwork->GetEntityFromNetworkID(spd.vehicleID)), 0);
+	}
+
+	ped->m_dwObjective = spd.objective;
+
 	ped->m_nModelIndex = spd.iModelIndex;
 	//ped->m_dwAnimGroupId = spd.iCurrentAnimID;
 	ped->m_fHealth = spd.Health;
@@ -308,6 +319,8 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.iModelIndex = ped->m_nModelIndex;
 	spd.Rotation = ped->m_fRotationCur;
 
+	spd.objective = ped->m_dwObjective;
+
 	ped->m_placement.GetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
 	spd.m_nPedFlags.bIsStanding = ped->m_nPedFlags.bIsStanding;
@@ -432,6 +445,8 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.Ammo = 0;
 
 	spd.isInVehicle = ped->m_bInVehicle;
+	spd.vehicleID = gNetwork->GetNetworkIDFromEntity(ped->m_pVehicle);
+	gLog->Log("\tP#%d \tInVehicle: %d\n", gNetwork->GetNetworkIDFromEntity(ped), (int)ped->m_bInVehicle);
 
 	spd.iInteriorID = 0;
 	

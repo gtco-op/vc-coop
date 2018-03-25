@@ -61,7 +61,7 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 
 	CVehicle* veh		= (CVehicle*)gNetwork->GetEntityFromNetworkID(spd.vehicleID);
 	CPed*	  ped		= nullptr;
-	
+
 	if (spd.driver >= 0)
 	{
 		ped = (CPed*)gNetwork->GetEntityFromNetworkID(spd.driver);
@@ -76,8 +76,8 @@ void CClientVehicle::SyncVehicle(VehicleSyncData spd)
 	}
 	else
 	{
-		//if (veh->m_pDriver && veh->m_pDriver != LocalPlayer())
-		//	ped->SetExitCar(veh, 0);
+		if (veh->m_pDriver && veh->m_pDriver != LocalPlayer())
+			veh->m_pDriver->SetExitCar(veh, 0);
 	}
 
 	if (veh)
@@ -155,14 +155,6 @@ VehicleSyncData CClientVehicle::BuildSyncData()
 	spd.nPrimaryColor = this->veh->m_nPrimaryColor;
 	spd.nSecondaryColor = this->veh->m_nSecondaryColor;
 
-	/*for (int i = 0; i < 8; i++)	{
-		if (this->veh->m_passengers[i])		{
-			int passengerID = gNetwork->GetNetworkIDFromEntity(this->veh->m_passengers[i]);
-			if (passengerID != -1)			{
-				spd.passengers[i] = passengerID;
-			}
-		}
-	}*/
 	spd.NumPassengers		= this->veh->m_nNumPassengers;
 	spd.NumGettingIn		= this->veh->m_nNumGettingIn;
 	spd.GettingInFlags		= this->veh->m_nGettingInFlags;
@@ -171,10 +163,7 @@ VehicleSyncData CClientVehicle::BuildSyncData()
 	
 	this->veh->m_placement.GetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
-	if(this->veh->m_pDriver)
-		spd.driver = gNetwork->GetNetworkIDFromEntity(this->veh->m_pDriver);
-	else 
-		spd.driver = -1;
+	spd.driver = gNetwork->GetNetworkIDFromEntity(this->veh->m_pDriver);
 
 	return spd;
 }
