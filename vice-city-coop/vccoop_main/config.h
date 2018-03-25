@@ -697,6 +697,10 @@ struct PlayerSyncData
 	int iCurrentAnimID;
 
 	bool isInVehicle;
+	int vehicleID;
+	int vehicleSeat;
+
+	eObjective objective;
 
 	unsigned int CurrWep;
 	unsigned int WepModelIndex;
