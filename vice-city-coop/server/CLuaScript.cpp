@@ -20,6 +20,9 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "SetEntityControlPeer",	&CLuaScript::lua_SetEntityControlPeer },
 	{ "RemoveEntityControl",	&CLuaScript::lua_RemoveEntityControl },
 
+	{ "GetPlayerModel",			&CLuaScript::lua_GetPlayerModel },
+	{ "SetPlayerModel",			&CLuaScript::lua_SetPlayerModel },
+
 	{ "GetPlayerHealth",		&CLuaScript::lua_GetPlayerHealth },
 	{ "SetPlayerHealth",		&CLuaScript::lua_SetPlayerHealth },
 
@@ -320,6 +323,32 @@ int CLuaScript::lua_GetRandomVehicleColor(lua_State* L)
 {
 	lua_pushinteger(L, CModelIDs::GetRandomVehicleColor());
 	return 1;
+}
+int CLuaScript::lua_GetPlayerModel(lua_State* L)
+{
+	if (lua_gettop(L) == 1) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && entity->type == VCOOP_PLAYER) {
+			lua_pushnumber(L, ((*(PlayerSyncData*)entity->user_data).iModelIndex));
+			return 1;
+		}
+	}
+	return 0;
+}
+int CLuaScript::lua_SetPlayerModel(lua_State* L)
+{
+	if (lua_gettop(L) == 2) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tointeger(L, 1));
+		if (entity && entity->type == VCOOP_PLAYER) {
+			int model = lua_tointeger(L, 2);
+			PlayerSyncData* spd = (PlayerSyncData*)entity->user_data;
+			if (spd) {
+				librg_peer_t* peer = librg_entity_control_get(&gServerNetwork->ctx, entity->id);
+				spd->iModelIndex = model;
+			}
+		}
+	}
+	return 0;
 }
 int CLuaScript::lua_GetPlayerHealth(lua_State* L)
 {

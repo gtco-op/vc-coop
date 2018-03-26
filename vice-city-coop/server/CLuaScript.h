@@ -33,6 +33,9 @@ public:
 	static int lua_GetEntityOrientation(lua_State* L);
 	static int lua_SetEntityOrientation(lua_State* L);
 
+	static int lua_GetPlayerModel(lua_State* L);
+	static int lua_SetPlayerModel(lua_State* L);
+
 	static int lua_GetPlayerHealth(lua_State* L);
 	static int lua_SetPlayerHealth(lua_State* L);
 
