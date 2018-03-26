@@ -1,6 +1,6 @@
 #include "main.h"
 
-GTA_CONTROLSET	localPlayerKeys;
+CPad			localPlayerKeys;
 CAMERA_AIM		localPlayerLookFrontX;
 BYTE			localPlayerCameraMode;
 BYTE			internalPlayerID			= 0;
@@ -55,51 +55,6 @@ int CHooks::FindFreeIDForPed()
 	return -1;
 }
 
-/*
-void  _declspec(naked) Patched_CAutomobile_ProcessControl()
-{
-	_asm mov _pVehicle, ecx
-	_asm pushad
-
-	internalPlayerID = *(BYTE *)0xA10AFB;
-
-	localPlayer = LocalPlayer();
-
-	if (_pVehicle->m_pDriver && _pVehicle->m_pDriver != localPlayer && internalPlayerID == 0)
-	{
-		// get the current driver's player number
-		currentPlayerID = FindIDForPed(_pVehicle->m_pDriver);
-
-		// key switching
-		localPlayerKeys = *(GTA_CONTROLSET*)0x7DBCB0;
-
-		// set remote player's keys
-		*(GTA_CONTROLSET*)0x7DBCB0 = gGame->remotePlayerKeys[currentPlayerID];
-
-		MemWrite<BYTE>(0xA10AFB, currentPlayerID);
-
-		_asm popad
-		_asm mov edi, 0x593030
-		_asm call edi
-		_asm pushad
-
-		// restore the local player's keys and the internal ID.
-		MemWrite<BYTE>(0xA10AFB, 0);
-
-		*(GTA_CONTROLSET*)0x7DBCB0 = localPlayerKeys;
-	}
-	else
-	{
-		_asm popad
-		_asm mov edi, 0x593030
-		_asm call edi
-		_asm pushad
-	}
-
-	_asm popad
-	_asm ret
-}
-*/
 void Hooked_DbgPrint(char * msg, ...)
 {
 	char buffer[256];
@@ -282,6 +237,7 @@ char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
 		CWorld::PlayerInFocus = currentPlayerID;
 
 		// set remote player's keys
+		localPlayerKeys = *CPad::GetPad(0);
 		*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
 
 		// call the internal CPlayerPed[]::Process
@@ -289,6 +245,7 @@ char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
 
 		// restore the local player's keys and the internal ID.
 		CWorld::PlayerInFocus = 0;
+		*CPad::GetPad(0) = localPlayerKeys;
 		return 0;
 	}
 	return original_CAutomobile__ProcessControl(This);
@@ -307,6 +264,7 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 		CWorld::PlayerInFocus = currentPlayerID;
 
 		// set remote player's keys
+		localPlayerKeys = *CPad::GetPad(0);
 		*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
 
 		// save the internal cammode.
@@ -327,22 +285,12 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 
 		// restore the local player's keys and the internal ID.
 		CWorld::PlayerInFocus = 0;
+		*CPad::GetPad(0) = localPlayerKeys;
 
 		*(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front = localPlayerLookFrontX;
 		return 0;
 	}
 	return original_CPlayerPed__ProcessControl(This);
-}
-
-CPad*(__cdecl* original_GetPad)(int);
-CPad* __cdecl GetPad_Hook(int pad)
-{
-	return original_GetPad(CWorld::PlayerInFocus);
-}
-
-CPad * CHooks::GetPad(int padnumber)
-{
-	return original_GetPad(padnumber);
 }
 
 int(__thiscall* original_CPed__SetIdle)(CPed*);
@@ -392,7 +340,6 @@ void CHooks::InitHooks()
 	//original_RemoveModel = (char(__cdecl*)(int))DetourFunction((PBYTE)0x40D6E0, (PBYTE)RemoveModel_Hook);
 	original_CPlayerPed__ProcessControl = (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
 	original_CAutomobile__ProcessControl = (char(__thiscall*)(CVehicle*))DetourFunction((PBYTE)0x593030, (PBYTE)CAutomobile__ProcessControl_Hook);
-	original_GetPad = (CPad*(__cdecl*)(int))DetourFunction((PBYTE)0x4AB060, (PBYTE)GetPad_Hook);
 	//original_CPed__SetIdle = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4FDFD0, (PBYTE)CPed__SetIdle_Hook);
 	original_CWeapon__DoBulletImpact = (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
 
