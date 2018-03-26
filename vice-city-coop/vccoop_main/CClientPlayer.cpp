@@ -119,11 +119,13 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	if (spd.isInVehicle) {
 		if (gNetwork->GetEntityFromNetworkID(spd.vehicleID)) {
-			ped->SetEnterCar(reinterpret_cast<CVehicle*>(gNetwork->GetEntityFromNetworkID(spd.vehicleID)), 0);
+			if (reinterpret_cast<CVehicle*>(gNetwork->GetEntityFromNetworkID(spd.vehicleID)) != nullptr)
+				ped->SetEnterCar(reinterpret_cast<CVehicle*>(gNetwork->GetEntityFromNetworkID(spd.vehicleID)), 0);
 		}
 	}
 	if (spd.objective == OBJECTIVE_LEAVE_CAR) {
-		ped->SetExitCar(reinterpret_cast<CVehicle*>(gNetwork->GetEntityFromNetworkID(spd.vehicleID)), 0);
+		if(reinterpret_cast<CVehicle*>(gNetwork->GetEntityFromNetworkID(spd.vehicleID)) != nullptr)
+			ped->SetExitCar(reinterpret_cast<CVehicle*>(gNetwork->GetEntityFromNetworkID(spd.vehicleID)), 0);
 	}
 
 	ped->m_dwObjective = spd.objective;
