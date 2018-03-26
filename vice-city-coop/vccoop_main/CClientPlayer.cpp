@@ -129,7 +129,7 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 	}
 
 	ped->m_dwObjective = spd.objective;
-
+	
 	ped->m_nModelIndex = spd.iModelIndex;
 	//ped->m_dwAnimGroupId = spd.iCurrentAnimID;
 	ped->m_fHealth = spd.Health;
@@ -179,7 +179,7 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	//gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
 	CPad * pad = &gGame->remotePlayerKeys[this->gameID];
-
+	pad->DrunkDrivingBufferUsed = spd.DrunkDrivingBufferUsed;
 	pad->NewState = spd.newPlayerKeys;
 	pad->OldState = spd.oldPlayerKeys;
 
@@ -452,8 +452,8 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 
 	spd.iInteriorID = 0;
 	
-	CPad * pad = CHooks::GetPad(this->gameID);
-
+	CPad * pad = CPad::GetPad(this->gameID);
+	spd.DrunkDrivingBufferUsed = pad->DrunkDrivingBufferUsed;
 	spd.oldPlayerKeys	= pad->OldState;
 	spd.newPlayerKeys	= pad->NewState;
 

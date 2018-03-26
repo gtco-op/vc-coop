@@ -684,6 +684,8 @@ struct PedSyncData
 
 struct PlayerSyncData 
 {
+	int DrunkDrivingBufferUsed;
+
 	float Health = 100.f;
 	float Armour;
 	float Rotation;
