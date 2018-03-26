@@ -448,7 +448,6 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 
 	spd.isInVehicle = ped->m_bInVehicle;
 	spd.vehicleID = gNetwork->GetNetworkIDFromEntity(ped->m_pVehicle);
-	gLog->Log("\tP#%d \tInVehicle: %d\n", gNetwork->GetNetworkIDFromEntity(ped), (int)ped->m_bInVehicle);
 
 	spd.iInteriorID = 0;
 	

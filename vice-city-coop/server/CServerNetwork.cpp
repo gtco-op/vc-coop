@@ -242,8 +242,6 @@ void CServerNetwork::on_entity_update(librg_event_t *event)
 			librg_peer_t* currPeer = librg_entity_control_get(event->ctx, event->entity->id);
 			librg_peer_t* peer = librg_entity_fetch(event->ctx, reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver)->client_peer;			
 
-			gLog->Log("ENTITY UPDATE ID: %d\n", reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver);
-
 			if (peer != currPeer)			{
 				librg_entity_control_remove(event->ctx, event->entity->id);
 				librg_entity_control_set(event->ctx, event->entity->id, librg_entity_fetch(event->ctx, reinterpret_cast<VehicleSyncData*>(event->entity->user_data)->driver)->client_peer);
@@ -343,8 +341,7 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 					librg_entity_control_set(&gServerNetwork->ctx, event->entity->id, newControlPeer);
 				}
 			}
-
-			gLog->Log("Closest for V#%d is P%d with %f\n", event->entity->id, closestPlayerID, closestDistance);
+			//gLog->Log("Closest for V#%d is P%d with %f\n", event->entity->id, closestPlayerID, closestDistance);
 		}
 
 		if (playerid != -1)
