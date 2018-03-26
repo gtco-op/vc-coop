@@ -33,7 +33,7 @@ void CClientVehicle::StreamIn()
 {
 	if (this->streamed)return;
 
-	this->veh = gGame->CreateVehicle(this->model, { VCCOOP_DEFAULT_SPAWN_POSITION });
+	this->veh = gGame->CreateVehicle(this->model, this->syncData.vehiclePos);
 	this->streamed = true;
 }
 
