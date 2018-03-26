@@ -163,7 +163,6 @@ VehicleSyncData CClientVehicle::BuildSyncData()
 	
 	this->veh->m_placement.GetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
-	spd.driver = gNetwork->GetNetworkIDFromEntity(this->veh->m_pDriver);
 	if(this->veh->m_pDriver)
 		spd.driver = gNetwork->GetNetworkIDFromEntity(this->veh->m_pDriver);
 
