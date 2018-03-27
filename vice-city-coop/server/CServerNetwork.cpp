@@ -137,9 +137,10 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 
 	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
 
+	// call 'onPlayerConnect'..
 	gGamemodeScript->Call("onPlayerConnect", "i", entity->id);
 
-	//loop trough connected playera and send it to this guy
+	//loop through connected players and send it to this guy
 	for (auto it : playerEntities)
 	{
 		if (it->id != entity->id)
