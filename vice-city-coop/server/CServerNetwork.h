@@ -18,6 +18,8 @@ public:
 	static PlayerSyncData* GetPlayerSyncData(int id);
 	static PlayerSyncData* GetPlayerSyncData(librg_entity_t* entity);
 
+	static void SetPlayerSyncData(int id, PlayerSyncData spd);
+
 	//------------------------------------------------------------------------------------------------
 
 	static void ClientSendMessage(librg_message_t* msg);

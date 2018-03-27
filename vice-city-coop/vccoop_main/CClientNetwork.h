@@ -28,6 +28,8 @@ public:
 
 	static void SetReadyToSpawn(bool bReady);
 
+	static void ReceiveSPDUpdate(librg_message_t* msg);
+
 	static void ClientStartMissionScript(librg_message_t* msg);
 	static void ClientReceiveMessage(librg_message_t* msg);
 	static void ClientReceiveScript(librg_message_t* msg);

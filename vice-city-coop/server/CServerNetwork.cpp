@@ -54,6 +54,35 @@ PlayerSyncData* CServerNetwork::GetPlayerSyncData(librg_entity_t* entity)
 	}
 	return spd;
 }
+void CServerNetwork::SetPlayerSyncData(int id, PlayerSyncData spd)
+{
+	if (id == -1 || librg_entity_fetch(&gServerNetwork->ctx, id) == nullptr || CServerNetwork::GetPlayerSyncData(id) == nullptr)
+		return;
+
+	PlayerSyncData* playerSyncData	= CServerNetwork::GetPlayerSyncData(id);
+	librg_entity_t* playerEntity	= librg_entity_fetch(&gServerNetwork->ctx, id);
+	librg_entity_t* controlEntity	= librg_entity_find(&gServerNetwork->ctx, librg_entity_control_get(&gServerNetwork->ctx, id));
+	
+	if (controlEntity)	
+	{
+		librg_entity_control_remove(&gServerNetwork->ctx, id);
+	}
+
+	playerSyncData->Health = spd.Health;
+	gLog->Log("%.f %.f\n", playerSyncData->Health, spd.Health);
+
+	std::map<PlayerSyncData*, int>::iterator it = playerData->begin();
+	if (it != playerData->end() && it->second == id) {
+		playerData->erase(it);
+		playerData->insert(std::make_pair(playerSyncData, id));
+		librg_message_send_to(&gServerNetwork->ctx, VCOOP_RECEIVE_SPD_UPDATE, playerEntity->client_peer, playerSyncData, sizeof(PlayerSyncData));
+	}
+
+	if (controlEntity)
+	{
+		librg_entity_control_set(&gServerNetwork->ctx, id, controlEntity->client_peer);
+	}
+}
 void CServerNetwork::BulletSyncEvent(librg_message_t *msg)
 {
 	bulletSyncData dData;
@@ -363,7 +392,7 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 				librg_peer_t* controlPeer = librg_entity_control_get(&gServerNetwork->ctx, event->entity->id);
 				librg_peer_t* newControlPeer = librg_entity_control_get(&gServerNetwork->ctx, closestPlayerID);
 
-				if (controlPeer != newControlPeer)				{
+				if (controlPeer != newControlPeer && (newControlPeer))				{
 					librg_entity_control_set(&gServerNetwork->ctx, event->entity->id, newControlPeer);
 				}
 			}
@@ -488,6 +517,7 @@ void CServerNetwork::measure(void *userptr) {
 	}
 #endif
 }
+
 #if defined (_MSC_VER)
 void CServerNetwork::server_thread()
 #else 
@@ -517,6 +547,7 @@ void *CServerNetwork::server_thread(void* p)
 	librg_network_add(&ctx, VCOOP_RESPAWN_AFTER_DEATH,		PlayerSpawnEvent);
 	librg_network_add(&ctx, VCOOP_CONNECT,					HandShakeIsDone);
 	librg_network_add(&ctx, VCOOP_BULLET_SYNC,				BulletSyncEvent);
+	
 
 	librg_event_add(&ctx,	LIBRG_CLIENT_STREAMER_UPDATE,	on_stream_update);
 

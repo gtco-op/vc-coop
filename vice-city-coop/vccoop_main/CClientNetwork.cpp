@@ -435,6 +435,14 @@ void CClientNetwork::ClientStartMissionScript(librg_message_t* msg)
 		gGame->bMissionScriptStarted = true;
 	}
 }
+void CClientNetwork::ReceiveSPDUpdate(librg_message_t* msg)
+{
+	PlayerSyncData spd;
+	librg_data_rptr(msg->data, &spd, sizeof(PlayerSyncData));
+
+	if(spd.Health >= 0)
+		LocalPlayer()->m_fHealth = spd.Health;
+}
 void CClientNetwork::AttemptConnect(char* szAddress, int iPort) 
 {
 	client_running = true;
@@ -459,6 +467,8 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 	librg_network_add(&ctx, VCOOP_CONNECT,				ClientConnect);
 	librg_network_add(&ctx, VCOOP_SPAWN_ALLOWED,		ClientSpawnAllowed);
 	librg_network_add(&ctx, VCOOP_BULLET_SYNC,			BulletSyncEvent);
+	librg_network_add(&ctx, VCOOP_RECEIVE_SPD_UPDATE,	ReceiveSPDUpdate);
+	
 
 	addr.host = szAddress;
 	addr.port = iPort;
