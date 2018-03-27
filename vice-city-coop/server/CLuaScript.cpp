@@ -343,13 +343,11 @@ int CLuaScript::lua_SetPlayerModel(lua_State* L)
 {
 	if (lua_gettop(L) == 2) {
 		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tointeger(L, 1));
-		if (entity && entity->type == VCOOP_PLAYER) {
+		if (entity && entity->type == VCOOP_PLAYER && CServerNetwork::GetPlayerSyncData(entity->id) != nullptr) {
 			int model = lua_tointeger(L, 2);
-			PlayerSyncData* spd = (PlayerSyncData*)entity->user_data;
-			if (spd) {
-				librg_peer_t* peer = librg_entity_control_get(&gServerNetwork->ctx, entity->id);
-				spd->iModelIndex = model;
-			}
+			CServerNetwork::GetPlayerSyncData(entity->id)->iModelIndex = model;
+
+			CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
 		}
 	}
 	return 0;

@@ -437,6 +437,11 @@ void CClientNetwork::ClientStartMissionScript(librg_message_t* msg)
 }
 void SyncLocalPlayer(PlayerSyncData spd)
 {
+	if (spd.iModelIndex != LocalPlayer()->m_nModelIndex && CModelIDs::IsValidPedModel(spd.iModelIndex))	{
+		gGame->CustomModelLoad(spd.iModelIndex);
+		LocalPlayer()->SetModelIndex(spd.iModelIndex);
+	}
+
 	LocalPlayer()->m_dwObjective = spd.objective;
 
 	//LocalPlayer()->m_dwAnimGroupId = spd.iCurrentAnimID;
