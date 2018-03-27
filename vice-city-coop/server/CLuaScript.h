@@ -39,6 +39,9 @@ public:
 	static int lua_GetPlayerHealth(lua_State* L);
 	static int lua_SetPlayerHealth(lua_State* L);
 
+	static int lua_GetPlayerArmour(lua_State* L);
+	static int lua_SetPlayerArmour(lua_State* L);
+
 	static int lua_GetVehicleHealth(lua_State* L);
 	static int lua_SetVehicleHealth(lua_State* L);
 	

@@ -26,6 +26,9 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "GetPlayerHealth",		&CLuaScript::lua_GetPlayerHealth },
 	{ "SetPlayerHealth",		&CLuaScript::lua_SetPlayerHealth },
 
+	{ "GetPlayerArmour",		&CLuaScript::lua_GetPlayerArmour },
+	{ "SetPlayerArmour",		&CLuaScript::lua_SetPlayerArmour },
+
 	{ "GetVehicleHealth",		&CLuaScript::lua_GetVehicleHealth },
 	{ "SetVehicleHealth",		&CLuaScript::lua_SetVehicleHealth },
 
@@ -50,6 +53,7 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 
 	m_Data = ptr;
 }
+
 int CLuaScript::lua_IsEntityValid(lua_State* L)
 {
 	if (lua_gettop(L) == 1)	{
@@ -368,6 +372,30 @@ int CLuaScript::lua_SetPlayerHealth(lua_State* L)
 		if (entity && entity->type == VCOOP_PLAYER && CServerNetwork::GetPlayerSyncData(entity->id) != nullptr)		{
 			float health = lua_tonumber(L, 2);
 			CServerNetwork::GetPlayerSyncData(entity->id)->Health = health;
+
+			CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
+		}
+	}
+	return 0;
+}
+int CLuaScript::lua_GetPlayerArmour(lua_State* L)
+{
+	if (lua_gettop(L) == 1) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+		if (entity && entity->type == VCOOP_PLAYER) {
+			lua_pushnumber(L, CServerNetwork::GetPlayerSyncData(entity->id)->Armour);
+			return 1;
+		}
+	}
+	return 0;
+}
+int CLuaScript::lua_SetPlayerArmour(lua_State* L)
+{
+	if (lua_gettop(L) == 2) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tointeger(L, 1));
+		if (entity && entity->type == VCOOP_PLAYER && CServerNetwork::GetPlayerSyncData(entity->id) != nullptr) {
+			float armour = lua_tonumber(L, 2);
+			CServerNetwork::GetPlayerSyncData(entity->id)->Armour = armour;
 
 			CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
 		}
