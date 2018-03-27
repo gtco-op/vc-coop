@@ -209,7 +209,7 @@ bool CConfiguration::AutodetectServerGamemode()
 		}
 	}
 #ifdef VCCOOP_VERBOSE_LOG
-	gLog->Log("[CConfiguration] Attempt to detect server game mode returned %s\n", (res?"successfully.":"unsuccessfully."));
+	gLog->Log("[CConfiguration] Auto-detection of gamemode was %s\n", (res?"successful.":"unsuccessful."));
 #endif
 	return res;
 }
