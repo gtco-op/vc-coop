@@ -435,13 +435,138 @@ void CClientNetwork::ClientStartMissionScript(librg_message_t* msg)
 		gGame->bMissionScriptStarted = true;
 	}
 }
+void SyncLocalPlayer(PlayerSyncData spd)
+{
+	LocalPlayer()->m_dwObjective = spd.objective;
+
+	//LocalPlayer()->m_dwAnimGroupId = spd.iCurrentAnimID;
+	LocalPlayer()->m_fHealth = spd.Health;
+	LocalPlayer()->m_fRotationCur = spd.Rotation;
+	LocalPlayer()->m_fRotationDest = spd.Rotation;
+	LocalPlayer()->m_fArmour = spd.Armour;
+
+	LocalPlayer()->m_nPedFlags.bIsStanding = spd.m_nPedFlags.bIsStanding;
+	LocalPlayer()->m_nPedFlags.bWasStanding = spd.m_nPedFlags.bWasStanding;
+	LocalPlayer()->m_nPedFlags.b03 = spd.m_nPedFlags.b03;
+	LocalPlayer()->m_nPedFlags.bIsPointingGunAt = spd.m_nPedFlags.bIsPointingGunAt;
+	LocalPlayer()->m_nPedFlags.bIsLooking = spd.m_nPedFlags.bIsLooking;
+	LocalPlayer()->m_nPedFlags.b06 = spd.m_nPedFlags.b06;
+	LocalPlayer()->m_nPedFlags.bIsRestoringLook = spd.m_nPedFlags.bIsRestoringLook;
+	LocalPlayer()->m_nPedFlags.bIsAimingGun = spd.m_nPedFlags.bIsAimingGun;
+
+	LocalPlayer()->m_nPedFlags.bIsRestoringGun = spd.m_nPedFlags.bIsRestoringGun;
+	LocalPlayer()->m_nPedFlags.bCanPointGunAtTarget = spd.m_nPedFlags.bCanPointGunAtTarget;
+	LocalPlayer()->m_nPedFlags.bIsTalking = spd.m_nPedFlags.bIsTalking;
+	LocalPlayer()->m_nPedFlags.bIsInTheAir = spd.m_nPedFlags.bIsInTheAir;
+	LocalPlayer()->m_nPedFlags.bIsLanding = spd.m_nPedFlags.bIsLanding;
+	LocalPlayer()->m_nPedFlags.bIsRunning = spd.m_nPedFlags.bIsRunning;
+	LocalPlayer()->m_nPedFlags.b15 = spd.m_nPedFlags.b15;
+	LocalPlayer()->m_nPedFlags.b16 = spd.m_nPedFlags.b16;
+
+	LocalPlayer()->m_nPedFlags.bCanPedEnterSeekedCar = spd.m_nPedFlags.bCanPedEnterSeekedCar;
+	LocalPlayer()->m_nPedFlags.bRespondsToThreats = spd.m_nPedFlags.bRespondsToThreats;
+	LocalPlayer()->m_nPedFlags.bRenderPedInCar = spd.m_nPedFlags.bRenderPedInCar;
+	LocalPlayer()->m_nPedFlags.b20 = spd.m_nPedFlags.b20;
+	LocalPlayer()->m_nPedFlags.bUpdateAnimHeading = spd.m_nPedFlags.bUpdateAnimHeading;
+	LocalPlayer()->m_nPedFlags.bRemoveHead = spd.m_nPedFlags.bRemoveHead;
+	LocalPlayer()->m_nPedFlags.bFiringWeapon = spd.m_nPedFlags.bFiringWeapon;
+	LocalPlayer()->m_nPedFlags.b24 = spd.m_nPedFlags.b24;
+
+	LocalPlayer()->m_nPedFlags.b25a = spd.m_nPedFlags.b25a;
+	LocalPlayer()->m_nPedFlags.b25b = spd.m_nPedFlags.b25b;
+	LocalPlayer()->m_nPedFlags.bStopAndShoot = spd.m_nPedFlags.bStopAndShoot;
+	LocalPlayer()->m_nPedFlags.bIsPedDieAnimPlaying = spd.m_nPedFlags.bIsPedDieAnimPlaying;
+	LocalPlayer()->m_nPedFlags.b30 = spd.m_nPedFlags.b30;
+	LocalPlayer()->m_nPedFlags.b31 = spd.m_nPedFlags.b31;
+	LocalPlayer()->m_nPedFlags.b32 = spd.m_nPedFlags.b32;
+
+	LocalPlayer()->m_nPedFlags.bKindaStayInSamePlace = spd.m_nPedFlags.bKindaStayInSamePlace;
+	LocalPlayer()->m_nPedFlags.bBeingChasedByPolice = spd.m_nPedFlags.bBeingChasedByPolice;
+	LocalPlayer()->m_nPedFlags.bNotAllowedToDuck = spd.m_nPedFlags.bNotAllowedToDuck;
+	LocalPlayer()->m_nPedFlags.bCrouchWhenShooting = spd.m_nPedFlags.bCrouchWhenShooting;
+	LocalPlayer()->m_nPedFlags.bIsDucking = spd.m_nPedFlags.bIsDucking;
+	LocalPlayer()->m_nPedFlags.bGetUpAnimStarted = spd.m_nPedFlags.bGetUpAnimStarted;
+	LocalPlayer()->m_nPedFlags.bDoBloodyFootprints = spd.m_nPedFlags.bDoBloodyFootprints;
+	LocalPlayer()->m_nPedFlags.b40 = spd.m_nPedFlags.b40;
+
+	LocalPlayer()->m_nPedFlags.b41 = spd.m_nPedFlags.b41;
+	LocalPlayer()->m_nPedFlags.b42 = spd.m_nPedFlags.b42;
+	LocalPlayer()->m_nPedFlags.b43 = spd.m_nPedFlags.b43;
+	LocalPlayer()->m_nPedFlags.b44 = spd.m_nPedFlags.b44;
+	LocalPlayer()->m_nPedFlags.b45 = spd.m_nPedFlags.b45;
+	LocalPlayer()->m_nPedFlags.b46 = spd.m_nPedFlags.b46;
+	LocalPlayer()->m_nPedFlags.b47 = spd.m_nPedFlags.b47;
+	LocalPlayer()->m_nPedFlags.b48 = spd.m_nPedFlags.b48;
+
+	LocalPlayer()->m_nPedFlags.b49 = spd.m_nPedFlags.b49;
+	LocalPlayer()->m_nPedFlags.b50 = spd.m_nPedFlags.b50;
+	LocalPlayer()->m_nPedFlags.b51 = spd.m_nPedFlags.b51;
+	LocalPlayer()->m_nPedFlags.b52 = spd.m_nPedFlags.b52;
+	LocalPlayer()->m_nPedFlags.b53 = spd.m_nPedFlags.b53;
+	LocalPlayer()->m_nPedFlags.b54 = spd.m_nPedFlags.b54;
+	LocalPlayer()->m_nPedFlags.bIsBeingJacked = spd.m_nPedFlags.bIsBeingJacked;
+	LocalPlayer()->m_nPedFlags.bFadeOut = spd.m_nPedFlags.bFadeOut;
+
+	LocalPlayer()->m_nPedFlags.b57 = spd.m_nPedFlags.b57;
+	LocalPlayer()->m_nPedFlags.b58 = spd.m_nPedFlags.b58;
+	LocalPlayer()->m_nPedFlags.b59 = spd.m_nPedFlags.b59;
+	LocalPlayer()->m_nPedFlags.bClearObjective = spd.m_nPedFlags.bClearObjective;
+	LocalPlayer()->m_nPedFlags.b61 = spd.m_nPedFlags.b61;
+	LocalPlayer()->m_nPedFlags.b62 = spd.m_nPedFlags.b62;
+	LocalPlayer()->m_nPedFlags.b63 = spd.m_nPedFlags.b63;
+	LocalPlayer()->m_nPedFlags.b64 = spd.m_nPedFlags.b64;
+
+	LocalPlayer()->m_nPedFlags.bShakeFist = spd.m_nPedFlags.bShakeFist;
+	LocalPlayer()->m_nPedFlags.bNoCriticalHits = spd.m_nPedFlags.bNoCriticalHits;
+	LocalPlayer()->m_nPedFlags.b67 = spd.m_nPedFlags.b67;
+	LocalPlayer()->m_nPedFlags.bHasAlreadyBeenRecorded = spd.m_nPedFlags.bHasAlreadyBeenRecorded;
+	LocalPlayer()->m_nPedFlags.bFallenDown = spd.m_nPedFlags.bFallenDown;
+	LocalPlayer()->m_nPedFlags.bUpdateMatricesRequired = spd.m_nPedFlags.bUpdateMatricesRequired;
+	LocalPlayer()->m_nPedFlags.b71 = spd.m_nPedFlags.b71;
+	LocalPlayer()->m_nPedFlags.b72 = spd.m_nPedFlags.b72;
+
+	LocalPlayer()->m_nPedFlags.b73 = spd.m_nPedFlags.b73;
+	LocalPlayer()->m_nPedFlags.b74 = spd.m_nPedFlags.b74;
+	LocalPlayer()->m_nPedFlags.b75 = spd.m_nPedFlags.b75;
+	LocalPlayer()->m_nPedFlags.b76 = spd.m_nPedFlags.b76;
+	LocalPlayer()->m_nPedFlags.b77 = spd.m_nPedFlags.b77;
+	LocalPlayer()->m_nPedFlags.bMiamiViceCop = spd.m_nPedFlags.bMiamiViceCop;
+	LocalPlayer()->m_nPedFlags.bMoneyHasBeenGivenByScript = spd.m_nPedFlags.bMoneyHasBeenGivenByScript;
+	LocalPlayer()->m_nPedFlags.bHasBeenPhotographed = spd.m_nPedFlags.bHasBeenPhotographed;
+
+	LocalPlayer()->m_nPedFlags.bIsDrowning = spd.m_nPedFlags.bIsDrowning;
+	LocalPlayer()->m_nPedFlags.bDrownsInWater = spd.m_nPedFlags.bDrownsInWater;
+	LocalPlayer()->m_nPedFlags.bStayBehindIfLeaderTooFar = spd.m_nPedFlags.bStayBehindIfLeaderTooFar;
+	LocalPlayer()->m_nPedFlags.bUsingExitCarTimer = spd.m_nPedFlags.bUsingExitCarTimer;
+	LocalPlayer()->m_nPedFlags.bScriptPedIsPlayerAlly = spd.m_nPedFlags.bScriptPedIsPlayerAlly;
+	LocalPlayer()->m_nPedFlags.bKnockedUpIntoAir = spd.m_nPedFlags.bKnockedUpIntoAir;
+	LocalPlayer()->m_nPedFlags.bDeadPedInFrontOfCar = spd.m_nPedFlags.bDeadPedInFrontOfCar;
+	LocalPlayer()->m_nPedFlags.bStayInCarOnJack = spd.m_nPedFlags.bStayInCarOnJack;
+
+	LocalPlayer()->m_nPedFlags.b89 = spd.m_nPedFlags.b89;
+	LocalPlayer()->m_nPedFlags.bDoomAim = spd.m_nPedFlags.bDoomAim;
+	LocalPlayer()->m_nPedFlags.bCanBeShotInVehicle = spd.m_nPedFlags.bCanBeShotInVehicle;
+	LocalPlayer()->m_nPedFlags.b92 = spd.m_nPedFlags.b92;
+	LocalPlayer()->m_nPedFlags.b93 = spd.m_nPedFlags.b93;
+	LocalPlayer()->m_nPedFlags.b94 = spd.m_nPedFlags.b94;
+	LocalPlayer()->m_nPedFlags.b95 = spd.m_nPedFlags.b95;
+	LocalPlayer()->m_nPedFlags.b96 = spd.m_nPedFlags.b96;
+
+	LocalPlayer()->m_nPedFlags.b97 = spd.m_nPedFlags.b97;
+	LocalPlayer()->m_nPedFlags.bCrouchWhenScared = spd.m_nPedFlags.bCrouchWhenScared;
+	LocalPlayer()->m_nPedFlags.b99 = spd.m_nPedFlags.b99;
+	LocalPlayer()->m_nPedFlags.b100 = spd.m_nPedFlags.b100;
+	LocalPlayer()->m_nPedFlags.b101 = spd.m_nPedFlags.b101;
+	LocalPlayer()->m_nPedFlags.b102 = spd.m_nPedFlags.b102;
+	LocalPlayer()->m_nPedFlags.bPedWasSetOutOfCollision = spd.m_nPedFlags.bPedWasSetOutOfCollision;
+	LocalPlayer()->m_nPedFlags.bGangMemberReturnsFire = spd.m_nPedFlags.bGangMemberReturnsFire;
+}
 void CClientNetwork::ReceiveSPDUpdate(librg_message_t* msg)
 {
 	PlayerSyncData spd;
 	librg_data_rptr(msg->data, &spd, sizeof(PlayerSyncData));
 
-	if(spd.Health >= 0)
-		LocalPlayer()->m_fHealth = spd.Health;
+	SyncLocalPlayer(spd);
 }
 void CClientNetwork::AttemptConnect(char* szAddress, int iPort) 
 {

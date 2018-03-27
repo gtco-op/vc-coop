@@ -68,8 +68,129 @@ void CServerNetwork::SetPlayerSyncData(int id, PlayerSyncData spd)
 		librg_entity_control_remove(&gServerNetwork->ctx, id);
 	}
 
+	
+	playerSyncData->objective = spd.objective;
+
+	//playerSyncData->m_dwAnimGroupId = spd.iCurrentAnimID;
 	playerSyncData->Health = spd.Health;
-	gLog->Log("%.f %.f\n", playerSyncData->Health, spd.Health);
+	playerSyncData->Rotation= spd.Rotation;
+	playerSyncData->Armour= spd.Armour;
+
+	playerSyncData->m_nPedFlags.bIsStanding = spd.m_nPedFlags.bIsStanding;
+	playerSyncData->m_nPedFlags.bWasStanding = spd.m_nPedFlags.bWasStanding;
+	playerSyncData->m_nPedFlags.b03 = spd.m_nPedFlags.b03;
+	playerSyncData->m_nPedFlags.bIsPointingGunAt = spd.m_nPedFlags.bIsPointingGunAt;
+	playerSyncData->m_nPedFlags.bIsLooking = spd.m_nPedFlags.bIsLooking;
+	playerSyncData->m_nPedFlags.b06 = spd.m_nPedFlags.b06;
+	playerSyncData->m_nPedFlags.bIsRestoringLook = spd.m_nPedFlags.bIsRestoringLook;
+	playerSyncData->m_nPedFlags.bIsAimingGun = spd.m_nPedFlags.bIsAimingGun;
+
+	playerSyncData->m_nPedFlags.bIsRestoringGun = spd.m_nPedFlags.bIsRestoringGun;
+	playerSyncData->m_nPedFlags.bCanPointGunAtTarget = spd.m_nPedFlags.bCanPointGunAtTarget;
+	playerSyncData->m_nPedFlags.bIsTalking = spd.m_nPedFlags.bIsTalking;
+	playerSyncData->m_nPedFlags.bIsInTheAir = spd.m_nPedFlags.bIsInTheAir;
+	playerSyncData->m_nPedFlags.bIsLanding = spd.m_nPedFlags.bIsLanding;
+	playerSyncData->m_nPedFlags.bIsRunning = spd.m_nPedFlags.bIsRunning;
+	playerSyncData->m_nPedFlags.b15 = spd.m_nPedFlags.b15;
+	playerSyncData->m_nPedFlags.b16 = spd.m_nPedFlags.b16;
+
+	playerSyncData->m_nPedFlags.bCanPedEnterSeekedCar = spd.m_nPedFlags.bCanPedEnterSeekedCar;
+	playerSyncData->m_nPedFlags.bRespondsToThreats = spd.m_nPedFlags.bRespondsToThreats;
+	playerSyncData->m_nPedFlags.bRenderPedInCar = spd.m_nPedFlags.bRenderPedInCar;
+	playerSyncData->m_nPedFlags.b20 = spd.m_nPedFlags.b20;
+	playerSyncData->m_nPedFlags.bUpdateAnimHeading = spd.m_nPedFlags.bUpdateAnimHeading;
+	playerSyncData->m_nPedFlags.bRemoveHead = spd.m_nPedFlags.bRemoveHead;
+	playerSyncData->m_nPedFlags.bFiringWeapon = spd.m_nPedFlags.bFiringWeapon;
+	playerSyncData->m_nPedFlags.b24 = spd.m_nPedFlags.b24;
+
+	playerSyncData->m_nPedFlags.b25a = spd.m_nPedFlags.b25a;
+	playerSyncData->m_nPedFlags.b25b = spd.m_nPedFlags.b25b;
+	playerSyncData->m_nPedFlags.bStopAndShoot = spd.m_nPedFlags.bStopAndShoot;
+	playerSyncData->m_nPedFlags.bIsPedDieAnimPlaying = spd.m_nPedFlags.bIsPedDieAnimPlaying;
+	playerSyncData->m_nPedFlags.b30 = spd.m_nPedFlags.b30;
+	playerSyncData->m_nPedFlags.b31 = spd.m_nPedFlags.b31;
+	playerSyncData->m_nPedFlags.b32 = spd.m_nPedFlags.b32;
+
+	playerSyncData->m_nPedFlags.bKindaStayInSamePlace = spd.m_nPedFlags.bKindaStayInSamePlace;
+	playerSyncData->m_nPedFlags.bBeingChasedByPolice = spd.m_nPedFlags.bBeingChasedByPolice;
+	playerSyncData->m_nPedFlags.bNotAllowedToDuck = spd.m_nPedFlags.bNotAllowedToDuck;
+	playerSyncData->m_nPedFlags.bCrouchWhenShooting = spd.m_nPedFlags.bCrouchWhenShooting;
+	playerSyncData->m_nPedFlags.bIsDucking = spd.m_nPedFlags.bIsDucking;
+	playerSyncData->m_nPedFlags.bGetUpAnimStarted = spd.m_nPedFlags.bGetUpAnimStarted;
+	playerSyncData->m_nPedFlags.bDoBloodyFootprints = spd.m_nPedFlags.bDoBloodyFootprints;
+	playerSyncData->m_nPedFlags.b40 = spd.m_nPedFlags.b40;
+
+	playerSyncData->m_nPedFlags.b41 = spd.m_nPedFlags.b41;
+	playerSyncData->m_nPedFlags.b42 = spd.m_nPedFlags.b42;
+	playerSyncData->m_nPedFlags.b43 = spd.m_nPedFlags.b43;
+	playerSyncData->m_nPedFlags.b44 = spd.m_nPedFlags.b44;
+	playerSyncData->m_nPedFlags.b45 = spd.m_nPedFlags.b45;
+	playerSyncData->m_nPedFlags.b46 = spd.m_nPedFlags.b46;
+	playerSyncData->m_nPedFlags.b47 = spd.m_nPedFlags.b47;
+	playerSyncData->m_nPedFlags.b48 = spd.m_nPedFlags.b48;
+
+	playerSyncData->m_nPedFlags.b49 = spd.m_nPedFlags.b49;
+	playerSyncData->m_nPedFlags.b50 = spd.m_nPedFlags.b50;
+	playerSyncData->m_nPedFlags.b51 = spd.m_nPedFlags.b51;
+	playerSyncData->m_nPedFlags.b52 = spd.m_nPedFlags.b52;
+	playerSyncData->m_nPedFlags.b53 = spd.m_nPedFlags.b53;
+	playerSyncData->m_nPedFlags.b54 = spd.m_nPedFlags.b54;
+	playerSyncData->m_nPedFlags.bIsBeingJacked = spd.m_nPedFlags.bIsBeingJacked;
+	playerSyncData->m_nPedFlags.bFadeOut = spd.m_nPedFlags.bFadeOut;
+
+	playerSyncData->m_nPedFlags.b57 = spd.m_nPedFlags.b57;
+	playerSyncData->m_nPedFlags.b58 = spd.m_nPedFlags.b58;
+	playerSyncData->m_nPedFlags.b59 = spd.m_nPedFlags.b59;
+	playerSyncData->m_nPedFlags.bClearObjective = spd.m_nPedFlags.bClearObjective;
+	playerSyncData->m_nPedFlags.b61 = spd.m_nPedFlags.b61;
+	playerSyncData->m_nPedFlags.b62 = spd.m_nPedFlags.b62;
+	playerSyncData->m_nPedFlags.b63 = spd.m_nPedFlags.b63;
+	playerSyncData->m_nPedFlags.b64 = spd.m_nPedFlags.b64;
+
+	playerSyncData->m_nPedFlags.bShakeFist = spd.m_nPedFlags.bShakeFist;
+	playerSyncData->m_nPedFlags.bNoCriticalHits = spd.m_nPedFlags.bNoCriticalHits;
+	playerSyncData->m_nPedFlags.b67 = spd.m_nPedFlags.b67;
+	playerSyncData->m_nPedFlags.bHasAlreadyBeenRecorded = spd.m_nPedFlags.bHasAlreadyBeenRecorded;
+	playerSyncData->m_nPedFlags.bFallenDown = spd.m_nPedFlags.bFallenDown;
+	playerSyncData->m_nPedFlags.bUpdateMatricesRequired = spd.m_nPedFlags.bUpdateMatricesRequired;
+	playerSyncData->m_nPedFlags.b71 = spd.m_nPedFlags.b71;
+	playerSyncData->m_nPedFlags.b72 = spd.m_nPedFlags.b72;
+
+	playerSyncData->m_nPedFlags.b73 = spd.m_nPedFlags.b73;
+	playerSyncData->m_nPedFlags.b74 = spd.m_nPedFlags.b74;
+	playerSyncData->m_nPedFlags.b75 = spd.m_nPedFlags.b75;
+	playerSyncData->m_nPedFlags.b76 = spd.m_nPedFlags.b76;
+	playerSyncData->m_nPedFlags.b77 = spd.m_nPedFlags.b77;
+	playerSyncData->m_nPedFlags.bMiamiViceCop = spd.m_nPedFlags.bMiamiViceCop;
+	playerSyncData->m_nPedFlags.bMoneyHasBeenGivenByScript = spd.m_nPedFlags.bMoneyHasBeenGivenByScript;
+	playerSyncData->m_nPedFlags.bHasBeenPhotographed = spd.m_nPedFlags.bHasBeenPhotographed;
+
+	playerSyncData->m_nPedFlags.bIsDrowning = spd.m_nPedFlags.bIsDrowning;
+	playerSyncData->m_nPedFlags.bDrownsInWater = spd.m_nPedFlags.bDrownsInWater;
+	playerSyncData->m_nPedFlags.bStayBehindIfLeaderTooFar = spd.m_nPedFlags.bStayBehindIfLeaderTooFar;
+	playerSyncData->m_nPedFlags.bUsingExitCarTimer = spd.m_nPedFlags.bUsingExitCarTimer;
+	playerSyncData->m_nPedFlags.bScriptPedIsPlayerAlly = spd.m_nPedFlags.bScriptPedIsPlayerAlly;
+	playerSyncData->m_nPedFlags.bKnockedUpIntoAir = spd.m_nPedFlags.bKnockedUpIntoAir;
+	playerSyncData->m_nPedFlags.bDeadPedInFrontOfCar = spd.m_nPedFlags.bDeadPedInFrontOfCar;
+	playerSyncData->m_nPedFlags.bStayInCarOnJack = spd.m_nPedFlags.bStayInCarOnJack;
+
+	playerSyncData->m_nPedFlags.b89 = spd.m_nPedFlags.b89;
+	playerSyncData->m_nPedFlags.bDoomAim = spd.m_nPedFlags.bDoomAim;
+	playerSyncData->m_nPedFlags.bCanBeShotInVehicle = spd.m_nPedFlags.bCanBeShotInVehicle;
+	playerSyncData->m_nPedFlags.b92 = spd.m_nPedFlags.b92;
+	playerSyncData->m_nPedFlags.b93 = spd.m_nPedFlags.b93;
+	playerSyncData->m_nPedFlags.b94 = spd.m_nPedFlags.b94;
+	playerSyncData->m_nPedFlags.b95 = spd.m_nPedFlags.b95;
+	playerSyncData->m_nPedFlags.b96 = spd.m_nPedFlags.b96;
+
+	playerSyncData->m_nPedFlags.b97 = spd.m_nPedFlags.b97;
+	playerSyncData->m_nPedFlags.bCrouchWhenScared = spd.m_nPedFlags.bCrouchWhenScared;
+	playerSyncData->m_nPedFlags.b99 = spd.m_nPedFlags.b99;
+	playerSyncData->m_nPedFlags.b100 = spd.m_nPedFlags.b100;
+	playerSyncData->m_nPedFlags.b101 = spd.m_nPedFlags.b101;
+	playerSyncData->m_nPedFlags.b102 = spd.m_nPedFlags.b102;
+	playerSyncData->m_nPedFlags.bPedWasSetOutOfCollision = spd.m_nPedFlags.bPedWasSetOutOfCollision;
+	playerSyncData->m_nPedFlags.bGangMemberReturnsFire = spd.m_nPedFlags.bGangMemberReturnsFire;
 
 	std::map<PlayerSyncData*, int>::iterator it = playerData->begin();
 	if (it != playerData->end() && it->second == id) {
