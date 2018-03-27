@@ -345,8 +345,8 @@ int CLuaScript::lua_SetPlayerModel(lua_State* L)
 		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tointeger(L, 1));
 		if (entity && entity->type == VCOOP_PLAYER && CServerNetwork::GetPlayerSyncData(entity->id) != nullptr) {
 			int model = lua_tointeger(L, 2);
+			
 			CServerNetwork::GetPlayerSyncData(entity->id)->iModelIndex = model;
-
 			CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
 		}
 	}
@@ -619,6 +619,12 @@ void CLuaScript::Call(std::string callback, char *fmt, ...)
 		return;
 
 	luaL_openlibs(m_lState);
+	luaopen_base(m_lState);
+	luaopen_table(m_lState);
+	luaopen_io(m_lState);
+	luaopen_string(m_lState);
+	luaopen_math(m_lState);
+	luaopen_debug(m_lState);
 	lua_getglobal(m_lState, "_G");
 	luaL_setfuncs(m_lState, vccooplib, 0);
 	lua_pop(m_lState, 1);
