@@ -14,6 +14,8 @@ std::vector<librg_entity_t*>	otherEntities;
 
 CLuaScript						*gGamemodeScript;
 
+std::map<PlayerSyncData*, int>	*playerData = new std::map<PlayerSyncData*, int>;
+
 CServerNetwork::CServerNetwork()
 {
 	ctx = { 0 };
@@ -135,7 +137,8 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 	cData.playerId = entity->id;
 	librg_message_send_except(msg->ctx, VCOOP_CONNECT, entity->client_peer, &cData, sizeof(connectData));
 
-	gLog->Log("[CServerNetwork] Informing everyone about the connection of %s\n", name);
+	// insert data into data pool..
+	playerData->insert(std::make_pair(new PlayerSyncData, entity->id));
 
 	// call 'onPlayerConnect'..
 	gGamemodeScript->Call("onPlayerConnect", "i", entity->id);
@@ -404,7 +407,18 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
 	if (tmp != playerEntities.end())	
 	{
+		//we found the entity, in our librg entity vector, so now find it in data pool,
+		//erase it, after calling lua - so server-side scripts get a chance of using
+		//the 'disconnecting' player..
 		gGamemodeScript->Call("onPlayerDisconnect", "is", event->entity->id, "Quit");
+
+		// now remove from data pool..
+		std::map<PlayerSyncData*, int>::iterator it = playerData->begin();
+		if (it != playerData->end())		{
+			playerData->erase(it);
+		}
+		
+		// erase from entity vector and delete..
 		playerEntities.erase(tmp);
 		delete event->entity->user_data;
 	}	
