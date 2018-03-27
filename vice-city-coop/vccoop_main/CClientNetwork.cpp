@@ -175,7 +175,6 @@ void CClientNetwork::ClientConnect(librg_message_t* msg)
 
 void CClientNetwork::on_entity_create(librg_event_t *event) 
 {
-	gLog->Log("creating entity\n");
 	zplm_vec3_t position = event->entity->position;
 
 	if (event->entity->type == VCOOP_PLAYER) 
