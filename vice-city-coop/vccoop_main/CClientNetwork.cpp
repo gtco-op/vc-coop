@@ -439,7 +439,11 @@ void SyncLocalPlayer(PlayerSyncData spd)
 {
 	if (spd.iModelIndex != LocalPlayer()->m_nModelIndex && CModelIDs::IsValidPedModel(spd.iModelIndex))	{
 		gGame->CustomModelLoad(spd.iModelIndex);
-		LocalPlayer()->SetModelIndex(spd.iModelIndex);
+
+		if (CStreaming::ms_aInfoForModel[spd.iModelIndex].m_nLoadState == LOADSTATE_LOADED)
+		{
+			LocalPlayer()->SetModelIndex(spd.iModelIndex);
+		}
 	}
 
 	LocalPlayer()->m_dwObjective = spd.objective;
