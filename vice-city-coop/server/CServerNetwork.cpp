@@ -312,9 +312,6 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 	// insert data into data pool..
 	playerData->insert(std::make_pair(new PlayerSyncData, entity->id));
 
-	// call 'onPlayerConnect'..
-	gGamemodeScript->Call("onPlayerConnect", "i", entity->id);
-
 	//loop through connected players and send it to this guy
 	for (auto it : playerEntities)
 	{
@@ -325,6 +322,9 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 			librg_message_send_to(msg->ctx, VCOOP_CONNECT, entity->client_peer, &cData, sizeof(connectData));
 		}
 	}
+
+	// call 'onPlayerConnect'..
+	gGamemodeScript->Call("onPlayerConnect", "i", entity->id);
 }
 void CServerNetwork::on_connect_request(librg_event_t *event) 
 {
