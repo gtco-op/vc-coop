@@ -16,7 +16,6 @@ public:
 	static librg_ctx_t ctx;
 
 	static PlayerSyncData* GetPlayerSyncData(int id);
-	static PlayerSyncData* GetPlayerSyncData(librg_entity_t* entity);
 
 	static void SetPlayerSyncData(int id, PlayerSyncData spd);
 
