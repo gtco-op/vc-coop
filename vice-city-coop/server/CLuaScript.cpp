@@ -329,7 +329,7 @@ int CLuaScript::lua_GetPlayerModel(lua_State* L)
 	if (lua_gettop(L) == 1) {
 		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
 		if (entity && entity->type == VCOOP_PLAYER) {
-			lua_pushnumber(L, ((*(PlayerSyncData*)entity->user_data).iModelIndex));
+			lua_pushnumber(L, CServerNetwork::GetPlayerSyncData(entity->id)->iModelIndex);
 			return 1;
 		}
 	}
@@ -355,7 +355,7 @@ int CLuaScript::lua_GetPlayerHealth(lua_State* L)
 	if (lua_gettop(L) == 1) {
 		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
 		if (entity && entity->type == VCOOP_PLAYER) {
-			lua_pushnumber(L, ((*(PlayerSyncData*)entity->user_data).Health));
+			lua_pushnumber(L, CServerNetwork::GetPlayerSyncData(entity->id)->Health);
 			return 1;
 		}
 	}
