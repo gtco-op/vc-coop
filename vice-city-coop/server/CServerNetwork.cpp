@@ -431,7 +431,7 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	{
 		//we found the entity, in our librg entity vector, so now find it in data pool,
 		//erase it, after calling lua - so server-side scripts get a chance of using
-		//the 'disconnecting' player..
+		//the 'disconnecting player's data'..
 		gGamemodeScript->Call("onPlayerDisconnect", "is", event->entity->id, "Quit");
 
 		// now remove from data pool..
