@@ -143,7 +143,9 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 	
 	if (CModelIDs::IsValidPedModel(spd.iModelIndex) && ped->m_nModelIndex != spd.iModelIndex) {
 		gGame->CustomModelLoad(spd.iModelIndex);
+		ped->SetModelIndex(spd.iModelIndex);
 	}
+
 	//ped->m_dwAnimGroupId = spd.iCurrentAnimID;
 	ped->m_fHealth = spd.Health;
 	ped->m_fRotationCur = spd.Rotation;
