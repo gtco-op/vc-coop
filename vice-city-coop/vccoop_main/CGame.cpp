@@ -626,14 +626,6 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			if (!gRender->bEscMenu && (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard))
 				break;
 
-			if (vkey == 'P' && gNetwork->connected)
-			{
-				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_PED, NULL, 0);
-			}
-			if (vkey == 'Z')
-			{
-				librg_message_send_all(&gNetwork->ctx, VCOOP_CREATE_VEHICLE, NULL, 0);
-			}
 			if (vkey == VK_ESCAPE)
 			{
 				if (gChat->chatToggled)
