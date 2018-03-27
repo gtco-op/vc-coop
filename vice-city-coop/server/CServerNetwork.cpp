@@ -32,6 +32,28 @@ CServerNetwork::~CServerNetwork()
 {
 
 }
+PlayerSyncData* CServerNetwork::GetPlayerSyncData(int id)
+{
+	PlayerSyncData* spd = nullptr;
+	std::map<PlayerSyncData*, int>::iterator it = playerData->begin();
+	if (it != playerData->end() && it->second == id) {
+		spd = it->first;
+	}
+	return spd;
+}
+PlayerSyncData* CServerNetwork::GetPlayerSyncData(librg_entity_t* entity)
+{
+	PlayerSyncData* spd = nullptr;
+	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), entity);
+
+	if (tmp != playerEntities.end())	{
+		std::map<PlayerSyncData*, int>::iterator it = playerData->begin();
+		if (it != playerData->end()) {
+			spd = it->first;
+		}
+	}
+	return spd;
+}
 void CServerNetwork::BulletSyncEvent(librg_message_t *msg)
 {
 	bulletSyncData dData;

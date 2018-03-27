@@ -15,6 +15,9 @@ public:
 	static bool server_running, console_active;
 	static librg_ctx_t ctx;
 
+	static PlayerSyncData* GetPlayerSyncData(int id);
+	static PlayerSyncData* GetPlayerSyncData(librg_entity_t* entity);
+
 	//------------------------------------------------------------------------------------------------
 
 	static void ClientSendMessage(librg_message_t* msg);
