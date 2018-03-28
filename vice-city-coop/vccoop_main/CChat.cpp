@@ -115,7 +115,8 @@ void CChat::ProcessChatInput()
 	this->ToggleChat(false);
 	if (strlen(this->chatInputBuffer) > 0 && this->chatInputBuffer[0] != '\0')
 	{
-		if (strstr(this->chatInputBuffer, "/quit") || strstr(this->chatInputBuffer, "/exit") || strstr(this->chatInputBuffer, "!quit") || strstr(this->chatInputBuffer, "!exit"))
+		if (strstr(this->chatInputBuffer, "/quit") || strstr(this->chatInputBuffer, "/exit") || strstr(this->chatInputBuffer, "!quit") || strstr(this->chatInputBuffer, "!exit")
+			|| strstr(this->chatInputBuffer, "/q") || strstr(this->chatInputBuffer, "!q"))
 		{
 			gLog->Log("[CChat] Shutting down\n");
 			gGame->Exit();
