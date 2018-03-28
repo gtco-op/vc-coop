@@ -360,8 +360,11 @@ int CLuaScript::lua_SetPlayerModel(lua_State* L)
 		if (entity && entity->type == VCOOP_PLAYER && CServerNetwork::GetPlayerSyncData(entity->id) != nullptr) {
 			int model = lua_tointeger(L, 2);
 			
-			CServerNetwork::GetPlayerSyncData(entity->id)->iModelIndex = model;
-			CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
+			if (CModelIDs::IsValidPedModel(model))
+			{
+				CServerNetwork::GetPlayerSyncData(entity->id)->iModelIndex = model;
+				CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
+			}
 		}
 	}
 	return 0;
