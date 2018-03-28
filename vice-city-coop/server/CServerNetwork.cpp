@@ -458,6 +458,9 @@ void CServerNetwork::on_entity_remove(librg_event_t *event) //entity streamed ou
 }
 void CServerNetwork::on_stream_update(librg_event_t *event) 
 {
+	if (!event->entity->user_data)
+		return;
+
 	if (event->entity->type == VCOOP_PLAYER)
 	{
 		librg_data_rptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
@@ -584,6 +587,7 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 		}
 		
 		// erase from entity vector and delete..
+		delete *tmp;
 		playerEntities.erase(tmp);
 		delete event->entity->user_data;
 	}	
