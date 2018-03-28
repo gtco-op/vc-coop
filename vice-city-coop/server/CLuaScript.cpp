@@ -20,6 +20,8 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "SetEntityControlPeer",	&CLuaScript::lua_SetEntityControlPeer },
 	{ "RemoveEntityControl",	&CLuaScript::lua_RemoveEntityControl },
 
+	{ "GivePlayerWeapon",		&CLuaScript::lua_GivePlayerWeapon },
+
 	{ "GetPlayerModel",			&CLuaScript::lua_GetPlayerModel },
 	{ "SetPlayerModel",			&CLuaScript::lua_SetPlayerModel },
 
@@ -53,7 +55,19 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 
 	m_Data = ptr;
 }
+int CLuaScript::lua_GivePlayerWeapon(lua_State* L)
+{
+	if (lua_gettop(L) == 2) {
+		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tointeger(L, 1));
+		if (entity && entity->type == VCOOP_PLAYER && CServerNetwork::GetPlayerSyncData(entity->id) != nullptr) {
+			int model = lua_tointeger(L, 2);
 
+			CServerNetwork::GetPlayerSyncData(entity->id)->CurrWep = model;
+			CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
+		}
+	}
+	return 0;
+}
 int CLuaScript::lua_IsEntityValid(lua_State* L)
 {
 	if (lua_gettop(L) == 1)	{
