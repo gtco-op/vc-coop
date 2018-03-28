@@ -31,9 +31,14 @@ CClientVehicle::~CClientVehicle()
 
 void CClientVehicle::StreamIn()
 {
-	if (this->streamed)return;
+	if (this->streamed)
+		return;
+		
+	if(this->veh == nullptr)
+	{
+		this->veh = gGame->CreateVehicle(this->model, this->syncData.vehiclePos);
+	}
 
-	this->veh = gGame->CreateVehicle(this->model, this->syncData.vehiclePos);
 	this->streamed = true;
 }
 
