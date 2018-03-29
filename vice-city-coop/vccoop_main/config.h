@@ -684,8 +684,6 @@ struct PedSyncData
 
 struct PlayerSyncData 
 {
-	int DrunkDrivingBufferUsed;
-
 	float Health = 100.f;
 	float Armour;
 	float Rotation;
@@ -712,11 +710,6 @@ struct PlayerSyncData
 
 	CControllerState newPlayerKeys;
 	CControllerState oldPlayerKeys;
-
-	short WORD_EA;
-	short Mode;
-	short ShakeDur;
-	short DisablePlayerControls;
 
 	CAMERA_AIM playerLook;
 };

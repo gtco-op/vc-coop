@@ -194,7 +194,7 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	//gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
 	CPad * pad = &gGame->remotePlayerKeys[this->gameID];
-	pad->DrunkDrivingBufferUsed = spd.DrunkDrivingBufferUsed;
+	pad->DrunkDrivingBufferUsed = 0;
 	pad->NewState = spd.newPlayerKeys;
 	pad->OldState = spd.oldPlayerKeys;
 
@@ -467,14 +467,8 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.iInteriorID = 0;
 	
 	CPad * pad = CPad::GetPad(this->gameID);
-	spd.DrunkDrivingBufferUsed = pad->DrunkDrivingBufferUsed;
 	spd.oldPlayerKeys	= pad->OldState;
 	spd.newPlayerKeys	= pad->NewState;
-
-	spd.WORD_EA					= pad->WORD_EA;
-	spd.Mode					= pad->Mode;
-	spd.ShakeDur				= pad->ShakeDur;
-	spd.DisablePlayerControls	= pad->DisablePlayerControls;
 
 	if (this->ped->m_aWeapons[this->ped->m_nWepSlot].m_nAmmoInClip < 1 && this->ped->m_nWepSlot > 0)
 	{
