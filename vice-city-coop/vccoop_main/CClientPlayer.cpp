@@ -194,7 +194,6 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	//gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
 	CPad * pad = &gGame->remotePlayerKeys[this->gameID];
-	pad->DrunkDrivingBufferUsed = 0;
 	pad->NewState = spd.newPlayerKeys;
 	pad->OldState = spd.oldPlayerKeys;
 
