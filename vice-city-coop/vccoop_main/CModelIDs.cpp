@@ -9,6 +9,48 @@ const int CModelIDs::pedModelIDs[MAX_PED_MODEL_ID] = { 1,2,3,4,5,6,7,9,10,11,12,
 const int CModelIDs::vehModelIDs[MAX_VEH_MODEL_ID] = { 130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,166,167,168,169,170,171,172,173,174,175,176,177,178,179,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236 };
 const int CModelIDs::vehColorIDs[MAX_VEH_COLOR_ID] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94 };
 
+int CModelIDs::GetWeaponModelFromType(int weaponID)
+{
+	switch (weaponID)
+	{
+		case 0:	return 293;
+		case 1: return 259;
+		case 2: return 260;
+		case 3: return 261;
+		case 4: return 262;
+		case 5: return 263;
+		case 6: return 264;
+		case 7: return 265;
+		case 8: return 266;
+		case 9: return 267;
+		case 10:return 268;
+		case 11:return 269;
+		case 12:return 270;
+		case 13:return 291;
+		case 14:return 271;
+		case 15:return 272;
+		case 16:return 273;
+		case 17:return 274;
+		case 18:return 275;
+		case 19:return 277;
+		case 20:return 278;
+		case 21:return 279;
+		case 22:return 281;
+		case 23:return 282;
+		case 24:return 283;
+		case 25:return 284;
+		case 26:return 280;
+		case 27:return 276;
+		case 28:return 285;
+		case 29:return 286;
+		case 30:return 287;
+		case 31:return 288;
+		case 32:return 289;
+		case 33:return 290;
+		case 36:return 292;
+	}
+	return -1;
+}
 bool CModelIDs::IsValidObjectModel(int modelID)
 {
 	return (std::find(std::begin(objModelIDs), std::end(objModelIDs), modelID) != std::end(objModelIDs));

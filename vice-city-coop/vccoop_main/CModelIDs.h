@@ -21,6 +21,8 @@ public:
 	static bool IsValidPedModel(int modelID);
 	static bool IsValidVehicleModel(int modelID);
 	
+	static int GetWeaponModelFromType(int weaponID);
+
 	static int GetRandomModel(eModelType type = MODEL_PED);
 	static int GetRandomVehicleColor();
 

@@ -17,6 +17,8 @@ public:
 	CModelIDs() {}
 	~CModelIDs() {}
 
+	static int GetWeaponModelFromType(int weaponID);
+
 	static bool IsValidObjectModel(int modelID);
 	static bool IsValidPedModel(int modelID);
 	static bool IsValidVehicleModel(int modelID);
