@@ -446,6 +446,44 @@ void SyncLocalPlayer(PlayerSyncData spd)
 			LocalPlayer()->SetModelIndex(spd.iModelIndex);
 		}
 	}
+	
+	if (spd.WepModelIndex != LocalPlayer()->m_dwWepModelID && spd.WepModelIndex > 200 && spd.CurrWep > 1 && spd.Ammo != -1)
+	{
+		gGame->CustomModelLoad(spd.WepModelIndex);
+
+		switch ((eWeaponType)spd.CurrWep)
+		{
+			case eWeaponType::WEAPONTYPE_CHAINSAW:
+			case eWeaponType::WEAPONTYPE_BASEBALLBAT:
+			case eWeaponType::WEAPONTYPE_BRASSKNUCKLE:
+			case eWeaponType::WEAPONTYPE_CAMERA:
+			case eWeaponType::WEAPONTYPE_CLEAVER:
+			case eWeaponType::WEAPONTYPE_DETONATOR:
+			case eWeaponType::WEAPONTYPE_GOLFCLUB:
+			case eWeaponType::WEAPONTYPE_HAMMER:
+			case eWeaponType::WEAPONTYPE_KATANA:
+			case eWeaponType::WEAPONTYPE_KNIFE:
+			case eWeaponType::WEAPONTYPE_MACHETE:
+			case eWeaponType::WEAPONTYPE_NIGHTSTICK:
+			case eWeaponType::WEAPONTYPE_SCREWDRIVER:
+			{
+				LocalPlayer()->GiveWeapon((eWeaponType)spd.CurrWep, 1, true);
+				LocalPlayer()->SetAmmo((eWeaponType)spd.CurrWep, 1);
+				break;
+			}
+			default:
+			{
+				LocalPlayer()->GiveWeapon((eWeaponType)spd.CurrWep, spd.Ammo, true);
+				LocalPlayer()->SetAmmo((eWeaponType)spd.CurrWep, spd.Ammo);
+				break;
+			}
+		}
+		if (LocalPlayer()->m_dwWepModelID != spd.WepModelIndex)LocalPlayer()->SetCurrentWeapon((eWeaponType)spd.CurrWep);
+	}
+	else
+	{
+		if (LocalPlayer()->m_dwWepModelID != -1)LocalPlayer()->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
+	}
 
 	LocalPlayer()->m_dwObjective = spd.objective;
 

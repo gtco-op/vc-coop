@@ -704,9 +704,9 @@ struct PlayerSyncData
 
 	eObjective objective;
 
-	unsigned int CurrWep;
-	unsigned int WepModelIndex;
-	unsigned int Ammo;
+	unsigned int CurrWep = -1;
+	unsigned int WepModelIndex = -1;
+	unsigned int Ammo = -1;
 
 	PED_FLAGS m_nPedFlags;
 

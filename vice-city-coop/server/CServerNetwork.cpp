@@ -65,6 +65,12 @@ void CServerNetwork::SetPlayerSyncData(int id, PlayerSyncData spd)
 	playerSyncData->Health = spd.Health;
 	playerSyncData->Rotation= spd.Rotation;
 	playerSyncData->Armour= spd.Armour;
+	
+	if (!(spd.Ammo <= -1) && !(spd.CurrWep <= -1) && !(spd.WepModelIndex <= -1)) {
+		playerSyncData->CurrWep = spd.CurrWep;
+		playerSyncData->Ammo = spd.Ammo;
+		playerSyncData->WepModelIndex = spd.WepModelIndex;
+	}
 
 	playerSyncData->m_nPedFlags.bIsStanding = spd.m_nPedFlags.bIsStanding;
 	playerSyncData->m_nPedFlags.bWasStanding = spd.m_nPedFlags.bWasStanding;

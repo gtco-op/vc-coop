@@ -154,7 +154,7 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	ped->m_placement.SetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
-	if (spd.WepModelIndex > 0 && spd.CurrWep > 0)
+	if (spd.WepModelIndex != ped->m_dwWepModelID && spd.WepModelIndex > 200 && spd.CurrWep > 1 && spd.Ammo != -1)
 	{
 		gGame->CustomModelLoad(spd.WepModelIndex);
 
@@ -180,14 +180,14 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 			}
 			default:
 			{
-				ped->GiveWeapon((eWeaponType)spd.CurrWep, 1000, true);
-				ped->SetAmmo((eWeaponType)spd.CurrWep, 1000);
+				ped->GiveWeapon((eWeaponType)spd.CurrWep, spd.Ammo, true);
+				ped->SetAmmo((eWeaponType)spd.CurrWep, spd.Ammo);
 				break;
 			}
 		}
 		if (ped->m_dwWepModelID != spd.WepModelIndex)ped->SetCurrentWeapon((eWeaponType)spd.CurrWep);
 	}
-	else
+	else if(spd.WepModelIndex != ped->m_dwWepModelID)
 	{
 		if (ped->m_dwWepModelID != -1)ped->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
 	}
