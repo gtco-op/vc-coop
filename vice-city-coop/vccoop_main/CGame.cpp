@@ -515,6 +515,9 @@ void CGame::InitPreGamePatches()
 	// Disable CRubbish::Init() (crashfix)
 	MakeRet(0x568550);
 
+	// Disable Cheat_strncmp
+	MakeRet(0x4ACF60);
+
 	//Init hooks (no shit sherlock)
 	CHooks::InitHooks();
 
