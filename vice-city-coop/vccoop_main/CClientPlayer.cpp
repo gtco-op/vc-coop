@@ -10,8 +10,12 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 
 	this->ped->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 
-	if (this->syncData.iModelIndex >= 0)
+	if (this->syncData.iModelIndex >= 0) {
+		if (CStreaming::ms_aInfoForModel[this->syncData.iModelIndex].m_nLoadState != LOADSTATE_LOADED) {
+			gGame->CustomModelLoad(this->syncData.iModelIndex);
+		}
 		this->ped->SetModelIndex(this->syncData.iModelIndex);
+	}
 	else
 		this->ped->SetModelIndex(7);
 
@@ -41,8 +45,12 @@ void CClientPlayer::StreamIn()
 	this->ped = CWorld::Players[this->gameID].m_pPed;
 	this->ped->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 
-	if(this->syncData.iModelIndex >= 0)
+	if (this->syncData.iModelIndex >= 0) {
+		if (CStreaming::ms_aInfoForModel[this->syncData.iModelIndex].m_nLoadState != LOADSTATE_LOADED) {
+			gGame->CustomModelLoad(this->syncData.iModelIndex);
+		}
 		this->ped->SetModelIndex(this->syncData.iModelIndex);
+	}
 	else
 		this->ped->SetModelIndex(7);
 
@@ -85,8 +93,12 @@ void CClientPlayer::Respawn()
 	this->ped = CWorld::Players[this->gameID].m_pPed;
 	this->ped->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 
-	if (this->syncData.iModelIndex >= 0)
+	if (this->syncData.iModelIndex >= 0) {
+		if (CStreaming::ms_aInfoForModel[this->syncData.iModelIndex].m_nLoadState != LOADSTATE_LOADED) {
+			gGame->CustomModelLoad(this->syncData.iModelIndex);
+		}
 		this->ped->SetModelIndex(this->syncData.iModelIndex);
+	}
 	else
 		this->ped->SetModelIndex(7);
 
@@ -142,7 +154,9 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 	ped->m_dwObjective = spd.objective;
 	
 	if (CModelIDs::IsValidPedModel(spd.iModelIndex) && ped->m_nModelIndex != spd.iModelIndex) {
-		gGame->CustomModelLoad(spd.iModelIndex);
+		if (CStreaming::ms_aInfoForModel[spd.iModelIndex].m_nLoadState != LOADSTATE_LOADED) {
+			gGame->CustomModelLoad(spd.iModelIndex);
+		}
 		ped->SetModelIndex(spd.iModelIndex);
 	}
 
