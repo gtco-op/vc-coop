@@ -580,28 +580,22 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
 	if (tmp != playerEntities.end())	
 	{
-		if (*tmp)
-		{
-			//we found the entity, in our librg entity vector, so now find it in data pool,
-			//erase it, after calling lua - so server-side scripts get a chance of using
-			//the 'disconnecting player's data'..
-			gGamemodeScript->Call("onPlayerDisconnect", "is", event->entity->id, "Quit");
+		//we found the entity, in our librg entity vector, so now find it in data pool,
+		//erase it, after calling lua - so server-side scripts get a chance of using
+		//the 'disconnecting player's data'..
+		gGamemodeScript->Call("onPlayerDisconnect", "is", event->entity->id, "Quit");
 
-			// now remove from data pool..
-			for (auto player : playerData) {
-				if (player.first == event->entity->id) {
-					playerData.erase(player.first);
-				}
+		// now remove from data pool..
+		for (auto player : playerData)		{
+			if (player.first == event->entity->id)			{
+				playerData.erase(player.first);
 			}
-			
-			// erase from entity vector and delete..
-			ptrdiff_t pos = find(playerEntities.begin(), playerEntities.end(), event->entity) - playerEntities.begin();
-			if (pos <= playerEntities.size() && event->data != nullptr)			{
-				delete playerEntities[pos];
-			}
-			playerEntities.erase(tmp);
-			delete event->entity->user_data;
 		}
+		
+		// erase from entity vector and delete..
+		delete *tmp;
+		playerEntities.erase(tmp);
+		delete event->entity->user_data;
 	}	
 
 	librg_message_send_except(&ctx, VCOOP_DISCONNECT, event->peer, &event->entity->id, sizeof(u32));
