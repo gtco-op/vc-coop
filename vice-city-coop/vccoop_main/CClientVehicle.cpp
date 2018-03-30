@@ -12,6 +12,10 @@ CClientVehicle::CClientVehicle(int nID, int modelID, CVector position, int Prima
 	this->veh->m_nSecondaryColor	= SecondaryColor;
 	
 	gLog->Log("[CClientVehicle] Network ID: %d Veh pointer: 0x%X ModelID: %d\n", nID, this->veh, modelID);
+
+#ifndef VCCOOP_DEBUG
+	this->StreamIn();
+#endif
 }
 
 CClientVehicle::~CClientVehicle()
