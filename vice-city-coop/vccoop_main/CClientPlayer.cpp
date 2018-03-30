@@ -472,7 +472,7 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 	spd.iInteriorID = 0;
 	
 	CPad * pad = CPad::GetPad(0);
-	if (CWorld::PlayerInFocus != 0) pad = &gGame->remotePlayerKeys[this->gameID];
+	if (CWorld::PlayerInFocus != 0) pad = &localPlayerKeys;
 
 	spd.oldPlayerKeys	= pad->OldState;
 	spd.newPlayerKeys	= pad->NewState;
