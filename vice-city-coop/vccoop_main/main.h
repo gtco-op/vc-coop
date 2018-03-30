@@ -178,6 +178,8 @@ extern CDebugEngine		*gDbgEngine;
 extern CLogger			*gDbgLog;
 #endif
 
+extern CPad localPlayerKeys;
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 #include "CCore.h"
