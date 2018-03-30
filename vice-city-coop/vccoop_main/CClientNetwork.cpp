@@ -449,7 +449,9 @@ void SyncLocalPlayer(PlayerSyncData spd)
 	
 	if (spd.WepModelIndex != LocalPlayer()->m_dwWepModelID && spd.WepModelIndex > 200 && spd.CurrWep > 1 && spd.Ammo != -1)
 	{
-		gGame->CustomModelLoad(spd.WepModelIndex);
+		if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)		{
+			gGame->CustomModelLoad(spd.WepModelIndex);
+		}
 
 		switch ((eWeaponType)spd.CurrWep)
 		{
@@ -478,11 +480,11 @@ void SyncLocalPlayer(PlayerSyncData spd)
 				break;
 			}
 		}
-		if (LocalPlayer()->m_dwWepModelID != spd.WepModelIndex)LocalPlayer()->SetCurrentWeapon((eWeaponType)spd.CurrWep);
+		if (LocalPlayer()->m_dwWepModelID != spd.WepModelIndex) LocalPlayer()->SetCurrentWeapon((eWeaponType)spd.CurrWep);
 	}
 	else
 	{
-		if (LocalPlayer()->m_dwWepModelID != -1)LocalPlayer()->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
+		if (LocalPlayer()->m_dwWepModelID != -1) LocalPlayer()->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
 	}
 
 	LocalPlayer()->m_dwObjective = spd.objective;

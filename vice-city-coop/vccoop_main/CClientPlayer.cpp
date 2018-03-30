@@ -154,42 +154,48 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 
 	ped->m_placement.SetOrientation(spd.OrientX, spd.OrientY, spd.OrientZ);
 
-	if (spd.WepModelIndex != ped->m_dwWepModelID && spd.WepModelIndex > 200 && spd.CurrWep > 1 && spd.Ammo != -1)
+	if (spd.WepModelIndex != ped->m_dwWepModelID && spd.CurrWep != ped->m_aWeapons[ped->m_nWepSlot].m_nType)
 	{
-		gGame->CustomModelLoad(spd.WepModelIndex);
-
-		switch ((eWeaponType)spd.CurrWep)
+		if (spd.CurrWep == 0)
 		{
-			case eWeaponType::WEAPONTYPE_CHAINSAW:
-			case eWeaponType::WEAPONTYPE_BASEBALLBAT:
-			case eWeaponType::WEAPONTYPE_BRASSKNUCKLE:
-			case eWeaponType::WEAPONTYPE_CAMERA:
-			case eWeaponType::WEAPONTYPE_CLEAVER:
-			case eWeaponType::WEAPONTYPE_DETONATOR:
-			case eWeaponType::WEAPONTYPE_GOLFCLUB:
-			case eWeaponType::WEAPONTYPE_HAMMER:
-			case eWeaponType::WEAPONTYPE_KATANA:
-			case eWeaponType::WEAPONTYPE_KNIFE:
-			case eWeaponType::WEAPONTYPE_MACHETE:
-			case eWeaponType::WEAPONTYPE_NIGHTSTICK:
-			case eWeaponType::WEAPONTYPE_SCREWDRIVER:
-			{
-				ped->GiveWeapon((eWeaponType)spd.CurrWep, 1, true);
-				ped->SetAmmo((eWeaponType)spd.CurrWep, 1);
-				break;
-			}
-			default:
-			{
-				ped->GiveWeapon((eWeaponType)spd.CurrWep, spd.Ammo, true);
-				ped->SetAmmo((eWeaponType)spd.CurrWep, spd.Ammo);
-				break;
-			}
+			ped->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
 		}
-		if (ped->m_dwWepModelID != spd.WepModelIndex)ped->SetCurrentWeapon((eWeaponType)spd.CurrWep);
-	}
-	else if(spd.WepModelIndex != ped->m_dwWepModelID)
-	{
-		if (ped->m_dwWepModelID != -1)ped->SetCurrentWeapon(eWeaponType::WEAPONTYPE_UNARMED);
+		else
+		{
+			if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED) {
+				gGame->CustomModelLoad(spd.WepModelIndex);
+			}
+
+			switch ((eWeaponType)spd.CurrWep)
+			{
+				case eWeaponType::WEAPONTYPE_CHAINSAW:
+				case eWeaponType::WEAPONTYPE_BASEBALLBAT:
+				case eWeaponType::WEAPONTYPE_BRASSKNUCKLE:
+				case eWeaponType::WEAPONTYPE_CAMERA:
+				case eWeaponType::WEAPONTYPE_CLEAVER:
+				case eWeaponType::WEAPONTYPE_DETONATOR:
+				case eWeaponType::WEAPONTYPE_GOLFCLUB:
+				case eWeaponType::WEAPONTYPE_HAMMER:
+				case eWeaponType::WEAPONTYPE_KATANA:
+				case eWeaponType::WEAPONTYPE_KNIFE:
+				case eWeaponType::WEAPONTYPE_MACHETE:
+				case eWeaponType::WEAPONTYPE_NIGHTSTICK:
+				case eWeaponType::WEAPONTYPE_SCREWDRIVER:
+				{
+					ped->GiveWeapon((eWeaponType)spd.CurrWep, 1, true);
+					ped->SetAmmo((eWeaponType)spd.CurrWep, 1);
+					break;
+				}
+				default:
+				{
+					ped->GiveWeapon((eWeaponType)spd.CurrWep, spd.Ammo, true);
+					ped->SetAmmo((eWeaponType)spd.CurrWep, spd.Ammo);
+					break;
+				}
+			}
+			if (ped->m_dwWepModelID != spd.WepModelIndex) 
+				ped->SetCurrentWeapon((eWeaponType)spd.CurrWep);
+		}
 	}
 
 	//gGame->remotePlayerKeys[this->gameID] = spd.playerKeys;
@@ -458,14 +464,16 @@ PlayerSyncData CClientPlayer::BuildSyncData()
 
 	spd.CurrWep = ped->m_aWeapons[ped->m_nWepSlot].m_nType;
 	spd.WepModelIndex = ped->m_dwWepModelID;
-	spd.Ammo = 0;
+	spd.Ammo = ped->m_aWeapons[ped->m_nWepSlot].m_nTotalAmmo;
 
 	spd.isInVehicle = ped->m_bInVehicle;
 	spd.vehicleID = gNetwork->GetNetworkIDFromEntity(ped->m_pVehicle);
 
 	spd.iInteriorID = 0;
 	
-	CPad * pad = CPad::GetPad(this->gameID);
+	CPad * pad = CPad::GetPad(0);
+	if (CWorld::PlayerInFocus != 0) pad = &gGame->remotePlayerKeys[this->gameID];
+
 	spd.oldPlayerKeys	= pad->OldState;
 	spd.newPlayerKeys	= pad->NewState;
 
