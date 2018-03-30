@@ -4,7 +4,7 @@ CClientVehicle::CClientVehicle(int nID, int modelID, CVector position, int Prima
 {
 	this->type						= VCOOP_VEHICLE;
 	this->model						= modelID;
-	this->streamed					= true;
+	//this->streamed					= true;
 	this->networkID					= nID;
 
 	this->veh						= gGame->CreateVehicle(this->model, position);
