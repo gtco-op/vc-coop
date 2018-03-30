@@ -364,7 +364,6 @@ void CClientNetwork::ClientDisconnect(librg_message_t* msg)
 		for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)		{
 			if (player == (*it))			{
 				gNetwork->networkEntities.erase(it);
-				delete *it;
 				break;
 			}
 		}
