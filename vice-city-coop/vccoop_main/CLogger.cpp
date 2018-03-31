@@ -15,7 +15,7 @@ CLogger::CLogger(bool debug)
 CLogger::~CLogger()
 {
 	this->Log("[CLogger] CLogger shutting down\n");
-	out.close();
+	exit(-1);
 }
 void CLogger::Out(const char * szBuf)
 {

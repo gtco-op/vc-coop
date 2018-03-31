@@ -4,7 +4,7 @@ CClientVehicle::CClientVehicle(int nID, int modelID, CVector position, int Prima
 {
 	this->type						= VCOOP_VEHICLE;
 	this->model						= modelID;
-	this->streamed					= true;
+	//this->streamed					= true;
 	this->networkID					= nID;
 
 	this->veh						= gGame->CreateVehicle(this->model, position);
@@ -12,6 +12,10 @@ CClientVehicle::CClientVehicle(int nID, int modelID, CVector position, int Prima
 	this->veh->m_nSecondaryColor	= SecondaryColor;
 	
 	gLog->Log("[CClientVehicle] Network ID: %d Veh pointer: 0x%X ModelID: %d\n", nID, this->veh, modelID);
+
+#ifndef VCCOOP_DEBUG
+	this->StreamIn();
+#endif
 }
 
 CClientVehicle::~CClientVehicle()
@@ -31,9 +35,14 @@ CClientVehicle::~CClientVehicle()
 
 void CClientVehicle::StreamIn()
 {
-	if (this->streamed)return;
+	if (this->streamed)
+		return;
+		
+	if(this->veh == nullptr)
+	{
+		this->veh = gGame->CreateVehicle(this->model, this->syncData.vehiclePos);
+	}
 
-	this->veh = gGame->CreateVehicle(this->model, this->syncData.vehiclePos);
 	this->streamed = true;
 }
 

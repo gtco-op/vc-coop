@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAX_OBJ_MODEL_ID 288
-#define MAX_PED_MODEL_ID 106
+#define MAX_PED_MODEL_ID 105
 #define MAX_VEH_MODEL_ID 104
 #define MAX_VEH_COLOR_ID 95
 
@@ -16,6 +16,8 @@ class CModelIDs
 public:
 	CModelIDs() {}
 	~CModelIDs() {}
+
+	static int GetWeaponModelFromType(int weaponID);
 
 	static bool IsValidObjectModel(int modelID);
 	static bool IsValidPedModel(int modelID);

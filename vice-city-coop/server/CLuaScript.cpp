@@ -57,12 +57,15 @@ CLuaScript::CLuaScript(CCustomData* ptr)
 }
 int CLuaScript::lua_GivePlayerWeapon(lua_State* L)
 {
-	if (lua_gettop(L) == 2) {
+	if (lua_gettop(L) == 3) {
 		librg_entity_t* entity = librg_entity_fetch(&gServerNetwork->ctx, lua_tointeger(L, 1));
 		if (entity && entity->type == VCOOP_PLAYER && CServerNetwork::GetPlayerSyncData(entity->id) != nullptr) {
 			int model = lua_tointeger(L, 2);
+			int ammo = lua_tointeger(L, 3);
 
 			CServerNetwork::GetPlayerSyncData(entity->id)->CurrWep = model;
+			CServerNetwork::GetPlayerSyncData(entity->id)->Ammo = ammo;
+			CServerNetwork::GetPlayerSyncData(entity->id)->WepModelIndex = CModelIDs::GetWeaponModelFromType(model);
 			CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
 		}
 	}
@@ -360,8 +363,11 @@ int CLuaScript::lua_SetPlayerModel(lua_State* L)
 		if (entity && entity->type == VCOOP_PLAYER && CServerNetwork::GetPlayerSyncData(entity->id) != nullptr) {
 			int model = lua_tointeger(L, 2);
 			
-			CServerNetwork::GetPlayerSyncData(entity->id)->iModelIndex = model;
-			CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
+			if (CModelIDs::IsValidPedModel(model))
+			{
+				CServerNetwork::GetPlayerSyncData(entity->id)->iModelIndex = model;
+				CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
+			}
 		}
 	}
 	return 0;

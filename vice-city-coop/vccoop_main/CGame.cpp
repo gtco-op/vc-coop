@@ -515,6 +515,9 @@ void CGame::InitPreGamePatches()
 	// Disable CRubbish::Init() (crashfix)
 	MakeRet(0x568550);
 
+	// Disable Cheat_strncmp
+	MakeRet(0x4ACF60);
+
 	//Init hooks (no shit sherlock)
 	CHooks::InitHooks();
 
@@ -575,6 +578,11 @@ CVehicle * CGame::CreateVehicle(int modelIndex, CVector position)
 		vehicle->m_nState			= (unsigned char)0x4;
 		vehicle->m_placement.pos	= position;
 		
+		// invalid position set.. fuck that.. reset it!
+		if (vehicle->m_placement.pos.x <= -10000.f || vehicle->m_placement.pos.y <= -10000.f || vehicle->m_placement.pos.z <= -10000.f)		{
+			vehicle->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
+		}
+
 		CWorld::Add(vehicle);
 
 		return vehicle;

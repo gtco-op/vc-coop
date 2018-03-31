@@ -688,8 +688,6 @@ struct PedSyncData
 
 struct PlayerSyncData 
 {
-	int DrunkDrivingBufferUsed;
-
 	float Health = 100.f;
 	float Armour;
 	float Rotation;
@@ -708,19 +706,14 @@ struct PlayerSyncData
 
 	eObjective objective;
 
-	unsigned int CurrWep;
-	unsigned int WepModelIndex;
-	unsigned int Ammo;
+	unsigned int CurrWep = -1;
+	unsigned int WepModelIndex = -1;
+	unsigned int Ammo = -1;
 
 	PED_FLAGS m_nPedFlags;
 
 	CControllerState newPlayerKeys;
 	CControllerState oldPlayerKeys;
-
-	short WORD_EA;
-	short Mode;
-	short ShakeDur;
-	short DisablePlayerControls;
 
 	CAMERA_AIM playerLook;
 };

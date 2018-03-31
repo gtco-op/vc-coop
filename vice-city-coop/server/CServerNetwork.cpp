@@ -14,7 +14,7 @@ std::vector<librg_entity_t*>	otherEntities;
 
 CLuaScript						*gGamemodeScript;
 
-std::map<int, PlayerSyncData*>	playerData;
+PlayerSyncData playerData[MAX_PLAYERS];
 
 CServerNetwork::CServerNetwork()
 {
@@ -34,15 +34,7 @@ CServerNetwork::~CServerNetwork()
 }
 PlayerSyncData* CServerNetwork::GetPlayerSyncData(int id)
 {
-	PlayerSyncData* spd = nullptr;
-
-	for (auto player : playerData)	{
-		if (player.first == id && player.second)		{
-			spd = player.second;
-		}
-	}
-
-	return spd;
+	return &playerData[id];
 }
 void CServerNetwork::SetPlayerSyncData(int id, PlayerSyncData spd)
 {
@@ -65,6 +57,12 @@ void CServerNetwork::SetPlayerSyncData(int id, PlayerSyncData spd)
 	playerSyncData->Health = spd.Health;
 	playerSyncData->Rotation= spd.Rotation;
 	playerSyncData->Armour= spd.Armour;
+	
+	if (!(spd.Ammo <= -1) && !(spd.CurrWep <= -1) && !(spd.WepModelIndex <= -1)) {
+		playerSyncData->CurrWep = spd.CurrWep;
+		playerSyncData->Ammo = spd.Ammo;
+		playerSyncData->WepModelIndex = spd.WepModelIndex;
+	}
 
 	playerSyncData->m_nPedFlags.bIsStanding = spd.m_nPedFlags.bIsStanding;
 	playerSyncData->m_nPedFlags.bWasStanding = spd.m_nPedFlags.bWasStanding;
@@ -182,15 +180,9 @@ void CServerNetwork::SetPlayerSyncData(int id, PlayerSyncData spd)
 	playerSyncData->m_nPedFlags.bPedWasSetOutOfCollision = spd.m_nPedFlags.bPedWasSetOutOfCollision;
 	playerSyncData->m_nPedFlags.bGangMemberReturnsFire = spd.m_nPedFlags.bGangMemberReturnsFire;
 
-	for (auto const& player : playerData)
-	{
-		if (player.first == id)
-		{
-			playerData.insert(std::make_pair(id, playerSyncData));
-			librg_message_send_to(&gServerNetwork->ctx, VCOOP_RECEIVE_SPD_UPDATE, playerEntity->client_peer, playerSyncData, sizeof(PlayerSyncData));
-		}
-	}
-
+	playerData[id] = *playerSyncData;
+	librg_message_send_to(&gServerNetwork->ctx, VCOOP_RECEIVE_SPD_UPDATE, playerEntity->client_peer, playerSyncData, sizeof(PlayerSyncData));
+	
 	if (controlEntity)
 	{
 		librg_entity_control_set(&gServerNetwork->ctx, id, controlEntity->client_peer);
@@ -302,7 +294,7 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 	librg_message_send_except(msg->ctx, VCOOP_CONNECT, entity->client_peer, &cData, sizeof(connectData));
 
 	// insert data into data pool..
-	playerData.insert(std::make_pair(entity->id, new PlayerSyncData));
+	playerData[entity->id] = PlayerSyncData();
 
 	//loop through connected players and send it to this guy
 	for (auto it : playerEntities)
@@ -458,6 +450,9 @@ void CServerNetwork::on_entity_remove(librg_event_t *event) //entity streamed ou
 }
 void CServerNetwork::on_stream_update(librg_event_t *event) 
 {
+	if (!event->entity->user_data)
+		return;
+
 	if (event->entity->type == VCOOP_PLAYER)
 	{
 		librg_data_rptr(event->data, event->entity->user_data, sizeof(PlayerSyncData));
@@ -532,6 +527,10 @@ void CServerNetwork::on_stream_update(librg_event_t *event)
 
 void CServerNetwork::on_disconnect(librg_event_t* event)
 {
+	librg_message_send_except(&ctx, VCOOP_DISCONNECT, event->peer, &event->entity->id, sizeof(u32));
+
+	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
+
 	librg_entity_id *entities;
 	usize amount = librg_entity_query(event->ctx, event->entity->id, &entities);
 
@@ -568,29 +567,16 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 
 	librg_entity_control_remove(event->ctx, event->entity->id);
 
-	auto tmp = std::find(playerEntities.begin(), playerEntities.end(), event->entity);
-	if (tmp != playerEntities.end())	
+	int eIDX = std::find(playerEntities.begin(), playerEntities.end(), event->entity) - playerEntities.begin();	
+	if (std::find(playerEntities.begin(), playerEntities.end(), event->entity) != playerEntities.end())
 	{
-		//we found the entity, in our librg entity vector, so now find it in data pool,
-		//erase it, after calling lua - so server-side scripts get a chance of using
-		//the 'disconnecting player's data'..
 		gGamemodeScript->Call("onPlayerDisconnect", "is", event->entity->id, "Quit");
 
-		// now remove from data pool..
-		for (auto player : playerData)		{
-			if (player.first == event->entity->id)			{
-				playerData.erase(player.first);
-			}
-		}
-		
-		// erase from entity vector and delete..
-		playerEntities.erase(tmp);
+		playerData[event->entity->id] = PlayerSyncData();
+
+		playerEntities.erase(playerEntities.begin() + eIDX);
 		delete event->entity->user_data;
-	}	
-
-	librg_message_send_except(&ctx, VCOOP_DISCONNECT, event->peer, &event->entity->id, sizeof(u32));
-
-	gLog->Log("[ID#%d] Disconnected from server.\n", event->entity->id);
+	}
 }
 
 void CServerNetwork::measure(void *userptr) {
@@ -682,6 +668,8 @@ void *CServerNetwork::server_thread(void* p)
 
 	// Auto-detect all client scripts
 	gDataMgr->LoadScripts();
+
+	playerEntities.reserve(MAX_PLAYERS);
 
 	while (server_running) {
 		if (!gGamemodeScript->GetServerStartStatus())		{
