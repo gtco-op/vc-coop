@@ -77,20 +77,20 @@ void CClientPed::SyncPed(PedSyncData spd)
 
 	//Action sync
 	ped->m_dwAction = spd.m_dwAction;
-	ped->m_dwActionTimer = spd.m_dwActionTimer;
+	ped->m_dwActionTimer = GTA_SET_TIMER(spd.m_dwActionTimer);
 	ped->m_ActionPos.x = spd.m_fActionX;
 	ped->m_ActionPos.y = spd.m_fActionY;
 
 	//Objective sync
 	ped->m_dwObjective = spd.m_dwObjective;
-	ped->m_dwObjectiveTimer = spd.m_dwObjectiveTimer;
+	ped->m_dwObjectiveTimer = GTA_SET_TIMER(spd.m_dwObjectiveTimer);
 	ped->m_vecObjective = spd.m_vecObjective;
 	ped->m_fObjectiveAngle = spd.m_fObjectiveAngle;
 	ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
-	//ped->m_pObjectiveVehicle		= spd.m_pObjectiveVehicle;
+	ped->m_pObjectiveVehicle = (CVehicle*)gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveVehicle);
 
 	//Flee sync
-	ped->m_dwFleeTimer = spd.m_dwFleeTimer;
+	ped->m_dwFleeTimer = GTA_SET_TIMER(spd.m_dwFleeTimer);
 	ped->m_fFleeFromPosX = spd.m_fFleeFromPosX;
 	ped->m_fFleeFromPosY = spd.m_fFleeFromPosY;
 
@@ -98,7 +98,7 @@ void CClientPed::SyncPed(PedSyncData spd)
 	ped->m_fPathNextNodeDir = spd.m_fPathNextNodeDir;
 	ped->wRouteCurDir = spd.wRouteCurDir;
 	ped->m_vecPathNextNode = spd.m_vecPathNextNode;
-	ped->m_dwPathNodeTimer = spd.m_dwPathNodeTimer;
+	ped->m_dwPathNodeTimer = GTA_SET_TIMER(spd.m_dwPathNodeTimer);
 	ped->m_wCurPathNode = spd.m_wCurPathNode;
 	ped->m_wPathNodes = spd.m_wPathNodes;
 
@@ -148,20 +148,20 @@ PedSyncData CClientPed::BuildSyncData()
 
 	//Action sync
 	spd.m_dwAction = ped->m_dwAction;
-	spd.m_dwActionTimer = ped->m_dwActionTimer;
+	spd.m_dwActionTimer = GTA_GET_TIMER(ped->m_dwActionTimer);
 	spd.m_fActionX = ped->m_ActionPos.x;
 	spd.m_fActionY = ped->m_ActionPos.y;
 
 	//Objective sync
 	spd.m_dwObjective = ped->m_dwObjective;
-	spd.m_dwObjectiveTimer = ped->m_dwObjectiveTimer;
+	spd.m_dwObjectiveTimer = GTA_GET_TIMER(ped->m_dwObjectiveTimer);
 	spd.m_vecObjective = ped->m_vecObjective;
 	spd.m_fObjectiveAngle = ped->m_fObjectiveAngle;
-	ped->m_pObjectiveEntity = gNetwork->GetEntityFromNetworkID(spd.m_pObjectiveEntity);
-	//spd.m_pObjectiveVehicle		= ped->m_pObjectiveVehicle;
+	spd.m_pObjectiveEntity = gNetwork->GetNetworkIDFromEntity(ped->m_pObjectiveEntity);
+	spd.m_pObjectiveVehicle	= gNetwork->GetNetworkIDFromEntity(ped->m_pObjectiveVehicle);
 
 	//Flee sync
-	spd.m_dwFleeTimer = ped->m_dwFleeTimer;
+	spd.m_dwFleeTimer = GTA_GET_TIMER(ped->m_dwFleeTimer);
 	spd.m_fFleeFromPosX = ped->m_fFleeFromPosX;
 	spd.m_fFleeFromPosY = ped->m_fFleeFromPosY;
 
@@ -169,7 +169,7 @@ PedSyncData CClientPed::BuildSyncData()
 	spd.m_fPathNextNodeDir = ped->m_fPathNextNodeDir;
 	spd.wRouteCurDir = ped->wRouteCurDir;
 	spd.m_vecPathNextNode = ped->m_vecPathNextNode;
-	spd.m_dwPathNodeTimer = ped->m_dwPathNodeTimer;
+	spd.m_dwPathNodeTimer = GTA_GET_TIMER(ped->m_dwPathNodeTimer);
 	spd.m_wCurPathNode = ped->m_wCurPathNode;
 	spd.m_wPathNodes = ped->m_wPathNodes;
 

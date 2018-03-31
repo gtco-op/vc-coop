@@ -7,6 +7,13 @@ BYTE			internalPlayerID			= 0;
 CVehicle *		_pVehicle;
 static bool		scriptProcessed				= false;
 
+char(__thiscall* original_CPed__InflictDamage)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR);
+int(__thiscall* original_CPed__SetDead)(CPed*);
+signed int(__cdecl* original_ShowExceptionBox)(DWORD*, int, int);
+char(__thiscall* original_CAutomobile__ProcessControl)(CVehicle*);
+char(__thiscall* original_CPlayerPed__ProcessControl)(CPlayerPed*);
+int(__thiscall* original_CWeapon__DoBulletImpact)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D);
+
 void LoadMissionScript()
 {
 	// Load the SCM Script (restore)..
@@ -90,7 +97,6 @@ void Hooked_LoadingScreen(char * message, char * message2, char * splash)
 	return;
 }
 
-char(__thiscall* original_CPed__InflictDamage)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR);
 char __fastcall CPed__InflictDamage_Hook(CPed * This, DWORD _EDX, CEntity* entity, eWeaponType weapon, float damage, ePedPieceTypes bodypart, UCHAR unk)
 {
 	if (entity == LocalPlayer())
@@ -106,7 +112,6 @@ char __fastcall CPed__InflictDamage_Hook(CPed * This, DWORD _EDX, CEntity* entit
 }
 
 
-int(__thiscall* original_CPed__SetDead)(CPed*);
 int __fastcall CPed__SetDead_Hook(CPed * This, DWORD _EDX)
 {
 	if (This == LocalPlayer())
@@ -120,7 +125,6 @@ int __fastcall CPed__SetDead_Hook(CPed * This, DWORD _EDX)
 	return original_CPed__SetDead(This);
 }
 
-signed int(__cdecl* original_ShowExceptionBox)(DWORD*, int, int);
 signed int __cdecl ShowExceptionBox_Hook(DWORD* a1, int a2, int a3)
 {
 	gLog->Log("Exception %08X occurred at address %08X\n", *a1, *(DWORD *)(a3 + 184));
@@ -173,58 +177,9 @@ void Hook_CRunningScript__Process()
 		
 		// First tick processed
 		scriptProcessed = true;
-/*
-		eStreamingFlags loadingType = eStreamingFlags::GAME_REQUEST;
-
-		CStreaming::RequestModel(269, loadingType);
-		CStreaming::RequestModel(270, loadingType);
-		CStreaming::RequestModel(275, loadingType);
-		CStreaming::RequestModel(278, loadingType);
-		CStreaming::RequestModel(284, loadingType);
-		CStreaming::RequestModel(280, loadingType);
-		CStreaming::RequestModel(286, loadingType);
-		CStreaming::RequestModel(290, loadingType);
-		CStreaming::RequestModel(294, loadingType);
-		CStreaming::RequestModel(268, loadingType);
-		CStreaming::RequestModel(270, loadingType);
-		CStreaming::RequestModel(291, loadingType);
-		CStreaming::RequestModel(275, loadingType);
-		CStreaming::RequestModel(279, loadingType);
-		CStreaming::RequestModel(283, loadingType);
-		CStreaming::RequestModel(280, loadingType);
-		CStreaming::RequestModel(286, loadingType);
-		CStreaming::RequestModel(287, loadingType);
-		CStreaming::RequestModel(259, loadingType);
-		CStreaming::RequestModel(264, loadingType);
-		CStreaming::RequestModel(272, loadingType);
-		CStreaming::RequestModel(274, loadingType);
-		CStreaming::RequestModel(277, loadingType);
-		CStreaming::RequestModel(281, loadingType);
-		CStreaming::RequestModel(276, loadingType);
-		CStreaming::RequestModel(285, loadingType);
-		CStreaming::RequestModel(288, loadingType);
-
-		for (int i = 130; i < 236; i++)
-		{
-			CStreaming::RequestModel(i, loadingType);
-		}
-
-		CStreaming::LoadAllRequestedModels(0);*/
 	}
 }
 
-char(__cdecl* original_RemoveModel)(int);
-char __cdecl RemoveModel_Hook(int model)
-{
-	if (model < 300 && model >= 268)
-	{
-		gLog->Log("[CHooks]Game removed weapon model: %d\n", model);
-		return 0;
-	}
-	return original_RemoveModel(model);
-}
-
-char(__thiscall* original_CAutomobile__ProcessControl)(CVehicle*);
 char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
 {
 	//gLog->Log("[CAutomobile::ProcessControl()] Processing for 0x%X 0x%X\n", This, This->m_pDriver);
@@ -233,25 +188,28 @@ char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
 		int currentPlayerID = FindIDForPed((CPed*)This->m_pDriver);
 		if (currentPlayerID == -1)return 0;
 
-		//gLog->Log("[CAutomobile::ProcessControl()] Processing for %d\n", currentPlayerID);
+		// set remote player to focus
 		CWorld::PlayerInFocus = currentPlayerID;
 
-		// set remote player's keys
+		// save local player's keys
 		localPlayerKeys = *CPad::GetPad(0);
+
+		// set remote player's keys
 		*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
 
 		// call the internal CPlayerPed[]::Process
 		original_CAutomobile__ProcessControl(This);
 
-		// restore the local player's keys and the internal ID.
-		CWorld::PlayerInFocus = 0;
+		// restore local player's keys
 		*CPad::GetPad(0) = localPlayerKeys;
+
+		// restore the local player's id
+		CWorld::PlayerInFocus = 0;
 		return 0;
 	}
 	return original_CAutomobile__ProcessControl(This);
 }
 
-char(__thiscall* original_CPlayerPed__ProcessControl)(CPlayerPed*);
 char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 {
 	if (This != LocalPlayer())
@@ -259,12 +217,13 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 		int currentPlayerID = FindIDForPed((CPed*)This);
 		if (currentPlayerID == -1)return 0;
 
-		//gLog->Log("[CPlayerPed::ProcessControl()] Processing for %d\n", currentPlayerID);
-
+		// set player to focus
 		CWorld::PlayerInFocus = currentPlayerID;
 
-		// set remote player's keys
+		// save local player's keys
 		localPlayerKeys = *CPad::GetPad(0);
+
+		// set remote player's keys
 		*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
 
 		// save the internal cammode.
@@ -273,8 +232,10 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 		// onfoot mouse looking mode.
 		TheCamera.Cams[TheCamera.ActiveCam].Mode = 4;
 
-		// aim switching
+		// save local player's aim
 		localPlayerLookFrontX = *(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front;
+
+		// set remote player's aim
 		*(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front = gGame->remotePlayerLookFrontX[currentPlayerID];
 
 		// call the internal CPlayerPed[]::Process
@@ -283,29 +244,19 @@ char __fastcall CPlayerPed__ProcessControl_Hook(CPlayerPed * This, DWORD _EDX)
 		// restore the camera mode.
 		TheCamera.Cams[TheCamera.ActiveCam].Mode = localPlayerCameraMode;
 
-		// restore the local player's keys and the internal ID.
-		CWorld::PlayerInFocus = 0;
+		// restore local player keys
 		*CPad::GetPad(0) = localPlayerKeys;
 
+		// restore the local player's id
+		CWorld::PlayerInFocus = 0;
+
+		//restore local player's aim
 		*(CAMERA_AIM*)&TheCamera.Cams[TheCamera.ActiveCam].Front = localPlayerLookFrontX;
 		return 0;
 	}
 	return original_CPlayerPed__ProcessControl(This);
 }
 
-int(__thiscall* original_CPed__SetIdle)(CPed*);
-int __fastcall CPed__SetIdle_Hook(CPed * This, DWORD _EDX)//probably unnecessary
-{
-	gLog->Log("SetIdle called");
-	if (This->IsPlayer())
-	{
-		gLog->Log("prevented SetIdle on player ped");
-		return 0;
-	}
-	return original_CPed__SetIdle(This);
-}
-
-int(__thiscall* original_CWeapon__DoBulletImpact)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D);
 int __fastcall CWeapon__DoBulletImpact_Hook(CWeapon*This, DWORD _EDX, CEntity* source, CEntity* target, CVector* start, CVector* end, CColPoint* colpoint, CVector2D ahead)//probably unnecessary
 {
 	if (source != LocalPlayer()) // we dont need original bullets from remote players because we will sync it with librg messages
@@ -334,14 +285,12 @@ void CHooks::DoBulletImpact(CWeapon*This, CEntity* source, CEntity* target, CVec
 
 void CHooks::InitHooks()
 {
-	original_CPed__InflictDamage = (char(__thiscall*)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
-	original_CPed__SetDead = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4F6430, (PBYTE)CPed__SetDead_Hook);
-	original_ShowExceptionBox = (signed int(__cdecl*)(DWORD*, int, int))DetourFunction((PBYTE)0x677E40, (PBYTE)ShowExceptionBox_Hook);
-	//original_RemoveModel = (char(__cdecl*)(int))DetourFunction((PBYTE)0x40D6E0, (PBYTE)RemoveModel_Hook);
-	original_CPlayerPed__ProcessControl = (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
-	original_CAutomobile__ProcessControl = (char(__thiscall*)(CVehicle*))DetourFunction((PBYTE)0x593030, (PBYTE)CAutomobile__ProcessControl_Hook);
-	//original_CPed__SetIdle = (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4FDFD0, (PBYTE)CPed__SetIdle_Hook);
-	original_CWeapon__DoBulletImpact = (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
+	original_CPed__InflictDamage			= (char(__thiscall*)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
+	original_CPed__SetDead					= (int(__thiscall*)(CPed*))DetourFunction((PBYTE)0x4F6430, (PBYTE)CPed__SetDead_Hook);
+	original_ShowExceptionBox				= (signed int(__cdecl*)(DWORD*, int, int))DetourFunction((PBYTE)0x677E40, (PBYTE)ShowExceptionBox_Hook);
+	original_CPlayerPed__ProcessControl		= (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
+	original_CAutomobile__ProcessControl	= (char(__thiscall*)(CVehicle*))DetourFunction((PBYTE)0x593030, (PBYTE)CAutomobile__ProcessControl_Hook);
+	original_CWeapon__DoBulletImpact		= (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
 
 #ifdef VCCOOP_DEBUG_ENGINE
 	patch::ReplaceFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed

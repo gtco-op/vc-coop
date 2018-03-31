@@ -67,6 +67,9 @@
 #define MAX_VEHICLES					1000
 #define MAX_PEDS						1000
 
+#define GTA_SET_TIMER(timer) (CTimer::m_snTimeInMilliseconds + timer)
+#define GTA_GET_TIMER(timer) (timer - CTimer::m_snTimeInMilliseconds)
+
 #if !defined(_MSC_VER)
 #define MAX_PATH 260
 #define LPVOID void*
@@ -649,6 +652,7 @@ struct PedSyncData
 
 	float m_fObjectiveAngle;
 	int m_pObjectiveEntity;
+	int m_pObjectiveVehicle;
 	
 	int m_dwFleeTimer;
 	float m_fFleeFromPosX;
