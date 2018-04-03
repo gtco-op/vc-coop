@@ -7,6 +7,8 @@ int				CGame::keyPressTime;
 WNDPROC			orig_wndproc;
 HWND			orig_wnd;
 
+bool bIsLoadingModel = false;
+
 CGame::CGame()
 {
 	for (int i = 1; i < MAX_PLAYERS; i++)
@@ -187,10 +189,13 @@ void CGame::CustomModelLoad(int id)
 		return;
 
 	int modelid = id;
-	if (!IsModelLoaded(modelid)) {
+	while (!IsModelLoaded(modelid)) {
+		bIsLoadingModel = true;
 		CStreaming::RequestModel(modelid, 22);
 		Sleep(100);
 	}
+	
+	bIsLoadingModel = false;
 }
 /*
 void CGame::CustomModelLoad(int id)
@@ -548,12 +553,16 @@ CVehicle * CGame::CreateVehicle(int modelIndex, CVector position)
 	if (modelIndex <= 0)
 		return nullptr;
 
-	this->CustomModelLoad(modelIndex);
-	while (!IsModelLoaded(modelIndex))	{
-		this->CustomModelLoad(modelIndex);
-		Sleep(100);
+	bool loadedModel = false;
+	while (loadedModel == false && IsModelLoaded(modelIndex) == false)
+	{
+		if (!bIsLoadingModel)
+			this->CustomModelLoad(modelIndex);
+		else
+			Sleep(10);
 	}
-
+	gLog->Log("[CGame] Loaded Vehicle Model: %d\n", modelIndex);
+	
 	CVehicle *vehicle = nullptr;
 	gLog->Log("[CGame] Vehicle type: %d\n", reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
 	switch (reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType)

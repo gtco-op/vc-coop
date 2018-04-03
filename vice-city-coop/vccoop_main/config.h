@@ -834,6 +834,8 @@ extern std::vector<librg_entity_t*>	playerEntities;
 extern char							playerNames[MAX_PLAYERS][25];
 extern std::vector<librg_entity_t*>	otherEntities;
 
+extern bool bIsLoadingModel;
+
 #if defined( _MSC_VER )
 #pragma warning (disable : 4244)
 #pragma warning (disable : 4348)
