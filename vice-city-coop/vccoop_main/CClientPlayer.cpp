@@ -177,7 +177,12 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 		if (CStreaming::ms_aInfoForModel[spd.iModelIndex].m_nLoadState != LOADSTATE_LOADED) {
 			gGame->CustomModelLoad(spd.iModelIndex);
 		}
-		ped->SetModelIndex(spd.iModelIndex);
+		
+		while (CStreaming::ms_aInfoForModel[spd.iModelIndex].m_nLoadState != LOADSTATE_LOADED)
+			Sleep(100);
+
+		if(CStreaming::ms_aInfoForModel[spd.iModelIndex].m_nLoadState == LOADSTATE_LOADED)
+			ped->SetModelIndex(spd.iModelIndex);
 	}
 
 	//ped->m_dwAnimGroupId = spd.iCurrentAnimID;
