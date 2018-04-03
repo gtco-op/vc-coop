@@ -830,9 +830,11 @@ enum {
 	VCOOP_VEHICLE,
 };
 
-extern std::vector<librg_entity_t*>	playerEntities;
-extern char							playerNames[MAX_PLAYERS][25];
-extern std::vector<librg_entity_t*>	otherEntities;
+#define MAX_ENTITIES (MAX_PEDS+MAX_OBJECTS+MAX_VEHICLES)
+
+extern char				playerNames[MAX_PLAYERS][25];
+extern librg_entity_t*	playerEntities[MAX_PLAYERS];
+extern librg_entity_t*	otherEntities[MAX_ENTITIES];
 
 extern bool bIsLoadingModel;
 

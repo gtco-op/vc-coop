@@ -9,9 +9,9 @@ librg_entity_t *					CClientNetwork::local_player;
 bool								CClientNetwork::client_running;
 bool								CClientNetwork::connected;
 
-std::vector<librg_entity_t*>	playerEntities;
+librg_entity_t*	playerEntities[MAX_PLAYERS];
 char							playerNames[MAX_PLAYERS][25];
-std::vector<librg_entity_t*>	otherEntities;
+librg_entity_t*	otherEntities[MAX_ENTITIES];
 
 CClientNetwork::CClientNetwork()
 {

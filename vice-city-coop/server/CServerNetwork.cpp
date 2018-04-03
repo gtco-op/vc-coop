@@ -8,9 +8,9 @@ HANDLE							CServerNetwork::server_handle;
 bool							CServerNetwork::server_running, CServerNetwork::console_active;
 librg_ctx_t						CServerNetwork::ctx;
 
-std::vector<librg_entity_t*>	playerEntities;
+librg_entity_t*	playerEntities[MAX_PLAYERS];
 char							playerNames[MAX_PLAYERS][25];
-std::vector<librg_entity_t*>	otherEntities;
+librg_entity_t*	otherEntities[MAX_ENTITIES];
 
 CLuaScript						*gGamemodeScript;
 
