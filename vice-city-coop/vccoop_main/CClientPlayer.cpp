@@ -10,15 +10,12 @@ CClientPlayer::CClientPlayer(int nID, int gID)
 
 	this->ped->m_placement.pos = { VCCOOP_DEFAULT_SPAWN_POSITION };
 
-	if (this->syncData.iModelIndex >= 0) {
-		if (CStreaming::ms_aInfoForModel[this->syncData.iModelIndex].m_nLoadState != LOADSTATE_LOADED) {
-			gGame->CustomModelLoad(this->syncData.iModelIndex);
-		}
-		this->ped->SetModelIndex(this->syncData.iModelIndex);
-	}
-	else
+	gGame->CustomModelLoad(7);
+	if(CStreaming::ms_aInfoForModel[7].m_nLoadState == LOADSTATE_LOADED)	{
 		this->ped->SetModelIndex(7);
-
+		Sleep(1000);
+	}
+	
 	CWorld::Players[gID].m_bNeverGetsTired = true;
 
 	this->gameID = gID;
@@ -52,7 +49,16 @@ void CClientPlayer::StreamIn()
 		this->ped->SetModelIndex(this->syncData.iModelIndex);
 	}
 	else
+	{
+		if (CStreaming::ms_aInfoForModel[7].m_nLoadState != LOADSTATE_LOADED) {
+			while (CStreaming::ms_aInfoForModel[7].m_nLoadState != LOADSTATE_LOADED)
+			{
+				Sleep(100);
+				gGame->CustomModelLoad(7);
+			}
+		}
 		this->ped->SetModelIndex(7);
+	}
 
 	gGame->remotePlayerPeds[this->gameID] = this->ped;
 }
@@ -96,11 +102,25 @@ void CClientPlayer::Respawn()
 	if (this->syncData.iModelIndex >= 0) {
 		if (CStreaming::ms_aInfoForModel[this->syncData.iModelIndex].m_nLoadState != LOADSTATE_LOADED) {
 			gGame->CustomModelLoad(this->syncData.iModelIndex);
+
+			while (CStreaming::ms_aInfoForModel[this->syncData.iModelIndex].m_nLoadState != LOADSTATE_LOADED)
+			{
+				Sleep(100);
+			}
 		}
 		this->ped->SetModelIndex(this->syncData.iModelIndex);
 	}
 	else
+	{
+		if (CStreaming::ms_aInfoForModel[7].m_nLoadState != LOADSTATE_LOADED) {
+			gGame->CustomModelLoad(7);
+
+			while (CStreaming::ms_aInfoForModel[7].m_nLoadState != LOADSTATE_LOADED)			{
+				Sleep(100);
+			}
+		}
 		this->ped->SetModelIndex(7);
+	}
 
 	this->ped->m_fHealth = 100.0f;
 
@@ -178,6 +198,9 @@ void CClientPlayer::SyncPlayer(PlayerSyncData spd)
 		{
 			if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED) {
 				gGame->CustomModelLoad(spd.WepModelIndex);
+				while(CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED) {
+					Sleep(100);
+				}
 			}
 
 			switch ((eWeaponType)spd.CurrWep)

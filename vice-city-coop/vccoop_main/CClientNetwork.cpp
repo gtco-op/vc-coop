@@ -440,10 +440,26 @@ void SyncLocalPlayer(PlayerSyncData spd)
 	if (spd.iModelIndex != LocalPlayer()->m_nModelIndex && CModelIDs::IsValidPedModel(spd.iModelIndex)) {
 		if (CStreaming::ms_aInfoForModel[spd.iModelIndex].m_nLoadState != LOADSTATE_LOADED){
 			gGame->CustomModelLoad(spd.iModelIndex);
+
+			while (CStreaming::ms_aInfoForModel[spd.iModelIndex].m_nLoadState != LOADSTATE_LOADED)
+			{
+				Sleep(100);
+			}
 		}
 		LocalPlayer()->SetModelIndex(spd.iModelIndex);
 	}
-	
+	else
+	{
+		if (CStreaming::ms_aInfoForModel[7].m_nLoadState != LOADSTATE_LOADED) {
+			gGame->CustomModelLoad(7);
+
+			while (CStreaming::ms_aInfoForModel[7].m_nLoadState != LOADSTATE_LOADED)
+			{
+				Sleep(100);
+			}
+		}
+		LocalPlayer()->SetModelIndex(7);
+	}
 	if (spd.WepModelIndex != LocalPlayer()->m_dwWepModelID && spd.WepModelIndex > 200 && spd.CurrWep > 1 && spd.Ammo != -1)
 	{
 		if (CStreaming::ms_aInfoForModel[spd.WepModelIndex].m_nLoadState != LOADSTATE_LOADED)		{
