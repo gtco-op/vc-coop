@@ -235,7 +235,7 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 	// spawn a ped at player's position
 	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
 
-	otherEntities.push_back(entity);
+	otherEntities[entity->id] = entity;
 	gLog->Log("[CServerNetwork] Ped created. (%d)\n", entity->id);
 
 	gGamemodeScript->Call("onPedCreated", "i", librg_entity_find(msg->ctx, msg->peer)->id);
@@ -267,7 +267,7 @@ void CServerNetwork::ObjectCreateEvent(librg_message_t *msg)
 	// spawn a ped at player's position
 	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
 
-	otherEntities.push_back(entity);
+	otherEntities[entity->id] = entity;
 	gLog->Log("[CServerNetwork] Object created. (%d)\n", entity->id);
 
 	gGamemodeScript->Call("onObjectCreated", "i", librg_entity_find(msg->ctx, msg->peer)->id);
@@ -332,7 +332,7 @@ void CServerNetwork::on_connect_accepted(librg_event_t *event)
 	librg_entity_control_set(event->ctx, event->entity->id, event->entity->client_peer);
 
 	// push back the entity into the entities vector
-	playerEntities.push_back(event->entity);
+	playerEntities[event->entity->id] = event->entity;
 	gLog->Log("[CServerNetwork][CLIENT CONNECTION] Network entity %d connected\n", event->entity->id);
 
 	// send every script/data to the client
@@ -567,16 +567,12 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 
 	librg_entity_control_remove(event->ctx, event->entity->id);
 
-	int eIDX = std::find(playerEntities.begin(), playerEntities.end(), event->entity) - playerEntities.begin();	
-	if (std::find(playerEntities.begin(), playerEntities.end(), event->entity) != playerEntities.end())
-	{
-		gGamemodeScript->Call("onPlayerDisconnect", "is", event->entity->id, "Quit");
+	gGamemodeScript->Call("onPlayerDisconnect", "is", event->entity->id, "Quit");
 
-		playerData[event->entity->id] = PlayerSyncData();
+	playerData[event->entity->id]		= PlayerSyncData();
+	playerEntities[event->entity->id]	= nullptr;
 
-		playerEntities.erase(playerEntities.begin() + eIDX);
-		delete event->entity->user_data;
-	}
+	delete event->entity->user_data;
 }
 
 void CServerNetwork::measure(void *userptr) {
@@ -668,9 +664,7 @@ void *CServerNetwork::server_thread(void* p)
 
 	// Auto-detect all client scripts
 	gDataMgr->LoadScripts();
-
-	playerEntities.reserve(MAX_PLAYERS);
-
+	
 	while (server_running) {
 		if (!gGamemodeScript->GetServerStartStatus())		{
 			gGamemodeScript->Call("onServerStart");
