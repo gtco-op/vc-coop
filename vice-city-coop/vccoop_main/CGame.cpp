@@ -550,38 +550,38 @@ void CGame::DisableMouseInput()
 
 CVehicle * CGame::CreateVehicle(int modelIndex, CVector position)
 {
+	CVehicle *vehicle = nullptr;
+
 	if (modelIndex <= 0)
 		return nullptr;
 
 	bool loadedModel = false;
-	while (loadedModel == false && IsModelLoaded(modelIndex) == false)
-	{
+	while (loadedModel == false && IsModelLoaded(modelIndex) == false)	{
 		if (!bIsLoadingModel)
 			this->CustomModelLoad(modelIndex);
 		else
 			Sleep(10);
 	}
-	gLog->Log("[CGame] Loaded Vehicle Model: %d\n", modelIndex);
 	
-	CVehicle *vehicle = nullptr;
-	gLog->Log("[CGame] Vehicle type: %d\n", reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
+	gLog->Log("[CGame] Model ID: %d\tVehicle type: %d\n", modelIndex, reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
+
 	switch (reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType)
 	{
-	case VEHICLE_HELI:
-		vehicle = new CHeli(modelIndex, 2);
-		break;
-	case VEHICLE_PLANE:
-		vehicle = new CPlane(modelIndex, 2);
-		break;
-	case VEHICLE_BIKE:
-		vehicle = new CBike(modelIndex, 2);
-		break;
-	case VEHICLE_BOAT:
-		vehicle = new CBoat(modelIndex, 2);
-		break;
-	default://0
-		vehicle = new CAutomobile(modelIndex, 2);
-		break;
+		case VEHICLE_HELI:
+			vehicle = new CHeli(modelIndex, 2);
+			break;
+		case VEHICLE_PLANE:
+			vehicle = new CPlane(modelIndex, 2);
+			break;
+		case VEHICLE_BIKE:
+			vehicle = new CBike(modelIndex, 2);
+			break;
+		case VEHICLE_BOAT:
+			vehicle = new CBoat(modelIndex, 2);
+			break;
+		default://0
+			vehicle = new CAutomobile(modelIndex, 2);
+			break;
 	}
 	if (vehicle)
 	{
