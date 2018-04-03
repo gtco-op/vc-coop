@@ -297,12 +297,11 @@ void CServerNetwork::HandShakeIsDone(librg_message_t *msg)
 	playerData[entity->id] = PlayerSyncData();
 
 	//loop through connected players and send it to this guy
-	for (auto it : playerEntities)
-	{
-		if (it->id != entity->id)
-		{
-			sprintf(cData.name, playerNames[it->id]);
-			cData.playerId = it->id;
+	for (int i = 0; i < MAX_PLAYERS; i++)	{
+		librg_entity_t* entityPtr = librg_entity_fetch(msg->ctx, i);
+		if (entityPtr != nullptr && entityPtr->type == VCOOP_PLAYER && entity->id != i)		{
+			sprintf(cData.name, playerNames[i]);
+			cData.playerId = i;
 			librg_message_send_to(msg->ctx, VCOOP_CONNECT, entity->client_peer, &cData, sizeof(connectData));
 		}
 	}
