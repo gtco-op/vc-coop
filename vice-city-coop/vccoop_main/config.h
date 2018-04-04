@@ -377,7 +377,7 @@ public:
 #pragma pack(pop)
 #endif
 
-#if defined(VCCOOP_SERVER)
+#if defined(VCCOOP_SERVER) || !defined(_MSC_VER)
 enum ePedAction : unsigned int
 {
 	None = 0,
@@ -619,7 +619,7 @@ struct PedSyncData
 	float OrientY;
 	float OrientZ;
 
-	bool Wander;
+	bool Wander = true;
 
 	int iModelIndex;
 	int iInteriorID;
