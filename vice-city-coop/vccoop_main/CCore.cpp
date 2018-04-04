@@ -26,7 +26,7 @@ CCore::CCore()
 	
 	gChat		= new CChat();
 	gLog		= new CLogger();
-	gLog->Log("[CCore] " VCCOOP_NAME " " VCCOOP_VER " loaded.\n[CCore] Initializing classes.\n");
+	gLog->Log("[CCore] " VCCOOP_NAME " " VCCOOP_VER " loaded.\n");
 	gConfig		= new CConfiguration();
 	gNetwork	= new CClientNetwork();
 	gGame		= new CGame();
