@@ -547,7 +547,16 @@ void CGame::DisableMouseInput()
 	//CControllerConfigManager::AffectPadFromMouse nop
 	MakeNop(0x4AB6F0, 5);
 }
-
+void WaitForModelLoad(int modelIndex)
+{
+	bool loadedModel = false;
+	while (loadedModel == false && IsModelLoaded(modelIndex) == false) {
+		if (!bIsLoadingModel)
+			gGame->CustomModelLoad(modelIndex);
+		else
+			Sleep(10);
+	}
+}
 CVehicle * CGame::CreateVehicle(int modelIndex, CVector position)
 {
 	CVehicle *vehicle = nullptr;
@@ -555,14 +564,8 @@ CVehicle * CGame::CreateVehicle(int modelIndex, CVector position)
 	if (modelIndex <= 0)
 		return nullptr;
 
-	bool loadedModel = false;
-	while (loadedModel == false && IsModelLoaded(modelIndex) == false)	{
-		if (!bIsLoadingModel)
-			this->CustomModelLoad(modelIndex);
-		else
-			Sleep(10);
-	}
-	
+	WaitForModelLoad(modelIndex);
+
 	gLog->Log("[CGame] Model ID: %d\tVehicle type: %d\n", modelIndex, reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType);
 
 	switch (reinterpret_cast<CVehicleModelInfo *>(CModelInfo::ms_modelInfoPtrs[modelIndex])->m_nVehicleType)
