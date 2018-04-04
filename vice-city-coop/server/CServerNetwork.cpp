@@ -379,6 +379,41 @@ void CServerNetwork::on_entity_update(librg_event_t *event)
 	else if (event->entity->type == VCOOP_PED)
 	{
 		librg_data_wptr(event->data, event->entity->user_data, sizeof(PedSyncData));
+
+		CVector ped_pos;
+		zplm_vec3_t player_pos;
+		int currentPedID = 0, currentPlayerID = 0, closestPlayerID = -1, totalPlayersChecked = 0;
+		double closestDistance = 0, currentDistance = 0;
+
+		PedSyncData* spd = reinterpret_cast<PedSyncData*>(event->entity->user_data);
+		for (auto player : playerEntities) {
+			if (player && player->type == VCOOP_PLAYER) {
+				
+				CVector ped_pos = { event->entity->position.x,  event->entity->position.y, event->entity->position.z };
+				player_pos = player->position;
+
+				currentPlayerID = player->id;
+				currentDistance = hypot(hypot(ped_pos.x - player_pos.x, ped_pos.y - player_pos.y), ped_pos.z - player_pos.z);
+
+				if ((closestDistance == 0 && totalPlayersChecked == 0)) {
+					closestDistance = currentDistance;
+					closestPlayerID = currentPlayerID;
+				}
+				else if (closestDistance > currentDistance) {
+					closestDistance = currentDistance;
+					closestPlayerID = currentPlayerID;
+				}
+				totalPlayersChecked++;
+			}
+		}
+		if (closestPlayerID != -1 && totalPlayersChecked != 0) {
+			librg_peer_t* controlPeer = librg_entity_control_get(&gServerNetwork->ctx, event->entity->id);
+			librg_peer_t* newControlPeer = librg_entity_control_get(&gServerNetwork->ctx, closestPlayerID);
+
+			if (controlPeer != newControlPeer && (newControlPeer)) {
+				librg_entity_control_set(&gServerNetwork->ctx, event->entity->id, newControlPeer);
+			}
+		}
 	}
 	else if (event->entity->type == VCOOP_VEHICLE)
 	{

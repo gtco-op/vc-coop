@@ -18,23 +18,24 @@ CClientPed::CClientPed(int nID, int modelID)
 
 	CVector spawnPos = { (float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, CWorld::FindGroundZFor3DCoord((float)node.m_wPosX*0.125f, (float)node.m_wPosY*0.125f, (float)node.m_wPosZ*0.125f, &res) + 1.0f };
 
-	int pedtype			= static_cast<CPedModelInfo*>(CModelInfo::ms_modelInfoPtrs[modelID])->m_nPedType;
-	ePedType type		= static_cast<ePedType>(pedtype);
-	
+	int pedtype = static_cast<CPedModelInfo*>(CModelInfo::ms_modelInfoPtrs[modelID])->m_nPedType;
+	ePedType type = static_cast<ePedType>(pedtype);
+
 	gGame->CustomModelLoad(modelID);
 	this->ped = new CCivilianPed(type, modelID);
-	
-	this->ped->m_nPedFlags.bClearObjective = true;
-	this->ped->m_nPedFlags.bIsPedDieAnimPlaying = false;
-	this->ped->m_fHealth = 100.f;
+
+	this->ped->m_nPedFlags.bRespondsToThreats = false;
+	this->ped->m_nPedFlags.b50 = false;
+	this->ped->m_nPedFlags.bScriptPedIsPlayerAlly = false;
+
 	this->ped->ClearAll();
 	CWorld::Add(this->ped);
-	this->ped->SetMoveState(eMoveState::STATE_DO_NOTHING);
-	this->ped->m_placement.pos = spawnPos;
-	this->ped->SetWanderPath(Random(0, 9650));
+	
+	this->ped->m_placement.pos = pos;
+	this->ped->ClearObjective();
+	this->ped->SetWanderPath(path);
 
 	this->networkID = nID;
-
 	gLog->Log("[CClientPed] Network ID: %d Ped pointer: 0x%X\n", nID, this->ped);
 }
 
