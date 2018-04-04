@@ -20,20 +20,19 @@ CClientPed::CClientPed(int nID, int modelID)
 
 	int pedtype = static_cast<CPedModelInfo*>(CModelInfo::ms_modelInfoPtrs[modelID])->m_nPedType;
 	ePedType type = static_cast<ePedType>(pedtype);
-
-	gGame->CustomModelLoad(modelID);
+	
+	WaitForModelLoad(modelID);
 	this->ped = new CCivilianPed(type, modelID);
-
 	this->ped->m_nPedFlags.bRespondsToThreats = false;
 	this->ped->m_nPedFlags.b50 = false;
 	this->ped->m_nPedFlags.bScriptPedIsPlayerAlly = false;
-
 	this->ped->ClearAll();
 	CWorld::Add(this->ped);
 	
 	this->ped->m_placement.pos = pos;
 	this->ped->ClearObjective();
 	this->ped->SetWanderPath(path);
+	this->ped->SetMoveAnim();
 
 	this->networkID = nID;
 	gLog->Log("[CClientPed] Network ID: %d Ped pointer: 0x%X\n", nID, this->ped);
