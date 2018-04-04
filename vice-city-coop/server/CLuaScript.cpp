@@ -5,7 +5,8 @@ static const struct luaL_Reg vccooplib[] = {
 	{ "sleep",					&CLuaScript::lua_Sleep },
 
 	{ "SendGlobalMessage",		&CLuaScript::lua_SendGlobalMessage },
-	
+	{ "SendPlayerMessage",		&CLuaScript::lua_SendPlayerMessage },
+
 	{ "IsEntityValid",			&CLuaScript::lua_IsEntityValid },
 
 	{ "GetEntityType",			&CLuaScript::lua_GetEntityType },
@@ -311,6 +312,21 @@ int CLuaScript::lua_SetEntityOrientation(lua_State* L)
 				}
 			}
 		}
+	}
+	return 0;
+}
+int CLuaScript::lua_SendPlayerMessage(lua_State* L)
+{
+	int nargs = lua_gettop(L);
+	if (nargs < 1 || nargs == 0)
+		return 0;
+
+	librg_entity_t* playerEntity = librg_entity_fetch(&gServerNetwork->ctx, lua_tonumber(L, 1));
+	if (playerEntity)	{
+		char buffer[256];
+		sprintf(buffer, "%s", lua_tolstring(L, 2, NULL));
+
+		librg_message_send_to(&gServerNetwork->ctx, VCOOP_RECEIVE_MESSAGE, playerEntity->client_peer, buffer, sizeof(buffer));
 	}
 	return 0;
 }

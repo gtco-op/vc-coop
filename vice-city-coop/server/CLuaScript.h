@@ -18,6 +18,7 @@ public:
 	static int lua_Sleep(lua_State* l);
 	
 	static int lua_SendGlobalMessage(lua_State* L);
+	static int lua_SendPlayerMessage(lua_State* L);
 
 	static int lua_IsEntityValid(lua_State* L);
 
