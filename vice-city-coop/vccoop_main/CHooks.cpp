@@ -174,7 +174,36 @@ void Hook_CRunningScript__Process()
 		gRender->ToggleGUI();
 
 		gGame->DisableHUD();
-		
+
+		CStreaming::RequestModel(269, 1);
+		CStreaming::RequestModel(270, 1);
+		CStreaming::RequestModel(275, 1);
+		CStreaming::RequestModel(278, 1);
+		CStreaming::RequestModel(284, 1);
+		CStreaming::RequestModel(280, 1);
+		CStreaming::RequestModel(286, 1);
+		CStreaming::RequestModel(290, 1);
+		CStreaming::RequestModel(294, 1);
+		CStreaming::RequestModel(268, 1);
+		CStreaming::RequestModel(270, 1);
+		CStreaming::RequestModel(291, 1);
+		CStreaming::RequestModel(275, 1);
+		CStreaming::RequestModel(279, 1);
+		CStreaming::RequestModel(283, 1);
+		CStreaming::RequestModel(280, 1);
+		CStreaming::RequestModel(286, 1);
+		CStreaming::RequestModel(287, 1);
+		CStreaming::RequestModel(259, 1);
+		CStreaming::RequestModel(264, 1);
+		CStreaming::RequestModel(272, 1);
+		CStreaming::RequestModel(274, 1);
+		CStreaming::RequestModel(277, 1);
+		CStreaming::RequestModel(281, 1);
+		CStreaming::RequestModel(276, 1);
+		CStreaming::RequestModel(285, 1);
+		CStreaming::RequestModel(288, 1);
+		CStreaming::LoadAllRequestedModels(0);
+
 		// First tick processed
 		scriptProcessed = true;
 	}
