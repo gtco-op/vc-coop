@@ -328,14 +328,6 @@ void CClientNetwork::on_entity_remove(librg_event_t *event)
 	else if (event->entity->type == VCOOP_PED)
 	{
 		auto pedestrian = (CClientPed *)event->entity->user_data;
-		for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
-		{
-			if (pedestrian == (*it))
-			{
-				gNetwork->networkEntities.erase(it);
-				break;
-			}
-		}
 		delete pedestrian;
 		pedestrian = NULL;
 		event->entity->user_data = NULL;
