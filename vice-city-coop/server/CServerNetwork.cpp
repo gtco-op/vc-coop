@@ -51,6 +51,7 @@ void CServerNetwork::SetPlayerSyncData(int id, PlayerSyncData spd)
 	}
 
 	
+	playerSyncData->iModelIndex = spd.iModelIndex;
 	playerSyncData->objective = spd.objective;
 
 	//playerSyncData->m_dwAnimGroupId = spd.iCurrentAnimID;

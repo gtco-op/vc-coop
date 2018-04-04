@@ -62,11 +62,16 @@ int CLuaScript::lua_GivePlayerWeapon(lua_State* L)
 		if (entity && entity->type == VCOOP_PLAYER && CServerNetwork::GetPlayerSyncData(entity->id) != nullptr) {
 			int model = lua_tointeger(L, 2);
 			int ammo = lua_tointeger(L, 3);
+			int skin = CServerNetwork::GetPlayerSyncData(entity->id)->iModelIndex;
+			
+			PlayerSyncData* spd = CServerNetwork::GetPlayerSyncData(entity->id);
+			spd->CurrWep = model;
+			spd->Ammo = ammo;
+			spd->WepModelIndex = CModelIDs::GetWeaponModelFromType(model);
+			CServerNetwork::SetPlayerSyncData(entity->id, *spd);
 
-			CServerNetwork::GetPlayerSyncData(entity->id)->CurrWep = model;
-			CServerNetwork::GetPlayerSyncData(entity->id)->Ammo = ammo;
-			CServerNetwork::GetPlayerSyncData(entity->id)->WepModelIndex = CModelIDs::GetWeaponModelFromType(model);
-			CServerNetwork::SetPlayerSyncData(entity->id, *CServerNetwork::GetPlayerSyncData(entity->id));
+			spd->iModelIndex = skin;
+			CServerNetwork::SetPlayerSyncData(entity->id, *spd);
 		}
 	}
 	return 0;
