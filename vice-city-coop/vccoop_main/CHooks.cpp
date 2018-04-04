@@ -13,6 +13,7 @@ signed int(__cdecl* original_ShowExceptionBox)(DWORD*, int, int);
 char(__thiscall* original_CAutomobile__ProcessControl)(CVehicle*);
 char(__thiscall* original_CPlayerPed__ProcessControl)(CPlayerPed*);
 int(__thiscall* original_CWeapon__DoBulletImpact)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D);
+CPed*(__thiscall* original_FindPlayerPed)(void);
 
 void LoadMissionScript()
 {
@@ -312,6 +313,11 @@ void CHooks::DoBulletImpact(CWeapon*This, CEntity* source, CEntity* target, CVec
 	original_CWeapon__DoBulletImpact(This, source, target, start, end, colpoint, ahead);
 }
 
+CPed* FindPlayerPed_Hook(void)
+{
+	return CWorld::Players[0].m_pPed;
+}
+
 void CHooks::InitHooks()
 {
 	original_CPed__InflictDamage			= (char(__thiscall*)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
@@ -320,6 +326,8 @@ void CHooks::InitHooks()
 	original_CPlayerPed__ProcessControl		= (char(__thiscall*)(CPlayerPed*))DetourFunction((PBYTE)0x537270, (PBYTE)CPlayerPed__ProcessControl_Hook);
 	original_CAutomobile__ProcessControl	= (char(__thiscall*)(CVehicle*))DetourFunction((PBYTE)0x593030, (PBYTE)CAutomobile__ProcessControl_Hook);
 	original_CWeapon__DoBulletImpact		= (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
+
+	original_FindPlayerPed					= (CPed*(__thiscall*)(void))DetourFunction((PBYTE)0x4BC120, (PBYTE)FindPlayerPed_Hook);
 
 #ifdef VCCOOP_DEBUG_ENGINE
 	patch::ReplaceFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
