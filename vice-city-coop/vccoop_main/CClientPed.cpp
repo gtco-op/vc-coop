@@ -31,8 +31,12 @@ CClientPed::CClientPed(int nID, int modelID)
 	
 	this->ped->m_placement.pos = pos;
 	this->ped->ClearObjective();
-	this->ped->SetWanderPath(path);
 	this->ped->SetMoveAnim();
+
+	if (this->syncData.Wander)
+	{
+		this->ped->SetWanderPath(path);
+	}
 
 	this->networkID = nID;
 	gLog->Log("[CClientPed] Network ID: %d Ped pointer: 0x%X\n", nID, this->ped);
