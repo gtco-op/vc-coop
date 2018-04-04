@@ -1,13 +1,24 @@
 function onServerStart()
 	print("Default Gamemode Started")
+
+	local modelID = 226
+	local randColorA = GetRandomVehicleColor()
+	local randColorB = GetRandomVehicleColor()
 	
-	--AddVehicle(130, 530.393555, 618.161865, 10.901563)
-	--AddVehicle(131, 538.117798, 626.908203, 10.901563)
-	
-	--AddPed(7, 532.501892, 636.292664, 11.043379)
-	--AddObject(381, 538.117798, 626.908203, 10.901563)
+	AddVehicle(modelID, 538.117798, 626.908203, 10.901563, randColorA, randColorB)
 end
 function onPlayerConnect(id)
-	local name = GetPlayerName(id)
-	print(name.." connected!")
+	print("Player "..GetPlayerName(id).. " joined!")
+
+    SetPlayerModel(id, GetRandomModel())
+    SetPlayerHealth(id, 100)
+    SetPlayerArmour(id, 100)
+end
+function onPlayerMessage(playerid, msg)
+	local playerName = GetPlayerName(playerid);
+	local matchText = string.match(msg, "/setskin (%d+)")
+	
+	if (matchText) then
+		SetPlayerModel(playerid, matchText)		
+	end
 end
