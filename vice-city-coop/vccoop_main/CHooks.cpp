@@ -13,7 +13,7 @@ signed int(__cdecl* original_ShowExceptionBox)(DWORD*, int, int);
 char(__thiscall* original_CAutomobile__ProcessControl)(CVehicle*);
 char(__thiscall* original_CPlayerPed__ProcessControl)(CPlayerPed*);
 int(__thiscall* original_CWeapon__DoBulletImpact)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D);
-CPed*(__thiscall* original_FindPlayerPed)(void);
+CPed*(__cdecl* original_FindPlayerPed)(void);
 
 void LoadMissionScript()
 {
@@ -219,23 +219,23 @@ char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
 		if (currentPlayerID == -1)return 0;
 
 		// set remote player to focus
-		CWorld::PlayerInFocus = currentPlayerID;
+CWorld::PlayerInFocus = currentPlayerID;
 
-		// save local player's keys
-		localPlayerKeys = *CPad::GetPad(0);
+// save local player's keys
+localPlayerKeys = *CPad::GetPad(0);
 
-		// set remote player's keys
-		*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
+// set remote player's keys
+*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
 
-		// call the internal CPlayerPed[]::Process
-		original_CAutomobile__ProcessControl(This);
+// call the internal CPlayerPed[]::Process
+original_CAutomobile__ProcessControl(This);
 
-		// restore local player's keys
-		*CPad::GetPad(0) = localPlayerKeys;
+// restore local player's keys
+*CPad::GetPad(0) = localPlayerKeys;
 
-		// restore the local player's id
-		CWorld::PlayerInFocus = 0;
-		return 0;
+// restore the local player's id
+CWorld::PlayerInFocus = 0;
+return 0;
 	}
 	return original_CAutomobile__ProcessControl(This);
 }
@@ -327,7 +327,8 @@ void CHooks::InitHooks()
 	original_CAutomobile__ProcessControl	= (char(__thiscall*)(CVehicle*))DetourFunction((PBYTE)0x593030, (PBYTE)CAutomobile__ProcessControl_Hook);
 	original_CWeapon__DoBulletImpact		= (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
 
-	original_FindPlayerPed					= (CPed*(__thiscall*)(void))DetourFunction((PBYTE)0x4BC120, (PBYTE)FindPlayerPed_Hook);
+	original_FindPlayerPed					= (CPed*(__cdecl*)(void))DetourFunction((PBYTE)0x4BC120, (PBYTE)FindPlayerPed_Hook);
+
 
 #ifdef VCCOOP_DEBUG_ENGINE
 	patch::ReplaceFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
