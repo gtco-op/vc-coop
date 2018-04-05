@@ -131,6 +131,16 @@ void CChat::ProcessChatInput()
 			CVector pos = LocalPlayer()->GetPosition();
 			gLog->Log("[CChat] X: %f\tY: %f\tZ: %f\n", pos.x, pos.y, pos.z);
 		}
+		else if (strstr(this->chatInputBuffer, "/disconnect"))
+		{
+			if (gNetwork->connected)
+			{
+				gNetwork->StopClientThread();
+				gRender->bConnecting = false;
+				gRender->bGUI = true;
+				gLog->Log("[CGame] Disconnecting from server.\n");
+			}
+		}
 #ifdef VCCOOP_DEBUG
 		else if (strstr(this->chatInputBuffer, "/collapse"))
 		{
