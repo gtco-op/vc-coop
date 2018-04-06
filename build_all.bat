@@ -11,7 +11,7 @@ IF EXIST "%log%" DEL /F /Q "%log%"
 
 echo Building project..
 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86 1>"%log%" 2>&1
-devenv ".\vice-city-coop\vice-city-coop.sln" /Rebuild Release 1>"%log%" 2>&1
+devenv ".\vice-city-coop\vice-city-coop.sln" /Rebuild Debug 1>"%log%" 2>&1
 
 echo. 
 IF ERRORLEVEL 1 (
