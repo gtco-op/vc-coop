@@ -101,7 +101,7 @@ int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 {
 	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
 	{
-		if (ent != nullptr && (*it)->GetEntity() == ent)
+		if (ent != nullptr && *it != nullptr && (*it)->networkID >= 0 && (*it)->type >= 0 && (*it)->GetEntity() == ent)
 		{
 			return (*it)->networkID;
 		}
