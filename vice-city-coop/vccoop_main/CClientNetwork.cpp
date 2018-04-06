@@ -153,7 +153,7 @@ void CClientNetwork::ClientConnectThread()
 	while (client_running) 
 	{
 		librg_tick(&ctx);
-		zpl_sleep_ms(1);
+		zpl_sleep_ms(VCCOOP_CLIENT_TICK_DELAY);
 	}
 
 	librg_network_stop(&ctx);

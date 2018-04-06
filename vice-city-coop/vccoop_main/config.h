@@ -27,8 +27,29 @@
 // Default client config filename
 #define VCCOOP_DEFAULT_CLIENT_CONFIG	".//vccoop//client.ini"
 
-//print game's internal debug messages
+// Print game's internal debug messages
 #define VCCOOP_DEBUG_ENGINE
+
+// Default client tick delay
+#define VCCOOP_CLIENT_TICK_DELAY		1
+
+// Default server tick delay
+#define VCCOOP_SERVER_TICK_DELAY		16
+
+// Default max players
+#define MAX_PLAYERS						500
+
+// Default max objects
+#define MAX_OBJECTS						1000
+
+// Default max vehicles
+#define MAX_VEHICLES					1000
+
+// Default max peds
+#define MAX_PEDS						1000
+
+// Internal-use only
+#define MAX_ENTITIES					(MAX_PEDS+MAX_OBJECTS+MAX_VEHICLES)
 
 //------------------------------------------------------------------------------------------
 #ifndef VCCOOP_SERVER 
@@ -60,12 +81,6 @@
 
 #define DEFAULT_TIME_FORMAT				"%Y%m%d_%H%M%S"
 #define LOGGER_TIME_FORMAT				"%H:%M:%S"
-#define VC_TITLE						"GTA: Vice City"
-
-#define MAX_PLAYERS						500
-#define MAX_OBJECTS						1000
-#define MAX_VEHICLES					1000
-#define MAX_PEDS						1000
 
 #define GTA_SET_TIMER(timer) (CTimer::m_snTimeInMilliseconds + timer)
 #define GTA_GET_TIMER(timer) (timer - CTimer::m_snTimeInMilliseconds)
@@ -829,8 +844,6 @@ enum {
 	VCOOP_PED,
 	VCOOP_VEHICLE,
 };
-
-#define MAX_ENTITIES (MAX_PEDS+MAX_OBJECTS+MAX_VEHICLES)
 
 extern char				playerNames[MAX_PLAYERS][25];
 extern librg_entity_t*	playerEntities[MAX_PLAYERS];
