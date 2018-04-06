@@ -665,8 +665,12 @@ void CLuaScript::Call(std::string callback, char *fmt, ...)
 	luaopen_io(m_lState);
 	luaopen_string(m_lState);
 	luaopen_math(m_lState);
+
+#ifdef VCCOOP_DEBUG
 	luaopen_debug(m_lState);
 	lua_getglobal(m_lState, "_G");
+#endif
+
 	luaL_setfuncs(m_lState, vccooplib, 0);
 	lua_pop(m_lState, 1);
 
