@@ -63,7 +63,7 @@ void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 	char str[256];
 	librg_data_rptr(msg->data, &str, sizeof(str));
 
-	if(gConfig->DisplayChatTimestamp)
+	if (gConfig->DisplayChatTimestamp)
 		sprintf(str, "[%s] %s", time_stamp(LOGGER_TIME_FORMAT).c_str(), str);
 
 	gChat->AddChatMessage(str);
@@ -108,18 +108,41 @@ int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 	}
 	return -1;
 }
+unsigned int crc32(unsigned char *message) {
+	int i, j;
 
-void CClientNetwork::on_connect_request(librg_event_t *event) 
+	unsigned int byte, crc;
+
+	i = 0;
+	crc = 0xFFFFFFFF;
+	while (message[i] != 0) {
+		byte = message[i];    // Get next byte.
+
+		crc = crc ^ byte;
+
+		for (j = 7; j >= 0; j--) {
+			crc = (crc >> 1) ^ (crc & 1 ? 0xEDB88320 : 0);
+		}
+		i = i + 1;
+	}
+	return ~crc;
+}
+void CClientNetwork::on_connect_request(librg_event_t *event)
 {
 	gNetwork->SetReadyToSpawn(FALSE);
-	
+
 	char name[25];
 	strcpy(name, gGame->Name.c_str());
 
 	gLog->Log("[CClientNetwork] Connecting as %s\n", name);
 
 	librg_data_wptr(event->data, (void*)&name, sizeof(name));
-	librg_data_wu32(event->data, VCCOOP_DEFAULT_SERVER_SECRET);
+	
+	std::string path = GetExecutablePath().append("\\data\\main.scm");
+	std::ostringstream buf; std::ifstream input(path.c_str()); buf << input.rdbuf();
+	std::string buffer = buf.str();
+
+	librg_data_wu32(event->data, crc32((unsigned char*)buffer.c_str()));
 }
 
 void CClientNetwork::on_connect_accepted(librg_event_t *event) 

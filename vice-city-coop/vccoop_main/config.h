@@ -19,7 +19,7 @@
 #define VCCOOP_DEFAULT_SERVER_PORT		23546
 
 // Default server secret
-#define VCCOOP_DEFAULT_SERVER_SECRET	420420420
+#define VCCOOP_DEFAULT_SERVER_SECRET	1007455905
 
 // Default server config filename
 #define VCCOOP_DEFAULT_SERVER_CONFIG	"server.ini"
