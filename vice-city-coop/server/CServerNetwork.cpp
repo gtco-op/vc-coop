@@ -221,12 +221,45 @@ void CServerNetwork::PlayerSpawnEvent(librg_message_t *msg)
 }
 void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 {
-	char msg1[256];
+	char msg1[256], name[25], cmd[31];
 	librg_data_rptr(msg->data, &msg1, sizeof(msg1));
 
-	librg_message_send_except(&ctx, VCOOP_RECEIVE_MESSAGE, msg->peer, &msg1, sizeof(msg1));
+	std::vector<std::string> parameters;
+	std::string paramFmt;
+	sscanf(msg1, "%[^:]: %[^\n]", &name, &cmd);
 
-	gGamemodeScript->Call("onPlayerMessage", "is", librg_entity_find(msg->ctx, msg->peer)->id, msg1);
+	std::string str = cmd;
+	std::istringstream buf(str);
+	std::istream_iterator<std::string> beg(buf), end;
+	std::vector<std::string> tokens(beg, end); 
+	
+	if (tokens.begin()->c_str()[0] == '/')
+	{
+		/* Command Message */
+		int argCnt = 0;
+		for (auto& s : tokens) 
+		{
+			if (strstr(s.c_str(), cmd)) 
+				return;
+
+			parameters.push_back(s);
+			argCnt++;
+		}
+
+		paramFmt.append("i");	// make sure we include the int for playerid
+		argCnt++;				// and appropriately increment the argCnt..
+		for (int i = 1; i < argCnt - 1; i++) 
+			paramFmt.append("s");
+
+		gGamemodeScript->Call("onPlayerMessage", "is", librg_entity_find(msg->ctx, msg->peer)->id, cmd);
+	}
+	else
+	{
+		/* Normal Chat Message */
+		librg_message_send_all(&ctx, VCOOP_RECEIVE_MESSAGE, &msg1, sizeof(msg1));
+		gGamemodeScript->Call("onPlayerMessage", "is", librg_entity_find(msg->ctx, msg->peer)->id, cmd);
+	}
+
 }
 void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 {

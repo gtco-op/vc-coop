@@ -144,20 +144,9 @@ void CChat::ProcessChatInput()
 		else
 		{
 			char buffer[256];
-			if (gConfig->DisplayChatTimestamp)
-			{
-				sprintf(buffer, "[%s] %s: %s", time_stamp(LOGGER_TIME_FORMAT).c_str(), gGame->Name.c_str(), this->chatInputBuffer);
-				this->AddChatMessage(buffer);
+			sprintf(buffer, "%s: %s", gGame->Name.c_str(), this->chatInputBuffer);
 
-				sprintf(buffer, "%s: %s", gGame->Name.c_str(), this->chatInputBuffer);
-				librg_message_send_all(&gNetwork->ctx, VCOOP_SEND_MESSAGE, buffer, sizeof(buffer));
-			}
-			else
-			{
-				sprintf(buffer, "%s: %s", gGame->Name.c_str(), this->chatInputBuffer);
-				this->AddChatMessage(buffer);
-				librg_message_send_all(&gNetwork->ctx, VCOOP_SEND_MESSAGE, buffer, sizeof(buffer));
-			}
+			librg_message_send_all(&gNetwork->ctx, VCOOP_SEND_MESSAGE, buffer, sizeof(buffer));
 
 		}
 	}

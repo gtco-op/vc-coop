@@ -22,7 +22,8 @@ extern "C" {
 #include <Windows.h>
 #include <experimental/filesystem>
 #include <filesystem>
-
+#include <sstream>
+#include <iterator>
 // Plugin-SDK
 #include "game_vc/CPad.h"
 #include "game_vc/CVector.h"
