@@ -1,12 +1,8 @@
 function onServerStart()
 	print("Default Gamemode Started")
 
-	local modelID = 226
-	local randColorA = GetRandomVehicleColor()
-	local randColorB = GetRandomVehicleColor()
-	
-	AddVehicle(modelID, 538.117798, 626.908203, 10.901563, randColorA, randColorB)
-	AddVehicle(modelID, 540.117798, 630.908203, 10.901563, randColorA, randColorB)
+	AddVehicle(226, 538.117798, 626.908203, 10.901563, GetRandomVehicleColor(), GetRandomVehicleColor())
+	AddPed(7, 540.117798, 630.908203, 10.901563, true)
 end
 function onPlayerConnect(id)
 	print("Player "..GetPlayerName(id).. " joined!")
