@@ -12,6 +12,9 @@ librg_entity_t*	playerEntities[MAX_PLAYERS];
 char							playerNames[MAX_PLAYERS][25];
 librg_entity_t*	otherEntities[MAX_ENTITIES];
 
+int playerCount = 0;
+int entityCount = 0;
+
 CLuaScript						*gGamemodeScript;
 
 PlayerSyncData playerData[MAX_PLAYERS];
@@ -237,6 +240,7 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
 
 	otherEntities[entity->id] = entity;
+	entityCount++;
 	gLog->Log("[CServerNetwork] Ped created. (%d)\n", entity->id);
 
 	gGamemodeScript->Call("onPedCreated", "i", librg_entity_find(msg->ctx, msg->peer)->id);
@@ -269,6 +273,7 @@ void CServerNetwork::ObjectCreateEvent(librg_message_t *msg)
 	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
 
 	otherEntities[entity->id] = entity;
+	entityCount++;
 	gLog->Log("[CServerNetwork] Object created. (%d)\n", entity->id);
 
 	gGamemodeScript->Call("onObjectCreated", "i", librg_entity_find(msg->ctx, msg->peer)->id);
@@ -333,6 +338,7 @@ void CServerNetwork::on_connect_accepted(librg_event_t *event)
 
 	// push back the entity into the entities vector
 	playerEntities[event->entity->id] = event->entity;
+	playerCount++;
 	gLog->Log("[CServerNetwork][CLIENT CONNECTION] Network entity %d connected\n", event->entity->id);
 
 	// send every script/data to the client
@@ -606,12 +612,13 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 
 	playerData[event->entity->id]		= PlayerSyncData();
 	playerEntities[event->entity->id]	= nullptr;
+	playerCount--;
 
 	delete event->entity->user_data;
 }
 
 void CServerNetwork::measure(void *userptr) {
-#ifndef VCCOOP_VERBOSE_LOG
+#if !defined(VCCOOP_DEBUG) && defined(_MSC_VER)
 	system("CLS");
 #endif
 
@@ -628,24 +635,11 @@ void CServerNetwork::measure(void *userptr) {
 	lastdl = ctx->network.host->totalReceivedData;
 	lastup = ctx->network.host->totalSentData;
 
-#ifndef VCCOOP_DEBUG
+#if !defined(VCCOOP_DEBUG) && defined(_MSC_VER)
 	std::string buf("[");
 	buf.append(time_stamp(LOGGER_TIME_FORMAT));
 	buf.append("][" VCCOOP_NAME "][CServerNetwork]");
-	printf("%s Server Port: %d | Players: %d/2000 | Entities: %d/2000\n%s took %f ms. Used bandwidth D/U: (%f / %f) mbps.\n", buf.c_str(), ServerPort, playerEntities.size(), otherEntities.size(), buf.c_str(), ctx->last_update, dl, up);
-
-	if (playerEntities.size() >= 1)	{
-		printf("%s \tActive Players\n=======================================================================================================================\n", buf.c_str());
-		for (auto it : playerEntities)		{
-			printf("\t\t\t\t\t\tID#%d\t|\tPLAYER\n", it->id);
-		}
-	}
-	if (otherEntities.size() >= 1) {
-		printf("\n=======================================================================================================================\n\t\t\t\t\t    \tActive Entities\n=======================================================================================================================\n");
-		for (auto it : otherEntities) {
-			printf("\t\t\t\t\t\tID#%d\t|\tENTITY\n", it->id);
-		}
-	}
+	printf("%s Server Port: %d | Players: %d/%d | Entities: %d/%d\n%s took %f ms. Used bandwidth D/U: (%f / %f) mbps.\n", buf.c_str(), ServerPort, playerCount, MAX_PLAYERS, entityCount, MAX_ENTITIES, buf.c_str(), ctx->last_update, dl, up);
 #endif
 }
 
@@ -657,9 +651,9 @@ void *CServerNetwork::server_thread(void* p)
 {
 	ctx.world_size			= zplm_vec3(5000.0f, 5000.0f, 5000.0f);
 	ctx.mode				= LIBRG_MODE_SERVER;
-	ctx.tick_delay			= 32;
-	ctx.max_connections		= 2000;
-	ctx.max_entities		= (MAX_PLAYERS + MAX_VEHICLES + MAX_PEDS + MAX_OBJECTS);
+	ctx.tick_delay			= VCCOOP_SERVER_TICK_DELAY;
+	ctx.max_connections		= (MAX_PLAYERS*2);
+	ctx.max_entities		= (MAX_ENTITIES+MAX_PLAYERS);
 	librg_init(&ctx);
 	
 	librg_event_add(&ctx,	LIBRG_CONNECTION_REQUEST,		on_connect_request);
@@ -688,14 +682,14 @@ void *CServerNetwork::server_thread(void* p)
 	librg_network_start(&ctx, addr);
 	gLog->Log("[CServerNetwork][INFO] Server started on port %d\n", addr.port);
 
-#if defined(_MSC_VER)
+/*#if defined(_MSC_VER)
 #ifndef VCCOOP_VERBOSE_LOG	
 	zpl_timer_t *tick_timer = zpl_timer_add(ctx.timers);
-	tick_timer->user_data = (void *)&ctx; /* provide ctx as a argument to timer */
+	tick_timer->user_data = (void *)&ctx; 
 	zpl_timer_set(tick_timer, 1000 * 1000, -1, measure);
 	zpl_timer_start(tick_timer, 1000);
 #endif 
-#endif
+#endif*/
 
 	// Auto-detect all client scripts
 	gDataMgr->LoadScripts();
