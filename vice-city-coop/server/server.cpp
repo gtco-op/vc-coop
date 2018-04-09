@@ -22,20 +22,16 @@ CCustomDataManager	*gDataMgr;
 
 std::string			ServerGamemodePath;
 
-int main(int argc, char const *argv[]) {
+bool Initialize()
+{
 	bool console_active = true;
-	std::string input;
-	
-#if defined(_MSC_VER)
-	SetConsoleTitle(TEXT(VCCOOP_SERVER_WINDOW_TITLE));
-#endif
-	
-	gLog			= new CLogger;
-	gDataMgr		= new CCustomDataManager();
-	gConfig			= new CConfiguration;
+
+	gLog = new CLogger;
+	gDataMgr = new CCustomDataManager();
+	gConfig = new CConfiguration;
 
 	gConfig->PopulateValues();
-	if (!gConfig->IsConfigLoaded())	{
+	if (!gConfig->IsConfigLoaded()) {
 #if defined(_MSC_VER)
 		MessageBoxA(NULL, "An error occurred when populating the server configuration.\nTry running the server with elevated permissions.", VCCOOP_NAME " " VCCOOP_VER, MB_OK | MB_ICONERROR);
 #endif
@@ -45,23 +41,35 @@ int main(int argc, char const *argv[]) {
 #if defined(_MSC_VER)
 		system("PAUSE>NUL");
 #endif
-	} else {
+	}
+	else {
 		if (!gConfig->AutodetectServerGamemode()) {
-			gLog->Log("[CCore][ERROR] Could not find a game mode. Exiting.\n"); 
+			gLog->Log("[CCore][ERROR] Could not find a game mode. Exiting.\n");
 
 			console_active = false;
 #if defined(_MSC_VER)
-			system("PAUSE>NUL"); 
+			system("PAUSE>NUL");
 #endif
-		} else {
-			gLog->Log("[CCore][INFO] Server Port: %d\n",	gServerNetwork->ServerPort);
-			gLog->Log("[CCore][INFO] Server Secret: %d\n",	gServerNetwork->ServerSecret);
+		}
+		else {
+			gLog->Log("[CCore][INFO] Server Port: %d\n", gServerNetwork->ServerPort);
+			gLog->Log("[CCore][INFO] Server Secret: %d\n", gServerNetwork->ServerSecret);
 		}
 	}
 
 	if (!console_active)
-		return 0;
+		return false;
+	else return true;
+}
 
+int main(int argc, char const *argv[]) {
+	std::string input;
+	
+#if defined(_MSC_VER)
+	SetConsoleTitle(TEXT(VCCOOP_SERVER_WINDOW_TITLE));
+#endif
+	
+	bool console_active = Initialize();
 	gServerNetwork = new CServerNetwork;
 
 	while (console_active && gConfig->IsConfigLoaded())	{
