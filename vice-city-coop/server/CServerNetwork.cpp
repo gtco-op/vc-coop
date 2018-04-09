@@ -364,7 +364,7 @@ void CServerNetwork::on_connect_request(librg_event_t *event)
 
 	if (secret != gServerNetwork->ServerSecret) 
 	{
-		gLog->Log("[CServerNetwork] Rejected event from network entity\n");
+		gLog->Log("[CServerNetwork] Invalid CRC for main.scm received. Custom SCM is not supported yet.\n");
 		librg_event_reject(event);
 	}
 }
