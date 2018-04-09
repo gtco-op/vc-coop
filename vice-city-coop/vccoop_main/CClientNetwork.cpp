@@ -99,33 +99,11 @@ CClientEntity* CClientNetwork::GetNetworkEntityFromNetworkID(int id)
 
 int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 {
-	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
-	{
-		if (ent != nullptr && *it != nullptr && (*it)->networkID >= 0 && (*it)->type >= 0 && (*it)->GetEntity() == ent)
-		{
+	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)	
+		if (ent != nullptr && *it != nullptr && (*it)->networkID >= 0 && (*it)->GetEntity() == ent)		
 			return (*it)->networkID;
-		}
-	}
+
 	return -1;
-}
-unsigned int crc32(unsigned char *message) {
-	int i, j;
-
-	unsigned int byte, crc;
-
-	i = 0;
-	crc = 0xFFFFFFFF;
-	while (message[i] != 0) {
-		byte = message[i];    // Get next byte.
-
-		crc = crc ^ byte;
-
-		for (j = 7; j >= 0; j--) {
-			crc = (crc >> 1) ^ (crc & 1 ? 0xEDB88320 : 0);
-		}
-		i = i + 1;
-	}
-	return ~crc;
 }
 void CClientNetwork::on_connect_request(librg_event_t *event)
 {
@@ -142,7 +120,7 @@ void CClientNetwork::on_connect_request(librg_event_t *event)
 	std::ostringstream buf; std::ifstream input(path.c_str()); buf << input.rdbuf();
 	std::string buffer = buf.str();
 
-	librg_data_wu32(event->data, crc32((unsigned char*)buffer.c_str()));
+	librg_data_wu32(event->data, gConfig->CRC32((unsigned char*)buffer.c_str()));
 }
 
 void CClientNetwork::on_connect_accepted(librg_event_t *event) 

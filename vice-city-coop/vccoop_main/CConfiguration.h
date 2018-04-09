@@ -28,6 +28,9 @@ public:
 	   the config was unreadable or otherwise unable to be populated. */
 	bool IsDataDirValid() { return !configError; }
 
+	/* Returns CRC32 of given buffer */
+	unsigned int CRC32(unsigned char *message);
+
 public:
 	CConfiguration();
 	~CConfiguration();

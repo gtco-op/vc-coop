@@ -852,6 +852,8 @@ extern librg_entity_t*	otherEntities[MAX_ENTITIES];
 extern bool bIsLoadingModel;
 extern void WaitForModelLoad(int modelIndex);
 
+extern void LoadMissionScript();
+
 #if defined( _MSC_VER )
 #pragma warning (disable : 4244)
 #pragma warning (disable : 4348)

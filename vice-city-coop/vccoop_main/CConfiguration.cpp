@@ -86,3 +86,22 @@ std::string CConfiguration::sections(INIReader &reader)
 		ss << *it << ",";
 	return ss.str();
 }
+unsigned int CConfiguration::CRC32(unsigned char *message) {
+	int i, j;
+
+	unsigned int byte, crc;
+
+	i = 0;
+	crc = 0xFFFFFFFF;
+	while (message[i] != 0) {
+		byte = message[i];    // Get next byte.
+
+		crc = crc ^ byte;
+
+		for (j = 7; j >= 0; j--) {
+			crc = (crc >> 1) ^ (crc & 1 ? 0xEDB88320 : 0);
+		}
+		i = i + 1;
+	}
+	return ~crc;
+}

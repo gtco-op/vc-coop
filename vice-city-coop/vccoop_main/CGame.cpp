@@ -70,7 +70,6 @@ CObject* CGame::SpawnModel(int modelid, CVector position, RpClump* clump = nullp
 
 	return object;
 }
-extern void LoadMissionScript();
 
 void CGame::OnConnected()
 {

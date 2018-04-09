@@ -20,6 +20,9 @@ public:
 	/* Returns TRUE if log & script folders are present */
 	bool IsDirsValid() { return foldersPresent; }
 
+	/* Returns CRC32 of given buffer */
+	unsigned int CRC32(unsigned char *message);
+
 private:
 	INIReader* _inih;
 	
