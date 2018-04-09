@@ -19,6 +19,9 @@ extern "C" {
 	#include "lauxlib.h"
 }
 
+// TinyXML
+#include "vendor\tinyxml2-6.2.0\tinyxml2.h"
+
 #include <Windows.h>
 #include <experimental/filesystem>
 #include <filesystem>
