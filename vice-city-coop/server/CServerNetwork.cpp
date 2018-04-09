@@ -257,6 +257,7 @@ void CServerNetwork::ClientSendMessage(librg_message_t *msg)
 	{
 		/* Normal Chat Message */
 		librg_message_send_all(&ctx, VCOOP_RECEIVE_MESSAGE, &msg1, sizeof(msg1));
+
 		gGamemodeScript->Call("onPlayerMessage", "is", librg_entity_find(msg->ctx, msg->peer)->id, cmd);
 	}
 
@@ -356,6 +357,10 @@ void CServerNetwork::on_connect_request(librg_event_t *event)
 
 	u32 secret = librg_data_ru32(event->data);
 	gLog->Log("[CServerNetwork][CLIENT REQUEST] Network entity with name %s is requesting to connect\n", name);
+
+#ifdef VCCOOP_VERBOSE_LOG
+	gLog->Log("[CServerNetwork] Received CRC: %d\n", secret);
+#endif
 
 	if (secret != gServerNetwork->ServerSecret) 
 	{
