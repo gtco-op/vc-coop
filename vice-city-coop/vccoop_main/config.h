@@ -27,6 +27,9 @@
 // Default client config filename
 #define VCCOOP_DEFAULT_CLIENT_CONFIG	".//vccoop//client.ini"
 
+// Default client path to main.scm
+#define VCCOOP_DEFAULT_MAIN_SCM_PATH	"\\data\\main.scm"
+
 // Print game's internal debug messages
 #define VCCOOP_DEBUG_ENGINE
 

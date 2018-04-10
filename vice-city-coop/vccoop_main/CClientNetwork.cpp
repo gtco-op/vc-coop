@@ -116,7 +116,7 @@ void CClientNetwork::on_connect_request(librg_event_t *event)
 
 	librg_data_wptr(event->data, (void*)&name, sizeof(name));
 	
-	std::string path = GetExecutablePath().append("\\data\\main.scm");
+	std::string path = GetExecutablePath().append(VCCOOP_DEFAULT_MAIN_SCM_PATH);
 	std::ostringstream buf; std::ifstream input(path.c_str()); buf << input.rdbuf();
 	std::string buffer = buf.str();
 
