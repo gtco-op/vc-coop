@@ -30,6 +30,10 @@
 // Default client path to main.scm
 #define VCCOOP_DEFAULT_MAIN_SCM_PATH	"\\data\\main.scm"
 
+// Default masterlist URL
+#define VCCOOP_DEFAULT_MASTER_LIST_URL			"http://tdcs.sytes.net:90/status/check/servers.xml"
+#define VCCOOP_DEFAULT_MASTER_LIST_BACKUP_URL	"http://159.65.62.71/check/servers.xml"
+
 // Print game's internal debug messages
 #define VCCOOP_DEBUG_ENGINE
 
@@ -795,6 +799,13 @@ struct ObjectSyncData {
 	int modelID;
 	int objectID;
 	CVector objectPos;
+};
+
+struct serverInfo {
+	char serverID[128];
+	char serverName[128];
+	char serverHost[128];
+	char serverPort[128];
 };
 
 enum eBlipType {
