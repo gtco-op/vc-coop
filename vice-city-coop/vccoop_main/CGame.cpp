@@ -525,6 +525,9 @@ void CGame::InitPreGamePatches()
 	//Init hooks (no shit sherlock)
 	CHooks::InitHooks();
 
+	// Fix shooting M4 etc around peds
+	MakeRet(0x50BE00);
+
 	gLog->Log("[CGame] InitPreGamePatches() finished.\n");
 }
  
