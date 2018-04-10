@@ -31,7 +31,7 @@
 #define VCCOOP_DEFAULT_MAIN_SCM_PATH	"\\data\\main.scm"
 
 // Default masterlist URL
-#define VCCOOP_DEFAULT_MASTER_LIST_URL			"http://tdcs.sytes.net:90/status/check/servers.xml"
+#define VCCOOP_DEFAULT_MASTER_LIST_URL			"http://grandtheftco-op.netlify.com/servers.xml"
 #define VCCOOP_DEFAULT_MASTER_LIST_BACKUP_URL	"http://159.65.62.71/check/servers.xml"
 
 // Print game's internal debug messages

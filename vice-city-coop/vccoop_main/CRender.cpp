@@ -19,6 +19,7 @@ CRender::CRender()
 	this->bAboutWindow		= false;
 	this->Initialized		= false;
 	this->bEscMenu			= false;
+	this->bServerView		= false;
 
 	this->gGuiContainer.push_back(new CNameTags());
 
@@ -364,6 +365,48 @@ void CRender::Draw()
 				{
 					gRender->bGUI = true;
 				}
+				if (gRender->bServerView && !gRender->bConnecting)
+				{
+					ImGui::SetNextWindowPosCenter();
+					ImGui::SetNextWindowSize(ImVec2(500, 500));
+					ImGui::Begin("Server List", &gRender->bServerView, ImGuiWindowFlags_NoSavedSettings);
+					ImGui::AlignTextToFramePadding();
+					//---------------------------
+
+					ImGui::Separator();
+					for (auto server : serverList) {
+						ImGui::Text(server.serverID);
+						ImGui::Text(server.serverName);
+						ImGui::Text(server.serverHost);
+						ImGui::Text(server.serverPort);
+
+						if (ImGui::Button("Connect")) {
+							gGame->Name = Nickname;
+							gNetwork->ServerAddress = server.serverHost;
+							gNetwork->ServerPort = atoi(server.serverPort);
+
+							if (strlen(gGame->Name.c_str()) >= 3 && gNetwork->ServerPort != 0 && gNetwork->ServerAddress != "") {
+								gNetwork->AttemptConnect(gNetwork->ServerAddress, gNetwork->ServerPort);
+
+								gRender->bConnecting = true;
+								gRender->bGUI = false;
+								gRender->bAboutWindow = false;
+								gRender->bServerView = false;
+							}
+							else
+							{
+								gChat->AddChatMessage("[ERROR] Please ensure all connection settings are valid!");
+#ifdef VCCOOP_DEBUG
+								gRender->gDebugScreen->gDevConsole->AddLog("[ERROR] Please ensure all connection settings are valid!");
+#endif
+							}
+						}
+					}
+					ImGui::Separator();
+					ImGui::End();
+					//---------------------------
+				}
+
 				if (gRender->bGUI && !gRender->bConnecting)
 				{
 					ImGui::SetNextWindowPosCenter();
@@ -377,6 +420,12 @@ void CRender::Draw()
 						ImGui::Image((void*)pLogoTex, ImVec2(300, 200));
 					}
 					ImGui::Separator();
+
+					if (ImGui::Button("Server List"))					{
+						gRender->bServerView = !gRender->bServerView;
+
+					}
+
 					ImGui::InputText("Nickname", Nickname, 25, 0, NULL, Nickname);
 					ImGui::InputText("IP", IP, 16, 0, NULL, IP);
 					ImGui::InputInt("Port", &Port);
@@ -402,6 +451,7 @@ void CRender::Draw()
 #endif
 						}
 					}
+
 					if (ImGui::Button("Local Server"))
 					{
 						gGame->Name = Nickname;

@@ -13,6 +13,7 @@ public:
 	bool bConnecting;
 	bool bAboutWindow;
 	bool bEscMenu;
+	bool bServerView;
 
 #ifdef VCCOOP_DEBUG
 	bool bConsole;
