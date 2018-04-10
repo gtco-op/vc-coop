@@ -16,6 +16,9 @@ public:
 	static librg_ctx_t ctx;
 
 	static PlayerSyncData* GetPlayerSyncData(int id);
+	static PedSyncData* GetPedSyncData(int id);
+
+	static void SetPedSyncData(int id, PedSyncData spd);
 
 	static void SetPlayerSyncData(int id, PlayerSyncData spd);
 
