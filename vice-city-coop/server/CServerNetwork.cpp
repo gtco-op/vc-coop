@@ -53,7 +53,60 @@ void CServerNetwork::SetPedSyncData(int id, PedSyncData spd)
 		librg_entity_control_remove(&gServerNetwork->ctx, id);
 	}
 	
-	pedSyncData->Health = spd.Health;	pedSyncData->Armour = spd.Armour;	pedSyncData->Rotation = spd.Rotation;	pedSyncData->OrientX = spd.OrientX;	pedSyncData->OrientY = spd.OrientY;	pedSyncData->OrientZ = spd.OrientZ;	pedSyncData->Wander = spd.Wander;	pedSyncData->iModelIndex = spd.iModelIndex;	pedSyncData->iInteriorID = spd.iInteriorID;	pedSyncData->iCurrentAnimID = spd.iCurrentAnimID;	pedSyncData->CurrWep = spd.CurrWep;	pedSyncData->WepModelIndex = spd.WepModelIndex;	pedSyncData->Ammo = spd.Ammo;	pedSyncData->gameTimer = spd.gameTimer;	pedSyncData->m_fActionX = spd.m_fActionX;	pedSyncData->m_fActionY = spd.m_fActionY;	pedSyncData->m_fRotationDest = spd.m_fRotationDest;	pedSyncData->m_fLookDirection = spd.m_fLookDirection;	pedSyncData->m_vecAnimMoveDelta = spd.m_vecAnimMoveDelta;	pedSyncData->m_dwAnimGroupId = spd.m_dwAnimGroupId;	pedSyncData->m_vecMoveSpeed = spd.m_vecMoveSpeed;	pedSyncData->m_dwAction = spd.m_dwAction;	pedSyncData->m_dwActionTimer = spd.m_dwActionTimer;	pedSyncData->m_dwActionX = spd.m_dwActionX;	pedSyncData->m_dwActionY = spd.m_dwActionY;	pedSyncData->m_dwObjective = spd.m_dwObjective;	pedSyncData->m_dwObjectiveTimer = spd.m_dwObjectiveTimer;	pedSyncData->m_vecObjective = spd.m_vecObjective;	pedSyncData->m_fObjectiveAngle = spd.m_fObjectiveAngle;	pedSyncData->m_pObjectiveEntity = spd.m_pObjectiveEntity;	pedSyncData->m_pObjectiveVehicle = spd.m_pObjectiveVehicle;	pedSyncData->m_dwFleeTimer = spd.m_dwFleeTimer;	pedSyncData->m_fFleeFromPosX = spd.m_fFleeFromPosX;	pedSyncData->m_fFleeFromPosY = spd.m_fFleeFromPosY;	pedSyncData->m_fPathNextNodeDir = spd.m_fPathNextNodeDir;	pedSyncData->wRouteCurDir = spd.wRouteCurDir;	pedSyncData->m_vecPathNextNode = spd.m_vecPathNextNode;	pedSyncData->m_dwPathNodeTimer = spd.m_dwPathNodeTimer;	pedSyncData->m_wCurPathNode = spd.m_wCurPathNode;	pedSyncData->m_wPathNodes = spd.m_wPathNodes;	//pedSyncData->m_aPathNodeStates = spd.m_aPathNodeStates;	//pedSyncData->m_apPathNodesStates = spd.m_apPathNodesStates;	pedSyncData->m_dwPathNodeType = spd.m_dwPathNodeType;	pedSyncData->m_nPathState = spd.m_nPathState;	pedSyncData->m_pLastPathNode = spd.m_pLastPathNode;	pedSyncData->m_pNextPathNode = spd.m_pNextPathNode;	pedSyncData->m_dwMoveState = spd.m_dwMoveState;	pedSyncData->m_fSeekExAngle = spd.m_fSeekExAngle;	pedSyncData->m_vecSeekPosEx = spd.m_vecSeekPosEx;	pedSyncData->m_vecOffsetSeek = spd.m_vecOffsetSeek;	pedSyncData->m_dwEventType = spd.m_dwEventType;	pedSyncData->m_fAngleToEvent = spd.m_fAngleToEvent;	pedSyncData->m_fEventOrThreatX = spd.m_fEventOrThreatX;	pedSyncData->m_fEventOrThreatY = spd.m_fEventOrThreatY;
+	pedSyncData->Health = spd.Health;
+	pedSyncData->Armour = spd.Armour;
+	pedSyncData->Rotation = spd.Rotation;
+	pedSyncData->OrientX = spd.OrientX;
+	pedSyncData->OrientY = spd.OrientY;
+	pedSyncData->OrientZ = spd.OrientZ;
+	pedSyncData->Wander = spd.Wander;
+	pedSyncData->iModelIndex = spd.iModelIndex;
+	pedSyncData->iInteriorID = spd.iInteriorID;
+	pedSyncData->iCurrentAnimID = spd.iCurrentAnimID;
+	pedSyncData->CurrWep = spd.CurrWep;
+	pedSyncData->WepModelIndex = spd.WepModelIndex;
+	pedSyncData->Ammo = spd.Ammo;
+	pedSyncData->gameTimer = spd.gameTimer;
+	pedSyncData->m_fActionX = spd.m_fActionX;
+	pedSyncData->m_fActionY = spd.m_fActionY;
+	pedSyncData->m_fRotationDest = spd.m_fRotationDest;
+	pedSyncData->m_fLookDirection = spd.m_fLookDirection;
+	pedSyncData->m_vecAnimMoveDelta = spd.m_vecAnimMoveDelta;
+	pedSyncData->m_dwAnimGroupId = spd.m_dwAnimGroupId;
+	pedSyncData->m_vecMoveSpeed = spd.m_vecMoveSpeed;
+	pedSyncData->m_dwAction = spd.m_dwAction;
+	pedSyncData->m_dwActionTimer = spd.m_dwActionTimer;
+	pedSyncData->m_dwActionX = spd.m_dwActionX;
+	pedSyncData->m_dwActionY = spd.m_dwActionY;
+	pedSyncData->m_dwObjective = spd.m_dwObjective;
+	pedSyncData->m_dwObjectiveTimer = spd.m_dwObjectiveTimer;
+	pedSyncData->m_vecObjective = spd.m_vecObjective;
+	pedSyncData->m_fObjectiveAngle = spd.m_fObjectiveAngle;
+	pedSyncData->m_pObjectiveEntity = spd.m_pObjectiveEntity;
+	pedSyncData->m_pObjectiveVehicle = spd.m_pObjectiveVehicle;
+	pedSyncData->m_dwFleeTimer = spd.m_dwFleeTimer;
+	pedSyncData->m_fFleeFromPosX = spd.m_fFleeFromPosX;
+	pedSyncData->m_fFleeFromPosY = spd.m_fFleeFromPosY;
+	pedSyncData->m_fPathNextNodeDir = spd.m_fPathNextNodeDir;
+	pedSyncData->wRouteCurDir = spd.wRouteCurDir;
+	pedSyncData->m_vecPathNextNode = spd.m_vecPathNextNode;
+	pedSyncData->m_dwPathNodeTimer = spd.m_dwPathNodeTimer;
+	pedSyncData->m_wCurPathNode = spd.m_wCurPathNode;
+	pedSyncData->m_wPathNodes = spd.m_wPathNodes;
+	//pedSyncData->m_aPathNodeStates = spd.m_aPathNodeStates;
+	//pedSyncData->m_apPathNodesStates = spd.m_apPathNodesStates;
+	pedSyncData->m_dwPathNodeType = spd.m_dwPathNodeType;
+	pedSyncData->m_nPathState = spd.m_nPathState;
+	pedSyncData->m_pLastPathNode = spd.m_pLastPathNode;
+	pedSyncData->m_pNextPathNode = spd.m_pNextPathNode;
+	pedSyncData->m_dwMoveState = spd.m_dwMoveState;
+	pedSyncData->m_fSeekExAngle = spd.m_fSeekExAngle;
+	pedSyncData->m_vecSeekPosEx = spd.m_vecSeekPosEx;
+	pedSyncData->m_vecOffsetSeek = spd.m_vecOffsetSeek;
+	pedSyncData->m_dwEventType = spd.m_dwEventType;
+	pedSyncData->m_fAngleToEvent = spd.m_fAngleToEvent;
+	pedSyncData->m_fEventOrThreatX = spd.m_fEventOrThreatX;
+	pedSyncData->m_fEventOrThreatY = spd.m_fEventOrThreatY;
 }
 PlayerSyncData* CServerNetwork::GetPlayerSyncData(int id)
 {
@@ -270,6 +323,7 @@ void CServerNetwork::PedCreateEvent(librg_message_t *msg)
 	
 	// crate our custom data container for ped
 	entity->user_data = new PedSyncData();
+	pedData[entity->id] = *(PedSyncData*)entity->user_data;
 
 	// spawn a ped at player's position
 	entity->position = librg_entity_find(msg->ctx, msg->peer)->position;
@@ -424,6 +478,7 @@ void CServerNetwork::on_entity_update(librg_event_t *event)
 	else if (event->entity->type == VCOOP_PED)
 	{
 		librg_data_wptr(event->data, event->entity->user_data, sizeof(PedSyncData));
+		pedData[event->entity->id] = *(PedSyncData*)event->entity->user_data;
 
 		CVector ped_pos;
 		zplm_vec3_t player_pos;
@@ -640,7 +695,9 @@ void CServerNetwork::on_disconnect(librg_event_t* event)
 						break;
 					}
 				}
-				librg_entity_destroy(event->ctx, entity->id);
+
+				if(!GetPedSyncData(entity->id)->DontDestroy)
+					librg_entity_destroy(event->ctx, entity->id);
 			}
 		}
 	}
