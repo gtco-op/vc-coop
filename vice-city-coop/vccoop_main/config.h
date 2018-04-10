@@ -804,7 +804,7 @@ struct ObjectSyncData {
 struct serverInfo {
 	char serverID[128];
 	char serverName[128];
-	char serverHost[128];
+	char serverHost[15];
 	char serverPort[128];
 };
 

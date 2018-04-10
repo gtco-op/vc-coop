@@ -382,7 +382,7 @@ void CRender::Draw()
 
 						if (ImGui::Button("Connect")) {
 							gGame->Name = Nickname;
-							gNetwork->ServerAddress = server.serverHost;
+							sprintf(gNetwork->ServerAddress, server.serverHost);
 							gNetwork->ServerPort = atoi(server.serverPort);
 
 							if (strlen(gGame->Name.c_str()) >= 3 && gNetwork->ServerPort != 0 && gNetwork->ServerAddress != "") {
@@ -433,7 +433,7 @@ void CRender::Draw()
 					if (ImGui::Button("Connect"))
 					{
 						gGame->Name = Nickname;
-						gNetwork->ServerAddress = IP;
+						sprintf(gNetwork->ServerAddress, IP);
 						gNetwork->ServerPort = Port;
 
 						if (strlen(gGame->Name.c_str()) >= 3 && gNetwork->ServerPort != 0 && gNetwork->ServerAddress != "") {

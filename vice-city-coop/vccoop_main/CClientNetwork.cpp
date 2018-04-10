@@ -657,9 +657,6 @@ void CClientNetwork::AttemptConnect(char* szAddress, int iPort)
 	addr.host = szAddress;
 	addr.port = iPort;
 
-	gNetwork->ServerAddress = szAddress;
-	gNetwork->ServerPort = iPort;
-
 	gLog->Log("[CClientNetwork] Attempting to connect to %s:%d\n", addr.host, addr.port);
 	librg_network_start(&ctx, addr);
 

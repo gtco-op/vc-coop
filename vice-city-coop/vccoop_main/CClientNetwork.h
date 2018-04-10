@@ -10,7 +10,7 @@ public:
 	CClientNetwork();
 	~CClientNetwork();
 
-	char	*ServerAddress;
+	char	ServerAddress[15];
 	int		ServerPort;
 
 	static librg_address_t addr;
