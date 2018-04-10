@@ -5,6 +5,8 @@ extern WNDPROC		orig_wndproc;
 extern HWND			orig_wnd;
 bool   wndHookInited = false;
 
+std::vector<serverInfo> serverList;
+
 CRender::CRender()
 {
 	this->pLogoTex			= NULL;
@@ -45,6 +47,76 @@ CRender::CRender()
 	gLog->Log("[CRender] CRender initialized\n");
 }
 
+size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
+	size_t written = fwrite(ptr, size, nmemb, stream);
+	return written;
+}
+bool DownloadFile(char* URL, char* Filename = "tmp.xml")
+{
+	CURL *curl;
+	FILE *fp;
+	CURLcode res;
+	curl = curl_easy_init();
+
+	if (curl) {
+		fp = fopen(Filename, "wb");
+		curl_easy_setopt(curl, CURLOPT_URL, URL);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+		res = curl_easy_perform(curl);
+
+		if (res != CURLE_OK)
+		{
+			gLog->Log("[CCore] Could not retrieve '%s' (error=%s).\n", URL, curl_easy_strerror(res));
+			fclose(fp);
+			curl_easy_cleanup(curl);
+			return false;
+		}
+		else
+		{
+			gLog->Log("[CCore] Retrieved '%s' successfully.\n", URL);
+			fclose(fp);
+			curl_easy_cleanup(curl);
+			return true;
+		}
+	}
+	return false;
+}
+
+std::vector<serverInfo> GetServersFromURL(char* URL = VCCOOP_DEFAULT_MASTER_LIST_URL)
+{
+	std::vector<serverInfo> result;
+
+	if (DownloadFile(URL))	{
+		tinyxml2::XMLDocument doc;
+		doc.LoadFile("tmp.xml");
+		tinyxml2::XMLHandle docHandle(&doc);
+		tinyxml2::XMLElement *entry = docHandle.FirstChildElement("servers").ToElement();
+
+		if (entry) {
+			for (tinyxml2::XMLNode *node = entry->FirstChildElement(); node; node = node->NextSibling()) {
+				serverInfo temp;
+				tinyxml2::XMLElement *e = node->ToElement();
+
+				const char* serverID	= e->Attribute("id");
+				const char* serverName	= e->FirstChildElement("name")->GetText();
+				const char* serverHost	= e->FirstChildElement("host")->GetText();
+				const char* serverPort	= e->FirstChildElement("port")->GetText();
+
+				sprintf(temp.serverID, serverID);
+				sprintf(temp.serverName, serverName);
+				sprintf(temp.serverHost, serverHost);
+				sprintf(temp.serverPort, serverPort);
+				result.push_back(temp);
+			}
+		}
+		gLog->Log("[CCore] Retrieved %d servers\n", result.size());
+		remove("tmp.xml");
+	}
+	return result;
+}
+
+
 CRender::~CRender()
 {
 	this->DestroyFont();
@@ -81,6 +153,12 @@ void CRender::Run()
 			gLog->Log("[CRender] ImGui initialized\n");
 
 			Initialized = true;
+
+			serverList = GetServersFromURL();
+			if (serverList.size() == 0)			{
+				serverList = GetServersFromURL(VCCOOP_DEFAULT_MASTER_LIST_BACKUP_URL);
+			}
+			
 		}
 	}
 }
