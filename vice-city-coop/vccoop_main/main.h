@@ -25,6 +25,9 @@ extern "C" {
 // TinyXML
 #include "..\server\vendor\tinyxml2-6.2.0\tinyxml2.h"
 
+// libcurl
+#include "..\vendor\curl-7.59.0\include\curl\curl.h"
+
 //common
 #include <Windows.h>
 #include <fstream>
