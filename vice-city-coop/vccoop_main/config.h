@@ -642,6 +642,7 @@ struct PedSyncData
 	float OrientZ;
 
 	bool Wander = true;
+	bool DontDestroy = false;
 
 	int iModelIndex;
 	int iInteriorID;

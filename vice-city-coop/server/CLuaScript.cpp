@@ -522,6 +522,7 @@ int CLuaScript::lua_AddPed(lua_State* L)
 	float x, y, z;
 	int modelID;
 	bool wander = true;
+	bool dontdestroy = false;
 
 	if (nargs == 3)
 	{
@@ -545,6 +546,9 @@ int CLuaScript::lua_AddPed(lua_State* L)
 
 		if (nargs == 5)
 			wander = lua_toboolean(L, 5);
+
+		if (nargs == 6)
+			dontdestroy = lua_toboolean(L, 6);
 	}
 
 	position = CVector(x, y, z);
@@ -553,6 +557,7 @@ int CLuaScript::lua_AddPed(lua_State* L)
 	entity->user_data = new PedSyncData();
 	((PedSyncData*)entity->user_data)->iModelIndex	= modelID;
 	((PedSyncData*)entity->user_data)->Wander		= wander;
+	((PedSyncData*)entity->user_data)->DontDestroy	= dontdestroy;
 	((PedSyncData*)entity->user_data)->Health = 100.f;
 
 	entity->position.x = position.x;
