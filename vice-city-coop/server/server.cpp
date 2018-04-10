@@ -72,11 +72,34 @@ int main(int argc, char const *argv[]) {
 	bool console_active = Initialize();
 	gServerNetwork = new CServerNetwork;
 
+	char buf[256];
+
 	while (console_active && gConfig->IsConfigLoaded())	{
 		getline(cin, input);
 
 		if (strstr(input.c_str(), "exit") || strstr(input.c_str(), "quit"))		{
 			console_active = false;
+		}
+
+		if (strstr(input.c_str(), "players"))		{
+			int playerCount = 0;
+			for (auto it : playerEntities)			{
+				if (it && it->client_peer != nullptr)
+					playerCount++;
+			}
+			gLog->Log("[CCore] Active players: %d\n", playerCount);
+		}
+
+		if (sscanf(input.c_str(), "announce %s", buf)) 		{
+			if (strlen(buf) > 0) {
+				char buffer[256];
+				sprintf(buffer, "[Server] %s", buf);
+
+				librg_message_send_all(&gServerNetwork->ctx, VCOOP_RECEIVE_MESSAGE, buffer, 256);
+
+				memset(buf, 0x00, 256);
+				memset(buffer, 0x00, 256);
+			}
 		}
 	}
 	return 0;
