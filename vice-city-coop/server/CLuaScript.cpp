@@ -544,7 +544,7 @@ int CLuaScript::lua_AddPed(lua_State* L)
 		z = lua_tonumber(L, 4);
 
 		if (nargs == 5)
-			wander = false;
+			wander = lua_toboolean(L, 5);
 	}
 
 	position = CVector(x, y, z);
