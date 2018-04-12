@@ -809,6 +809,16 @@ struct serverInfo {
 	char serverPort[128];
 };
 
+struct sStartParams
+{
+	char name[25];
+	char serveraddress[15];
+	int serverport = 0;
+	bool bEmpty = true;
+	bool bConnect = false;
+};
+
+
 enum eBlipType {
 	BLIP_NONE,          // 0
 	BLIP_CAR,           // 1

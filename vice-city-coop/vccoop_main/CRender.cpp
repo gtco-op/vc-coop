@@ -210,11 +210,24 @@ void CRender::InitFont()
 		}
 
 		// Populate GUI variables with retrieved config values
-		gConfig->PopulateValues(IP, Port, Nickname);
-		if (!gConfig->IsDataDirValid() || !gConfig->IsConfigLoaded())		{
-			MessageBoxA(orig_wnd, "An error occurred when populating the game configuration.\nTry running Vice City with elevated permissions.", VCCOOP_NAME " " VCCOOP_VER, MB_OK | MB_ICONERROR);
-			gLog->Log("[CConfiguration] An error occurred when populating the game configuration. Try running Vice City with elevated permissions.\n");
-			gGame->Exit();
+		if (gStartParams.bEmpty)
+		{
+			gConfig->PopulateValues(IP, Port, Nickname);
+			if (!gConfig->IsDataDirValid() || !gConfig->IsConfigLoaded()) {
+				MessageBoxA(orig_wnd, "An error occurred when populating the game configuration.\nTry running Vice City with elevated permissions.", VCCOOP_NAME " " VCCOOP_VER, MB_OK | MB_ICONERROR);
+				gLog->Log("[CConfiguration] An error occurred when populating the game configuration. Try running Vice City with elevated permissions.\n");
+				gGame->Exit();
+			}
+		}
+		else
+		{
+			strcpy(gConfig->ServerAddress, gStartParams.serveraddress);
+			gConfig->ServerPort = gStartParams.serverport;
+			strcpy(gConfig->Nickname, gStartParams.name);
+
+			strcpy(IP, gStartParams.serveraddress);
+			Port = gStartParams.serverport;
+			strcpy(Nickname, gStartParams.name);
 		}
 		gRender->Initialized = true;
 	}
@@ -426,9 +439,18 @@ void CRender::Draw()
 
 					}
 
-					ImGui::InputText("Nickname", Nickname, 25, 0, NULL, Nickname);
-					ImGui::InputText("IP", IP, 16, 0, NULL, IP);
-					ImGui::InputInt("Port", &Port);
+					if (!gStartParams.bEmpty)
+					{
+						ImGui::InputText("Nickname", gStartParams.name, 25, 0, NULL, gStartParams.name);
+						ImGui::InputText("IP", gStartParams.serveraddress, 16, 0, NULL, gStartParams.serveraddress);
+						ImGui::InputInt("Port", &gStartParams.serverport);
+					}
+					else
+					{
+						ImGui::InputText("Nickname", Nickname, 25, 0, NULL, Nickname);
+						ImGui::InputText("IP", IP, 16, 0, NULL, IP);
+						ImGui::InputInt("Port", &Port);
+					}
 
 					if (ImGui::Button("Connect"))
 					{

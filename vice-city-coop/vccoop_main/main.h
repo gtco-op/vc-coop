@@ -29,7 +29,9 @@ extern "C" {
 #include "..\vendor\curl-7.59.0\include\curl\curl.h"
 
 //common
-#include <Windows.h>
+#include <Windows.h> 
+#include <tchar.h>           
+#include <shellapi.h>
 #include <fstream>
 #include <iostream>
 #include <cstdarg>
@@ -39,6 +41,7 @@ extern "C" {
 #include <vector>
 #include <map>
 #include <utility>
+#include <iterator>
 #include <experimental/filesystem>
 
 //detours
@@ -185,6 +188,8 @@ extern CLogger			*gDbgLog;
 #endif
 
 extern CPad localPlayerKeys;
+
+extern sStartParams gStartParams;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
