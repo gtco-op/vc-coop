@@ -647,7 +647,7 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 			if (gChat->chatToggled && vkey == VK_RETURN)
 				return ImGui_ImplWin32_WndProcHandler(wnd, umsg, wparam, lparam);
 
-			if (!gRender->bEscMenu && (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard))
+			if (gRender->bServerView ||!gRender->bEscMenu && (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard))
 				break;
 
 			if (vkey == VK_ESCAPE)

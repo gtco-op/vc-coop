@@ -538,7 +538,7 @@ void CRender::Draw()
 #ifdef VCCOOP_DEBUG
 			|| gRender->bConsole
 #endif
-			|| gRender->bEscMenu
+			|| gRender->bEscMenu || gRender->bServerView
 			)
 		{
 			gGame->DisableMouseInput();
