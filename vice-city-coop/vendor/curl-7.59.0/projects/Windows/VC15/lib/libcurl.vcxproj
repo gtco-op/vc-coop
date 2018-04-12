@@ -774,7 +774,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='LIB Debug - LIB wolfSSL|x64'">..\..\..\..\build\Win64\VC15\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='LIB Debug|x64'">$(OutDir)lib\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='LIB Debug - LIB wolfSSL|x64'">$(OutDir)lib\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='LIB Release|Win32'">..\..\..\..\..\..</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='LIB Release|Win32'">$(SolutionDir)</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='LIB Release - LIB wolfSSL|Win32'">..\..\..\..\..\..</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='LIB Release|Win32'">$(OutDir)lib\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='LIB Release - LIB wolfSSL|Win32'">$(OutDir)lib\</IntDir>
