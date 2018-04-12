@@ -544,10 +544,10 @@ int CLuaScript::lua_AddPed(lua_State* L)
 		y = lua_tonumber(L, 3);
 		z = lua_tonumber(L, 4);
 
-		if (nargs == 5)
+		if (nargs >= 5)
 			wander = lua_toboolean(L, 5);
 
-		if (nargs == 6)
+		if (nargs >= 6)
 			dontdestroy = lua_toboolean(L, 6);
 	}
 
