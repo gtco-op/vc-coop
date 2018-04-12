@@ -11,6 +11,7 @@ CDebugEngine	*gDbgEngine;
 CLogger			*gDbgLog;
 #endif
 
+
 CCore::CCore()
 {
 #ifdef VCCOOP_DEBUG
@@ -39,7 +40,7 @@ CCore::CCore()
 
 	gLog->Log("[CCore] Main method finished.\n");
 
-	Events::gameProcessEvent.Add(CGame::HasGameLoaded, PRIORITY_BEFORE);
+	Events::gameProcessEvent.Add(CGame::HasGameLoaded, PRIORITY_AFTER);
 	Events::gameProcessEvent += [] {
 		gGame->Run();
 		gRender->Run();
@@ -48,4 +49,6 @@ CCore::CCore()
 CCore::~CCore()
 {
 	gLog->Log("[CCore] CCore shutting down.\n");
+	gNetwork->StopThread();
+	gNetwork->StopClientThread();
 }
