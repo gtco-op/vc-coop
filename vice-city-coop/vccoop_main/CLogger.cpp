@@ -74,7 +74,7 @@ std::string time_stamp(char* TimeFormat)
 std::string path_to_session_log_file()
 {
 	std::string exePath = GetExecutablePath();
-	exePath.append("\\Logs\\");
+	exePath.append("\\scripts\\vccoop\\Logs\\");
 
 	static const std::string log_dir = exePath;
 	static const std::string log_file_name = "VCCOOP_log.txt";
