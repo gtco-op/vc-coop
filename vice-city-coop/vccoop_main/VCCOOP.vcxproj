@@ -114,7 +114,7 @@
     <TargetName>vccoop</TargetName>
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include;$(ProjectDir)\vendor\discord-rpc</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(ProjectDir)\vendor\discord-rpc;$(SolutionDir)</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath);$(ProjectDir)\vendor\rw;$(ProjectDir)\vendor\discord-rpc;$(SolutionDir);</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA3|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -187,7 +187,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_USING_V110_SDK71_;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;GTAVC;GTAGAME_NAME="Vice City";GTAGAME_ABBR="VC";GTAGAME_ABBRLOW="vc";GTAGAME_PROTAGONISTNAME="Tommy";GTAGAME_CITYNAME="Vice City";_DX9_SDK_INSTALLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CURL_STATICLIB;_USING_V110_SDK71_;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;GTAVC;GTAGAME_NAME="Vice City";GTAGAME_ABBR="VC";GTAGAME_ABBRLOW="vc";GTAGAME_PROTAGONISTNAME="Tommy";GTAGAME_CITYNAME="Vice City";_DX9_SDK_INSTALLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\vendor\detours\;$(PLUGIN_SDK_DIR)\plugin_vc\;$(PLUGIN_SDK_DIR)\plugin_vc\game_vc\;$(PLUGIN_SDK_DIR)\shared\;$(RWD3D9_DIR)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>Full</Optimization>
@@ -196,7 +196,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:threadSafeInit- /NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -206,7 +206,7 @@
       <AdditionalDependencies>libcurl.lib;wldap32.lib;tinyxml2.lib;discord-rpc.lib;lua.lib;winmm.lib;ws2_32.lib;plugin_vc.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)\vendor\detours\;$(ProjectDir)\vendor\lua\;$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.VC.lib</ImportLibrary>
-      <AdditionalOptions>/LTCG /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/LTCG /ignore:4099 /NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
