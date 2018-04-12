@@ -663,6 +663,10 @@ LRESULT CALLBACK wnd_proc(HWND wnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 					return 0;
 				}
 			}
+			if (vkey == VK_F6)
+			{
+				gRender->bServerView = !gRender->bServerView;
+			}
 			if (vkey == VK_F7 && gNetwork->connected)
 			{
 				gNetwork->StopClientThread(); 
