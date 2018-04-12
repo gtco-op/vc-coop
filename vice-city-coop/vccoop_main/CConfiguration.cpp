@@ -33,10 +33,10 @@ CConfiguration::CConfiguration()
 
 	char* szPath = new char[MAX_PATH];
 	memset(szPath, 0, MAX_PATH);
-	strcpy(szPath, GetExecutablePath().append("\\vccoop").c_str());
+	strcpy(szPath, GetExecutablePath().append("\\scripts\\vccoop").c_str());
 	std::experimental::filesystem::path szDir = szPath;
 
-	std::string path(GetExecutablePath().append("\\vccoop"));
+	std::string path(GetExecutablePath().append("\\scripts\\vccoop"));
 	if (std::experimental::filesystem::create_directory(path.c_str())) {
 		this->configError = false;
 	}
