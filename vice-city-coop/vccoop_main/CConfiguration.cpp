@@ -54,13 +54,8 @@ CConfiguration::~CConfiguration()
 }
 void CConfiguration::PopulateValues(char srvIP[15], int& srvPort, char cliName[25])
 {
-	if (configPopulated)
+	if (configPopulated || gStartParams.bWebRequest)
 		return;
-
-	if (gStartParams.bConnect && !gStartParams.bEmpty && gGame->Name.empty()) {
-		gGame->Name = gStartParams.name;
-		sprintf(gConfig->Nickname, "%s", gStartParams.name);
-	}
 
 	/* Populate configuration values from INI */
 	/* Default values specified in config.h */

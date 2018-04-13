@@ -63,9 +63,6 @@ void CClientNetwork::ClientReceiveMessage(librg_message_t* msg)
 	char str[256];
 	librg_data_rptr(msg->data, &str, sizeof(str));
 
-	if (gConfig->DisplayChatTimestamp)
-		sprintf(str, "[%s] %s", time_stamp(LOGGER_TIME_FORMAT).c_str(), str);
-
 	gChat->AddChatMessage(str);
 }
 

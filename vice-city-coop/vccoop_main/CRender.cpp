@@ -221,6 +221,15 @@ void CRender::InitFont()
 		}
 		else
 		{
+
+			if (gStartParams.bConnect && !gStartParams.bEmpty && gGame->Name.empty()) {
+				std::string name = gConfig->GetReader()->Get("Client", "Nickname", VCCOOP_DEFAULT_NICKNAME);
+				strcpy(gStartParams.name, name.c_str());
+
+				gGame->Name = gStartParams.name;
+				sprintf(gConfig->Nickname, "%s", gStartParams.name);
+			}
+
 			strcpy(gConfig->ServerAddress, gStartParams.serveraddress);
 			gConfig->ServerPort = gStartParams.serverport;
 			strcpy(gConfig->Nickname, gStartParams.name);
@@ -418,6 +427,26 @@ void CRender::Draw()
 					ImGui::Separator();
 					ImGui::End();
 					//---------------------------
+				}
+
+				if (gStartParams.bWebRequest && !gStartParams.bEmpty && !gRender->bConnecting && !gNetwork->connected && CGame::bLoadingDone)
+				{					
+					gGame->Name = gStartParams.name;
+					sprintf(gNetwork->ServerAddress, gStartParams.serveraddress);
+					gNetwork->ServerPort = gStartParams.serverport;
+
+					gLog->Log("Name: %s\nServer: %s:%d\n", gStartParams.name, gStartParams.serveraddress, gStartParams.serverport);
+
+					if (strlen(gGame->Name.c_str()) >= 3 && gNetwork->ServerPort != 0 && gNetwork->ServerAddress != "") {
+						gNetwork->AttemptConnect(gStartParams.serveraddress, gStartParams.serverport);
+
+						gRender->bConnecting	= true;
+						gRender->bGUI			= false;
+						gRender->bAboutWindow	= false;
+						gRender->bServerView	= false;
+
+						gStartParams.bWebRequest = false;
+					}
 				}
 
 				if (gRender->bGUI && !gRender->bConnecting)
