@@ -241,12 +241,42 @@ LPSTR* WINAPI CommandLineToArgvA(LPSTR lpCmdline, int* numargs)
 
 sStartParams GetParams()
 {
-	sStartParams params;
 	int argc;
+	
 	LPSTR * argv = CommandLineToArgvA(GetCommandLineA(), &argc);
+	sStartParams params;
 
-	for (int i = 1; i < argc; i++) {
-		if (strstr(argv[i], "-name") && (i+1)<=argc)		{
+	for (int i = 1; i < argc; i++)		{
+		// example custom URI usage:
+		//		vccoop:host=127.0.0.1;port=420;autoconnect;
+		//		vccoop:host=localhost;port=420;
+		if (strstr(argv[i], "vccoop:"))		{
+			bool autoconnect = false;
+			char host[64];
+			int port = 0;
+
+			// Host
+			std::string webParams = argv[i];
+			size_t pos = webParams.find_first_of(';');
+			webParams.erase(webParams.begin() + pos, webParams.end());
+			sscanf(webParams.c_str(), "vccoop:host=%s", &host);
+			
+			// Port
+			webParams = argv[i];
+			pos = webParams.find_first_of(';');
+			webParams.erase(webParams.begin(), webParams.begin() + pos);
+			webParams.erase(webParams.begin(), webParams.begin() + 1);
+			sscanf(webParams.c_str(), "port=%d;", &port);
+
+			params.bWebRequest	= true;
+			params.bEmpty		= false;
+			params.bConnect		= true;
+			params.serverport	= port;
+
+			sprintf(params.name, "", "");
+			sprintf(params.serveraddress, "%s", host);
+		}
+		else if (strstr(argv[i], "-name") && (i+1)<=argc)		{
 			sprintf(params.name, "%s", argv[i + 1]);
 			params.bEmpty = false;
 		}
@@ -258,10 +288,8 @@ sStartParams GetParams()
 			params.serverport = atoi(argv[i + 1]);
 			params.bEmpty = false;
 		}
-		else if (strstr(argv[i], "-connect") && (i + 1) <= argc) {
-			params.bConnect = true;
-		}
 	}
+
 	LocalFree(argv);
 	return params;
 }
@@ -314,6 +342,7 @@ public:
 	{
 		sStartParams params = GetParams();
 		ApplyStartParams(params);
+
 		core = new CCore();
 	}
 	~VCCoop() 

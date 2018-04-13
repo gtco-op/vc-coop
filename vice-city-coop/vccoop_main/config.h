@@ -25,13 +25,13 @@
 #define VCCOOP_DEFAULT_SERVER_CONFIG	"server.ini"
 
 // Default client config filename
-#define VCCOOP_DEFAULT_CLIENT_CONFIG	".//vccoop//client.ini"
+#define VCCOOP_DEFAULT_CLIENT_CONFIG	GetExecutablePath().append("\\scripts\\vccoop\\client.ini").c_str()
 
 // Default client path to main.scm
 #define VCCOOP_DEFAULT_MAIN_SCM_PATH	"\\data\\main.scm"
 
 // Default masterlist URL
-#define VCCOOP_DEFAULT_MASTER_LIST_URL			"https://mrkfus.000webhostapp.com/gtaco-op/vc-coop/status/check/servers.xml"
+#define VCCOOP_DEFAULT_MASTER_LIST_URL			"http://mrkfus.000webhostapp.com/gtaco-op/vc-coop/status/check/servers.xml"
 #define VCCOOP_DEFAULT_MASTER_LIST_BACKUP_URL	"http://159.65.62.71/check/servers.xml"
 
 // Print game's internal debug messages
@@ -801,23 +801,23 @@ struct ObjectSyncData {
 	int objectID;
 	CVector objectPos;
 };
-
+ 
 struct serverInfo {
-	char serverID[128];
+	char serverID[16];
 	char serverName[128];
-	char serverHost[15];
-	char serverPort[128];
-};
-
+	char serverHost[64];
+	char serverPort[16];  
+}; 
+ 
 struct sStartParams
 {
-	char name[25];
-	char serveraddress[15];
+	char name[25] = { 0 };
+	char serveraddress[64] = { 0 };
 	int serverport = 0;
 	bool bEmpty = true;
 	bool bConnect = false;
+	bool bWebRequest = false; 
 };
-
 
 enum eBlipType {
 	BLIP_NONE,          // 0

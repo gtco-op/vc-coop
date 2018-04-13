@@ -210,7 +210,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY /Y /J /C $(OutDir)vccoop.asi $(GTA_VC_DIR)</Command>
+      <Command>XCOPY /Y /J /C $(OutDir)vccoop.asi $(GTA_VC_DIR)\scripts\</Command>
       <Message>Copying ASI to GTA VC directory..</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
