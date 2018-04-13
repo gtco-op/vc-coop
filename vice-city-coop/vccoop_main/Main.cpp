@@ -273,7 +273,6 @@ sStartParams GetParams()
 			params.bConnect		= true;
 			params.serverport	= port;
 
-			sprintf(params.name, "", "");
 			sprintf(params.serveraddress, "%s", host);
 		}
 		else if (strstr(argv[i], "-name") && (i+1)<=argc)		{
