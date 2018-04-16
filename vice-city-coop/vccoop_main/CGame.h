@@ -38,6 +38,9 @@ public:
 	int remotePlayerCameraMode[MAX_PLAYERS];
 	CPed *FindLocalPed();
 
+	bool bShowScoreboard = false;
+
+
 	bool debugEngineOutput = false;
 	
 	static bool bLoadingDone;

@@ -435,8 +435,6 @@ void CRender::Draw()
 					sprintf(gNetwork->ServerAddress, gStartParams.serveraddress);
 					gNetwork->ServerPort = gStartParams.serverport;
 
-					gLog->Log("Name: %s\nServer: %s:%d\n", gStartParams.name, gStartParams.serveraddress, gStartParams.serverport);
-
 					if (strlen(gGame->Name.c_str()) >= 3 && gNetwork->ServerPort != 0 && gNetwork->ServerAddress != "") {
 						gNetwork->AttemptConnect(gStartParams.serveraddress, gStartParams.serverport);
 
@@ -543,6 +541,38 @@ void CRender::Draw()
 				if (!gNetwork->connected && !gRender->bConnecting && !gRender->bGUI && gNetwork->client_running)
 				{
 					gRender->bConnecting = true;
+				}
+			}
+
+			if (gNetwork->connected)			
+			{
+				if (gGame->bShowScoreboard)				
+				{
+					ImGui::SetNextWindowSize(ImVec2(500, 500));
+					ImGui::SetNextWindowPosCenter();
+
+					ImGui::Begin("Scoreboard");
+					ImGui::Text("ID\t\t\t\t\tName");
+					ImGui::Separator();
+
+					ImGui::Text("%d\t\t\t\t\t%s", gNetwork->local_player->id, gGame->Name.c_str());
+					ImGui::Separator();
+
+					for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+					{
+						CClientEntity * networkEntity = (*it);
+						if (networkEntity->type == VCOOP_PLAYER)
+						{
+							CClientPlayer * player = (CClientPlayer*)networkEntity;
+							if (player->ped)
+							{
+								CClientPlayer * player = (CClientPlayer*)networkEntity;
+								ImGui::Text("%d\t\t\t\t\t%s", player->networkID, player->szName);
+								ImGui::Separator();
+							}
+						}
+					}
+					ImGui::End();
 				}
 			}
 

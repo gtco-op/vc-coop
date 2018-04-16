@@ -86,24 +86,33 @@ void CGame::StartMissionScript()
 
 void CGame::Run()
 {
+	if (GetKey(VK_TAB))
+	{
+		gGame->bShowScoreboard = true;
+	}
+	else
+	{
+		gGame->bShowScoreboard = false;
+	}
+
 	if (GetTwoKeys(0x12, 'O'))
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
 	}
-	if (GetKey(0x2C) & 1)
+	else if (GetKey(0x2C) & 1)
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
 		gRender->TakeScreenshot();
 	}
 #ifdef VCCOOP_DEBUG
-	if (GetKey(223))
+	else if (GetKey(223))
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
 		gRender->bConsole = !gRender->bConsole;
 		ImGui::GetIO().ClearInputCharacters();
 	}
 #endif
-	if (GetKey('T') && !gChat->chatToggled && IsWindowActive())
+	else if (GetKey('T') && !gChat->chatToggled && IsWindowActive())
 	{
 		keyPressTime = CTimer::m_snTimeInMilliseconds;
 		if (!gChat->chatToggled && !gRender->bGUI && !gRender->bConnecting && !gRender->bAboutWindow && !gRender->bEscMenu)
