@@ -108,10 +108,16 @@ CClientEntity* CClientNetwork::GetNetworkEntityFromNetworkID(int id)
 
 int CClientNetwork::GetNetworkIDFromEntity(CEntity* ent)
 {
-	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)	
-		if (ent != nullptr && *it != nullptr && (*it)->networkID >= 0 && (*it)->GetEntity() == ent)		
-			return (*it)->networkID;
+	if (ent == nullptr)
+		return -1;
 
+	for (auto it : gNetwork->networkEntities)
+	{
+		if (it != nullptr && it->networkID >= 0 && it->GetEntity() == ent)
+		{
+			return it->networkID;
+		}
+	}
 	return -1;
 }
 void CClientNetwork::on_connect_request(librg_event_t *event)
