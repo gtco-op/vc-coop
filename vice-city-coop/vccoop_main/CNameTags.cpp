@@ -8,9 +8,9 @@ void CNameTags::Draw()
 	if (size <= 0)
 		return;
 
-	for (auto it = gNetwork->networkEntities.begin(); it != gNetwork->networkEntities.end(); ++it)
+	for(auto it : gNetwork->networkEntities)
 	{
-		CClientEntity * networkEntity = (*it);
+		CClientEntity * networkEntity = it;
 		if (networkEntity->type == VCOOP_PLAYER)
 		{
 			CClientPlayer * player = (CClientPlayer*)networkEntity;
