@@ -884,4 +884,5 @@ extern void LoadMissionScript();
 #pragma warning (disable : 4348)
 #pragma warning (disable : 4060)
 #pragma warning (disable : 4018)
+#pragma warning (disable : 4267)
 #endif

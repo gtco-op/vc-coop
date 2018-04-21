@@ -41,6 +41,12 @@
     <Filter Include="Source\utils\CModelIDs">
       <UniqueIdentifier>{9bf9c3d4-8793-4781-87f1-30b9678e1e9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\mongoose">
+      <UniqueIdentifier>{a4b50184-908f-4986-96d4-00f041dadd79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\management_server">
+      <UniqueIdentifier>{34fd911d-334a-4819-bbe6-faf434feea36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CServerNetwork.h">

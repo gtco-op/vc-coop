@@ -5,12 +5,13 @@
 #pragma warning (disable : 4348)
 #pragma warning (disable : 4060)
 #pragma warning (disable : 4018)
+#pragma warning (disable : 4267)
 
 // librg
-#include "vendor\librg\librg.h"
+#include "vendor\\librg\\librg.h"
 
 // inih
-#include "vendor\inih\INIReader.h"
+#include "vendor\\inih\\INIReader.h"
 
 // Lua
 extern "C" {
@@ -20,7 +21,10 @@ extern "C" {
 }
 
 // TinyXML
-#include "vendor\tinyxml2-6.2.0\tinyxml2.h"
+#include "vendor\\tinyxml2-6.2.0\\tinyxml2.h"
+
+// Mongoose
+#include "mongoose.h"
 
 #include <Windows.h>
 #include <experimental/filesystem>
