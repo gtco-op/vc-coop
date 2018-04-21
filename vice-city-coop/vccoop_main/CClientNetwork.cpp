@@ -20,6 +20,15 @@ CClientNetwork::CClientNetwork()
 
 	client_running = false;
 	connected = false;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		playerEntities[i] = nullptr;
+	}
+	for (int i = 0; i < MAX_ENTITIES; i++)
+	{
+		otherEntities[i] = nullptr;
+	}
 }
 CClientNetwork::~CClientNetwork()
 {
