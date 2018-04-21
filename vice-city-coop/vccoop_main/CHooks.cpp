@@ -165,8 +165,8 @@ void Hook_CRunningScript__Process()
 		CVector scenePosition(VCCOOP_DEFAULT_SPAWN_POSITION);
 		Call(0x40AF60, &scenePosition);
 
-		CCameraStuff::SetPlayerCameraPosition(531.629761f, 606.497253f, 10.901563f, 0, 0, 0);
-		CCameraStuff::CameraLookAtPoint(531.629761f, 606.497253f, 10.901563f, 1);
+		CCameraStuff::SetPlayerCameraPosition(627.544556f, 599.654846f, 12.071713f, 0, 0, 0);
+		CCameraStuff::CameraLookAtPoint(VCCOOP_DEFAULT_CAMERA_LOOKPOSITION, 1);
 
 		CWorld::Players[0].m_bNeverGetsTired = true;
 
@@ -219,23 +219,23 @@ char __fastcall CAutomobile__ProcessControl_Hook(CVehicle * This, DWORD _EDX)
 		if (currentPlayerID == -1)return 0;
 
 		// set remote player to focus
-CWorld::PlayerInFocus = currentPlayerID;
+		CWorld::PlayerInFocus = currentPlayerID;
 
-// save local player's keys
-localPlayerKeys = *CPad::GetPad(0);
+		// save local player's keys
+		localPlayerKeys = *CPad::GetPad(0);
 
-// set remote player's keys
-*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
+		// set remote player's keys
+		*CPad::GetPad(0) = gGame->remotePlayerKeys[currentPlayerID];
 
-// call the internal CPlayerPed[]::Process
-original_CAutomobile__ProcessControl(This);
+		// call the internal CPlayerPed[]::Process
+		original_CAutomobile__ProcessControl(This);
 
-// restore local player's keys
-*CPad::GetPad(0) = localPlayerKeys;
+		// restore local player's keys
+		*CPad::GetPad(0) = localPlayerKeys;
 
-// restore the local player's id
-CWorld::PlayerInFocus = 0;
-return 0;
+		// restore the local player's id
+		CWorld::PlayerInFocus = 0;
+		return 0;
 	}
 	return original_CAutomobile__ProcessControl(This);
 }
