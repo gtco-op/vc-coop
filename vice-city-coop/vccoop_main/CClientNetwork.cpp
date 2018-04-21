@@ -24,6 +24,7 @@ CClientNetwork::CClientNetwork()
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		playerEntities[i] = nullptr;
+		sprintf(playerNames[i], "%c", '\0');
 	}
 	for (int i = 0; i < MAX_ENTITIES; i++)
 	{
