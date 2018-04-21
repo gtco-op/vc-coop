@@ -4,13 +4,13 @@ CClientNetwork	*gNetwork;
 CConfiguration  *gConfig;
 CGame			*gGame;
 CRender			*gRender;
+CImGui			*gGUI;
 CLogger			*gLog;
 CChat			*gChat;
 #ifdef VCCOOP_DEBUG_ENGINE
 CDebugEngine	*gDbgEngine;
 CLogger			*gDbgLog;
 #endif
-
 
 CCore::CCore()
 {
@@ -33,6 +33,9 @@ CCore::CCore()
 	gGame		= new CGame();
 	gRender		= new CRender();
 	gRender->gGuiContainer.push_back(gChat);
+
+	gGUI = new CImGui();
+	gRender->gGuiContainer.push_back(gGUI);
 
 #ifdef VCCOOP_DEBUG_ENGINE
 	gRender->gGuiContainer.push_back(gDbgEngine);

@@ -38,8 +38,9 @@ public:
 	IDirect3DDevice9 *device;
 
 	std::vector<CRenderTemplate*> gGuiContainer;
-private:
+
 	LPDIRECT3DTEXTURE9 pLogoTex;
+private:
 
 	ID3DXFont * m_pD3DXFont;
 	int iFontSize;

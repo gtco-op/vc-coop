@@ -179,6 +179,7 @@ extern HWND			orig_wnd;
 extern CClientNetwork	*gNetwork;
 extern CConfiguration	*gConfig;
 extern CRender			*gRender;
+extern CImGui			*gGUI;
 extern CLogger			*gLog;
 extern CChat			*gChat;
 
@@ -190,6 +191,8 @@ extern CLogger			*gDbgLog;
 extern CPad localPlayerKeys;
 
 extern sStartParams gStartParams;
+
+extern std::vector<serverInfo> serverList;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
