@@ -10,7 +10,7 @@ bool								CClientNetwork::client_running;
 bool								CClientNetwork::connected;
 
 librg_entity_t*	playerEntities[MAX_PLAYERS];
-char							playerNames[MAX_PLAYERS][25];
+char			playerNames[MAX_PLAYERS][25];
 librg_entity_t*	otherEntities[MAX_ENTITIES];
 
 CClientNetwork::CClientNetwork()
@@ -28,6 +28,8 @@ CClientNetwork::~CClientNetwork()
 
 	gLog->Log("[CClientNetwork] CClientNetwork shutting down\n");
 	this->StopClientThread();
+
+	networkEntities.clear();
 }
 void CClientNetwork::PlayerSpawnEvent(librg_message_t* msg)
 {
