@@ -346,6 +346,6 @@ public:
 	}
 	~VCCoop() 
 	{	
-		delete core;
+		//delete core;
 	}
 } vcCoop;
