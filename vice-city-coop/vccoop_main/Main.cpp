@@ -248,7 +248,6 @@ sStartParams GetParams()
 
 	for (int i = 1; i < argc; i++)		{
 		// example custom URI usage:
-		//		vccoop:host=127.0.0.1;port=420;autoconnect;
 		//		vccoop:host=localhost;port=420;
 		if (strstr(argv[i], "vccoop:"))		{
 			bool autoconnect = false;
