@@ -181,14 +181,17 @@ BOOL CGame::IsModelLoaded(int iModelID)
 	}
 }
 */
-
 bool IsModelLoaded(int modelid)
 {
 	if (CStreaming::ms_aInfoForModel[modelid].m_nLoadState != LOADSTATE_LOADED)
 	{
-		return false;
+		return false; 
 	}
-	return true;
+	else if (CStreaming::ms_aInfoForModel[modelid].m_nLoadState == LOADSTATE_LOADED)
+	{
+		return true;
+	}
+	else return false;
 }
 
 void CGame::CustomModelLoad(int id)
@@ -198,9 +201,11 @@ void CGame::CustomModelLoad(int id)
 
 	int modelid = id;
 	while (!IsModelLoaded(modelid)) {
-		bIsLoadingModel = true;
-		CStreaming::RequestModel(modelid, 22);
-		Sleep(100);
+		if (!bIsLoadingModel) {
+			CStreaming::RequestModel(modelid, 22);
+			bIsLoadingModel = true;
+		}
+		Sleep(1);
 	}
 	
 	bIsLoadingModel = false;
