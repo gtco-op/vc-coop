@@ -91,6 +91,14 @@
       <AdditionalDependencies>mongoose.lib;tinyxml2.lib;lua.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4098 %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <PreBuildEvent>
+      <Command>FOR /F "delims=" %%i IN ('git rev-list HEAD --max-count=1') DO set githash=%%i
+FOR /F "delims=" %%i IN ('git rev-parse --abbrev-ref HEAD') DO set gitbranch=%%i
+
+echo #define GIT_HASH ^"%githash%^" &gt; $(SolutionDir)versioninfo.h
+echo #define GIT_BRANCH ^"%gitbranch%^" &gt;&gt; $(SolutionDir)versioninfo.h
+echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)versioninfo.h</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,6 +123,14 @@
       <AdditionalDependencies>mongoose.lib;tinyxml2.lib;lua.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4098 %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <PreBuildEvent>
+      <Command>FOR /F "delims=" %%i IN ('git rev-list HEAD --max-count=1') DO set githash=%%i
+FOR /F "delims=" %%i IN ('git rev-parse --abbrev-ref HEAD') DO set gitbranch=%%i
+
+echo #define GIT_HASH ^"%githash%^" &gt; $(SolutionDir)versioninfo.h
+echo #define GIT_BRANCH ^"%gitbranch%^" &gt;&gt; $(SolutionDir)versioninfo.h
+echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)versioninfo.h</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

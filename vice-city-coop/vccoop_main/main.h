@@ -1,4 +1,5 @@
 #pragma once
+#include "..\\versioninfo.h"
 
 //librg
 #include "vendor\librg\librg.h"

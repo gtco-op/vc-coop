@@ -30,6 +30,8 @@ CCore::CCore()
 	gChat		= new CChat();
 	gLog		= new CLogger();
 	gLog->Log("[CCore] " VCCOOP_NAME " " VCCOOP_VER " loaded.\n");
+	gLog->Log("[CCore] Build: %s\n", GIT_BUILD);
+
 	gConfig		= new CConfiguration();
 	gNetwork	= new CClientNetwork();
 	gGame		= new CGame();

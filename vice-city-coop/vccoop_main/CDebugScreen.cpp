@@ -18,11 +18,11 @@ void CDebugScreen::Draw()
 {
 	if (!gNetwork->connected)
 	{
-		sprintf(vccoop_string, "%s %s", VCCOOP_NAME, VCCOOP_VER);
+		sprintf(vccoop_string, "VC CO-OP Build:" "%s", GIT_BUILD);
 	}
 	else
 	{
-		sprintf(vccoop_string, "%s %s     Server: %s:%d   Press F7 to disconnect", VCCOOP_NAME, VCCOOP_VER, gNetwork->addr.host, gNetwork->addr.port);
+		sprintf(vccoop_string, "VC CO-OP Build:" "%s     Server: %s:%d   Press F7 to disconnect", GIT_BUILD, gNetwork->addr.host, gNetwork->addr.port);
 	}
 
 	SIZE textSize = gRender->MeasureText(vccoop_string);

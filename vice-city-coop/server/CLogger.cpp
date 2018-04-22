@@ -7,6 +7,7 @@ CLogger::CLogger()
 	out = std::ofstream(path);
 
 	this->Log("[CCore] %s %s loaded.\n", VCCOOP_NAME, VCCOOP_VER);
+	this->Log("[CCore] Build: %s\n", GIT_BUILD);
 }
 CLogger::~CLogger()
 {

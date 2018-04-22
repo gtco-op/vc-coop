@@ -213,6 +213,14 @@
       <Command>XCOPY /Y /J /C $(OutDir)vccoop.asi $(GTA_VC_DIR)\scripts\</Command>
       <Message>Copying ASI to GTA VC directory..</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>FOR /F "delims=" %%i IN ('git rev-list HEAD --max-count=1') DO set githash=%%i
+FOR /F "delims=" %%i IN ('git rev-parse --abbrev-ref HEAD') DO set gitbranch=%%i
+
+echo #define GIT_HASH ^"%githash%^" &gt; $(SolutionDir)versioninfo.h
+echo #define GIT_BRANCH ^"%gitbranch%^" &gt;&gt; $(SolutionDir)versioninfo.h
+echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)versioninfo.h</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA3|Win32'">
     <ClCompile>
@@ -288,6 +296,17 @@
       <Command>XCOPY /Y /J /C $(OutDir)vccoopd.asi $(GTA_VC_DIR)\scripts\</Command>
       <Message>Copying ASI to GTA VC directory..</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>FOR /F "delims=" %%i IN ('git rev-list HEAD --max-count=1') DO set githash=%%i
+FOR /F "delims=" %%i IN ('git rev-parse --abbrev-ref HEAD') DO set gitbranch=%%i
+
+echo #define GIT_HASH ^"%githash%^" &gt; $(SolutionDir)versioninfo.h
+echo #define GIT_BRANCH ^"%gitbranch%^" &gt;&gt; $(SolutionDir)versioninfo.h
+echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)versioninfo.h
+
+
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='zDebug GTA3|Win32'">
     <ClCompile>
