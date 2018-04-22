@@ -128,12 +128,10 @@ void CImGui::Draw()
 						gRender->bAboutWindow = false;
 						gRender->bServerView = false;
 					}
-					else
+					else 
 					{
 						gChat->AddChatMessage("[ERROR] Please ensure all connection settings are valid!");
-#ifdef VCCOOP_DEBUG
-						gRender->gDebugScreen->gDevConsole->AddLog("[ERROR] Please ensure all connection settings are valid!");
-#endif
+						gLog->Log("[ERROR] Please ensure all connection settings are valid!\n");
 					}
 				}
 			}
