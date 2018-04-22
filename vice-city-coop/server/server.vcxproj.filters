@@ -109,6 +109,9 @@
     <ClInclude Include="..\vccoop_main\CModelIDs.h">
       <Filter>Source\utils\CModelIDs</Filter>
     </ClInclude>
+    <ClInclude Include="CWebManagementServer.h">
+      <Filter>Source\management_server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
@@ -137,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="..\vccoop_main\CModelIDs.cpp">
       <Filter>Source\utils\CModelIDs</Filter>
+    </ClCompile>
+    <ClCompile Include="CWebManagementServer.cpp">
+      <Filter>Source\management_server</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

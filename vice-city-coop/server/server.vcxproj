@@ -154,6 +154,7 @@ echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)v
     <ClCompile Include="CLuaDumper.cpp" />
     <ClCompile Include="CLuaScript.cpp" />
     <ClCompile Include="CServerNetwork.cpp" />
+    <ClCompile Include="CWebManagementServer.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +167,7 @@ echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)v
     <ClInclude Include="CLuaDumper.h" />
     <ClInclude Include="CLuaScript.h" />
     <ClInclude Include="CServerNetwork.h" />
+    <ClInclude Include="CWebManagementServer.h" />
     <ClInclude Include="server.h" />
     <ClInclude Include="vendor\inih\INIReader.h" />
     <ClInclude Include="vendor\librg\enet.h" />

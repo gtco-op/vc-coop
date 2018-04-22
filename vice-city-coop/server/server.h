@@ -100,6 +100,8 @@ extern "C" {
 #include "CLuaScript.h"
 #include "CLuaDumper.h"
 
+#include "CWebManagementServer.h"
+
 //------------------------------------------------------------------------------------------------
 
 extern CConfiguration		*gConfig;
@@ -107,6 +109,8 @@ extern CLogger				*gLog;
 extern CServerNetwork		*gServerNetwork;
 
 extern CCustomDataManager	*gDataMgr;
+
+extern CWebManagementServer *gWebServer;
 
 extern std::string			ServerGamemodePath;
 extern CLuaScript			*gGamemodeScript;

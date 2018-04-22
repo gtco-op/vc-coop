@@ -22,6 +22,12 @@
 // Default server port
 #define VCCOOP_DEFAULT_SERVER_PORT		23546
 
+// Default web server port
+#define VCCOOP_DEFAULT_WEBSERVER_PORT	"8080"
+
+// Default web server root dir
+#define VCCOOP_DEFAULT_WEBSERVER_DIR	".\\Management"
+
 // Default server secret
 #define VCCOOP_DEFAULT_SERVER_SECRET	1007455905
 

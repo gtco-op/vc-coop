@@ -20,6 +20,8 @@ CLogger				*gLog;
 CServerNetwork		*gServerNetwork;
 CCustomDataManager	*gDataMgr;
 
+CWebManagementServer *gWebServer;
+
 std::string			ServerGamemodePath;
 
 bool Initialize()
@@ -56,6 +58,8 @@ bool Initialize()
 			gLog->Log("[CCore][INFO] Server Secret: %d\n", gServerNetwork->ServerSecret);
 		}
 	}
+
+	gWebServer = new CWebManagementServer();
 
 	if (!console_active)
 		return false;
