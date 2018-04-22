@@ -16,7 +16,9 @@ CCore::CCore()
 {
 #ifdef VCCOOP_DEBUG
 	AllocConsole();
+	freopen("CONIN$", "r", stdin);
 	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
 #endif
 	srand((int)time(NULL));
 
