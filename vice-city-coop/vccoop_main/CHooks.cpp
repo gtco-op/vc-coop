@@ -14,6 +14,8 @@ char(__thiscall* original_CAutomobile__ProcessControl)(CVehicle*);
 char(__thiscall* original_CPlayerPed__ProcessControl)(CPlayerPed*);
 int(__thiscall* original_CWeapon__DoBulletImpact)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D);
 CPed*(__cdecl* original_FindPlayerPed)(void);
+BOOL(__thiscall* original_CPed_IsPlayer)(CPed* This);
+int(__thiscall* original_SetWantedLevel)(CPlayerPed* This, int level);
 
 void LoadMissionScript()
 {
@@ -318,6 +320,17 @@ CPed* FindPlayerPed_Hook(void)
 	return CWorld::Players[0].m_pPed;
 }
 
+BOOL __fastcall CPed_IsPlayer_Hook(CPed* This)
+{
+	return original_CPed_IsPlayer(This);
+}
+
+int __fastcall SetWantedLevel_Hook(CPlayerPed* This, int level)
+{
+	gLog->Log("Setting wanted level to %d\n", level);
+	return original_SetWantedLevel(This, level);
+}
+
 void CHooks::InitHooks()
 {
 	original_CPed__InflictDamage			= (char(__thiscall*)(CPed*, CEntity*, eWeaponType, float, ePedPieceTypes, UCHAR))DetourFunction((PBYTE)0x525B20, (PBYTE)CPed__InflictDamage_Hook);
@@ -328,7 +341,10 @@ void CHooks::InitHooks()
 	original_CWeapon__DoBulletImpact		= (int(__thiscall*)(CWeapon*This, CEntity*, CEntity*, CVector*, CVector*, CColPoint*, CVector2D))DetourFunction((PBYTE)0x5CEE60, (PBYTE)CWeapon__DoBulletImpact_Hook);
 
 	original_FindPlayerPed					= (CPed*(__cdecl*)(void))DetourFunction((PBYTE)0x4BC120, (PBYTE)FindPlayerPed_Hook);
+	
+	original_CPed_IsPlayer					= (BOOL(__thiscall*)(CPed* This))DetourFunction((PBYTE)0x4F4930, (PBYTE)CPed_IsPlayer_Hook);
 
+	original_SetWantedLevel					= (int(__thiscall*)(CPlayerPed* This, int level))DetourFunction((PBYTE)0x532090, (PBYTE)SetWantedLevel_Hook);
 
 #ifdef VCCOOP_DEBUG_ENGINE
 	patch::ReplaceFunction(0x401000, Hooked_DbgPrint);//we overwrite the original func because thats not needed
