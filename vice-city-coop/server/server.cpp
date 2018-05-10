@@ -22,6 +22,7 @@ CCustomDataManager	*gDataMgr;
 
 CWebManagementServer *gWebServer;
 
+int				gActivePlayers;
 std::string			ServerGamemodePath;
 
 bool Initialize()
@@ -79,6 +80,7 @@ int main(int argc, char const *argv[]) {
 	char buf[256];
 
 	while (console_active && gConfig->IsConfigLoaded())	{
+		// ------------
 		getline(cin, input);
 
 		if (strstr(input.c_str(), "exit") || strstr(input.c_str(), "quit"))		{
@@ -86,12 +88,7 @@ int main(int argc, char const *argv[]) {
 		}
 
 		if (strstr(input.c_str(), "players"))		{
-			int playerCount = 0;
-			for (auto it : playerEntities)			{
-				if (it && it->client_peer != nullptr)
-					playerCount++;
-			}
-			gLog->Log("[CCore] Active players: %d\n", playerCount);
+			gLog->Log("[CCore] Active Players: %d\n", gActivePlayers);
 		}
 
 		if (sscanf(input.c_str(), "announce %s", buf)) 		{

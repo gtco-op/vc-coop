@@ -115,4 +115,6 @@ extern CWebManagementServer *gWebServer;
 extern std::string			ServerGamemodePath;
 extern CLuaScript			*gGamemodeScript;
 
+extern int					gActivePlayers;
+
 using namespace std;
