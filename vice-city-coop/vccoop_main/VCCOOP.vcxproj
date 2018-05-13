@@ -295,10 +295,8 @@ echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)v
       <AdditionalOptions>/ignore:4099 /NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY /Y /J /C $(OutDir)vccoopd.asi $(GTA_VC_DIR)\scripts\
-cd "$(SolutionDir)"
-call "C:\Program Files (x86)\NSIS\Bin\makensis.exe" vice-city-coop.nsi</Command>
-      <Message>Creating installer..</Message>
+      <Command>XCOPY /Y /J /C $(OutDir)vccoopd.asi $(GTA_VC_DIR)\scripts\</Command>
+      <Message>Copying binary to GTA VC directory..</Message>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>FOR /F "delims=" %%i IN ('git rev-list HEAD --max-count=1') DO set githash=%%i
