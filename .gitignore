@@ -269,3 +269,5 @@ ModelManifest.xml
 temp/
 lib/.
 versioninfo.h
+setup.exe
+*.idb

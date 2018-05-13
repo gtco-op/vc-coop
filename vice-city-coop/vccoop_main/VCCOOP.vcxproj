@@ -101,7 +101,7 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <OutDir>$(PLUGIN_SDK_DIR)\output\examples\</OutDir>
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Release\</IntDir>
-    <TargetName>DXFont.SA</TargetName>
+    <TargetName>VCCOOP.SA</TargetName>
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
@@ -121,7 +121,7 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <OutDir>$(PLUGIN_SDK_DIR)\output\examples\</OutDir>
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Release\</IntDir>
-    <TargetName>DXFont.III</TargetName>
+    <TargetName>VCCOOP.III</TargetName>
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
@@ -131,7 +131,7 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <OutDir>$(PLUGIN_SDK_DIR)\output\examples\</OutDir>
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Debug\</IntDir>
-    <TargetName>DXFont.SA_d</TargetName>
+    <TargetName>VCCOOP.SA_d</TargetName>
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
@@ -152,7 +152,7 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <OutDir>$(PLUGIN_SDK_DIR)\output\examples\</OutDir>
     <IntDir>$(PLUGIN_SDK_DIR)\output\obj\examples\$(ProjectName)\Debug\</IntDir>
-    <TargetName>DXFont.III_d</TargetName>
+    <TargetName>VCCOOP.III_d</TargetName>
     <TargetExt>.asi</TargetExt>
     <IncludePath>$(IncludePath);$(DIRECTX9_SDK_DIR)\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath);$(DIRECTX9_SDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
@@ -179,7 +179,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>paths.lib;plugin.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(PLUGIN_SDK_DIR)\output\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.SA.lib</ImportLibrary>
+      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\VCCOOP.SA.lib</ImportLibrary>
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -205,13 +205,15 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libcurl.lib;wldap32.lib;tinyxml2.lib;discord-rpc.lib;lua.lib;winmm.lib;ws2_32.lib;plugin_vc.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)\vendor\detours\;$(ProjectDir)\vendor\lua\;$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.VC.lib</ImportLibrary>
+      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\VCCOOP.VC.lib</ImportLibrary>
       <AdditionalOptions>/LTCG /ignore:4099 /NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY /Y /J /C $(OutDir)vccoop.asi $(GTA_VC_DIR)\scripts\</Command>
-      <Message>Copying ASI to GTA VC directory..</Message>
+      <Command>XCOPY /Y /J /C $(OutDir)vccoop.asi $(GTA_VC_DIR)\scripts\
+cd "$(SolutionDir)"
+call "C:\Program Files (x86)\NSIS\Bin\makensis.exe" vice-city-coop.nsi</Command>
+      <Message>Creating installer..</Message>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>FOR /F "delims=" %%i IN ('git rev-list HEAD --max-count=1') DO set githash=%%i
@@ -244,7 +246,7 @@ echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)v
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>paths.lib;plugin_iii.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.III.lib</ImportLibrary>
+      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\VCCOOP.III.lib</ImportLibrary>
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -264,7 +266,7 @@ echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)v
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>paths_d.lib;plugin_d.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(PLUGIN_SDK_DIR)\output\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.SA_d.lib</ImportLibrary>
+      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\VCCOOP.SA_d.lib</ImportLibrary>
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -286,15 +288,17 @@ echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)v
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>wldap32.lib;libcurld.lib;tinyxml2.lib;discord-rpc.lib;lua.lib;user32.lib;winmm.lib;ws2_32.lib;plugin_vc_d.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\;$(ProjectDir)\vendor\discord-rich-presence\;$(ProjectDir)\vendor\detours\;$(ProjectDir)\vendor\lua\;$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.VC_d.lib</ImportLibrary>
+      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\VCCOOP.VC_d.lib</ImportLibrary>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalOptions>/ignore:4099 /NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY /Y /J /C $(OutDir)vccoopd.asi $(GTA_VC_DIR)\scripts\</Command>
-      <Message>Copying ASI to GTA VC directory..</Message>
+      <Command>XCOPY /Y /J /C $(OutDir)vccoopd.asi $(GTA_VC_DIR)\scripts\
+cd "$(SolutionDir)"
+call "C:\Program Files (x86)\NSIS\Bin\makensis.exe" vice-city-coop.nsi</Command>
+      <Message>Creating installer..</Message>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>FOR /F "delims=" %%i IN ('git rev-list HEAD --max-count=1') DO set githash=%%i
@@ -324,7 +328,7 @@ echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)v
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>paths_d.lib;plugin_iii_d.lib;d3d9.lib;d3dx9.lib;rwd3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(PLUGIN_SDK_DIR)\output\lib;$(RWD3D9_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\DXFont.III_d.lib</ImportLibrary>
+      <ImportLibrary>$(PLUGIN_SDK_DIR)\output\examples\VCCOOP.III_d.lib</ImportLibrary>
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
