@@ -34,7 +34,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -71,20 +71,20 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\server\Debug\</OutDir>
-    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include;$(ProjectDir);$(ProjectDir)\vendor\mongoose-master;</IncludePath>
+    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include;$(ProjectDir)\vendor\mongoose-master;$(SolutionDir)\vendor\LuaBridge\Source\LuaBridge;$(SolutionDir)\vendor\angelscript_2.32.0\sdk\angelscript\include</IncludePath>
     <LibraryPath>$(LibraryPath);$(SolutionDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include;$(ProjectDir)\vendor\mongoose-master</IncludePath>
+    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include;$(ProjectDir)\vendor\mongoose-master;$(SolutionDir)\vendor\LuaBridge\Source\LuaBridge;$(SolutionDir)\vendor\angelscript_2.32.0\sdk\angelscript\include</IncludePath>
     <OutDir>$(SolutionDir)\server\Release\</OutDir>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir);$(SolutionDir)\vendor\angelscript_2.32.0\sdk\angelscript\lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;VCCOOP_DEBUG;VCCOOP_SERVER;VCCOOP_LIBRG_DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;VCCOOP_DEBUG;VCCOOP_SERVER;VCCOOP_LIBRG_DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(PLUGIN_SDK_DIR)\plugin_vc\;$(PLUGIN_SDK_DIR)\plugin_vc\game_vc\;$(PLUGIN_SDK_DIR)\shared\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

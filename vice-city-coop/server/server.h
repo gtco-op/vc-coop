@@ -8,6 +8,9 @@
 #pragma warning (disable : 4018)
 #pragma warning (disable : 4267)
 
+// AngelScript
+#include "angelscript.h"
+
 // librg
 #include "vendor\\librg\\librg.h"
 
