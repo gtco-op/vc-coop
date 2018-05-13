@@ -1,0 +1,4 @@
+[submodule "vice-city-coop/vendor/LuaBridge"]
+	path = vice-city-coop/vendor/LuaBridge
+	url = https://github.com/vinniefalco/LuaBridge
+	branch = master
