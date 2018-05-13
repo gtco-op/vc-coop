@@ -264,6 +264,9 @@ void CRender::DestroyFont()
 }
 void CRender::ToggleGUI()
 {
+	if (!this)
+		return;
+
 	bGUI = !bGUI;
 
 	if (bGUI)

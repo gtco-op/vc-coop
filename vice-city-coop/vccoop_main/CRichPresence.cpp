@@ -53,22 +53,24 @@ void CRichPresence::UpdateRichPresence(bool IsConnected)
 
 	char* details = new char[256];
 	char* state = new char[256];
-	if (IsConnected) {
-		sprintf(details, "In %s", gNetwork->ServerAddress);
-		dp.details = details;
-		
-		sprintf(state, "Nickname: %s", (char *)gGame->Name.c_str());
-		dp.state = state;
-		dp.smallImageKey = "con"; //green circle
-		dp.smallImageText = "Connected";
-	}
-	else {
-		sprintf(details, "Not connected");
-		dp.details = details;
+	if (gGame)
+	{
+		if (IsConnected) {
+			sprintf(details, "In %s", gNetwork->ServerAddress);
+			dp.details = details;
 
-		sprintf(state, "NickName: %s", (char *)gGame->Name.c_str());
-		dp.smallImageKey = "discon"; //red circle
-		dp.smallImageText = "Disconnected";
+			sprintf(state, "Nickname: %s", (char *)gGame->Name.c_str());
+			dp.state = state;
+			dp.smallImageKey = "con"; //green circle
+			dp.smallImageText = "Connected";
+		}
+		else {
+			sprintf(details, "Not connected");
+			dp.details = details;
+
+			dp.smallImageKey = "discon"; //red circle
+			dp.smallImageText = "Disconnected";
+		}
+		Discord_UpdatePresence(&dp);
 	}
-	Discord_UpdatePresence(&dp);
 }

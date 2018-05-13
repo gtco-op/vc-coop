@@ -26,8 +26,6 @@ void CGame::HasGameLoaded()
 	if (bLoadingDone == true)
 		return;
 
-	// temporary.. i promise!
-	Sleep(1000);
 
 	bLoadingDone = true;
 	gLog->Log("[CGame] Game finished loading.\n");
