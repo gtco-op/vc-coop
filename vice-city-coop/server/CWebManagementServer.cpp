@@ -35,10 +35,10 @@ std::string GetLocalIPAddress()
 		strcpy(aszIPAddresses[nCount], inet_ntoa(SocketAddress.sin_addr));
 		
 		res = aszIPAddresses[nCount];
-		return res;
 	}
 
 	WSACleanup();
+	return res;
 }
 
 void CWebManagementServer::EventHandler(struct mg_connection *nc, int ev, void *p) 
