@@ -8,14 +8,14 @@
 #pragma warning (disable : 4018)
 #pragma warning (disable : 4267)
 
-// AngelScript
-#include "angelscript.h"
-
 // librg
 #include "vendor\\librg\\librg.h"
 
 // inih
 #include "vendor\\inih\\INIReader.h"
+
+// AngelScript
+#include "angelscript.h"
 
 // Lua
 extern "C" {
@@ -63,7 +63,6 @@ extern "C" {
 
 
 #endif
-
 
 // Standard includes
 #include <iostream>
