@@ -47,6 +47,9 @@
     <Filter Include="Source\management_server">
       <UniqueIdentifier>{34fd911d-334a-4819-bbe6-faf434feea36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\scripting\AngelScript">
+      <UniqueIdentifier>{5584e6cd-025a-4449-a6fa-c5c70653f6ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CServerNetwork.h">
@@ -112,6 +115,9 @@
     <ClInclude Include="CWebManagementServer.h">
       <Filter>Source\management_server</Filter>
     </ClInclude>
+    <ClInclude Include="CAngelScriptInterface.h">
+      <Filter>Source\scripting\AngelScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
@@ -143,6 +149,15 @@
     </ClCompile>
     <ClCompile Include="CWebManagementServer.cpp">
       <Filter>Source\management_server</Filter>
+    </ClCompile>
+    <ClCompile Include="CAngelScriptInterface.cpp">
+      <Filter>Source\scripting\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\angelscript_2.32.0\sdk\add_on\scriptbuilder\scriptbuilder.cpp">
+      <Filter>Source\scripting\AngelScript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\angelscript_2.32.0\sdk\add_on\scriptstdstring\scriptstdstring.cpp">
+      <Filter>Source\scripting\AngelScript</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

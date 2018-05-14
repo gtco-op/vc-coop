@@ -37,7 +37,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "browserintegration", "vccoo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mongoose", "server\vendor\mongoose-master\mongoose\mongoose.vcxproj", "{12855449-835C-4B17-AA5A-84EBE581F2CD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AngelScript-2.32.0", "vendor\angelscript_2.32.0\sdk\AngelScript-2.32.0\AngelScript-2.32.0.vcxproj", "{37D0A12E-5C95-47D5-A978-C379A3CCACC1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AngelScript-2.32.0", "vendor\angelscript_2.32.0\sdk\angelscript\AngelScript-2.32.0.vcxproj", "{37D0A12E-5C95-47D5-A978-C379A3CCACC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

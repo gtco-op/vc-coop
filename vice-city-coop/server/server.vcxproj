@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\server\Debug\</OutDir>
-    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include;$(ProjectDir)\vendor\mongoose-master;$(SolutionDir)\vendor\LuaBridge\Source\LuaBridge;$(SolutionDir)\vendor\angelscript_2.32.0\sdk\angelscript\include</IncludePath>
+    <IncludePath>$(IncludePath);$(PLUGIN_SDK_DIR)\plugin_vc;$(ProjectDir)\vendor\lua\include;$(ProjectDir)\vendor\mongoose-master;$(SolutionDir)\vendor\LuaBridge\Source\LuaBridge;$(SolutionDir)\vendor\angelscript_2.32.0\sdk\angelscript\include;$(SolutionDir)\vendor\angelscript_2.32.0\sdk\add_on</IncludePath>
     <LibraryPath>$(LibraryPath);$(SolutionDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -88,7 +88,7 @@
       <AdditionalIncludeDirectories>$(PLUGIN_SDK_DIR)\plugin_vc\;$(PLUGIN_SDK_DIR)\plugin_vc\game_vc\;$(PLUGIN_SDK_DIR)\shared\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>mongoose.lib;tinyxml2.lib;lua.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>AngelScript-2.32.0.lib;mongoose.lib;tinyxml2.lib;lua.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4098 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
@@ -147,6 +147,9 @@ echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)v
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\vccoop_main\CModelIDs.cpp" />
+    <ClCompile Include="..\vendor\angelscript_2.32.0\sdk\add_on\scriptbuilder\scriptbuilder.cpp" />
+    <ClCompile Include="..\vendor\angelscript_2.32.0\sdk\add_on\scriptstdstring\scriptstdstring.cpp" />
+    <ClCompile Include="CAngelScriptInterface.cpp" />
     <ClCompile Include="CConfiguration.cpp" />
     <ClCompile Include="CCustomData.cpp" />
     <ClCompile Include="CCustomDataManager.cpp" />
@@ -160,6 +163,7 @@ echo #define GIT_BUILD GIT_BRANCH ^" (^" GIT_HASH ^")^" &gt;&gt; $(SolutionDir)v
   <ItemGroup>
     <ClInclude Include="..\vccoop_main\CModelIDs.h" />
     <ClInclude Include="..\vccoop_main\config.h" />
+    <ClInclude Include="CAngelScriptInterface.h" />
     <ClInclude Include="CConfiguration.h" />
     <ClInclude Include="CCustomData.h" />
     <ClInclude Include="CCustomDataManager.h" />

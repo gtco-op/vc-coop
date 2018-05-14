@@ -15,7 +15,9 @@
 #include "vendor\\inih\\INIReader.h"
 
 // AngelScript
-#include "angelscript.h"
+#include <angelscript.h>
+#include <scriptstdstring/scriptstdstring.h>
+#include <scriptbuilder/scriptbuilder.h>
 
 // Lua
 extern "C" {
@@ -35,6 +37,7 @@ extern "C" {
 #include <filesystem>
 #include <sstream>
 #include <iterator>
+
 // Plugin-SDK
 #include "game_vc/CPad.h"
 #include "game_vc/CVector.h"
@@ -61,6 +64,8 @@ extern "C" {
 #include "lauxlib.h"
 }
 
+// AngelScript
+#include "angelscript.h"
 
 #endif
 
@@ -103,6 +108,8 @@ extern "C" {
 #include "CLuaDumper.h"
 
 #include "CWebManagementServer.h"
+
+#include "CAngelScriptInterface.h"
 
 //------------------------------------------------------------------------------------------------
 
